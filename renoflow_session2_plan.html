@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RenoFlow — Session 2 Plan</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#f0ede8;color:#1a1612;font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;padding:32px 16px;min-height:100vh;}
+.wrap{max-width:680px;margin:0 auto;}
+.header{background:linear-gradient(135deg,#1f5a38,#2d7a4f);border-radius:12px;padding:32px;margin-bottom:28px;color:#fff;}
+.header-logo{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;opacity:.7;margin-bottom:8px;}
+.header-title{font-family:'DM Serif Display',serif;font-size:32px;line-height:1.1;margin-bottom:6px;}
+.header-sub{font-size:13px;opacity:.8;}
+.prompt-box{background:#fff;border:1px solid #e0dbd4;border-radius:12px;padding:24px;margin-bottom:28px;}
+.prompt-label{font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:2px;color:#9a958e;margin-bottom:10px;}
+.prompt-title{font-family:'DM Serif Display',serif;font-size:18px;color:#2d7a4f;margin-bottom:12px;}
+.prompt-text{font-size:13px;color:#4a4540;background:#f7f4ef;border:1px solid #e0dbd4;border-radius:8px;padding:16px;font-family:'DM Mono',monospace;line-height:1.8;white-space:pre-wrap;}
+.section{background:#fff;border:1px solid #e0dbd4;border-radius:12px;padding:24px;margin-bottom:16px;}
+.section-num{font-family:'DM Mono',monospace;font-size:10px;color:#9a958e;text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;}
+.section-title{font-family:'DM Serif Display',serif;font-size:22px;color:#1a1612;margin-bottom:16px;}
+.item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f0ede8;}
+.item:last-child{border-bottom:none;}
+.item-dot{width:8px;height:8px;border-radius:50%;background:#2d7a4f;flex-shrink:0;margin-top:6px;}
+.item-dot.future{background:#ccc7be;}
+.item-body{}
+.item-title{font-size:14px;font-weight:600;color:#1a1612;margin-bottom:2px;}
+.item-desc{font-size:12px;color:#6a6560;}
+.priority{display:inline-block;font-size:9px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;padding:2px 7px;border-radius:10px;margin-left:8px;vertical-align:middle;}
+.p1{background:#fde8e8;color:#c0392b;}
+.p2{background:#e8f0fe;color:#1a73e8;}
+.p3{background:#f7f4ef;color:#9a958e;}
+.order-box{background:#f7f4ef;border:1px solid #e0dbd4;border-radius:8px;padding:16px;margin-top:16px;}
+.order-label{font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:2px;color:#9a958e;margin-bottom:10px;}
+.order-item{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px;}
+.order-n{width:22px;height:22px;border-radius:50%;background:#2d7a4f;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Mono',monospace;}
+.note-box{background:#fff3e0;border:1px solid #ffc47a;border-radius:8px;padding:14px;margin-top:16px;}
+.note-label{font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:2px;color:#e65c00;margin-bottom:6px;}
+.note-text{font-size:13px;color:#6a4020;}
+.future-sessions{background:#fff;border:1px solid #e0dbd4;border-radius:12px;padding:24px;margin-bottom:16px;}
+.fs-title{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:16px;}
+.fs-item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid #f0ede8;}
+.fs-item:last-child{border-bottom:none;}
+.fs-badge{font-family:'DM Mono',monospace;font-size:10px;font-weight:600;color:#9a958e;background:#f0ede8;padding:3px 8px;border-radius:10px;white-space:nowrap;height:fit-content;margin-top:2px;}
+.fs-body{}
+.fs-name{font-size:14px;font-weight:600;margin-bottom:3px;}
+.fs-desc{font-size:12px;color:#6a6560;}
+.done-box{background:#e6f4ea;border:1px solid #82c995;border-radius:12px;padding:24px;margin-bottom:16px;}
+.done-title{font-family:'DM Serif Display',serif;font-size:20px;color:#1e7e34;margin-bottom:14px;}
+.done-item{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px;color:#1a1612;}
+.done-check{color:#1e7e34;font-size:16px;flex-shrink:0;}
+.footer{text-align:center;padding:24px;color:#9a958e;font-size:12px;font-family:'DM Mono',monospace;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="header-logo">RenoFlow · Build Plan</div>
+    <div class="header-title">Session 2<br><em>Multi-Project Architecture</em></div>
+    <div class="header-sub">Start fresh · Upload renoflow_v4_final.html · Paste the prompt below</div>
+  </div>
+
+  <div class="prompt-box">
+    <div class="prompt-label">Copy this prompt to start Session 2</div>
+    <div class="prompt-title">Opening Prompt for Claude</div>
+    <div class="prompt-text">Here's my RenoFlow app — a renovation contractor tool built in a single HTML file. 
+
+Last session we completed: client DB, invoice ledger with Net 7 overdue logic, 3-section nav with SVG icons, morning briefing dashboard with live alerts, company logo in top bar with color extraction, and mobile left rail nav.
+
+This session we're building the multi-project architecture. Priority order:
+
+1. Multi-project data structure + migration from single-project format
+2. Project board dashboard with status cards
+3. New project wizard (client picker → job type → project details → rooms)
+4. Trade toggles (enable/disable per trade, disappears from quote/timeline/shopping list)
+5. Morning briefing wired to all projects
+6. + More Options pattern on trades
+
+Rules:
+- Syntax check after every feature
+- Save and present file after each checkpoint
+- Never leave a file in a broken state
+
+Let's start with the data structure first.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-num">Session 2</div>
+    <div class="section-title">What We're Building</div>
+
+    <div class="item">
+      <div class="item-dot"></div>
+      <div class="item-body">
+        <div class="item-title">Multi-Project Data Structure <span class="priority p1">First</span></div>
+        <div class="item-desc">S.projects[] array replaces single S.rooms/S.proj. Each project has its own client, rooms, invoices, quote, timeline. Migration wraps existing data into projects[0] automatically — nothing lost.</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-dot"></div>
+      <div class="item-body">
+        <div class="item-title">Project Board Dashboard <span class="priority p1">First</span></div>
+        <div class="item-desc">Replaces the single-project dashboard. Cards show: client name, address, project status (Estimating / Active / Invoiced / Complete), total value, days since last activity.</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-dot"></div>
+      <div class="item-body">
+        <div class="item-title">New Project Wizard <span class="priority p1">First</span></div>
+        <div class="item-desc">3-step flow: (1) Pick or create client, (2) Job type intake, (3) Project name + address + start date. Skip and back always available. Drops you into rooms when done.</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-dot"></div>
+      <div class="item-body">
+        <div class="item-title">Job Type Intake <span class="priority p2">Important</span></div>
+        <div class="item-desc">Full Reno, Partial Reno, Service Call, Repair, New Build. Determines which tools show up. Full Reno = room calculator + all trades. Repair = line items only. Think about what questions to ask before the session.</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-dot"></div>
+      <div class="item-body">
+        <div class="item-title">Trade Toggles <span class="priority p2">Important</span></div>
+        <div class="item-desc">Enable/disable each trade per room. Disabled trades disappear from quote, timeline, shopping list everywhere. Pre-selected by room type — bathroom shows 6 relevant trades, not 12.</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-dot"></div>
+      <div class="item-body">
+        <div class="item-title">Morning Briefing — All Projects <span class="priority p2">Important</span></div>
+        <div class="item-desc">Now pulls from all projects. Overdue invoices across all jobs, deposits pending, projects with no activity 7+ days, projects behind schedule. Clean state when nothing needs attention.</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-dot"></div>
+      <div class="item-body">
+        <div class="item-title">+ More Options on Trades <span class="priority p3">If time</span></div>
+        <div class="item-desc">Less common line items hidden behind a "+ More" button at the bottom of each trade. Reduces overwhelm for simple jobs, full depth still available for complex ones.</div>
+      </div>
+    </div>
+
+    <div class="order-box">
+      <div class="order-label">Build Order — Stick to This</div>
+      <div class="order-item"><div class="order-n">1</div>Data structure + migration</div>
+      <div class="order-item"><div class="order-n">2</div>Project board dashboard</div>
+      <div class="order-item"><div class="order-n">3</div>New project wizard</div>
+      <div class="order-item"><div class="order-n">4</div>Trade toggles</div>
+      <div class="order-item"><div class="order-n">5</div>Morning briefing wired to all projects</div>
+      <div class="order-item"><div class="order-n">6</div>+ More options (if time allows)</div>
+    </div>
+
+    <div class="note-box">
+      <div class="note-label">Before the session</div>
+      <div class="note-text">Think about how the job type intake should work. What's the first question you ask yourself when you walk a job? What 3-5 questions would tell the app everything it needs to know to set up the right tools? Write it down and bring it in — it'll make the build faster.</div>
+    </div>
+  </div>
+
+  <div class="done-box">
+    <div class="done-title">Already Done ✓</div>
+    <div class="done-item"><div class="done-check">✅</div>Room calculator with auto-dimensions</div>
+    <div class="done-item"><div class="done-check">✅</div>Trade line items with quantities and rates</div>
+    <div class="done-item"><div class="done-check">✅</div>Timeline — auto-sequenced, working days, parallel/sequential</div>
+    <div class="done-item"><div class="done-check">✅</div>Shopping list</div>
+    <div class="done-item"><div class="done-check">✅</div>Quote with 5 formats + markup toggle</div>
+    <div class="done-item"><div class="done-check">✅</div>Client database with picker in settings</div>
+    <div class="done-item"><div class="done-check">✅</div>Invoice ledger — Net 7 default, overdue auto-calculated, deposit tracking</div>
+    <div class="done-item"><div class="done-check">✅</div>3-section nav with clean SVG icons + labels</div>
+    <div class="done-item"><div class="done-check">✅</div>Morning briefing dashboard with live invoice alerts</div>
+    <div class="done-item"><div class="done-check">✅</div>Company logo upload with brand color extraction</div>
+    <div class="done-item"><div class="done-check">✅</div>Mobile left rail nav — always visible, icons + labels</div>
+  </div>
+
+  <div class="future-sessions">
+    <div class="fs-title">Sessions After That</div>
+
+    <div class="fs-item">
+      <div class="fs-badge">Session 3</div>
+      <div class="fs-body">
+        <div class="fs-name">Calculator Depth</div>
+        <div class="fs-desc">Insulation calculator (by stud spacing + R-value), LVL span tables, tile sub-calculators, drywall walls/ceiling/bulkhead. Square footage in, smart pre-fill out.</div>
+      </div>
+    </div>
+
+    <div class="fs-item">
+      <div class="fs-badge">Session 4</div>
+      <div class="fs-body">
+        <div class="fs-name">HST Remittance + Expenses</div>
+        <div class="fs-desc">Manual expense entry per project, HST collected vs ITCs, remittance summary — what you owe CRA this period, quarterly grouping.</div>
+      </div>
+    </div>
+
+    <div class="fs-item">
+      <div class="fs-badge">Session 5</div>
+      <div class="fs-body">
+        <div class="fs-name">Receipt Scanning</div>
+        <div class="fs-desc">Camera upload, Claude vision API extracts merchant/date/total/HST, auto-populates expense entry, receipt image stored with expense record.</div>
+      </div>
+    </div>
+
+    <div class="fs-item">
+      <div class="fs-badge">Session 6</div>
+      <div class="fs-body">
+        <div class="fs-name">Polish + Intuition Pass</div>
+        <div class="fs-desc">Full UX review every screen, mobile layout pass, empty states, trial countdown UI, free/Basic/Premium plan screens, print/PDF cleanup.</div>
+      </div>
+    </div>
+
+    <div class="fs-item">
+      <div class="fs-badge">Session 7</div>
+      <div class="fs-body">
+        <div class="fs-name">Cursor Prep</div>
+        <div class="fs-desc">Supabase schema document, RevenueCat plan, push notification spec, component map, one-page Cursor system prompt, TestFlight plan.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-num">Pricing Model — Decided</div>
+    <div class="section-title">How RenoFlow Gets Paid</div>
+    <div class="item">
+      <div class="item-dot"></div>
+      <div class="item-body">
+        <div class="item-title">30-Day Free Trial</div>
+        <div class="item-desc">Everything unlocked. No credit card required. Soft countdown starts at day 25.</div>
+      </div>
+    </div>
+    <div class="item">
+      <div class="item-dot"></div>
+      <div class="item-body">
+        <div class="item-title">Basic — $19/month</div>
+        <div class="item-desc">3 trades of their choice. Up to 3 active projects. Invoicing + quotes included. Good for specialty trades.</div>
+      </div>
+    </div>
+    <div class="item">
+      <div class="item-dot"></div>
+      <div class="item-body">
+        <div class="item-title">Premium — $39/month</div>
+        <div class="item-desc">All trades, all calculators, unlimited projects. HST remittance, receipt scanning, full invoice ledger, morning briefing. Target: renovation GC.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    RenoFlow · Built by Flex Reno.ca · renoflow_v4_final.html is your checkpoint
+  </div>
+
+</div>
+</body>
+</html>
