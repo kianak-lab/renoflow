@@ -1,12 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
 import { COOKIE_NAME, verifySessionCookieValue } from "@/lib/simple-auth";
-
-function copyCookies(from: NextResponse, to: NextResponse) {
-  from.cookies.getAll().forEach((cookie) => {
-    to.cookies.set(cookie.name, cookie.value);
-  });
-}
 
 function isPublicPath(pathname: string) {
   if (pathname.startsWith("/login")) return true;
@@ -18,15 +11,13 @@ function isPublicPath(pathname: string) {
 }
 
 export async function middleware(request: NextRequest) {
-  const supabaseResponse = await updateSession(request);
   const { pathname } = request.nextUrl;
+  const next = NextResponse.next();
 
   if (pathname === "/") {
     const url = request.nextUrl.clone();
     url.pathname = "/final";
-    const redirect = NextResponse.redirect(url);
-    copyCookies(supabaseResponse, redirect);
-    return redirect;
+    return NextResponse.redirect(url);
   }
 
   if (isPublicPath(pathname)) {
@@ -35,12 +26,10 @@ export async function middleware(request: NextRequest) {
         request.cookies.get(COOKIE_NAME)?.value,
       );
       if (hasSession) {
-        const redirect = NextResponse.redirect(new URL("/", request.url));
-        copyCookies(supabaseResponse, redirect);
-        return redirect;
+        return NextResponse.redirect(new URL("/", request.url));
       }
     }
-    return supabaseResponse;
+    return next;
   }
 
   const needsAppGate =
@@ -52,9 +41,7 @@ export async function middleware(request: NextRequest) {
     if (!hasSession) {
       const login = new URL("/login", request.url);
       login.searchParams.set("next", `${pathname}${request.nextUrl.search}`);
-      const redirect = NextResponse.redirect(login);
-      copyCookies(supabaseResponse, redirect);
-      return redirect;
+      return NextResponse.redirect(login);
     }
   }
 
@@ -81,7 +68,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  return supabaseResponse;
+  return next;
 }
 
 export const config = {

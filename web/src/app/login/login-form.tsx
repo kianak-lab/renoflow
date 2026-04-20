@@ -63,6 +63,9 @@ export default function LoginForm({ error, errorMessage }: Props) {
           {errorMessage ?? "Sign-in failed."}
         </p>
       )}
+      {errorMessage && error !== "auth" && (
+        <p className="rounded-md bg-zinc-100 px-3 py-2 text-sm text-zinc-700">{errorMessage}</p>
+      )}
       {formError && (
         <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800 whitespace-pre-wrap">
           {formError}
@@ -114,11 +117,12 @@ export default function LoginForm({ error, errorMessage }: Props) {
         {loading ? "Signing in…" : "Sign in"}
       </button>
       <p className="text-center text-xs text-zinc-500">
-        Default (if unset): username <span className="font-mono">renoflow</span>, password{" "}
-        <span className="font-mono">renoflow</span>. Set{" "}
-        <span className="font-mono">RENOFLOW_USERNAME</span>,{" "}
-        <span className="font-mono">RENOFLOW_PASSWORD</span>, and{" "}
-        <span className="font-mono">RENOFLOW_AUTH_SECRET</span> in production.
+        Credentials come from <span className="font-mono">RENOFLOW_USERNAME</span> and{" "}
+        <span className="font-mono">RENOFLOW_PASSWORD</span> (defaults:{" "}
+        <span className="font-mono">renoflow</span> / <span className="font-mono">renoflow</span> if
+        unset). Use <span className="font-mono">RENOFLOW_AUTH_SECRET</span> in production. API
+        routes that talk to Supabase also need <span className="font-mono">RENOFLOW_SUPABASE_USER_ID</span>{" "}
+        and <span className="font-mono">SUPABASE_SERVICE_ROLE_KEY</span>.
       </p>
     </form>
   );

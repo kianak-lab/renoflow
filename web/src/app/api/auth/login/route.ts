@@ -7,7 +7,7 @@ import {
   getExpectedPassword,
   getExpectedUsername,
 } from "@/lib/simple-auth";
-import { resolveRenoflowSupabaseUserId } from "@/lib/renoflow-user";
+import { getRenoflowSupabaseUserId } from "@/lib/renoflow-user";
 
 function safeStringEqual(a: string, b: string): boolean {
   const ba = Buffer.from(a, "utf8");
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       ? String((body as { password: unknown }).password ?? "")
       : "";
   const username = usernameRaw.trim();
-  const password = passwordRaw.trim();
+  const password = passwordRaw;
 
   const expectedUser = getExpectedUsername().trim();
   const expectedPass = getExpectedPassword();
@@ -53,21 +53,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid username or password." }, { status: 401 });
   }
 
-  const { uid, error: uidError } = await resolveRenoflowSupabaseUserId(username, password);
-  if (uidError) {
-    return NextResponse.json({ error: uidError }, { status: 500 });
-  }
-
-  if (!uid) {
-    return NextResponse.json(
-      {
-        error:
-          "Login succeeded but no Supabase user id was returned. Check server logs and RENOFLOW_SUPABASE_USER_ID / SUPABASE_SERVICE_ROLE_KEY.",
-      },
-      { status: 500 },
-    );
-  }
-
+  const uid = getRenoflowSupabaseUserId();
   const token = await createSessionToken(secret, uid);
   const res = NextResponse.json({ ok: true });
   res.cookies.set(COOKIE_NAME, token, {

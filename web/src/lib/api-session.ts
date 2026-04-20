@@ -11,13 +11,16 @@ export async function requireSupabaseUidFromSession(): Promise<SessionUidResult>
   if (!payload) {
     return { ok: false, status: 401, error: "Not signed in." };
   }
-  if (!payload.uid?.trim()) {
+  const uidFromCookie = payload.uid?.trim();
+  const uidFromEnv = process.env.RENOFLOW_SUPABASE_USER_ID?.trim();
+  const uid = uidFromCookie || uidFromEnv;
+  if (!uid) {
     return {
       ok: false,
       status: 403,
       error:
-        "Session is missing Supabase user id. Set RENOFLOW_SUPABASE_USER_ID in web/.env.local to your auth.users id, then sign out and sign in again.",
+        "Supabase user id is not configured. Set RENOFLOW_SUPABASE_USER_ID in web/.env.local to your auth.users UUID (Project → Authentication → Users), then sign in again.",
     };
   }
-  return { ok: true, uid: payload.uid.trim() };
+  return { ok: true, uid };
 }
