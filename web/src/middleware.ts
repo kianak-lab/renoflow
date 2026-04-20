@@ -21,6 +21,14 @@ export async function middleware(request: NextRequest) {
   const supabaseResponse = await updateSession(request);
   const { pathname } = request.nextUrl;
 
+  if (pathname === "/") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/final";
+    const redirect = NextResponse.redirect(url);
+    copyCookies(supabaseResponse, redirect);
+    return redirect;
+  }
+
   if (isPublicPath(pathname)) {
     if (pathname.startsWith("/login")) {
       const hasSession = await verifySessionCookieValue(
