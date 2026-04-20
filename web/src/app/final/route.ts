@@ -1,28 +1,46 @@
 import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { NextResponse } from "next/server";
 
+/**
+ * Resolve final.html without using `..` from process.cwd(): on Vercel, cwd is often
+ * `/var/task/web`, and join(cwd, "..", "final.html") becomes `/var/task/final.html`
+ * (wrong — file is not there). Public/ CDN files are also not on disk inside the
+ * Lambda unless explicitly traced — use co-located + tracing includes.
+ */
 export async function GET() {
-  const inApp = join(process.cwd(), "public", "final.html");
-  const legacyParent = join(process.cwd(), "..", "final.html");
-  let html: string;
-  try {
-    html = await readFile(inApp, "utf8");
-  } catch {
+  const routeDir = dirname(fileURLToPath(import.meta.url));
+  const cwd = process.cwd();
+
+  const candidates = [
+    join(routeDir, "final.html"),
+    join(cwd, "public", "final.html"),
+    join(cwd, "final.html"),
+  ];
+
+  if (process.env.NODE_ENV !== "production") {
+    candidates.push(join(cwd, "..", "final.html"));
+  }
+
+  let lastError: unknown;
+  for (const filePath of candidates) {
     try {
-      html = await readFile(legacyParent, "utf8");
-    } catch {
-      return new NextResponse(
-        "final.html was not found. Run `npm run sync-final` or ensure public/final.html exists.",
-        { status: 404, headers: { "content-type": "text/plain; charset=utf-8" } },
-      );
+      const html = await readFile(filePath, "utf8");
+      return new NextResponse(html, {
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "no-store",
+        },
+      });
+    } catch (e) {
+      lastError = e;
     }
   }
 
-  return new NextResponse(html, {
-    headers: {
-      "content-type": "text/html; charset=utf-8",
-      "cache-control": "no-store",
-    },
-  });
+  console.error("[final] failed to read final.html", lastError);
+  return new NextResponse(
+    "final.html could not be loaded. Run `npm run sync-final` before `npm run build` so src/app/final/final.html exists.",
+    { status: 503, headers: { "content-type": "text/plain; charset=utf-8" } },
+  );
 }

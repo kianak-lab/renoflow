@@ -10,10 +10,11 @@ const nextConfig: NextConfig = {
    */
   outputFileTracingRoot: path.join(__dirname),
   /**
-   * Bundle `public/final.html` with the /final Route Handler on Vercel (see scripts/sync-final-html.cjs).
+   * Ship final.html inside the /final Route Handler bundle on Vercel (public/ alone is CDN-only).
+   * sync-final-html.cjs copies the repo root file to src/app/final/final.html before build.
    */
   outputFileTracingIncludes: {
-    "/final": ["./public/final.html"],
+    "/final": ["./src/app/final/final.html"],
   },
 };
 
