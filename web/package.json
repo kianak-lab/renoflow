@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "sync-final": "node ./scripts/sync-final-html.cjs",
     "dev": "next dev --turbopack",
     "dev:webpack": "next dev",
-    "build": "next build",
+    "build": "node ./scripts/sync-final-html.cjs && next build",
     "start": "next start",
     "lint": "next lint"
   },
