@@ -681,7 +681,7 @@ var TB={
   painting:[{id:"pa1",l:"🪣 Wall Paint",u:"can",p:72},{id:"pa2",l:"🪣 Ceiling Paint",u:"can",p:65},{id:"pa3",l:"🫙 Primer",u:"can",p:55},{id:"pa4",l:"👷 Labour",u:"hrs",p:55}],
   trim:[{id:"tr1",l:"📏 Baseboard",u:"ft",p:2.50},{id:"tr2",l:"🚪 Door Casing",u:"ft",p:2.80},{id:"tr3",l:"👑 Crown Moulding",u:"ft",p:4.50},{id:"tr4",l:"🚪 Interior Door+Frame",u:"ea",p:380},{id:"tr5",l:"👷 Trim Labour",u:"hrs",p:65}],
   cabinets:[{id:"ca1",l:"👷 Cabinet Install Labour",u:"hrs",p:75},{id:"ca2",l:"⬜ Countertop (supply)",u:"sqft",p:85}],
-  lowvolt:[{id:"lv1",l:"👷 Low-voltage labour",u:"hrs",p:95},{id:"lv2",l:"📡 Data / coax",u:"ft",p:3.5},{id:"lv3",l:"🔊 Pre-wire points",u:"ea",p:85}],
+  lowvolt:[{id:"lv1",l:"👷 Low-voltage labour",u:"hrs",p:95},{id:"lv2",l:"📡 Data / coax",u:"ft",p:3.5},{id:"lv3",l:"🔊 Pre-wire points",u:"ea",p:85},{id:"lv4",l:"🌐 Cat 6 outdoor cable",u:"ft",p:3.8},{id:"lv5",l:"🔥 Cat 6 plenum (fire rated)",u:"ft",p:3.2},{id:"lv6",l:"📡 Cat 6 non-plenum",u:"ft",p:2.6},{id:"lv7",l:"🔌 Patch panel",u:"ea",p:95},{id:"lv8",l:"📷 Camera exterior back box",u:"ea",p:28},{id:"lv9",l:"🧱 PVC pipe",u:"ft",p:2.2},{id:"lv10",l:"🔩 PVC connectors",u:"ea",p:4.5},{id:"lv11",l:"📦 PVC boxes",u:"ea",p:12},{id:"lv12",l:"🔀 HDMI to RJ45 adapter",u:"ea",p:65},{id:"lv13",l:"🖥 Monitor",u:"ea",p:280}],
   closets:[{id:"cl1",l:"👷 Closet install labour",u:"hrs",p:72},{id:"cl2",l:"📐 Wire / melamine",u:"ln ft",p:42},{id:"cl3",l:"🚪 Bifold / bypass doors",u:"ea",p:240}],
   finishing:[{id:"fn1",l:"👷 Punch / detail labour",u:"hrs",p:62},{id:"fn2",l:"🔧 Hardware / accessories",u:"ea",p:28},{id:"fn3",l:"✨ Final touch-ups",u:"hrs",p:58}]
 };
@@ -2923,7 +2923,17 @@ var MATDB = {
   lowvolt:[
     {id:"lv_m1",ic:"📡", name:"Cat6 Plenum Cable 1000ft", unit:"box",price:180.00},
     {id:"lv_m2",ic:"📦", name:"Low-Volt Bracket 1-Gang", unit:"ea",price:2.50},
-    {id:"lv_m3",ic:"🔊", name:"Speaker Wire 16/2 100ft", unit:"roll",price:42.00}
+    {id:"lv_m3",ic:"🔊", name:"Speaker Wire 16/2 100ft", unit:"roll",price:42.00},
+    {id:"lv_m4",ic:"🌐", name:"Cat 6 outdoor cable", unit:"ft",price:3.80},
+    {id:"lv_m5",ic:"🔥", name:"Cat 6 plenum (fire rated)", unit:"ft",price:3.20},
+    {id:"lv_m6",ic:"📡", name:"Cat 6 non-plenum", unit:"ft",price:2.60},
+    {id:"lv_m7",ic:"🔌", name:"Patch panel", unit:"ea",price:95.00},
+    {id:"lv_m8",ic:"📷", name:"Camera exterior back box", unit:"ea",price:28.00},
+    {id:"lv_m9",ic:"🧱", name:"PVC pipe", unit:"ft",price:2.20},
+    {id:"lv_m10",ic:"🔩", name:"PVC connectors", unit:"ea",price:4.50},
+    {id:"lv_m11",ic:"📦", name:"PVC boxes", unit:"ea",price:12.00},
+    {id:"lv_m12",ic:"🔀", name:"HDMI to RJ45 adapter", unit:"ea",price:65.00},
+    {id:"lv_m13",ic:"🖥", name:"Monitor", unit:"ea",price:280.00}
   ],
   closets:[
     {id:"cl_m1",ic:"📐", name:"Wire Shelf Kit 12x48 White", unit:"ea",price:28.00},
