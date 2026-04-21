@@ -2187,9 +2187,10 @@ function elCatRow(ti,field,label,val){
     +'<button type="button" class="fxb" onclick="elAdj('+ti+',\''+field+'\',10)">+10</button>'
     +'</div></div>';
 }
-function tradeToolsBlock(room,ti,t){
-  var rid=curR;
-  var px='rf-'+rid+'-'+ti+'-';
+/** Prefix for trade calculator DOM ids — must match `tradeSectionHtml` idPx ('' grid vs 'exp-' expanded overlay) so ids stay unique. */
+function tradeToolsBlock(room,ti,t,idPx){
+  if(idPx===undefined||idPx===null) idPx='';
+  var px=String(idPx)+'rf-'+curR+'-'+ti+'-';
   var tid=t.id;
   if(tid==='electrical'){
     ensureElecLoad(t);
@@ -2217,16 +2218,16 @@ function tradeToolsBlock(room,ti,t){
     var html='<div class="rf-tool"><div class="rf-tool-h">🪵 LVL beam</div>';
     html+='<div class="rf-tool-row"><label>Span (ft)</label><input type="number" id="'+px+'lvl-s" step="0.5" value="12"/></div>';
     html+='<div class="rf-tool-row"><label>Load (lb/ft)</label><input type="number" id="'+px+'lvl-w" step="1" value="40"/></div>';
-    html+='<button type="button" class="btn bg sm" onclick="calcLvlRun('+ti+')">Calculate size</button>';
+    html+='<button type="button" class="btn bg sm" onclick="calcLvlRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Calculate size</button>';
     html+='<div class="rf-tool-out" id="'+px+'lvl-out"></div></div>';
     html+='<div class="rf-tool"><div class="rf-tool-h">🧱 Load-bearing / wall removal</div>';
     html+='<div class="rf-tool-row"><label>Opening (ft)</label><input type="number" id="'+px+'lb-o" step="0.5" value="8"/></div>';
     html+='<div class="rf-tool-row"><label>Load (lb/ft)</label><input type="number" id="'+px+'lb-w" step="1" value="40"/></div>';
-    html+='<button type="button" class="btn bg sm" onclick="calcLbRun('+ti+')">Beam & posts</button>';
+    html+='<button type="button" class="btn bg sm" onclick="calcLbRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Beam & posts</button>';
     html+='<div class="rf-tool-out" id="'+px+'lb-out"></div></div>';
     html+='<div class="rf-tool"><div class="rf-tool-h">🪜 Stairs</div>';
     html+='<div class="rf-tool-row"><label>Total rise (in)</label><input type="number" id="'+px+'st-r" step="0.25" value="102"/></div>';
-    html+='<button type="button" class="btn bg sm" onclick="calcStairRun('+ti+')">Riser & tread</button>';
+    html+='<button type="button" class="btn bg sm" onclick="calcStairRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Riser & tread</button>';
     html+='<div class="rf-tool-out" id="'+px+'st-out"></div></div>';
     return html;
   }
@@ -2234,7 +2235,7 @@ function tradeToolsBlock(room,ti,t){
     var html='<div class="rf-tool"><div class="rf-tool-h">💧 Drain slope</div>';
     html+='<div class="rf-tool-row"><label>Pipe length (ft)</label><input type="number" id="'+px+'sl-l" step="0.5" value="10"/></div>';
     html+='<div class="rf-tool-row"><label>Vertical drop (in)</label><input type="number" id="'+px+'sl-d" step="0.5" value="2"/></div>';
-    html+='<button type="button" class="btn bg sm" onclick="calcSlopeRun('+ti+')">Calculate slope</button>';
+    html+='<button type="button" class="btn bg sm" onclick="calcSlopeRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Calculate slope</button>';
     html+='<div class="rf-tool-out" id="'+px+'sl-out"></div></div>';
     return html;
   }
@@ -2244,7 +2245,7 @@ function tradeToolsBlock(room,ti,t){
     var html='<div class="rf-tool"><div class="rf-tool-h">👑 Crown moulding</div>';
     html+='<div class="rf-tool-row"><label>Room perimeter (ft)</label><input type="number" id="'+px+'cr-p" step="0.5" value="'+(perDef||'')+'"/></div>';
     html+='<div class="rf-tool-row"><label>Waste factor</label><input type="number" id="'+px+'cr-w" step="0.05" value="1.1"/></div>';
-    html+='<button type="button" class="btn bg sm" onclick="calcCrownRun('+ti+')">LF + waste</button>';
+    html+='<button type="button" class="btn bg sm" onclick="calcCrownRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">LF + waste</button>';
     html+='<div class="rf-tool-out" id="'+px+'cr-out"></div></div>';
     return html;
   }
@@ -2255,7 +2256,7 @@ function tradeToolsBlock(room,ti,t){
     html+='<div class="rf-tool-row"><label>Joist spacing (in)</label><input type="number" id="'+px+'dk-j" step="1" value="16"/></div>';
     html+='<div class="rf-tool-row"><label>Fence linear (ft)</label><input type="number" id="'+px+'fn-l" step="1" value="0"/></div>';
     html+='<div class="rf-tool-row"><label>Post spacing (ft)</label><input type="number" id="'+px+'fn-ps" step="0.5" value="8"/></div>';
-    html+='<button type="button" class="btn bg sm" onclick="calcDeckRun('+ti+')">Estimate material</button>';
+    html+='<button type="button" class="btn bg sm" onclick="calcDeckRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Estimate material</button>';
     html+='<div class="rf-tool-out" id="'+px+'dk-out"></div></div>';
     return html;
   }
@@ -2264,7 +2265,7 @@ function tradeToolsBlock(room,ti,t){
     html+='<div class="rf-tool-row"><label>Climate zone</label><select id="'+px+'in-z"><option value="6">Zone 6 (cold)</option><option value="5">Zone 5</option><option value="4">Zone 4</option></select></div>';
     html+='<div class="rf-tool-row"><label>Surface</label><select id="'+px+'in-s"><option value="wall">Exterior wall</option><option value="ceil">Ceiling / attic</option><option value="floor">Floor over unheated</option></select></div>';
     html+='<div class="rf-tool-row"><label>Area (sqft)</label><input type="number" id="'+px+'in-a" step="1" value="100"/></div>';
-    html+='<button type="button" class="btn bg sm" onclick="calcInsRun('+ti+')">Recommend R + qty</button>';
+    html+='<button type="button" class="btn bg sm" onclick="calcInsRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Recommend R + qty</button>';
     html+='<div class="rf-tool-out" id="'+px+'in-out"></div></div>';
     return html;
   }
@@ -2278,13 +2279,13 @@ function tradeToolsBlock(room,ti,t){
     });
     html+='</select> <span class="rf-tool-note" style="display:inline">slope factor auto</span></div>';
     html+='<div class="rf-tool-row"><label>Waste</label><input type="number" id="'+px+'rf-wf" step="0.5" min="0" value="10"/> % (default 10%)</div>';
-    html+='<button type="button" class="btn bg sm" onclick="calcRoofRun('+ti+')">Calculate materials</button>';
+    html+='<button type="button" class="btn bg sm" onclick="calcRoofRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Calculate materials</button>';
     html+='<div class="rf-tool-out" id="'+px+'rf-out"></div></div>';
     return html;
   }
   if(tid==='concrete'){
     var html='<div class="rf-tool"><div class="rf-tool-h">🧱 Concrete</div>';
-    html+='<div class="rf-tool-row"><label>Pour type</label><select id="'+px+'cf-type" onchange="concSetVis('+ti+')">';
+    html+='<div class="rf-tool-row"><label>Pour type</label><select id="'+px+'cf-type" onchange="concSetVis('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">';
     html+='<option value="slab">Slab</option>';
     html+='<option value="walkway">Walkway / pad</option>';
     html+='<option value="foundation_wall">Foundation wall</option>';
@@ -2304,7 +2305,7 @@ function tradeToolsBlock(room,ti,t){
     html+='<div class="rf-tool-row"><label>Hole diameter (in)</label><input type="number" id="'+px+'cf-ph-di" step="0.5" value="10"/></div>';
     html+='<div class="rf-tool-row"><label>Hole depth (ft)</label><input type="number" id="'+px+'cf-ph-dep" step="0.25" value="3"/></div></div>';
     html+='<p class="rf-tool-note">Also output ready-mix cubic yards needed for a cement truck order. Note that standard cement trucks carry 8–10 cubic yards. If the pour requires more than 1 cubic yard, show how many truck loads needed and flag if the pour is under the typical minimum order of 1 cubic yard (suggest bags instead).</p>';
-    html+='<button type="button" class="btn bg sm" onclick="calcConcRun('+ti+')">Calculate volume &amp; bags</button>';
+    html+='<button type="button" class="btn bg sm" onclick="calcConcRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Calculate volume &amp; bags</button>';
     html+='<div class="rf-tool-out" id="'+px+'cf-out"></div></div>';
     return html;
   }
@@ -2314,14 +2315,18 @@ function tradeToolsBlock(room,ti,t){
     html+='<div class="rf-tool-row"><label>Width / depth (ft)</label><input type="number" id="'+px+'bk-w" step="0.25" value="2"/></div>';
     html+='<div class="rf-tool-row"><label>Drop — face height (ft)</label><input type="number" id="'+px+'bk-d" step="0.25" value="1"/></div>';
     html+='<div class="rf-tool-row"><label>Drywall layers</label><select id="'+px+'bk-layer"><option value="1">Single layer</option><option value="2">Double layer</option></select></div>';
-    html+='<button type="button" class="btn bg sm" onclick="calcBulkRun('+ti+')">Calculate materials</button>';
+    html+='<button type="button" class="btn bg sm" onclick="calcBulkRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Calculate materials</button>';
     html+='<div class="rf-tool-out" id="'+px+'bk-out"></div></div>';
     return html;
   }
   return '';
 }
-function concSetVis(ti){
-  var px='rf-'+curR+'-'+ti+'-';
+function rfToolPx(ti,idPx){
+  if(idPx===undefined||idPx===null) idPx='';
+  return String(idPx)+'rf-'+curR+'-'+ti+'-';
+}
+function concSetVis(ti,idPx){
+  var px=rfToolPx(ti,idPx);
   var sel=document.getElementById(px+'cf-type');
   if(!sel)return;
   var v=sel.value;
@@ -2331,8 +2336,8 @@ function concSetVis(ti){
   sh('cf-ft', v==='footings');
   sh('cf-ph', v==='post_holes');
 }
-function calcLvlRun(ti){
-  var px='rf-'+curR+'-'+ti+'-';
+function calcLvlRun(ti,idPx){
+  var px=rfToolPx(ti,idPx);
   var span=parseFloat(document.getElementById(px+'lvl-s').value)||0;
   var w=parseFloat(document.getElementById(px+'lvl-w').value)||0;
   var out=document.getElementById(px+'lvl-out');
@@ -2341,8 +2346,8 @@ function calcLvlRun(ti){
   var hint=span<=8?'1.75" LVL 7¼–9½"':span<=14?'1.75" LVL 9½–11⅞"':span<=20?'3.5" LVL 11⅞–14"':'Engineered — consult engineer';
   out.innerHTML='<strong>'+hint+'</strong> typical for '+span+' ft @ '+w+' plf. <span class="rf-tool-note">Rule-of-thumb only.</span>';
 }
-function calcLbRun(ti){
-  var px='rf-'+curR+'-'+ti+'-';
+function calcLbRun(ti,idPx){
+  var px=rfToolPx(ti,idPx);
   var o=parseFloat(document.getElementById(px+'lb-o').value)||0;
   var w=parseFloat(document.getElementById(px+'lb-w').value)||0;
   var out=document.getElementById(px+'lb-out');
@@ -2353,8 +2358,8 @@ function calcLbRun(ti){
   var lab=Math.ceil(o*3)+posts*8;
   out.innerHTML='<strong>Beam:</strong> '+beam+'.<br/><strong>Posts:</strong> '+posts+' (bearing at each end).<br/><strong>Labour hint:</strong> ~'+lab+' hrs (rough estimate).';
 }
-function calcStairRun(ti){
-  var px='rf-'+curR+'-'+ti+'-';
+function calcStairRun(ti,idPx){
+  var px=rfToolPx(ti,idPx);
   var rise=parseFloat(document.getElementById(px+'st-r').value)||0;
   var out=document.getElementById(px+'st-out');
   if(!out)return;
@@ -2365,8 +2370,8 @@ function calcStairRun(ti){
   var tread=10;
   out.innerHTML='<strong>'+n+' risers</strong> — riser <strong>'+riserH.toFixed(2)+' in</strong> (aim 7–7¾").<br/>Suggested tread run <strong>'+tread+' in</strong> (verify local code).';
 }
-function calcSlopeRun(ti){
-  var px='rf-'+curR+'-'+ti+'-';
+function calcSlopeRun(ti,idPx){
+  var px=rfToolPx(ti,idPx);
   var L=parseFloat(document.getElementById(px+'sl-l').value)||0;
   var dIn=parseFloat(document.getElementById(px+'sl-d').value)||0;
   var out=document.getElementById(px+'sl-out');
@@ -2377,8 +2382,8 @@ function calcSlopeRun(ti){
   var perFt=dIn/L;
   out.innerHTML='<strong>Slope:</strong> '+pct.toFixed(2)+'% — <strong>'+perFt.toFixed(3)+' in</strong> drop per foot.';
 }
-function calcCrownRun(ti){
-  var px='rf-'+curR+'-'+ti+'-';
+function calcCrownRun(ti,idPx){
+  var px=rfToolPx(ti,idPx);
   var p=parseFloat(document.getElementById(px+'cr-p').value)||0;
   var wf=parseFloat(document.getElementById(px+'cr-w').value)||1.1;
   var out=document.getElementById(px+'cr-out');
@@ -2386,8 +2391,8 @@ function calcCrownRun(ti){
   if(p<=0){out.textContent='Enter perimeter.';return;}
   out.innerHTML='<strong>'+(p*wf).toFixed(1)+' linear ft</strong> to order (includes '+((wf-1)*100).toFixed(0)+'% waste).';
 }
-function calcDeckRun(ti){
-  var px='rf-'+curR+'-'+ti+'-';
+function calcDeckRun(ti,idPx){
+  var px=rfToolPx(ti,idPx);
   var area=parseFloat(document.getElementById(px+'dk-a').value)||0;
   var bw=parseFloat(document.getElementById(px+'dk-bw').value)||5.5;
   var j=parseFloat(document.getElementById(px+'dk-j').value)||16;
@@ -2408,8 +2413,8 @@ function calcDeckRun(ti){
   if(lines.length===0){out.textContent='Enter deck area and/or fence length.';return;}
   out.innerHTML=lines.join('<br/>')+'<br/><span class="rf-tool-note">Verify on site.</span>';
 }
-function calcInsRun(ti){
-  var px='rf-'+curR+'-'+ti+'-';
+function calcInsRun(ti,idPx){
+  var px=rfToolPx(ti,idPx);
   var zone=parseInt(document.getElementById(px+'in-z').value,10)||6;
   var surf=document.getElementById(px+'in-s').value;
   var a=parseFloat(document.getElementById(px+'in-a').value)||0;
@@ -2428,8 +2433,8 @@ function roofSlopeFactor(pitchOver12){
   var r=pitchOver12/12;
   return Math.sqrt(1+r*r);
 }
-function calcRoofRun(ti){
-  var px='rf-'+curR+'-'+ti+'-';
+function calcRoofRun(ti,idPx){
+  var px=rfToolPx(ti,idPx);
   var L=parseFloat(document.getElementById(px+'rf-l').value)||0;
   var W=parseFloat(document.getElementById(px+'rf-w').value)||0;
   var pitch=parseFloat(document.getElementById(px+'rf-p').value)||6;
@@ -2463,8 +2468,8 @@ function concBagsForFt3(ft3, lb60){
   var perBag=lb60?0.45:0.60;
   return Math.max(0, Math.ceil(ft3/perBag-1e-9));
 }
-function calcBulkRun(ti){
-  var px='rf-'+curR+'-'+ti+'-';
+function calcBulkRun(ti,idPx){
+  var px=rfToolPx(ti,idPx);
   var L=parseFloat(document.getElementById(px+'bk-l').value)||0;
   var W=parseFloat(document.getElementById(px+'bk-w').value)||0;
   var D=parseFloat(document.getElementById(px+'bk-d').value)||0;
@@ -2494,8 +2499,8 @@ function calcBulkRun(ti){
     +'<strong>Labour (planning):</strong> ~<strong>'+labourHrs+'</strong> hrs @ ~0.35 hr/lf of plan perimeter (<strong>'+labourLf.toFixed(1)+' lf</strong>)'
     +'<br/><span class="rf-tool-note">U-shaped soffit (open to wall on one long side). Verify layout and code for fire/layer requirements.</span>';
 }
-function calcConcRun(ti){
-  var px='rf-'+curR+'-'+ti+'-';
+function calcConcRun(ti,idPx){
+  var px=rfToolPx(ti,idPx);
   var typ=document.getElementById(px+'cf-type').value;
   var out=document.getElementById(px+'cf-out');
   if(!out)return;
@@ -2629,7 +2634,7 @@ function tradeSectionHtml(room, ti, idPx, isModal){
   var tools='<div class="th-act">'+expBtn
     +'<button type="button" class="th-ico th-ico-del" title="Remove trade" aria-label="Remove trade" onclick="event.stopPropagation();delTrade('+ti+')">✕</button>'
     +'</div>';
-  var bodyInner='<div class="tb'+(t.open?' op':'')+'">'+daysRow+itemsH+fxH+tradeToolsBlock(room,ti,t)
+  var bodyInner='<div class="tb'+(t.open?' op':'')+'">'+daysRow+itemsH+fxH+tradeToolsBlock(room,ti,t,idPx)
     +'<div class="sep"></div>'
     +'<div class="sub trade-footer-total" style="margin:0 -14px -14px;padding:12px 14px;border-top:1px solid var(--bd);flex-wrap:wrap;gap:8px">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;width:100%">'
