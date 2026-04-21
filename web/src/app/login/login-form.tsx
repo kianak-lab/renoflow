@@ -64,7 +64,7 @@ export default function LoginForm({ error, errorMessage }: Props) {
         </p>
       )}
       {errorMessage && error !== "auth" && (
-        <p className="rounded-md bg-zinc-100 px-3 py-2 text-sm text-zinc-700">{errorMessage}</p>
+        <p className="rounded-md bg-[#f0f7f0] px-3 py-2 text-sm text-[#444]">{errorMessage}</p>
       )}
       {formError && (
         <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800 whitespace-pre-wrap">
@@ -74,7 +74,7 @@ export default function LoginForm({ error, errorMessage }: Props) {
       <div>
         <label
           htmlFor="username"
-          className="mb-1 block text-xs font-medium uppercase tracking-wide text-zinc-500"
+          className="mb-1 block text-xs font-medium uppercase tracking-wide text-[#888]"
         >
           Username
         </label>
@@ -86,14 +86,14 @@ export default function LoginForm({ error, errorMessage }: Props) {
           required
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900 outline-none ring-emerald-700/30 focus:border-emerald-700 focus:ring-2"
+          className="w-full rounded-[5px] border border-[#e0e8e0] bg-[#f8faf8] px-3 py-2 text-[#1a2e1a] outline-none focus:border-[#5a9a5a] focus:ring-2 focus:ring-[#5a9a5a]/25"
           placeholder="Username"
         />
       </div>
       <div>
         <label
           htmlFor="password"
-          className="mb-1 block text-xs font-medium uppercase tracking-wide text-zinc-500"
+          className="mb-1 block text-xs font-medium uppercase tracking-wide text-[#888]"
         >
           Password
         </label>
@@ -105,18 +105,18 @@ export default function LoginForm({ error, errorMessage }: Props) {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900 outline-none ring-emerald-700/30 focus:border-emerald-700 focus:ring-2"
+          className="w-full rounded-[5px] border border-[#e0e8e0] bg-[#f8faf8] px-3 py-2 text-[#1a2e1a] outline-none focus:border-[#5a9a5a] focus:ring-2 focus:ring-[#5a9a5a]/25"
           placeholder="Password"
         />
       </div>
       <button
         type="submit"
         disabled={loading}
-        className="rounded-md bg-emerald-800 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-900 disabled:opacity-60"
+        className="rounded-[12px] bg-[#5a9a5a] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4a834a] disabled:opacity-60"
       >
         {loading ? "Signing in…" : "Sign in"}
       </button>
-      <p className="text-center text-xs text-zinc-500">
+      <p className="text-center text-xs text-[#aaa]">
         Credentials come from <span className="font-mono">RENOFLOW_USERNAME</span> and{" "}
         <span className="font-mono">RENOFLOW_PASSWORD</span> (defaults:{" "}
         <span className="font-mono">renoflow</span> / <span className="font-mono">renoflow</span> if

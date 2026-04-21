@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "cache:clean": "node ./scripts/clean-next-cache.cjs",
     "sync-final": "node ./scripts/sync-final-html.cjs",
-    "dev": "next dev --turbopack",
-    "dev:webpack": "next dev",
-    "build": "node ./scripts/sync-final-html.cjs && next build",
+    "og:render": "node ./scripts/render-og-image.cjs",
+    "dev": "next dev",
+    "dev:clean": "node ./scripts/clean-next.cjs && next dev",
+    "dev:turbopack": "next dev --turbopack",
+    "build": "node ./scripts/sync-final-html.cjs && node ./scripts/render-og-image.cjs && next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -25,6 +28,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.15",
     "postcss": "^8",
+    "sharp": "^0.34.5",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }

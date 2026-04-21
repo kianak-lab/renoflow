@@ -123,10 +123,6 @@ export default function ProjectsManager() {
   }
 
   async function deleteProject(p: ProjectRow) {
-    const ok = window.confirm(
-      `Delete project “${p.name}”? This removes the job and its rooms from your account. This cannot be undone.`,
-    );
-    if (!ok) return;
     setDeletingId(p.id);
     setError(null);
     try {

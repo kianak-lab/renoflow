@@ -410,8 +410,6 @@ export default function DashboardShell({
   }
 
   async function deleteClient(client: Client) {
-    const ok = window.confirm(`Delete ${client.full_name}? This cannot be undone.`);
-    if (!ok) return;
     setSaving(true);
     setFormError(null);
     try {

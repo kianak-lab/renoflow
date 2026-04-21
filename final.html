@@ -5,43 +5,45 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
 <title>RenoFlow</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 :root{
-  --bg:#f0ede8;--sf:#ffffff;--sf2:#f7f4ef;--bd:#e0dbd4;--bd2:#ccc7be;
-  --tx:#1a1612;--tx2:#6a6560;--tx3:#9a958e;
-  --ac:#2d7a4f;--ac2:#1f5a38;--red:#e85547;--grn:#28a060;--r:8px;
+  --bg:#f0f4f0;--sf:#ffffff;--sf2:#f8faf8;--bd:#e8eee8;--bd2:#e0e8e0;
+  --tx:#1a2e1a;--tx2:#444444;--tx3:#aaaaaa;
+  --ac:#5a9a5a;--ac2:#4a834a;--ac-hi:#7dc87d;--red:#e85547;--grn:#5a9a5a;--tot:#3a7a3a;
+  --sb-bg:#162916;--sb-bd:#2e5a2e;--r:12px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.5;}
+html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:15px;font-weight:400;line-height:1.5;}
+.pt,.brief-greeting,.brief-stat-v,.qco,.tot-a,.tl-sv,.qtr.gd .qr,.dep-bal-v,.inv-stat-v{font-weight:700;letter-spacing:-0.3px;}
 #shell{display:flex;height:100vh;overflow:hidden;}
-#sb{width:250px;min-width:250px;background:#faf7f2;border-right:1px solid var(--bd);display:flex;flex-direction:column;}
-.logo{padding:20px 18px 14px;border-bottom:1px solid var(--bd);}
-.logo-t{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ac);}
-.logo-s{font-size:10px;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;}
+#sb{width:250px;min-width:250px;background:var(--sb-bg);border-right:1px solid var(--sb-bd);display:flex;flex-direction:column;color:#c8dcc8;}
+.logo{padding:20px 18px 14px;border-bottom:1px solid var(--sb-bd);}
+.logo-t{font-family:'Inter',system-ui,sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.3px;color:#f2faf2;}
+.logo-s{font-size:10px;color:#8aaa8a;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',system-ui,sans-serif;}
 .nav{flex:1;overflow-y:auto;padding:8px 0;}
-.ns{padding:16px 18px 4px;font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:2px;font-family:'DM Mono',monospace;font-weight:700;}
-.ns-div{height:1px;background:var(--bd);margin:8px 12px;}
+.ns{padding:16px 18px 4px;font-size:9px;color:#7a9a7a;text-transform:uppercase;letter-spacing:2px;font-family:'Inter',system-ui,sans-serif;font-weight:700;}
+.ns-div{height:1px;background:var(--sb-bd);margin:8px 12px;}
 .proj-wrap{padding:0 12px 10px;}
 .proj-wrap > .ni{margin-top:0;}
 .proj-wrap .proj-new-btn{margin-top:8px;width:100%;justify-content:center;box-sizing:border-box;}
 .proj-wrap .proj-new-btn.on{box-shadow:inset 0 0 0 2px rgba(255,255,255,.4);}
-.proj-select{width:100%;padding:8px 10px;border-radius:var(--r);border:1px solid var(--bd2);background:#fff;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tx);outline:none;line-height:1.4;white-space:pre-line;min-height:58px;box-sizing:border-box;}
+.proj-select{width:100%;padding:8px 10px;border-radius:var(--r);border:1px solid var(--bd2);background:#fff;font-size:12px;font-family:'Inter',system-ui,sans-serif;color:var(--tx);outline:none;line-height:1.4;white-space:nowrap;min-height:40px;box-sizing:border-box;}
 .proj-select:focus{border-color:var(--ac);}
 .proj-select option{white-space:pre-line;line-height:1.35;padding:8px 10px;font-size:12px;}
-.ni{display:flex;align-items:center;gap:9px;padding:8px 18px;cursor:pointer;transition:all .15s;border-left:3px solid transparent;}
-.ni:hover{background:#ece8e2;}
-.ni.on{background:rgba(45,122,79,.10);border-left-color:var(--ac);color:var(--ac2);}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 18px;cursor:pointer;transition:all .15s;border-left:3px solid transparent;color:#c8dcc8;}
+.ni:hover{background:rgba(255,255,255,.06);}
+.ni.on{background:rgba(125,200,125,.18);border-left-color:var(--ac-hi);color:#fff;}
 .ni.disabled{opacity:.35;cursor:default;pointer-events:none;}
 .ni-i{width:18px;text-align:center;font-size:16px;flex-shrink:0;}
 .ni-i svg{display:block;}
 .ni-l{font-size:13px;flex:1;}
-.ni-b{font-size:10px;font-family:'DM Mono',monospace;color:var(--tx3);background:var(--sf2);padding:1px 6px;border-radius:10px;}
-.ni.on .ni-b{color:var(--ac);background:rgba(45,122,79,.10);}
+.ni-b{font-size:10px;font-family:'Inter',system-ui,sans-serif;color:#8aaa8a;background:rgba(255,255,255,.08);padding:1px 6px;border-radius:10px;}
+.ni.on .ni-b{color:#fff;background:rgba(255,255,255,.12);}
 a.ni{color:inherit;text-decoration:none;}
-.ni-tag{font-size:9px;font-family:'DM Mono',monospace;color:var(--tx3);background:var(--sf2);padding:1px 5px;border-radius:4px;border:1px solid var(--bd);}
+.ni-tag{font-size:9px;font-family:'Inter',system-ui,sans-serif;color:#8aaa8a;background:rgba(255,255,255,.06);padding:1px 5px;border-radius:4px;border:1px solid var(--sb-bd);}
 .ni.rnav-row{padding:0;align-items:stretch;}
 .ni.rnav-row .rnav-main{flex:1;min-width:0;display:flex;align-items:center;gap:9px;padding:8px 0 8px 18px;cursor:pointer;}
-.ni.rnav-row .rnav-del{flex-shrink:0;width:30px;margin:0 6px 0 0;border:none;background:transparent;color:var(--tx3);font-size:15px;line-height:1;cursor:pointer;border-radius:4px;align-self:center;}
+.ni.rnav-row .rnav-del{flex-shrink:0;width:30px;margin:0 6px 0 0;border:none;background:transparent;color:#a8c0a8;font-size:15px;line-height:1;cursor:pointer;border-radius:4px;align-self:center;}
 .ni.rnav-row .rnav-del:hover{color:var(--red);background:rgba(232,85,71,.1);}
 .rc{position:relative;}
 .rc-del{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:6px;border:1px solid var(--bd2);background:rgba(255,255,255,.95);color:var(--tx3);font-size:14px;line-height:1;cursor:pointer;padding:0;z-index:2;font-family:inherit;}
@@ -49,11 +51,11 @@ a.ni{color:inherit;text-decoration:none;}
 
 /* Dashboard briefing */
 .brief-wrap{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
-.brief-header{padding:20px;background:linear-gradient(135deg,var(--ac2),var(--ac));border-radius:var(--r);color:#fff;}
-.brief-date{font-size:11px;font-family:'DM Mono',monospace;opacity:.8;text-transform:uppercase;letter-spacing:1.5px;}
-.brief-greeting{font-family:'DM Serif Display',serif;font-size:26px;margin-top:4px;line-height:1.2;}
+.brief-header{padding:20px;background:linear-gradient(135deg,#3d6e3d,var(--ac));border-radius:var(--r);color:#fff;}
+.brief-date{font-size:11px;font-family:'Inter',system-ui,sans-serif;opacity:.8;text-transform:uppercase;letter-spacing:1.5px;}
+.brief-greeting{font-family:'Inter',system-ui,sans-serif;font-size:26px;margin-top:4px;line-height:1.2;}
 .brief-sub{font-size:13px;opacity:.85;margin-top:4px;}
-.brief-all-clear{background:#fff;border:1px solid rgba(45,122,79,.3);border-radius:var(--r);padding:18px;display:flex;align-items:center;gap:14px;}
+.brief-all-clear{background:#fff;border:1px solid rgba(90,154,90,.3);border-radius:var(--r);padding:18px;display:flex;align-items:center;gap:14px;}
 .brief-clear-i{font-size:28px;}
 .brief-clear-t{font-size:15px;font-weight:600;color:var(--ac);}
 .brief-clear-s{font-size:12px;color:var(--tx3);margin-top:2px;}
@@ -64,89 +66,95 @@ a.ni{color:inherit;text-decoration:none;}
 .alert-i{font-size:22px;flex-shrink:0;}
 .alert-body{flex:1;}
 .alert-t{font-size:14px;font-weight:600;color:var(--tx);}
-.alert-s{font-size:12px;color:var(--tx3);margin-top:2px;font-family:'DM Mono',monospace;}
-.alert-btn{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd2);background:#fff;color:var(--tx2);white-space:nowrap;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.alert-s{font-size:12px;color:var(--tx3);margin-top:2px;font-family:'Inter',system-ui,sans-serif;}
+.alert-btn{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd2);background:#fff;color:var(--tx2);white-space:nowrap;transition:all .15s;font-family:'Inter',system-ui,sans-serif;}
 .alert-btn:hover{border-color:var(--ac);color:var(--ac);}
 .brief-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
 .brief-stat{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.04);text-align:center;}
-.brief-stat-v{font-family:'DM Serif Display',serif;font-size:24px;color:var(--tx);}
-.brief-stat-l{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;font-family:'DM Mono',monospace;margin-top:3px;}
+.brief-stat-v{font-family:'Inter',system-ui,sans-serif;font-size:24px;color:var(--tx);}
+.brief-stat-l{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;font-family:'Inter',system-ui,sans-serif;margin-top:3px;}
 .brief-quick{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
-.brief-quick-t{font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;margin-bottom:10px;}
+.brief-quick-t{font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;margin-bottom:10px;}
 .brief-quick-btns{display:flex;gap:8px;flex-wrap:wrap;}
-.sb-tot{padding:14px 18px;border-top:1px solid var(--bd);background:#faf7f2;}
-.tot-l{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;}
-.tot-a{font-family:'DM Serif Display',serif;font-size:26px;color:var(--ac);margin-top:3px;}
-.tot-b{font-size:11px;color:var(--tx3);font-family:'DM Mono',monospace;}
+.sb-tot{padding:14px 18px;border-top:1px solid var(--sb-bd);background:#122012;}
+.tot-l{font-size:10px;color:#889e88;text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;}
+.tot-a{font-family:'Inter',system-ui,sans-serif;font-size:26px;color:var(--ac-hi);margin-top:3px;}
+.tot-b{font-size:11px;color:#8aaa8a;font-family:'Inter',system-ui,sans-serif;}
 #main{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
-.ph{padding:24px 32px 18px;border-bottom:1px solid var(--bd);background:#faf7f2;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-shrink:0;}
-.pt{font-family:'DM Serif Display',serif;font-size:26px;color:var(--tx);line-height:1.1;}
+.ph{padding:24px 32px 18px;border-bottom:1px solid var(--bd);background:#eef4ee;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-shrink:0;}
+.pt{font-family:'Inter',system-ui,sans-serif;font-size:26px;font-weight:700;letter-spacing:-0.3px;color:var(--tx);line-height:1.1;}
 .pt em{color:var(--ac);font-style:italic;}
 .ps{font-size:13px;color:var(--tx2);margin-top:4px;}
 .pc{padding:24px 32px;flex:1;}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r);font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s;}
 .bp{background:var(--ac);color:#fff;}.bp:hover{background:var(--ac2);}
 .bg{background:transparent;color:var(--tx2);border:1px solid var(--bd2);}.bg:hover{border-color:var(--tx2);color:var(--tx);}
 .bd-btn{background:transparent;color:var(--red);border:1px solid rgba(232,85,71,.3);}.bd-btn:hover{background:rgba(232,85,71,.08);}
 .sm{padding:5px 11px;font-size:12px;}
 .dg{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
 .sc{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
-.sc-l{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;}
-.sc-v{font-family:'DM Serif Display',serif;font-size:26px;margin-top:4px;}
+.sc-l{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;}
+.sc-v{font-family:'Inter',system-ui,sans-serif;font-size:26px;margin-top:4px;}
 .sc-s{font-size:12px;color:var(--tx3);margin-top:2px;}
 .rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
 .rc{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);}
 .rc:hover{border-color:var(--bd2);transform:translateY(-1px);}
-.rc.on{border-color:var(--ac);background:rgba(45,122,79,.05);}
+.rc.on{border-color:var(--ac);background:rgba(90,154,90,.08);}
 .rc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--bd);pointer-events:none;}
 .rc.on::before{background:var(--ac);}
 .rc-i{font-size:20px;margin-bottom:6px;}
 .rc-n{font-size:13px;font-weight:500;}
-.rc-t{font-size:12px;color:var(--ac);font-family:'DM Mono',monospace;margin-top:2px;}
+.rc-t{font-size:12px;color:var(--ac);font-family:'Inter',system-ui,sans-serif;margin-top:2px;}
 .rc-d{font-size:11px;color:var(--tx3);margin-top:1px;}
 .rc.dash-proj{padding:16px 14px;align-items:stretch;}
 .rc.dash-proj .dpc-client{font-size:15px;font-weight:600;color:var(--tx);line-height:1.25;}
 .rc.dash-proj .dpc-addr{font-size:12px;color:var(--tx2);margin-top:6px;line-height:1.35;}
 .rc.dash-proj .dpc-name{font-size:12px;color:var(--tx3);margin-top:8px;font-weight:500;}
-.rc.dash-proj .dpc-meta{margin-top:12px;padding-top:10px;border-top:1px solid var(--bd);font-size:11px;font-family:'DM Mono',monospace;color:var(--tx2);line-height:1.5;}
+.rc.dash-proj .dpc-meta{margin-top:12px;padding-top:10px;border-top:1px solid var(--bd);font-size:11px;font-family:'Inter',system-ui,sans-serif;color:var(--tx2);line-height:1.5;}
 .rc.dash-proj .dpc-meta strong{color:var(--ac);}
 .rc.dash-proj .dpc-warn{color:var(--red);font-weight:600;}
 .arc{background:transparent;border:1px dashed var(--bd2);border-radius:var(--r);padding:14px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:88px;color:var(--tx3);}
 .arc:hover{border-color:var(--ac);color:var(--ac);}
-.dim-bar{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:18px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
-.dim-t{font-size:13px;font-weight:600;margin-bottom:12px;}
+.dim-bar{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:18px;margin-bottom:16px;box-shadow:none;}
+.dim-t{font-size:13px;font-weight:700;letter-spacing:-0.3px;margin-bottom:12px;}
 .dim-g{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:12px;}
 .dim-f{display:flex;flex-direction:column;gap:4px;}
-.dim-l{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;font-family:'DM Mono',monospace;}
+.dim-l{font-size:8px;color:var(--ac);text-transform:uppercase;letter-spacing:0.12em;font-family:'Inter',system-ui,sans-serif;font-weight:600;}
 .dim-mode-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px;}
 .dim-wall-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:8px 10px;align-items:end;margin-bottom:8px;}
 .dim-wall-grid .dim-f{margin-bottom:0;}
 .dim-add-wall{margin-bottom:12px;}
-.di{background:#fff;border:1px solid var(--bd2);border-radius:6px;padding:7px 8px;color:var(--tx);font-family:'DM Mono',monospace;font-size:16px;outline:none;transition:border .15s;width:100%;text-align:center;}
+.di{background:#fff;border:1px solid #c8e0c8;border-radius:5px;padding:7px 8px;color:#1a2e1a;font-family:'Inter',system-ui,sans-serif;font-size:12px;font-weight:600;outline:none;transition:border .15s;width:100%;text-align:center;}
 .di:focus{border-color:var(--ac);}
 .pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
-.pill{background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;display:flex;gap:6px;align-items:center;}
-.pill-l{font-size:10px;color:var(--tx3);font-family:'DM Mono',monospace;text-transform:uppercase;}
-.pill-v{font-size:13px;color:var(--ac);font-family:'DM Mono',monospace;font-weight:500;}
+.pill{background:#f0f7f0;border:1px solid #c8e0c8;border-radius:6px;padding:6px 10px;display:flex;gap:6px;align-items:center;}
+.pill-l{font-size:8px;color:var(--ac);font-family:'Inter',system-ui,sans-serif;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;}
+.pill-v{font-size:12px;color:#1a2e1a;font-family:'Inter',system-ui,sans-serif;font-weight:600;}
 
-.room-dur{background:linear-gradient(to right,rgba(45,122,79,.07),rgba(45,122,79,.02));border:1px solid rgba(45,122,79,.25);border-radius:var(--r);padding:12px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
-.rd-l{font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;}
-.rd-v{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ac);}
-.rd-s{font-size:12px;color:var(--tx2);font-family:'DM Mono',monospace;}
+.room-dur{background:linear-gradient(to right,rgba(90,154,90,.08),rgba(90,154,90,.02));border:1px solid rgba(90,154,90,.28);border-radius:var(--r);padding:12px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.rd-l{font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;}
+.rd-v{font-family:'Inter',system-ui,sans-serif;font-size:22px;color:var(--ac);}
+.rd-s{font-size:12px;color:var(--tx2);font-family:'Inter',system-ui,sans-serif;}
 
 .trades-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;align-items:start;margin-bottom:8px;}
 .trade-col{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:8px 6px 10px;min-width:0;}
-.trade-col-h{font-size:9px;font-family:'DM Mono',monospace;color:var(--tx3);text-transform:uppercase;letter-spacing:0.8px;margin:0 2px 8px;padding-bottom:6px;border-bottom:1px solid var(--bd);}
+.trade-col-h{font-size:9px;font-family:'Inter',system-ui,sans-serif;color:var(--tx3);text-transform:uppercase;letter-spacing:0.8px;margin:0 2px 8px;padding-bottom:6px;border-bottom:1px solid var(--bd);}
 .trade-col .ts{margin-bottom:8px;}
 .trade-col .ts:last-child{margin-bottom:0;}
 .trades-orphan{margin-top:14px;}
 @media(max-width:1400px){.trades-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
 @media(max-width:900px){.trades-grid{grid-template-columns:1fr;}}
 
-.ts{background:#fff;border:1px solid var(--bd);border-radius:var(--r);margin-bottom:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.ts{background:#fff;border:1px solid var(--bd);border-radius:var(--r);margin-bottom:10px;overflow:hidden;box-shadow:none;}
 .th{display:flex;align-items:stretch;gap:0;padding:0;transition:background .15s;}
-.th-main{display:flex;align-items:center;gap:10px;padding:12px 16px;flex:1;min-width:0;cursor:pointer;}
-.th-main:hover{background:#f5f2ed;}
+.th-main{display:flex;align-items:flex-start;gap:0;padding:12px 16px;flex:1;min-width:0;cursor:pointer;}
+.th-main:hover{background:#f4f8f4;}
+.th-head-row{display:flex;align-items:flex-start;gap:10px;width:100%;}
+.trade-ic-wrap{flex-shrink:0;width:22px;height:22px;border-radius:5px;overflow:hidden;display:flex;align-items:center;justify-content:center;line-height:0;}
+.trade-ic-wrap svg{display:block;width:22px;height:22px;}
+.th-text-block{flex:1;min-width:0;}
+.trade-cat{font-size:9px;color:#bbbbbb;letter-spacing:0.3px;margin-top:3px;line-height:1.2;}
+.th-meta-right{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0;}
 .th-act{flex-shrink:0;display:flex;align-items:center;gap:4px;padding:8px 10px 8px 0;border-left:1px solid var(--bd2);}
 .th-ico{width:32px;height:32px;border-radius:6px;border:1px solid var(--bd2);background:var(--sf2);cursor:pointer;font-size:15px;line-height:1;color:var(--tx2);display:flex;align-items:center;justify-content:center;padding:0;}
 .th-ico:hover{border-color:var(--ac);color:var(--ac);background:#fff;}
@@ -161,119 +169,158 @@ a.ni{color:inherit;text-decoration:none;}
 .ts-exp-box{background:var(--sf);border-radius:var(--r);max-width:760px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 24px 64px rgba(0,0,0,.28);border:1px solid var(--bd);}
 .ts-exp-close{padding:12px 16px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;background:var(--sf2);}
 .tdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.tn{font-size:13px;font-weight:500;flex:1;}
-.tt-days{font-family:'DM Mono',monospace;font-size:11px;color:var(--tx3);margin-right:8px;}
-.tt-tot{font-family:'DM Mono',monospace;font-size:13px;color:var(--ac);}
+.tn{font-size:13px;font-weight:700;letter-spacing:-0.02em;color:var(--tx);line-height:1.25;}
+.tt-days{font-family:'Inter',system-ui,sans-serif;font-size:11px;color:var(--tx3);font-weight:500;}
+.tt-tot{font-family:'Inter',system-ui,sans-serif;font-size:11px;font-weight:600;color:#5a9a5a;}
 .ta{color:var(--tx3);font-size:11px;transition:transform .2s;}
 .ta.op{transform:rotate(180deg);}
 .tb{border-top:1px solid var(--bd);padding:14px;display:none;}
 .tb.op{display:block;}
 
 .days-row{background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.days-label{font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;font-weight:600;}
+.days-label{font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;font-weight:600;}
 .days-wrap{display:flex;align-items:center;gap:5px;}
-.days-input{background:#fff;border:1px solid var(--bd2);border-radius:5px;padding:6px 8px;color:var(--tx);font-family:'DM Mono',monospace;font-size:16px;width:60px;text-align:center;outline:none;transition:border .15s;}
+.days-input{background:#fff;border:1px solid var(--bd2);border-radius:5px;padding:6px 8px;color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:16px;width:60px;text-align:center;outline:none;transition:border .15s;}
 .days-input:focus{border-color:var(--ac);}
 .days-input.auto{border-color:rgba(40,160,96,.5);color:var(--grn);}
-.days-unit{font-size:12px;color:var(--tx3);font-family:'DM Mono',monospace;}
-.formula-hint{font-size:11px;color:var(--tx3);font-family:'DM Mono',monospace;font-style:italic;flex:1;min-width:120px;}
-.days-reset{font-size:10px;color:var(--ac);cursor:pointer;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;padding:3px 7px;border:1px solid rgba(45,122,79,.25);border-radius:4px;background:rgba(45,122,79,.05);}
-.days-reset:hover{background:rgba(45,122,79,.12);}
+.days-unit{font-size:12px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
+.formula-hint{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;font-style:italic;flex:1;min-width:120px;}
+.days-reset{font-size:10px;color:var(--ac);cursor:pointer;font-family:'Inter',system-ui,sans-serif;text-transform:uppercase;letter-spacing:1px;padding:3px 7px;border:1px solid rgba(90,154,90,.25);border-radius:4px;background:rgba(90,154,90,.05);}
+.days-reset:hover{background:rgba(90,154,90,.12);}
 
 .irow{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--sf2);}
-.il{font-size:13px;font-weight:500;color:var(--tx);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+.il{font-size:12px;font-weight:500;color:#444;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
 .il-name{flex:1;}
-.il small{display:inline-block;font-size:10px;color:var(--grn);font-family:'DM Mono',monospace;margin-left:6px;background:rgba(40,160,96,.1);padding:1px 6px;border-radius:10px;}
+.il small{display:inline-block;font-size:10px;color:var(--grn);font-family:'Inter',system-ui,sans-serif;margin-left:6px;background:rgba(90,154,90,.12);padding:1px 6px;border-radius:10px;}
 
 .irow-inputs{display:flex;gap:8px;align-items:flex-start;}
 .qty-wrap{flex:1;display:flex;flex-direction:column;min-width:0;}
-.qty-wrap input{width:100%;box-sizing:border-box;background:#fff;border:1px solid var(--bd2);border-radius:7px;padding:8px 12px;color:var(--tx);font-family:'DM Mono',monospace;font-size:16px;outline:none;transition:border .15s;}
+.qty-wrap input{width:100%;max-width:90px;box-sizing:border-box;background:#f8faf8;border:1px solid #e0e8e0;border-radius:5px;padding:8px 10px;color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:16px;outline:none;transition:border .15s;}
 .qty-wrap input:focus{border-color:var(--ac);}
 .qty-wrap input.af{border-color:rgba(40,160,96,.5);color:var(--grn);}
-.irow-field-hint{font-size:10px;color:var(--tx3);font-family:'DM Mono',monospace;margin-top:5px;line-height:1.25;opacity:.9;}
+.irow-field-hint{font-size:10px;color:#bbbbbb;font-family:'Inter',system-ui,sans-serif;margin-top:5px;line-height:1.25;}
 .rate-wrap{flex:1;display:flex;flex-direction:column;min-width:0;}
 .rate-inp-row{position:relative;display:flex;align-items:center;width:100%;}
-.rate-inp-row input{flex:1;width:100%;box-sizing:border-box;min-width:0;background:#fff;border:1px solid var(--bd2);border-radius:7px;padding:8px 12px 8px 22px;color:var(--tx);font-family:'DM Mono',monospace;font-size:16px;outline:none;transition:border .15s;}
+.rate-inp-row input{flex:1;width:100%;box-sizing:border-box;min-width:0;max-width:120px;background:#f8faf8;border:1px solid #e0e8e0;border-radius:5px;padding:8px 12px 8px 22px;color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:16px;outline:none;transition:border .15s;}
 .rate-inp-row input:focus{border-color:var(--ac);}
 .rate-prefix{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--tx3);pointer-events:none;z-index:1;}
-
-.ts-demo{background:rgba(220,80,60,.05);border-color:rgba(220,80,60,.2);}.ts-demo .th{background:rgba(220,80,60,.08);}
-.ts-framing{background:rgba(200,160,100,.06);border-color:rgba(200,160,100,.25);}.ts-framing .th{background:rgba(200,160,100,.1);}
-.ts-electrical{background:rgba(240,200,0,.05);border-color:rgba(240,200,0,.25);}.ts-electrical .th{background:rgba(240,200,0,.09);}
-.ts-plumbing{background:rgba(60,140,220,.05);border-color:rgba(60,140,220,.2);}.ts-plumbing .th{background:rgba(60,140,220,.09);}
-.ts-hvac{background:rgba(140,80,220,.05);border-color:rgba(140,80,220,.2);}.ts-hvac .th{background:rgba(140,80,220,.09);}
-.ts-insulation{background:rgba(240,160,120,.05);border-color:rgba(240,160,120,.25);}.ts-insulation .th{background:rgba(240,160,120,.09);}
-.ts-drywall{background:rgba(180,180,190,.06);border-color:rgba(180,180,190,.25);}.ts-drywall .th{background:rgba(180,180,190,.1);}
-.ts-tile{background:rgba(100,160,180,.05);border-color:rgba(100,160,180,.2);}.ts-tile .th{background:rgba(100,160,180,.09);}
-.ts-flooring{background:rgba(180,130,60,.05);border-color:rgba(180,130,60,.22);}.ts-flooring .th{background:rgba(180,130,60,.09);}
-.ts-painting{background:rgba(60,180,120,.05);border-color:rgba(60,180,120,.2);}.ts-painting .th{background:rgba(60,180,120,.09);}
-.ts-trim{background:rgba(220,210,190,.06);border-color:rgba(200,190,170,.3);}.ts-trim .th{background:rgba(220,210,190,.12);}
-.ts-cabinets{background:rgba(140,90,50,.05);border-color:rgba(140,90,50,.2);}.ts-cabinets .th{background:rgba(140,90,50,.09);}
-
-.irow-sub{font-size:12px;color:var(--tx3);margin-top:6px;text-align:right;font-family:'DM Mono',monospace;padding-top:5px;border-top:1px dashed var(--bd);}
-.irow-sub strong{color:var(--ac);font-weight:600;}
+.irow-sub{font-size:12px;color:var(--tx3);margin-top:6px;text-align:right;font-family:'Inter',system-ui,sans-serif;padding-top:5px;border-top:1px dashed var(--bd);}
+.irow-sub strong{color:#5a9a5a;font-weight:600;}
 .sep{height:1px;background:var(--bd);margin:10px 0;}
 .sub{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
 .sub-l{font-size:12px;color:var(--tx2);}
-.sub-v{font-family:'DM Mono',monospace;font-size:14px;color:var(--ac);}
-.note{width:100%;background:#fff;border:1px solid var(--bd);border-radius:5px;padding:8px 10px;color:var(--tx2);font-size:16px;resize:vertical;outline:none;min-height:50px;margin-top:10px;font-family:'DM Sans',sans-serif;}
+.sub-v{font-family:'Inter',system-ui,sans-serif;font-size:14px;color:#5a9a5a;font-weight:600;}
+.trade-footer-total{background:#f8fdf8!important;border-top:1px solid var(--bd)!important;}
+.trade-footer-total .sub-l,.trade-footer-total .sub-v{color:var(--tot)!important;font-weight:700!important;}
+.note{width:100%;background:#fff;border:1px solid var(--bd);border-radius:5px;padding:8px 10px;color:var(--tx2);font-size:16px;resize:vertical;outline:none;min-height:50px;margin-top:10px;font-family:'Inter',system-ui,sans-serif;}
 .note::placeholder{color:var(--tx3);}
 .fx-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:7px;margin-bottom:10px;}
 .fx{background:var(--sf2);border:1px solid var(--bd2);border-radius:6px;padding:8px 10px;transition:all .15s;text-align:center;}
-.fx.on{border-color:var(--ac);background:rgba(45,122,79,.08);}
+.fx.on{border-color:var(--ac);background:rgba(90,154,90,.08);}
 .fx-ic{font-size:18px;margin-bottom:3px;}
-.fx-n{font-size:10px;color:var(--tx2);font-family:'DM Mono',monospace;}
-.fx-p{font-size:11px;color:var(--ac);font-family:'DM Mono',monospace;margin-top:1px;}
+.fx-n{font-size:10px;color:var(--tx2);font-family:'Inter',system-ui,sans-serif;}
+.fx-p{font-size:11px;color:var(--ac);font-family:'Inter',system-ui,sans-serif;margin-top:1px;}
 .fx-q{display:flex;align-items:center;gap:5px;justify-content:center;margin-top:6px;}
 .fxb{width:22px;height:22px;border-radius:4px;background:#fff;border:1px solid var(--bd2);color:var(--tx);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
 .fxb:hover{border-color:var(--ac);color:var(--ac);}
-.fxc{font-family:'DM Mono',monospace;font-size:12px;min-width:18px;text-align:center;}
-.sfooter{margin-top:20px;padding:14px 18px;background:#faf7f2;border:1px solid var(--bd);border-radius:var(--r);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.fxc{font-family:'Inter',system-ui,sans-serif;font-size:12px;min-width:18px;text-align:center;}
+.rf-tool{border:1px solid var(--bd2);border-radius:8px;padding:10px 12px;margin-bottom:10px;background:var(--sf2);}
+.rf-tool-h{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-family:'Inter',system-ui,sans-serif;}
+.rf-tool-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.rf-tool-row label{font-size:11px;color:var(--tx3);min-width:90px;}
+.rf-tool-row input,.rf-tool select{padding:6px 8px;border:1px solid var(--bd2);border-radius:6px;font-size:13px;max-width:120px;}
+.rf-tool-out{font-size:12px;color:var(--tx2);margin-top:8px;line-height:1.45;}
+.rf-tool-out strong{color:var(--ac);}
+.rf-tool-note{font-size:10px;color:var(--tx3);margin-top:8px;line-height:1.35;}
+.rf-elec-cap{margin-bottom:8px;font-size:12px;}
+.rf-elec-cap select{margin-left:6px;padding:4px 8px;border-radius:6px;border:1px solid var(--bd2);}
+.rf-elec-bar-wrap{height:10px;background:var(--bd);border-radius:5px;overflow:hidden;margin:8px 0;}
+.rf-elec-bar{height:100%;border-radius:5px;transition:width .2s,background .2s;}
+.rf-elec-tot{font-family:'Inter',system-ui,sans-serif;font-size:13px;margin-bottom:8px;}
+.rf-elec-tot.rf-over{color:var(--red);font-weight:600;}
+.rf-elec-row{margin-bottom:8px;}
+.rf-elec-lbl{font-size:11px;color:var(--tx2);margin-bottom:4px;}
+.rf-elec-btns{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.rf-elec-inp{width:52px;text-align:center;padding:4px;border:1px solid var(--bd2);border-radius:4px;font-family:'Inter',system-ui,sans-serif;}
+.sfooter{margin-top:20px;padding:14px 18px;background:#f8faf8;border:1px solid var(--bd);border-radius:var(--r);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
 .sfooter-l{font-size:13px;color:var(--tx2);}
 .sh-cat{margin-bottom:18px;}
 .sh-h{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding-bottom:7px;border-bottom:1px solid var(--bd);}
 .sh-dot{width:7px;height:7px;border-radius:50%;}
-.sh-n{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;color:var(--tx2);}
-.sh-t{font-size:12px;font-family:'DM Mono',monospace;color:var(--tx3);margin-left:auto;}
+.sh-n{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;color:var(--tx2);}
+.sh-t{font-size:12px;font-family:'Inter',system-ui,sans-serif;color:var(--tx3);margin-left:auto;}
 .sh-it{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);}
 .ck{width:17px;height:17px;border:1.5px solid var(--bd2);border-radius:4px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:10px;font-weight:700;}
 .ck.on{background:var(--grn);border-color:var(--grn);color:#fff;}
 .sh-lb{flex:1;font-size:13px;}
 .sh-lb.on{text-decoration:line-through;color:var(--tx3);}
-.sh-q{font-size:11px;font-family:'DM Mono',monospace;color:var(--tx3);width:55px;text-align:right;}
-.sh-p{font-size:12px;font-family:'DM Mono',monospace;color:var(--tx2);width:70px;text-align:right;}
+.sh-q{font-size:11px;font-family:'Inter',system-ui,sans-serif;color:var(--tx3);width:55px;text-align:right;}
+.sh-p{font-size:12px;font-family:'Inter',system-ui,sans-serif;color:var(--tx2);width:70px;text-align:right;}
+
+.ml-page{background:var(--bg);min-height:100%;}
+.ml-ph{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 18px;background:#eef4ee;border-bottom:1px solid var(--bd);}
+.ml-ph-left{display:flex;align-items:center;gap:10px;flex:1;min-width:200px;}
+.ml-title{font-family:'Inter',system-ui,sans-serif;font-size:22px;color:var(--tx);}
+.ml-sub{font-size:12px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;margin-top:4px;}
+.ml-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.ml-tog{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--tx2);cursor:pointer;user-select:none;}
+.ml-tog input{width:16px;height:16px;accent-color:var(--ac);}
+.ml-cat{margin-bottom:20px;}
+.ml-ch{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:2px solid var(--bd2);}
+.ml-cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ml-cn{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;color:var(--tx2);}
+.ml-ct{font-size:13px;font-family:'Inter',system-ui,sans-serif;color:var(--ac);margin-left:auto;}
+.ml-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
+.ml-table th{text-align:left;font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;font-family:'Inter',system-ui,sans-serif;padding:8px 10px 8px 0;border-bottom:1px solid var(--bd2);}
+.ml-table th:nth-child(5),.ml-table th:nth-child(6){text-align:right;}
+.ml-table td{padding:10px 10px 10px 0;border-bottom:1px solid var(--bd);vertical-align:middle;}
+.ml-table td:nth-child(5),.ml-table td:nth-child(6){text-align:right;font-family:'Inter',system-ui,sans-serif;}
+.ml-img{width:48px;height:48px;border-radius:8px;object-fit:cover;background:var(--sf2);border:1px solid var(--bd2);flex-shrink:0;}
+.ml-prod{display:flex;align-items:center;gap:12px;}
+.ml-pn{font-weight:500;color:var(--tx);max-width:280px;}
+.ml-rn{font-size:10px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;margin-top:2px;}
+.ml-z{opacity:.45;}
+.ml-foot{padding:16px 18px;border-top:1px solid var(--bd);background:#eef4ee;font-family:'Inter',system-ui,sans-serif;font-size:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.ml-empty{text-align:center;padding:48px 20px;color:var(--tx3);}
+@media print{
+  .sb,.mob-nav,.ml-toolbar .btn,.ml-tog,.ml-ph button{background:transparent!important;}
+  .ml-toolbar .btn{display:none!important;}
+  #main{margin:0!important;padding:0!important;}
+  .ml-page{background:#fff;}
+  .ml-print-head{display:block!important;padding-bottom:8px!important;border-bottom:1px solid #ccc!important;}
+}
 
 .tl-settings{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin-bottom:18px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
 .tl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;align-items:end;}
 .tl-field{display:flex;flex-direction:column;gap:5px;}
-.tl-fl{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;}
-.tl-fv input{background:#fff;border:1px solid var(--bd2);border-radius:6px;padding:7px 10px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;width:100%;}
+.tl-fl{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;}
+.tl-fv input{background:#fff;border:1px solid var(--bd2);border-radius:6px;padding:7px 10px;font-family:'Inter',system-ui,sans-serif;font-size:14px;outline:none;width:100%;}
 .tl-fv input:focus{border-color:var(--ac);}
 .tl-toggle-row{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--sf2);border:1px solid var(--bd);border-radius:6px;cursor:pointer;}
 .tl-toggle-lbl{font-size:13px;font-weight:500;}
-.tl-toggle-sub{font-size:11px;color:var(--tx3);font-family:'DM Mono',monospace;}
+.tl-toggle-sub{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
 
 .tl-summary{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:18px;margin-bottom:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
-.tl-sl{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;}
-.tl-sv{font-family:'DM Serif Display',serif;font-size:22px;color:var(--tx);margin-top:3px;line-height:1.15;}
-.tl-ss{font-size:11px;color:var(--tx3);font-family:'DM Mono',monospace;}
+.tl-sl{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;}
+.tl-sv{font-family:'Inter',system-ui,sans-serif;font-size:22px;color:var(--tx);margin-top:3px;line-height:1.15;}
+.tl-ss{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
 
 .tl-room{background:#fff;border:1px solid var(--bd);border-radius:var(--r);margin-bottom:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);}
-.tl-rh{padding:14px 16px;background:#faf7f2;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid var(--bd);}
+.tl-rh{padding:14px 16px;background:#eef4ee;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid var(--bd);}
 .tl-rh:hover{background:#f2eee7;}
 .tl-ri{font-size:22px;}
 .tl-rn{font-size:15px;font-weight:600;flex:1;}
-.tl-rd{font-size:12px;color:var(--tx2);font-family:'DM Mono',monospace;}
-.tl-rc{font-size:12px;color:var(--ac);font-family:'DM Mono',monospace;font-weight:600;}
+.tl-rd{font-size:12px;color:var(--tx2);font-family:'Inter',system-ui,sans-serif;}
+.tl-rc{font-size:12px;color:var(--ac);font-family:'Inter',system-ui,sans-serif;font-weight:600;}
 .tl-rb{padding:14px 16px;display:none;}
 .tl-rb.op{display:block;}
 
 .tl-day{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed var(--bd);font-size:13px;}
 .tl-day:last-child{border-bottom:none;}
-.tl-day-num{width:58px;font-family:'DM Mono',monospace;font-size:11px;color:var(--tx3);flex-shrink:0;}
-.tl-day-date{width:100px;font-family:'DM Mono',monospace;font-size:11px;color:var(--tx2);flex-shrink:0;}
+.tl-day-num{width:58px;font-family:'Inter',system-ui,sans-serif;font-size:11px;color:var(--tx3);flex-shrink:0;}
+.tl-day-date{width:100px;font-family:'Inter',system-ui,sans-serif;font-size:11px;color:var(--tx2);flex-shrink:0;}
 .tl-day-trades{flex:1;display:flex;flex-wrap:wrap;gap:6px;}
-.tl-trade-chip{padding:3px 9px;border-radius:12px;font-size:11px;font-family:'DM Mono',monospace;font-weight:500;}
+.tl-trade-chip{padding:3px 9px;border-radius:12px;font-size:11px;font-family:'Inter',system-ui,sans-serif;font-weight:500;}
 
 .tl-empty{text-align:center;padding:50px 20px;color:var(--tx3);}
 .tl-empty-i{font-size:34px;margin-bottom:10px;opacity:.4;}
@@ -281,52 +328,73 @@ a.ni{color:inherit;text-decoration:none;}
 .tl-preview{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:20px;margin-top:18px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
 .tl-preview-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd);}
 .tl-preview-t{font-size:14px;font-weight:600;}
-.tl-preview-s{font-size:11px;color:var(--tx3);font-family:'DM Mono',monospace;}
+.tl-preview-s{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
+.cal-wrap{padding:0 0 8px;}
+.cal-nav{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+.cal-nav h2{margin:0;font-family:'Inter',system-ui,sans-serif;font-size:20px;color:var(--tx);flex:1;min-width:120px;}
+.cal-gantt{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:16px;overflow-x:auto;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.cal-gantt-h{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;margin-bottom:10px;}
+.cal-gantt-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;min-width:520px;}
+.cal-gantt-lbl{flex:0 0 140px;font-size:12px;font-weight:600;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cal-gantt-track{position:relative;flex:1;height:28px;background:var(--sf2);border-radius:6px;border:1px solid var(--bd2);min-width:280px;}
+.cal-bar{position:absolute;top:2px;height:22px;border-radius:5px;cursor:grab;display:flex;align-items:center;padding:0 8px;font-size:10px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 1px 3px rgba(0,0,0,.12);touch-action:none;user-select:none;}
+.cal-bar:active{cursor:grabbing;}
+.cal-bar-hint{font-size:9px;opacity:.85;margin-left:6px;font-weight:500;}
+.cal-grid-wrap{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:12px;overflow-x:auto;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.cal-grid-h{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;margin-bottom:10px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--bd2);border:1px solid var(--bd2);border-radius:8px;overflow:hidden;min-width:560px;}
+.cal-dh{background:#eef4ee;padding:6px 4px;text-align:center;font-size:10px;font-weight:600;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
+.cal-cell{background:#fff;min-height:92px;padding:6px 5px 8px;vertical-align:top;font-size:11px;}
+.cal-cell.cal-out{background:var(--sf2);opacity:.55;}
+.cal-cell.cal-today{outline:2px solid var(--ac);outline-offset:-2px;}
+.cal-dn{font-size:11px;font-weight:700;color:var(--tx2);margin-bottom:4px;font-family:'Inter',system-ui,sans-serif;}
+.cal-chip{display:block;font-size:9px;padding:2px 4px;margin-bottom:3px;border-radius:4px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cal-legend{font-size:11px;color:var(--tx3);margin-top:12px;line-height:1.5;}
 .tl-week{display:flex;gap:12px;padding:8px 0;border-bottom:1px dashed var(--bd);}
 .tl-week:last-child{border-bottom:none;}
-.tl-wk{font-size:11px;color:var(--tx3);font-family:'DM Mono',monospace;width:170px;flex-shrink:0;}
+.tl-wk{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;width:170px;flex-shrink:0;}
 .tl-wk-name{font-weight:600;color:var(--tx);}
 .tl-wk-trades{flex:1;font-size:13px;color:var(--tx2);}
 
 .qp{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:32px;max-width:660px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
 .qt{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid var(--bd2);}
-.qco{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ac);}
-.qci{font-size:11px;color:var(--tx3);font-family:'DM Mono',monospace;margin-top:3px;line-height:1.8;}
-.qnum{font-family:'DM Mono',monospace;font-size:18px;}
-.qdate{font-size:11px;color:var(--tx3);font-family:'DM Mono',monospace;margin-top:2px;}
-.qbadge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;background:rgba(45,122,79,.1);color:var(--ac);border:1px solid rgba(45,122,79,.3);margin-top:4px;}
+.qco{font-family:'Inter',system-ui,sans-serif;font-size:22px;color:var(--ac);}
+.qci{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;margin-top:3px;line-height:1.8;}
+.qnum{font-family:'Inter',system-ui,sans-serif;font-size:18px;}
+.qdate{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;margin-top:2px;}
+.qbadge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-family:'Inter',system-ui,sans-serif;text-transform:uppercase;letter-spacing:1px;background:rgba(90,154,90,.1);color:var(--ac);border:1px solid rgba(90,154,90,.3);margin-top:4px;}
 .qtbl{width:100%;border-collapse:collapse;margin-bottom:18px;}
-.qtbl th{text-align:left;font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;padding:0 10px 8px 0;border-bottom:1px solid var(--bd2);}
+.qtbl th{text-align:left;font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;padding:0 10px 8px 0;border-bottom:1px solid var(--bd2);}
 .qtbl th:last-child{text-align:right;}
 .qtbl td{padding:7px 10px 7px 0;border-bottom:1px solid var(--bd);font-size:13px;}
-.qtbl td:last-child{text-align:right;font-family:'DM Mono',monospace;color:var(--tx2);}
+.qtbl td:last-child{text-align:right;font-family:'Inter',system-ui,sans-serif;color:var(--tx2);}
 .qtbl .rr td{font-weight:500;color:var(--tx);padding-top:12px;}
 .qtot{border-top:2px solid var(--bd2);padding-top:12px;}
 .qtr{display:flex;justify-content:space-between;padding:4px 0;}
 .ql{font-size:13px;color:var(--tx2);}
-.qr{font-family:'DM Mono',monospace;font-size:13px;}
+.qr{font-family:'Inter',system-ui,sans-serif;font-size:13px;}
 .qtr.gd .ql{font-size:15px;font-weight:600;color:var(--tx);}
-.qtr.gd .qr{font-size:18px;color:var(--ac);font-family:'DM Serif Display',serif;}
+.qtr.gd .qr{font-size:18px;color:var(--ac);font-family:'Inter',system-ui,sans-serif;}
 
 .q-timeline{margin-top:24px;padding-top:18px;border-top:1px solid var(--bd);}
 .q-tl-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.q-tl-t{font-family:'DM Serif Display',serif;font-size:16px;color:var(--tx);}
-.q-tl-sub{font-size:11px;color:var(--tx3);font-family:'DM Mono',monospace;}
-.q-tl-dates{font-size:12px;color:var(--tx2);font-family:'DM Mono',monospace;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--bd);}
+.q-tl-t{font-family:'Inter',system-ui,sans-serif;font-size:16px;color:var(--tx);}
+.q-tl-sub{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
+.q-tl-dates{font-size:12px;color:var(--tx2);font-family:'Inter',system-ui,sans-serif;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--bd);}
 .q-tl-dates strong{color:var(--ac);}
 .q-tl-week{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--bd);font-size:12px;}
 .q-tl-week:last-child{border-bottom:none;}
-.q-tl-wk{font-family:'DM Mono',monospace;font-size:11px;color:var(--tx3);width:150px;flex-shrink:0;line-height:1.4;}
+.q-tl-wk{font-family:'Inter',system-ui,sans-serif;font-size:11px;color:var(--tx3);width:150px;flex-shrink:0;line-height:1.4;}
 .q-tl-wk strong{color:var(--tx);}
 .q-tl-wk-trades{flex:1;color:var(--tx2);}
-.q-tl-disc{font-size:10px;color:var(--tx3);font-family:'DM Mono',monospace;font-style:italic;margin-top:10px;padding-top:8px;border-top:1px solid var(--bd);line-height:1.5;}
+.q-tl-disc{font-size:10px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;font-style:italic;margin-top:10px;padding-top:8px;border-top:1px solid var(--bd);line-height:1.5;}
 
 .sg{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
 .ss{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
 .ss-t{font-size:14px;font-weight:600;margin-bottom:12px;}
 .field{margin-bottom:10px;}
-.field label{display:block;font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;font-family:'DM Mono',monospace;margin-bottom:4px;}
-.field input,.field textarea{width:100%;background:#fff;border:1px solid var(--bd2);border-radius:5px;padding:7px 10px;color:var(--tx);font-family:'DM Sans',sans-serif;font-size:16px;outline:none;transition:border .15s;}
+.field label{display:block;font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;font-family:'Inter',system-ui,sans-serif;margin-bottom:4px;}
+.field input,.field textarea{width:100%;background:#fff;border:1px solid var(--bd2);border-radius:5px;padding:7px 10px;color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:16px;outline:none;transition:border .15s;}
 .field input:focus,.field textarea:focus{border-color:var(--ac);}
 .field textarea{resize:vertical;min-height:65px;}
 
@@ -341,47 +409,47 @@ a.ni{color:inherit;text-decoration:none;}
 .pdf-mo.show{display:flex;}
 .pdf-mb{background:#fff;border:1px solid var(--bd2);border-radius:12px;padding:24px;width:92%;max-width:440px;max-height:88vh;overflow-y:auto;}
 .pdf-title{font-size:16px;font-weight:700;margin-bottom:4px;color:var(--tx);}
-.pdf-sub{font-size:11px;color:var(--tx3);font-family:'DM Mono',monospace;margin-bottom:18px;}
+.pdf-sub{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;margin-bottom:18px;}
 .fmt-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
 .fmt-opt{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;background:var(--sf2);border:1.5px solid var(--bd2);border-radius:7px;cursor:pointer;transition:all .2s;}
 .fmt-opt:hover{border-color:var(--bd);}
-.fmt-opt.on{border-color:var(--ac);background:rgba(45,122,79,.07);}
+.fmt-opt.on{border-color:var(--ac);background:rgba(90,154,90,.07);}
 .fmt-radio{width:16px;height:16px;border-radius:50%;border:2px solid var(--bd2);flex-shrink:0;margin-top:2px;transition:all .2s;display:flex;align-items:center;justify-content:center;}
 .fmt-opt.on .fmt-radio{border-color:var(--ac);background:var(--ac);}
 .fmt-opt.on .fmt-radio::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff;}
 .fmt-info{flex:1;}
 .fmt-name{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px;}
-.fmt-desc{font-size:11px;color:var(--tx3);font-family:'DM Mono',monospace;line-height:1.4;}
+.fmt-desc{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;line-height:1.4;}
 .pdf-divider{height:1px;background:var(--bd);margin:14px 0;}
 .markup-row{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--sf2);border:1px solid var(--bd2);border-radius:7px;margin-bottom:8px;}
 .mr-left{flex:1;}
 .mr-label{font-size:13px;font-weight:500;color:var(--tx);}
-.mr-sub{font-size:11px;color:var(--tx3);font-family:'DM Mono',monospace;margin-top:1px;}
+.mr-sub{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;margin-top:1px;}
 .mr-pct{display:flex;align-items:center;gap:5px;}
-.mr-pct input{width:52px;background:#fff;border:1px solid var(--bd2);border-radius:5px;padding:5px 7px;color:var(--tx);font-family:'DM Mono',monospace;font-size:16px;text-align:right;outline:none;}
+.mr-pct input{width:52px;background:#fff;border:1px solid var(--bd2);border-radius:5px;padding:5px 7px;color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:16px;text-align:right;outline:none;}
 .mr-pct input:focus{border-color:var(--ac);}
 .mr-pct span{font-size:11px;color:var(--tx3);}
 .tog{width:38px;height:22px;border-radius:11px;background:var(--bd2);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
 .tog.on{background:var(--ac);}
 .tog::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
 .tog.on::after{transform:translateX(16px);}
-.pdf-gen{width:100%;padding:12px;background:var(--ac);color:#fff;border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:1px;margin-bottom:8px;}
+.pdf-gen{width:100%;padding:12px;background:var(--ac);color:#fff;border:none;border-radius:7px;font-family:'Inter',system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:1px;margin-bottom:8px;}
 .pdf-gen:hover{background:var(--ac2);}
-.pdf-cancel{width:100%;padding:9px;background:transparent;border:1px solid var(--bd2);border-radius:7px;color:var(--tx2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
+.pdf-cancel{width:100%;padding:9px;background:transparent;border:1px solid var(--bd2);border-radius:7px;color:var(--tx2);font-family:'Inter',system-ui,sans-serif;font-size:13px;cursor:pointer;}
 
-#sind{position:fixed;top:16px;right:16px;background:var(--grn);color:#fff;font-size:11px;font-family:'DM Mono',monospace;padding:6px 12px;border-radius:20px;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;font-weight:600;}
+#sind{position:fixed;top:16px;right:16px;background:var(--grn);color:#fff;font-size:11px;font-family:'Inter',system-ui,sans-serif;padding:6px 12px;border-radius:20px;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;font-weight:600;}
 #sind.show{opacity:1;}
 .empty{text-align:center;padding:50px 20px;color:var(--tx3);}
 .empty-i{font-size:34px;margin-bottom:10px;opacity:.4;}
 
 @media print{
-  #sb,#mob-nav,#sind,.ph button,.sfooter,#pdf-mo,.inv-status-bar,.dep-box,.inv-actions{display:none!important;}
+  #sb,#mob-nav,#sind,.ph button,.sfooter,#pdf-mo,.inv-status-bar,.dep-box,.inv-actions,.cal-nav button{display:none!important;}
   #shell{display:block!important;}
   body{background:#fff!important;}
   #main{overflow:visible!important;min-height:0!important;}
   .qp,.inv-doc{border:none!important;box-shadow:none!important;padding:0!important;max-width:100%!important;}
 }
-.logo-rf{display:none;font-family:'DM Serif Display',serif;font-size:18px;color:var(--ac);font-weight:700;letter-spacing:-0.5px;}
+.logo-rf{display:none;font-family:'Inter',system-ui,sans-serif;font-size:18px;color:var(--ac);font-weight:700;letter-spacing:-0.5px;}
 .ni-i svg{display:block;}
 @media(max-width:700px){
   .logo-full{display:none;}
@@ -392,8 +460,8 @@ a.ni{color:inherit;text-decoration:none;}
   .ns{padding:8px 0 2px;text-align:center;font-size:7px;letter-spacing:1px;}
   .ns-div{margin:6px 8px;}
   .ni{padding:8px 0;justify-content:center;flex-direction:column;gap:3px;border-left:none;border-right:3px solid transparent;}
-  .ni.on{border-left:none;border-right-color:var(--ac);}
-  .ni-l{display:block;font-size:8px;text-align:center;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;line-height:1;}
+  .ni.on{border-left:none;border-right-color:var(--ac-hi);}
+  .ni-l{display:block;font-size:8px;text-align:center;font-family:'Inter',system-ui,sans-serif;text-transform:uppercase;letter-spacing:.5px;line-height:1;}
   .ni-b{display:none;}
   .ni-tag{display:none;}
   #rnav{display:none;}
@@ -409,14 +477,15 @@ a.ni{color:inherit;text-decoration:none;}
 #mob-nav{display:none;}
 
 .mat-page{min-height:100%;background:var(--bg);}
-.mat-header{display:flex;align-items:center;gap:10px;padding:16px 20px;background:#faf7f2;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:10;}
+.mat-header{display:flex;align-items:center;gap:10px;padding:16px 20px;background:#eef4ee;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:10;}
 .mat-list{padding:12px 16px;}
 .mat-row{display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border:1px solid var(--bd);border-radius:8px;margin-bottom:8px;transition:all .2s;}
 .mat-row.mat-bought{opacity:.5;}
+.mat-thumb{width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--bd2);flex-shrink:0;background:var(--sf2);}
 .mat-ic{font-size:28px;width:40px;text-align:center;flex-shrink:0;}
 .mat-info{flex:1;}
 .mat-name{font-size:13px;font-weight:500;color:var(--tx);margin-bottom:2px;}
-.mat-price{font-size:12px;color:var(--ac);font-family:'DM Mono',monospace;font-weight:600;}
+.mat-price{font-size:12px;color:var(--ac);font-family:'Inter',system-ui,sans-serif;font-weight:600;}
 .mat-right{flex-shrink:0;}
 .mat-ck{width:24px;height:24px;border:2px solid var(--bd2);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;transition:all .15s;}
 .mat-ck.on{background:var(--ac);border-color:var(--ac);color:#fff;}
@@ -428,13 +497,13 @@ a.ni{color:inherit;text-decoration:none;}
 .cl-card{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.04);cursor:pointer;transition:all .2s;position:relative;}
 .cl-card:hover{border-color:var(--bd2);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.08);}
 .cl-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
-.cl-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;color:#fff;font-family:'DM Serif Display',serif;font-size:18px;flex-shrink:0;}
+.cl-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Inter',system-ui,sans-serif;font-size:18px;flex-shrink:0;}
 .cl-name{font-size:15px;font-weight:600;color:var(--tx);margin-bottom:2px;}
-.cl-meta{font-size:12px;color:var(--tx3);font-family:'DM Mono',monospace;}
+.cl-meta{font-size:12px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
 .cl-detail{font-size:12px;color:var(--tx2);margin-top:6px;line-height:1.6;}
 .cl-detail span{display:block;}
 .cl-actions{display:flex;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--bd);}
-.cl-proj-count{font-size:10px;font-family:'DM Mono',monospace;color:var(--ac);background:rgba(45,122,79,.1);padding:2px 7px;border-radius:10px;}
+.cl-proj-count{font-size:10px;font-family:'Inter',system-ui,sans-serif;color:var(--ac);background:rgba(90,154,90,.1);padding:2px 7px;border-radius:10px;}
 .cl-empty{text-align:center;padding:60px 20px;color:var(--tx3);}
 .cl-empty-i{font-size:40px;margin-bottom:12px;opacity:.4;}
 .cl-empty-t{font-size:16px;font-weight:500;margin-bottom:6px;}
@@ -442,10 +511,10 @@ a.ni{color:inherit;text-decoration:none;}
 
 /* client form in modal */
 .cf-field{margin-bottom:12px;}
-.cf-label{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;margin-bottom:4px;}
-.cf-input{width:100%;background:#fff;border:1px solid var(--bd2);border-radius:7px;padding:9px 12px;color:var(--tx);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border .15s;}
+.cf-label{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;margin-bottom:4px;}
+.cf-input{width:100%;background:#fff;border:1px solid var(--bd2);border-radius:7px;padding:9px 12px;color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:14px;outline:none;transition:border .15s;}
 .cf-input:focus{border-color:var(--ac);}
-.cf-textarea{width:100%;background:#fff;border:1px solid var(--bd2);border-radius:7px;padding:9px 12px;color:var(--tx);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;resize:vertical;min-height:60px;transition:border .15s;}
+.cf-textarea{width:100%;background:#fff;border:1px solid var(--bd2);border-radius:7px;padding:9px 12px;color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:14px;outline:none;resize:vertical;min-height:60px;transition:border .15s;}
 .cf-textarea:focus{border-color:var(--ac);}
 /* ── INVOICE ── */
 .inv-status-draft{background:#f0f0f0;color:#666;}
@@ -454,25 +523,25 @@ a.ni{color:inherit;text-decoration:none;}
 .inv-status-overdue{background:#fde8e8;color:#c0392b;}
 .inv-status-paid{background:#e6f4ea;color:#1e7e34;}
 .inv-status-void{background:#f5f5f5;color:#999;text-decoration:line-through;}
-.inv-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;}
+.inv-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;font-family:'Inter',system-ui,sans-serif;text-transform:uppercase;letter-spacing:.5px;}
 
 /* Ledger table */
 .inv-ledger{width:100%;border-collapse:collapse;font-size:13px;}
 .inv-ledger thead tr{border-bottom:2px solid var(--bd2);}
-.inv-ledger th{padding:8px 12px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--tx3);font-family:'DM Mono',monospace;white-space:nowrap;}
+.inv-ledger th{padding:8px 12px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;white-space:nowrap;}
 .inv-ledger th.r{text-align:right;}
 .inv-ledger tbody tr{border-bottom:1px solid var(--bd);cursor:pointer;transition:background .12s;}
 .inv-ledger tbody tr:hover{background:#f7f4ef;}
 .inv-ledger td{padding:12px 12px;vertical-align:middle;}
 .inv-ledger td.r{text-align:right;}
-.inv-ledger .il-num{font-family:'DM Mono',monospace;font-weight:600;font-size:12px;color:var(--tx);white-space:nowrap;}
+.inv-ledger .il-num{font-family:'Inter',system-ui,sans-serif;font-weight:600;font-size:12px;color:var(--tx);white-space:nowrap;}
 .inv-ledger .il-client{font-weight:500;color:var(--tx);}
 .inv-ledger .il-addr{font-size:11px;color:var(--tx3);margin-top:1px;}
-.inv-ledger .il-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--tx2);white-space:nowrap;}
-.inv-ledger .il-terms{font-family:'DM Mono',monospace;font-size:11px;color:var(--tx3);}
-.inv-ledger .il-overdue{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--red);}
-.inv-ledger .il-amt{font-family:'DM Mono',monospace;font-size:13px;color:var(--tx);white-space:nowrap;}
-.inv-ledger .il-bal{font-family:'DM Mono',monospace;font-size:13px;font-weight:600;white-space:nowrap;}
+.inv-ledger .il-date{font-family:'Inter',system-ui,sans-serif;font-size:11px;color:var(--tx2);white-space:nowrap;}
+.inv-ledger .il-terms{font-family:'Inter',system-ui,sans-serif;font-size:11px;color:var(--tx3);}
+.inv-ledger .il-overdue{font-family:'Inter',system-ui,sans-serif;font-size:11px;font-weight:600;color:var(--red);}
+.inv-ledger .il-amt{font-family:'Inter',system-ui,sans-serif;font-size:13px;color:var(--tx);white-space:nowrap;}
+.inv-ledger .il-bal{font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:600;white-space:nowrap;}
 .inv-ledger .il-bal.owing{color:var(--red);}
 .inv-ledger .il-bal.clear{color:var(--grn);}
 .inv-table-wrap{background:#fff;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);}
@@ -489,23 +558,23 @@ a.ni{color:inherit;text-decoration:none;}
 
 .inv-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
 .inv-stat{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
-.inv-stat-l{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'DM Mono',monospace;}
-.inv-stat-v{font-family:'DM Serif Display',serif;font-size:22px;margin-top:4px;}
+.inv-stat-l{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;}
+.inv-stat-v{font-family:'Inter',system-ui,sans-serif;font-size:22px;margin-top:4px;}
 
 .inv-status-bar{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 1px 4px rgba(0,0,0,.04);}
 .inv-action-btns{display:flex;gap:8px;flex-wrap:wrap;}
 
 .dep-box{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:16px 18px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
-.dep-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--tx2);font-family:'DM Mono',monospace;margin-bottom:12px;}
+.dep-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--tx2);font-family:'Inter',system-ui,sans-serif;margin-bottom:12px;}
 .dep-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
 .dep-amt-wrap{display:flex;align-items:center;gap:6px;background:var(--sf2);border:1px solid var(--bd2);border-radius:7px;padding:6px 10px;}
 .dep-amt-wrap span{font-size:14px;color:var(--tx3);}
-.dep-amt-wrap input{background:transparent;border:none;outline:none;font-family:'DM Mono',monospace;font-size:16px;color:var(--tx);width:100px;}
-.dep-paid-btn{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd2);background:#fff;color:var(--tx2);transition:all .15s;font-family:'DM Mono',monospace;}
+.dep-amt-wrap input{background:transparent;border:none;outline:none;font-family:'Inter',system-ui,sans-serif;font-size:16px;color:var(--tx);width:100px;}
+.dep-paid-btn{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd2);background:#fff;color:var(--tx2);transition:all .15s;font-family:'Inter',system-ui,sans-serif;}
 .dep-paid-btn.paid{background:var(--grn);border-color:var(--grn);color:#fff;}
 .dep-bal{margin-top:12px;padding-top:12px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;}
 .dep-bal-l{font-size:13px;color:var(--tx2);}
-.dep-bal-v{font-family:'DM Serif Display',serif;font-size:24px;}
+.dep-bal-v{font-family:'Inter',system-ui,sans-serif;font-size:24px;}
 .dep-bal-v.owing{color:var(--red);}
 .dep-bal-v.clear{color:var(--grn);}
 
@@ -513,13 +582,13 @@ a.ni{color:inherit;text-decoration:none;}
 
 /* Intake wizard */
 .intake-wrap{max-width:720px;}
-.intake-progress{font-size:11px;font-family:'DM Mono',monospace;color:var(--tx3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;}
-.intake-q{font-family:'DM Serif Display',serif;font-size:24px;color:var(--tx);margin-bottom:8px;line-height:1.2;}
+.intake-progress{font-size:11px;font-family:'Inter',system-ui,sans-serif;color:var(--tx3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;}
+.intake-q{font-family:'Inter',system-ui,sans-serif;font-size:24px;color:var(--tx);margin-bottom:8px;line-height:1.2;}
 .intake-sub{font-size:14px;color:var(--tx2);margin-bottom:20px;line-height:1.45;}
 .intake-cb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:24px;}
 .intake-cb{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#fff;border:1px solid var(--bd);border-radius:var(--r);cursor:pointer;transition:border .15s,background .15s;box-shadow:0 1px 3px rgba(0,0,0,.04);}
 .intake-cb:hover{border-color:var(--bd2);}
-.intake-cb.on{border-color:var(--ac);background:rgba(45,122,79,.06);}
+.intake-cb.on{border-color:var(--ac);background:rgba(90,154,90,.06);}
 .intake-cb input{width:18px;height:18px;accent-color:var(--ac);cursor:pointer;flex-shrink:0;}
 .intake-cb span{font-size:14px;font-weight:500;}
 .intake-cb .ic{font-size:20px;}
@@ -562,11 +631,19 @@ a.ni{color:inherit;text-decoration:none;}
       <div class="proj-wrap">
         <select id="proj-select" class="proj-select" title="Active project" onchange="onProjectSelectChange(this)"></select>
         <button type="button" class="btn bp proj-new-btn" onclick="openNewProjectClientFlow()">+ New Project</button>
+        <div id="rnav"></div>
+        <div class="ni" data-pg="shop" onclick="openProjectMaterials()">
+          <span class="ni-i"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 5.5h12v9h-12z"/><path d="M5.5 5.5V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/><line x1="2.5" y1="9.5" x2="14.5" y2="9.5"/></svg></span>
+          <span class="ni-l">Materials</span>
+        </div>
         <div class="ni" data-pg="tl" onclick="gP('tl')">
           <span class="ni-i"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="3" width="14" height="12" rx="1.5"/><line x1="5.5" y1="1" x2="5.5" y2="5"/><line x1="11.5" y1="1" x2="11.5" y2="5"/><line x1="1.5" y1="7.5" x2="15.5" y2="7.5"/></svg></span>
           <span class="ni-l">Timeline</span>
         </div>
-        <div id="rnav"></div>
+        <div class="ni" data-pg="cal" onclick="gP('cal')">
+          <span class="ni-i"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="13" height="12" rx="1.5"/><line x1="2" y1="7" x2="15" y2="7"/><line x1="6" y1="1" x2="6" y2="5"/><line x1="11" y1="1" x2="11" y2="5"/></svg></span>
+          <span class="ni-l">Schedule</span>
+        </div>
         <a href="/projects" class="ni">
           <span class="ni-i"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 4.5h4.5l1.5 2h8v9h-14z"/><path d="M1.5 8.5h14"/></svg></span>
           <span class="ni-l">All projects &amp; clients</span>
@@ -597,6 +674,7 @@ a.ni{color:inherit;text-decoration:none;}
     <div id="p-intake" style="display:none"></div>
     <div id="p-room" style="display:none"></div>
     <div id="p-tl" style="display:none"></div>
+    <div id="p-cal" style="display:none"></div>
     <div id="p-shop" style="display:none"></div>
     <div id="p-quote" style="display:none"></div>
     <div id="p-inv" style="display:none"></div>
@@ -665,12 +743,14 @@ a.ni{color:inherit;text-decoration:none;}
 <script>
 "use strict";
 
-var TC={demo:"#e85547",framing:"#e87747",electrical:"#e8c547",plumbing:"#47a0e8",hvac:"#8847e8",lowvolt:"#5c6bc0",insulation:"#47e8c5",drywall:"#e847a0",tile:"#a0e847",flooring:"#e8a047",painting:"#47e8a0",trim:"#e88847",cabinets:"#7047e8",closets:"#8b7355",finishing:"#5d9c8a"};
-var TN={demo:"Demolition",framing:"Framing",electrical:"Electrical",plumbing:"Plumbing",hvac:"HVAC",lowvolt:"Low voltage",insulation:"Insulation",drywall:"Drywall",tile:"Tile",flooring:"Flooring",painting:"Painting",trim:"Trim & Millwork",cabinets:"Cabinets & tops",closets:"Closets",finishing:"Finishing"};
-var TIC={demo:"🔨",framing:"🪵",electrical:"⚡",plumbing:"🚿",hvac:"🌀",lowvolt:"📡",insulation:"🧱",drywall:"⬜",tile:"🔲",flooring:"🪵",painting:"🎨",trim:"📏",cabinets:"🗄",closets:"👔",finishing:"✨"};
+var TC={demo:"#e85547",framing:"#e87747",concrete:"#78909c",roofing:"#5c7a8a",electrical:"#e8c547",plumbing:"#47a0e8",hvac:"#8847e8",lowvolt:"#5c6bc0",security:"#455a64",comdoor:"#6d4c41",insulation:"#47e8c5",drywall:"#e847a0",tile:"#a0e847",flooring:"#e8a047",painting:"#47e8a0",trim:"#e88847",cabinets:"#7047e8",closets:"#8b7355",finishing:"#5d9c8a"};
+var TN={demo:"Demolition",framing:"Framing",concrete:"Concrete",roofing:"Roofing",electrical:"Electrical",plumbing:"Plumbing",hvac:"HVAC",lowvolt:"Low voltage",security:"Security",comdoor:"Commercial door hardware",insulation:"Insulation",drywall:"Drywall",tile:"Tile",flooring:"Flooring",painting:"Painting",trim:"Trim & Millwork",cabinets:"Cabinets & tops",closets:"Closets",finishing:"Finishing"};
+var TIC={demo:"🔨",framing:"🪵",concrete:"🪨",roofing:"🏠",electrical:"⚡",plumbing:"🚿",hvac:"🌀",lowvolt:"📡",security:"🛡",comdoor:"🚪",insulation:"🧱",drywall:"⬜",tile:"🔲",flooring:"🪵",painting:"🎨",trim:"📏",cabinets:"🗄",closets:"👔",finishing:"✨"};
 var TB={
   demo:[{id:"d1",l:"👷 Demo Labour",u:"hrs",p:65},{id:"d2",l:"🗑 Disposal Bin",u:"load",p:350},{id:"d3",l:"📋 Permit",u:"flat",p:0}],
   framing:[{id:"fr1",l:"🪵 Studs 2x4",u:"stud",p:4.50},{id:"fr2",l:"🪵 Studs 2x6",u:"stud",p:6.50},{id:"fr3",l:"📏 Plates 2x4",u:"ea",p:5},{id:"fr4",l:"👷 Framing Labour",u:"hrs",p:75}],
+  concrete:[{id:"cf1",l:"🚛 Ready-mix (ordered)",u:"cy",p:185},{id:"cf2",l:"📦 60lb premix bags",u:"bag",p:6.5},{id:"cf3",l:"📦 80lb premix bags",u:"bag",p:8.5},{id:"cf4",l:"🔩 Rebar / mesh",u:"sqft",p:1.2},{id:"cf5",l:"👷 Concrete labour",u:"hrs",p:95}],
+  roofing:[{id:"rf1",l:"🔲 Architectural shingles",u:"sq",p:125},{id:"rf2",l:"📄 Synthetic underlayment",u:"roll",p:95},{id:"rf3",l:"📐 Drip edge",u:"lf",p:4.2},{id:"rf4",l:"👑 Ridge cap",u:"bundle",p:48},{id:"rf5",l:"🔩 Roofing nails",u:"lb",p:5.5},{id:"rf6",l:"👷 Roofing labour",u:"hrs",p:88}],
   electrical:[{id:"el1",l:"👷 Electrician Labour",u:"hrs",p:110},{id:"el2",l:"🔌 Wiring 14/2",u:"roll",p:85},{id:"el3",l:"📦 Junction Boxes",u:"ea",p:8}],
   plumbing:[{id:"pl1",l:"👷 Plumber Labour",u:"hrs",p:120},{id:"pl2",l:"🔧 Supply Lines",u:"ea",p:18}],
   hvac:[{id:"hv1",l:"🌀 Ductwork",u:"ft",p:12},{id:"hv2",l:"🔲 Registers",u:"ea",p:45},{id:"hv3",l:"👷 HVAC Labour",u:"hrs",p:95}],
@@ -683,7 +763,9 @@ var TB={
   cabinets:[{id:"ca1",l:"👷 Cabinet Install Labour",u:"hrs",p:75},{id:"ca2",l:"⬜ Countertop (supply)",u:"sqft",p:85}],
   lowvolt:[{id:"lv1",l:"👷 Low-voltage labour",u:"hrs",p:95},{id:"lv2",l:"📡 Data / coax",u:"ft",p:3.5},{id:"lv3",l:"🔊 Pre-wire points",u:"ea",p:85},{id:"lv4",l:"🌐 Cat 6 outdoor cable",u:"ft",p:3.8},{id:"lv5",l:"🔥 Cat 6 plenum (fire rated)",u:"ft",p:3.2},{id:"lv6",l:"📡 Cat 6 non-plenum",u:"ft",p:2.6},{id:"lv7",l:"🔌 Patch panel",u:"ea",p:95},{id:"lv8",l:"📷 Camera exterior back box",u:"ea",p:28},{id:"lv9",l:"🧱 PVC pipe",u:"ft",p:2.2},{id:"lv10",l:"🔩 PVC connectors",u:"ea",p:4.5},{id:"lv11",l:"📦 PVC boxes",u:"ea",p:12},{id:"lv12",l:"🔀 HDMI to RJ45 adapter",u:"ea",p:65},{id:"lv13",l:"🖥 Monitor",u:"ea",p:280}],
   closets:[{id:"cl1",l:"👷 Closet install labour",u:"hrs",p:72},{id:"cl2",l:"📐 Wire / melamine",u:"ln ft",p:42},{id:"cl3",l:"🚪 Bifold / bypass doors",u:"ea",p:240}],
-  finishing:[{id:"fn1",l:"👷 Punch / detail labour",u:"hrs",p:62},{id:"fn2",l:"🔧 Hardware / accessories",u:"ea",p:28},{id:"fn3",l:"✨ Final touch-ups",u:"hrs",p:58}]
+  finishing:[{id:"fn1",l:"👷 Punch / detail labour",u:"hrs",p:62},{id:"fn2",l:"🔧 Hardware / accessories",u:"ea",p:28},{id:"fn3",l:"✨ Final touch-ups",u:"hrs",p:58}],
+  security:[{id:"se1",l:"📼 NVR",u:"ea",p:450},{id:"se2",l:"🔌 PoE switch",u:"ea",p:320},{id:"se3",l:"🚪 Access control",u:"ea",p:890},{id:"se4",l:"🧲 Mag locks",u:"ea",p:180},{id:"se5",l:"💳 Card readers",u:"ea",p:145},{id:"se6",l:"👷 Security labour",u:"hrs",p:95}],
+  comdoor:[{id:"cd1",l:"🚪 Door closers",u:"ea",p:85},{id:"cd2",l:"🚪 Exit devices",u:"ea",p:420},{id:"cd3",l:"📎 Hinges",u:"ea",p:28},{id:"cd4",l:"🔐 Locksets",u:"ea",p:180},{id:"cd5",l:"🛑 Door stops",u:"ea",p:12},{id:"cd6",l:"👷 Hardware labour",u:"hrs",p:95}]
 };
 var AM={fr1:"studs",fr3:"plates",dw1:"dwWall",in1:"insBatt",pa1:"paintWall",pa2:"paintCeil",pa3:"primer",fl1:"floor",fl2:"under",ti1:"tileFl",tr1:"base"};
 var FX={
@@ -699,19 +781,19 @@ var RT=[
   {n:"Basement",   ic:"⬇", trades:["demo","framing","electrical","plumbing","hvac","insulation","drywall","flooring","painting","trim"]},
   {n:"Laundry",    ic:"🫧",trades:["demo","electrical","plumbing","drywall","flooring","painting","trim"]},
   {n:"Garage",     ic:"🚗",trades:["demo","electrical","drywall","flooring","painting"]},
-  {n:"Whole House",ic:"🏠",trades:["demo","framing","electrical","plumbing","hvac","lowvolt","insulation","drywall","tile","flooring","trim","painting","cabinets","closets","finishing"]},
-  {n:"Custom",     ic:"✏", trades:["demo","framing","electrical","plumbing","hvac","lowvolt","insulation","drywall","tile","flooring","trim","painting","cabinets","closets","finishing"]}
+  {n:"Whole House",ic:"🏠",trades:["demo","framing","concrete","roofing","electrical","plumbing","hvac","lowvolt","security","insulation","drywall","tile","flooring","comdoor","trim","painting","cabinets","closets","finishing"]},
+  {n:"Custom",     ic:"✏", trades:["demo","framing","concrete","roofing","electrical","plumbing","hvac","lowvolt","security","insulation","drywall","tile","flooring","comdoor","trim","painting","cabinets","closets","finishing"]}
 ];
 
-// Sequence: demo → framing → ROUGHIN (MEP + low-volt) → shell → finishes
-var SEQ=['demo','framing','ROUGHIN','insulation','drywall','tile','flooring','trim','painting','cabinets','closets','finishing'];
-var ROUGHIN=['electrical','plumbing','hvac','lowvolt'];
+// Sequence: demo → framing → concrete/roofing shell → ROUGHIN (MEP + low-volt + security) → shell → finishes
+var SEQ=['demo','framing','concrete','roofing','ROUGHIN','insulation','drywall','tile','flooring','comdoor','trim','painting','cabinets','closets','finishing'];
+var ROUGHIN=['electrical','plumbing','hvac','lowvolt','security'];
 
 function DS(){return{
   proj:{name:"My Renovation",client:"",clientId:"",addr:"",qnum:"Q-001",notes:"All prices include labour and materials. HST extra. 50% deposit required.",startDate:"",deadlineDate:"",parallelRooms:false,includeTimeline:true,dbProjectId:""},
   co:{name:"Your Company",phone:"",email:"",lic:"",addr:""},
   mk:{mat:20,tax:13},
-  rooms:[],ck:{},clients:[],invoices:[],quotes:[],invNum:1
+  rooms:[],ck:{},clients:[],invoices:[],quotes:[],invNum:1,matHideZero:true
 };}
 var S=load(),st=null,__rfProjSelT=null;
 function load(){
@@ -737,6 +819,7 @@ function migrate(d){
   if(!d.invoices)d.invoices=[];
   if(!d.quotes)d.quotes=[];
   if(!d.invNum)d.invNum=1;
+  if(d.matHideZero===undefined)d.matHideZero=true;
   (d.rooms||[]).forEach(function(r){
     (r.trades||[]).forEach(function(t){
       if(t.days===undefined)t.days=0;
@@ -899,25 +982,24 @@ function mergeServerWorkspace(payload, opts){
   if(payload.invNumSuggested){S.invNum=Math.max(S.invNum||1,payload.invNumSuggested);}
 }
 
-/** Sidebar project dropdown: stacked C: client · A: address · P: project name */
+/** Sidebar project dropdown: project name only (one line per project). */
 function formatProjectSelectLabel(p){
   var name=(p&&p.name)?String(p.name).trim():"";
   if(!name) name="Untitled";
-  var who="";
-  if(p){
-    who=(p.client_name&&String(p.client_name).trim())||"";
-    if(!who&&p.client&&p.client.full_name) who=String(p.client.full_name).trim();
-  }
-  var addr="";
-  if(p){
-    addr=(p.address&&String(p.address).trim())||"";
-    if(!addr&&p.client&&p.client.address) addr=String(p.client.address).trim();
-  }
-  return "C: "+(who||"—")+"\nA: "+(addr||"—")+"\nP: "+name;
+  return name;
 }
 function formatProjectSelectTitle(p){
-  var label=formatProjectSelectLabel(p);
-  return label.replace(/\n/g," · ");
+  var name=formatProjectSelectLabel(p);
+  var extra=[];
+  if(p){
+    var who=(p.client_name&&String(p.client_name).trim())||"";
+    if(!who&&p.client&&p.client.full_name) who=String(p.client.full_name).trim();
+    var addr=(p.address&&String(p.address).trim())||"";
+    if(!addr&&p.client&&p.client.address) addr=String(p.client.address).trim();
+    if(who) extra.push(who);
+    if(addr) extra.push(addr);
+  }
+  return extra.length?name+" — "+extra.join(" · "):name;
 }
 function renderProjectSelect(){
   var sel=document.getElementById("proj-select");
@@ -1272,15 +1354,19 @@ function calcDurations(room){
   var c=calcDims(room.d||{});
   var m=roomMetrics(room);
   if(!c){
-    return {demo:1,framing:1,electrical:1,plumbing:1,hvac:1,lowvolt:1,insulation:1,drywall:3,tile:1,flooring:1,painting:1,trim:1,cabinets:1,closets:1,finishing:1};
+    return {demo:1,framing:1,concrete:1,roofing:1,electrical:1,plumbing:1,hvac:1,lowvolt:1,security:1,comdoor:1,insulation:1,drywall:3,tile:1,flooring:1,painting:1,trim:1,cabinets:1,closets:1,finishing:1};
   }
   return {
     demo:       Math.max(1, Math.ceil(c.fl/150)),
     framing:    Math.max(1, Math.ceil(c.pr/30) + Math.ceil(c.doors*0.25)),
+    concrete:   Math.max(1, Math.ceil((c.fl||0)/400) + 1),
+    roofing:    Math.max(1, Math.ceil((c.fl||0)/2000) + 1),
     electrical: Math.max(1, Math.ceil((m.elPts||1)/8)),
     plumbing:   Math.max(1, Math.ceil(0.5 + m.plFix*0.75)),
     hvac:       Math.max(1, Math.ceil(c.fl/250)),
     lowvolt:    Math.max(1, Math.ceil((m.elPts||1)/10)),
+    security:   Math.max(1, Math.ceil((m.elPts||1)/8)),
+    comdoor:    Math.max(1, Math.ceil((c.doors||1)*0.75) + Math.ceil((c.pr||0)/80)),
     insulation: Math.max(1, Math.ceil(c.net/400)),
     drywall:    Math.max(3, Math.ceil(c.dwWall/15) + 2),
     tile:       Math.max(1, Math.ceil((m.tileSqft||c.fl)/40)),
@@ -1300,10 +1386,14 @@ function formulaHint(tradeId, room){
   switch(tradeId){
     case 'demo':       return Math.round(c.fl)+' sqft ÷ 150/day';
     case 'framing':    return Math.round(c.pr)+' ft ÷ 30/day'+(c.doors?' + '+c.doors+' doors':'');
+    case 'concrete':   return Math.round(c.fl)+' sqft footprint ÷ 400/day + setup';
+    case 'roofing':    return Math.round(c.fl)+' sqft footprint ÷ 2000/day + detail';
     case 'electrical': return (m.elPts||0)+' rough-in pts ÷ 8/day';
     case 'plumbing':   return m.plFix+' fixtures × 0.75 + 0.5 setup';
     case 'hvac':       return Math.round(c.fl)+' sqft ÷ 250/day';
     case 'lowvolt':    return (m.elPts||0)+' low-volt pts ÷ 10/day';
+    case 'security':   return (m.elPts||0)+' rough-in pts ÷ 8/day';
+    case 'comdoor':    return Math.round(c.pr)+' ft perimeter ÷ 80/day';
     case 'insulation': return Math.round(c.net)+' sqft ÷ 400/day';
     case 'drywall':    return c.dwWall+' sheets ÷ 15/day + 2 mud';
     case 'tile':       return Math.round(m.tileSqft||c.fl)+' sqft ÷ 40/day';
@@ -1412,19 +1502,22 @@ function roomSchedule(room, offsetDays){
   return schedule;
 }
 
-function projectSchedule(){
-  var rooms=[];
+function projectScheduleForState(rooms, parallelRooms){
+  var roomsOut=[];
   var cursor=0, maxEnd=0;
-  S.rooms.forEach(function(r){
-    var startDay = S.proj.parallelRooms ? 0 : cursor;
+  (rooms||[]).forEach(function(r){
+    var startDay = parallelRooms ? 0 : cursor;
     var sched=roomSchedule(r, startDay);
     var duration=roomDurationDays(r);
     var endDay = startDay + duration;
-    rooms.push({room:r, schedule:sched, startDay:startDay+1, endDay:endDay, duration:duration});
-    if(!S.proj.parallelRooms) cursor += duration;
+    roomsOut.push({room:r, schedule:sched, startDay:startDay+1, endDay:endDay, duration:duration});
+    if(!parallelRooms) cursor += duration;
     if(endDay>maxEnd) maxEnd=endDay;
   });
-  return {roomSchedules:rooms, totalDays:maxEnd};
+  return {roomSchedules:roomsOut, totalDays:maxEnd};
+}
+function projectSchedule(){
+  return projectScheduleForState(S.rooms, !!S.proj.parallelRooms);
 }
 
 // Working-day N from start date, skipping weekends
@@ -1443,15 +1536,109 @@ function getWorkingDate(startDateStr, workingDay){
   return d;
 }
 
+function ymdFromDateObj(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function addCalendarDaysYmd(ymd, delta){
+  if(!ymd||delta===0)return ymd||'';
+  var p=ymd.split('-');
+  if(p.length!==3)return ymd;
+  var d=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
+  if(isNaN(d.getTime()))return ymd;
+  d.setDate(d.getDate()+delta);
+  return ymdFromDateObj(d);
+}
+function readWorkspaceSnapshotForProject(projectId){
+  try{
+    var w=localStorage.getItem("rf7_ws_"+projectId);
+    if(w)return migrate(JSON.parse(w));
+  }catch(e){}
+  return null;
+}
+function snapshotFromWorkspacePayload(payload){
+  if(!payload)return null;
+  var snap=DS();
+  if(payload.project){
+    var p=payload.project;
+    if(p.dbProjectId!==undefined)snap.proj.dbProjectId=p.dbProjectId;
+    if(p.name!==undefined)snap.proj.name=p.name;
+    if(p.client!==undefined)snap.proj.client=p.client;
+    if(p.addr!==undefined)snap.proj.addr=p.addr;
+    if(p.qnum!==undefined)snap.proj.qnum=p.qnum;
+    if(p.notes!==undefined)snap.proj.notes=p.notes;
+    if(p.startDate!==undefined)snap.proj.startDate=p.startDate;
+    if(p.deadlineDate!==undefined)snap.proj.deadlineDate=p.deadlineDate;
+    if(p.parallelRooms!==undefined)snap.proj.parallelRooms=p.parallelRooms;
+    if(p.includeTimeline!==undefined)snap.proj.includeTimeline=p.includeTimeline;
+    if(p.clientId!==undefined)snap.proj.clientId=p.clientId;
+  }
+  if(payload.rooms)snap.rooms=payload.rooms;
+  return migrate(snap);
+}
+function getWorkspaceForCalendar(projectId){
+  var loc=readWorkspaceSnapshotForProject(projectId);
+  if(loc&&loc.rooms&&loc.rooms.length)return Promise.resolve(loc);
+  return fetch("/api/projects/"+encodeURIComponent(projectId)+"/workspace",{credentials:"include"})
+    .then(function(res){return res.json().then(function(j){if(!res.ok)throw new Error(j.error||"HTTP");return j;});})
+    .then(function(payload){return snapshotFromWorkspacePayload(payload);})
+    .catch(function(){return null;});
+}
+var CAL_PALETTE=['#2d7a4f','#b8622a','#3d6ea8','#7a4d9a','#c24a42','#4a7a8a','#6a8a4a'];
+function calColorForPid(pid){
+  var h=0; var s=String(pid||'');
+  for(var i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0;
+  return CAL_PALETTE[h%CAL_PALETTE.length];
+}
+function persistProjectStartDate(projectId, ymd){
+  var cur=S.proj&&S.proj.dbProjectId;
+  if(String(cur)===String(projectId)){
+    S.proj.startDate=ymd;
+    ss();
+    patchProjectMeta({start_date:ymd||null});
+    if(curPg==='tl')rTimeline();
+    if(curPg==='cal')rCalendar();
+    return;
+  }
+  var snap=readWorkspaceSnapshotForProject(projectId);
+  if(snap&&snap.proj){
+    snap.proj.startDate=ymd;
+    try{localStorage.setItem("rf7_ws_"+projectId, JSON.stringify(snap));}catch(e){}
+  }
+  fetch("/api/projects/"+encodeURIComponent(projectId),{
+    method:"PATCH",credentials:"include",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({start_date:ymd||null})
+  }).catch(function(){});
+  if(curPg==='cal')rCalendar();
+}
+function calBarDrag(ev, projectId, origYmd){
+  if(!origYmd){ try{alert('Set a start date on the Timeline tab first.');}catch(x){} return; }
+  ev.preventDefault();
+  ev.stopPropagation();
+  var startX=ev.clientX;
+  var pxPerDay=14;
+  function move(ev2){ ev2.preventDefault(); }
+  function up(ev2){
+    document.removeEventListener('pointermove',move);
+    document.removeEventListener('pointerup',up);
+    var dDays=Math.round((ev2.clientX-startX)/pxPerDay);
+    if(dDays!==0) persistProjectStartDate(projectId, addCalendarDaysYmd(origYmd, dDays));
+    else if(curPg==='cal') rCalendar();
+  }
+  document.addEventListener('pointermove',move,{passive:false});
+  document.addEventListener('pointerup',up);
+}
+
 function fmtDate(d){return d?d.toLocaleDateString('en-CA',{month:'short',day:'numeric'}):'—';}
 function fmtDateFull(d){return d?d.toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'}):'—';}
 function fmtDateLong(d){return d?d.toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}):'—';}
 
 var curPg="dash",curR=null;
+var matListScope="project",matListRoomIdx=null;
 /** When true, after POST /api/clients creates a project, go to project intake instead of dashboard. */
 var __rfAfterNewClientGoIntake=false;
 var intakeStep=1,intakeRoomPick=[],intakeSlots=[],intakeTrades=[];
-var INTAKE_TRADE_IDS=['demo','framing','electrical','plumbing','hvac','lowvolt','insulation','drywall','tile','flooring','painting','trim','cabinets','closets','finishing'];
+var INTAKE_TRADE_IDS=['demo','framing','concrete','roofing','electrical','plumbing','hvac','lowvolt','security','comdoor','insulation','drywall','tile','flooring','painting','trim','cabinets','closets','finishing'];
 
 var expandedTi=null;
 
@@ -1479,7 +1666,7 @@ function goToProjectTradeEditor(){
 function showPg(pg){
   var pbtn=document.querySelector(".proj-new-btn");
   if(pbtn) pbtn.classList.toggle("on", pg==="intake");
-  ["dash","room","tl","shop","quote","inv","clients","sett","intake"].forEach(function(p){
+  ["dash","room","tl","cal","shop","quote","inv","clients","sett","intake"].forEach(function(p){
     var el=document.getElementById("p-"+p);if(el)el.style.display=(p===pg)?"":"none";
   });
   if(pg==="intake"){
@@ -1493,6 +1680,7 @@ function showPg(pg){
   if(pg==="dash")rDash();
   if(pg==="room")rRoom();
   if(pg==="tl")rTimeline();
+  if(pg==="cal")rCalendar();
   if(pg==="shop")rShop();
   if(pg==="quote")rQuote();
   if(pg==="inv")rInv();
@@ -1878,10 +2066,10 @@ function rDash(){
 
 var TRADE_COL_HEAD=['Structure','Mechanical & power','Shell','Doors, trim & tile','Paint & finals'];
 var TRADE_COL_IDS=[
-  ['demo','framing'],
-  ['hvac','plumbing','electrical','lowvolt'],
+  ['demo','framing','concrete','roofing'],
+  ['hvac','plumbing','electrical','lowvolt','security'],
   ['insulation','drywall'],
-  ['trim','tile'],
+  ['comdoor','trim','tile'],
   ['flooring','painting','cabinets','closets','finishing']
 ];
 
@@ -1890,13 +2078,444 @@ function tradeIndexById(room,tid){
   return -1;
 }
 
+function ensureElecLoad(t){
+  if(!t.elecLoad) t.elecLoad={cap:100,lit:0,rec:0,heavy:0};
+}
+function elAmpTotal(t){
+  ensureElecLoad(t);
+  var e=t.elecLoad;
+  return e.lit*0.5+e.rec*1.5+e.heavy*20;
+}
+function elAdj(ti,field,delta){
+  var room=S.rooms[curR];if(!room||!room.trades[ti])return;
+  ensureElecLoad(room.trades[ti]);
+  var e=room.trades[ti].elecLoad;
+  var v=(e[field]||0)+delta;
+  if(v<0)v=0;
+  e[field]=v;
+  ss();rRoom();
+}
+function elSet(ti,field,val){
+  var room=S.rooms[curR];if(!room||!room.trades[ti])return;
+  ensureElecLoad(room.trades[ti]);
+  room.trades[ti].elecLoad[field]=Math.max(0,parseFloat(val)||0);
+  ss();rRoom();
+}
+function elSetCap(ti,val){
+  var room=S.rooms[curR];if(!room||!room.trades[ti])return;
+  ensureElecLoad(room.trades[ti]);
+  room.trades[ti].elecLoad.cap=parseInt(val,10)||100;
+  ss();rRoom();
+}
+function elCatRow(ti,field,label,val){
+  return '<div class="rf-elec-row"><div class="rf-elec-lbl">'+label+'</div>'
+    +'<div class="rf-elec-btns">'
+    +'<button type="button" class="fxb" onclick="elAdj('+ti+',\''+field+'\',-10)">−10</button>'
+    +'<button type="button" class="fxb" onclick="elAdj('+ti+',\''+field+'\',-1)">−1</button>'
+    +'<input class="rf-elec-inp" type="number" min="0" step="1" value="'+val+'" onchange="elSet('+ti+',\''+field+'\',this.value)"/>'
+    +'<button type="button" class="fxb" onclick="elAdj('+ti+',\''+field+'\',1)">+1</button>'
+    +'<button type="button" class="fxb" onclick="elAdj('+ti+',\''+field+'\',10)">+10</button>'
+    +'</div></div>';
+}
+function tradeToolsBlock(room,ti,t){
+  var rid=curR;
+  var px='rf-'+rid+'-'+ti+'-';
+  var tid=t.id;
+  if(tid==='electrical'){
+    ensureElecLoad(t);
+    var e=t.elecLoad;
+    var tot=elAmpTotal(t);
+    var cap=e.cap||100;
+    var pct=Math.min(100,(tot/cap)*100);
+    if(!isFinite(pct))pct=0;
+    var over=tot>cap;
+    var barColor=over?'#e85547':'var(--ac)';
+    var html='<div class="rf-tool rf-elec">';
+    html+='<div class="rf-tool-h">⚡ Electrician mode — panel load</div>';
+    html+='<div class="rf-elec-cap">Service <select onchange="elSetCap('+ti+',this.value)">';
+    html+='<option value="100"'+(cap==100?' selected':'')+'>100A</option>';
+    html+='<option value="200"'+(cap==200?' selected':'')+'>200A</option></select></div>';
+    html+='<div class="rf-elec-bar-wrap"><div class="rf-elec-bar" style="width:'+pct+'%;background:'+barColor+'"></div></div>';
+    html+='<div class="rf-elec-tot'+(over?' rf-over':'')+'">'+tot.toFixed(1)+' / '+cap+' A estimated</div>';
+    html+=elCatRow(ti,'lit','Lighting (LED pts)',e.lit||0);
+    html+=elCatRow(ti,'rec','Receptacles',e.rec||0);
+    html+=elCatRow(ti,'heavy','Heavy loads (20A ea)',e.heavy||0);
+    html+='<p class="rf-tool-note">Approximate amps; not a formal load calc.</p></div>';
+    return html;
+  }
+  if(tid==='framing'){
+    var html='<div class="rf-tool"><div class="rf-tool-h">🪵 LVL beam</div>';
+    html+='<div class="rf-tool-row"><label>Span (ft)</label><input type="number" id="'+px+'lvl-s" step="0.5" value="12"/></div>';
+    html+='<div class="rf-tool-row"><label>Load (lb/ft)</label><input type="number" id="'+px+'lvl-w" step="1" value="40"/></div>';
+    html+='<button type="button" class="btn bg sm" onclick="calcLvlRun('+ti+')">Calculate size</button>';
+    html+='<div class="rf-tool-out" id="'+px+'lvl-out"></div></div>';
+    html+='<div class="rf-tool"><div class="rf-tool-h">🧱 Load-bearing / wall removal</div>';
+    html+='<div class="rf-tool-row"><label>Opening (ft)</label><input type="number" id="'+px+'lb-o" step="0.5" value="8"/></div>';
+    html+='<div class="rf-tool-row"><label>Load (lb/ft)</label><input type="number" id="'+px+'lb-w" step="1" value="40"/></div>';
+    html+='<button type="button" class="btn bg sm" onclick="calcLbRun('+ti+')">Beam & posts</button>';
+    html+='<div class="rf-tool-out" id="'+px+'lb-out"></div></div>';
+    html+='<div class="rf-tool"><div class="rf-tool-h">🪜 Stairs</div>';
+    html+='<div class="rf-tool-row"><label>Total rise (in)</label><input type="number" id="'+px+'st-r" step="0.25" value="102"/></div>';
+    html+='<button type="button" class="btn bg sm" onclick="calcStairRun('+ti+')">Riser & tread</button>';
+    html+='<div class="rf-tool-out" id="'+px+'st-out"></div></div>';
+    return html;
+  }
+  if(tid==='plumbing'){
+    var html='<div class="rf-tool"><div class="rf-tool-h">💧 Drain slope</div>';
+    html+='<div class="rf-tool-row"><label>Pipe length (ft)</label><input type="number" id="'+px+'sl-l" step="0.5" value="10"/></div>';
+    html+='<div class="rf-tool-row"><label>Vertical drop (in)</label><input type="number" id="'+px+'sl-d" step="0.5" value="2"/></div>';
+    html+='<button type="button" class="btn bg sm" onclick="calcSlopeRun('+ti+')">Calculate slope</button>';
+    html+='<div class="rf-tool-out" id="'+px+'sl-out"></div></div>';
+    return html;
+  }
+  if(tid==='trim'){
+    var c=calcDims(room.d||{})||{};
+    var perDef=Math.round(c.pr||0);
+    var html='<div class="rf-tool"><div class="rf-tool-h">👑 Crown moulding</div>';
+    html+='<div class="rf-tool-row"><label>Room perimeter (ft)</label><input type="number" id="'+px+'cr-p" step="0.5" value="'+(perDef||'')+'"/></div>';
+    html+='<div class="rf-tool-row"><label>Waste factor</label><input type="number" id="'+px+'cr-w" step="0.05" value="1.1"/></div>';
+    html+='<button type="button" class="btn bg sm" onclick="calcCrownRun('+ti+')">LF + waste</button>';
+    html+='<div class="rf-tool-out" id="'+px+'cr-out"></div></div>';
+    return html;
+  }
+  if(tid==='flooring'){
+    var html='<div class="rf-tool"><div class="rf-tool-h">🪵 Deck & fence</div>';
+    html+='<div class="rf-tool-row"><label>Deck area (sqft)</label><input type="number" id="'+px+'dk-a" step="1" value="144"/></div>';
+    html+='<div class="rf-tool-row"><label>Board width (in)</label><input type="number" id="'+px+'dk-bw" step="0.25" value="5.5"/></div>';
+    html+='<div class="rf-tool-row"><label>Joist spacing (in)</label><input type="number" id="'+px+'dk-j" step="1" value="16"/></div>';
+    html+='<div class="rf-tool-row"><label>Fence linear (ft)</label><input type="number" id="'+px+'fn-l" step="1" value="0"/></div>';
+    html+='<div class="rf-tool-row"><label>Post spacing (ft)</label><input type="number" id="'+px+'fn-ps" step="0.5" value="8"/></div>';
+    html+='<button type="button" class="btn bg sm" onclick="calcDeckRun('+ti+')">Estimate material</button>';
+    html+='<div class="rf-tool-out" id="'+px+'dk-out"></div></div>';
+    return html;
+  }
+  if(tid==='insulation'){
+    var html='<div class="rf-tool"><div class="rf-tool-h">🌡️ Insulation R-value</div>';
+    html+='<div class="rf-tool-row"><label>Climate zone</label><select id="'+px+'in-z"><option value="6">Zone 6 (cold)</option><option value="5">Zone 5</option><option value="4">Zone 4</option></select></div>';
+    html+='<div class="rf-tool-row"><label>Surface</label><select id="'+px+'in-s"><option value="wall">Exterior wall</option><option value="ceil">Ceiling / attic</option><option value="floor">Floor over unheated</option></select></div>';
+    html+='<div class="rf-tool-row"><label>Area (sqft)</label><input type="number" id="'+px+'in-a" step="1" value="100"/></div>';
+    html+='<button type="button" class="btn bg sm" onclick="calcInsRun('+ti+')">Recommend R + qty</button>';
+    html+='<div class="rf-tool-out" id="'+px+'in-out"></div></div>';
+    return html;
+  }
+  if(tid==='roofing'){
+    var html='<div class="rf-tool"><div class="rf-tool-h">🏠 Roofing</div>';
+    html+='<div class="rf-tool-row"><label>Roof length (ft)</label><input type="number" id="'+px+'rf-l" step="0.5" value="40"/></div>';
+    html+='<div class="rf-tool-row"><label>Roof width (ft)</label><input type="number" id="'+px+'rf-w" step="0.5" value="30"/></div>';
+    html+='<div class="rf-tool-row"><label>Pitch</label><select id="'+px+'rf-p">';
+    [4,5,6,7,8,9,10,12].forEach(function(pr){
+      html+='<option value="'+pr+'"'+(pr===6?' selected':'')+'>'+pr+' / 12</option>';
+    });
+    html+='</select> <span class="rf-tool-note" style="display:inline">slope factor auto</span></div>';
+    html+='<div class="rf-tool-row"><label>Waste</label><input type="number" id="'+px+'rf-wf" step="0.5" min="0" value="10"/> % (default 10%)</div>';
+    html+='<button type="button" class="btn bg sm" onclick="calcRoofRun('+ti+')">Calculate materials</button>';
+    html+='<div class="rf-tool-out" id="'+px+'rf-out"></div></div>';
+    return html;
+  }
+  if(tid==='concrete'){
+    var html='<div class="rf-tool"><div class="rf-tool-h">🧱 Concrete</div>';
+    html+='<div class="rf-tool-row"><label>Pour type</label><select id="'+px+'cf-type" onchange="concSetVis('+ti+')">';
+    html+='<option value="slab">Slab</option>';
+    html+='<option value="walkway">Walkway / pad</option>';
+    html+='<option value="foundation_wall">Foundation wall</option>';
+    html+='<option value="footings">Footings</option>';
+    html+='<option value="post_holes">Post holes</option>';
+    html+='</select></div>';
+    html+='<div id="'+px+'cf-sl"><div class="rf-tool-row"><label>Length (ft)</label><input type="number" id="'+px+'cf-sl-l" step="0.5" value="12"/></div>';
+    html+='<div class="rf-tool-row"><label>Width (ft)</label><input type="number" id="'+px+'cf-sl-w" step="0.5" value="12"/></div>';
+    html+='<div class="rf-tool-row"><label>Depth (in)</label><input type="number" id="'+px+'cf-sl-d" step="0.25" value="4"/></div></div>';
+    html+='<div id="'+px+'cf-fw" style="display:none"><div class="rf-tool-row"><label>Wall length (ft)</label><input type="number" id="'+px+'cf-fw-l" step="0.5" value="40"/></div>';
+    html+='<div class="rf-tool-row"><label>Wall height (ft)</label><input type="number" id="'+px+'cf-fw-h" step="0.5" value="8"/></div>';
+    html+='<div class="rf-tool-row"><label>Thickness (in)</label><input type="number" id="'+px+'cf-fw-t" step="0.25" value="8"/></div></div>';
+    html+='<div id="'+px+'cf-ft" style="display:none"><div class="rf-tool-row"><label>Footing length (ft)</label><input type="number" id="'+px+'cf-ft-l" step="0.5" value="80"/></div>';
+    html+='<div class="rf-tool-row"><label>Footing width (ft)</label><input type="number" id="'+px+'cf-ft-w" step="0.25" value="1"/></div>';
+    html+='<div class="rf-tool-row"><label>Depth (ft)</label><input type="number" id="'+px+'cf-ft-d" step="0.25" value="1"/></div></div>';
+    html+='<div id="'+px+'cf-ph" style="display:none"><div class="rf-tool-row"><label>Number of holes</label><input type="number" id="'+px+'cf-ph-n" step="1" value="6"/></div>';
+    html+='<div class="rf-tool-row"><label>Hole diameter (in)</label><input type="number" id="'+px+'cf-ph-di" step="0.5" value="10"/></div>';
+    html+='<div class="rf-tool-row"><label>Hole depth (ft)</label><input type="number" id="'+px+'cf-ph-dep" step="0.25" value="3"/></div></div>';
+    html+='<p class="rf-tool-note">Also output ready-mix cubic yards needed for a cement truck order. Note that standard cement trucks carry 8–10 cubic yards. If the pour requires more than 1 cubic yard, show how many truck loads needed and flag if the pour is under the typical minimum order of 1 cubic yard (suggest bags instead).</p>';
+    html+='<button type="button" class="btn bg sm" onclick="calcConcRun('+ti+')">Calculate volume &amp; bags</button>';
+    html+='<div class="rf-tool-out" id="'+px+'cf-out"></div></div>';
+    return html;
+  }
+  if(tid==='drywall'){
+    var html='<div class="rf-tool"><div class="rf-tool-h">📦 Bulkhead</div>';
+    html+='<div class="rf-tool-row"><label>Length (ft)</label><input type="number" id="'+px+'bk-l" step="0.25" value="12"/></div>';
+    html+='<div class="rf-tool-row"><label>Width / depth (ft)</label><input type="number" id="'+px+'bk-w" step="0.25" value="2"/></div>';
+    html+='<div class="rf-tool-row"><label>Drop — face height (ft)</label><input type="number" id="'+px+'bk-d" step="0.25" value="1"/></div>';
+    html+='<div class="rf-tool-row"><label>Drywall layers</label><select id="'+px+'bk-layer"><option value="1">Single layer</option><option value="2">Double layer</option></select></div>';
+    html+='<button type="button" class="btn bg sm" onclick="calcBulkRun('+ti+')">Calculate materials</button>';
+    html+='<div class="rf-tool-out" id="'+px+'bk-out"></div></div>';
+    return html;
+  }
+  return '';
+}
+function concSetVis(ti){
+  var px='rf-'+curR+'-'+ti+'-';
+  var sel=document.getElementById(px+'cf-type');
+  if(!sel)return;
+  var v=sel.value;
+  function sh(id,on){ var el=document.getElementById(px+id); if(el) el.style.display=on?'':'none'; }
+  sh('cf-sl', v==='slab'||v==='walkway');
+  sh('cf-fw', v==='foundation_wall');
+  sh('cf-ft', v==='footings');
+  sh('cf-ph', v==='post_holes');
+}
+function calcLvlRun(ti){
+  var px='rf-'+curR+'-'+ti+'-';
+  var span=parseFloat(document.getElementById(px+'lvl-s').value)||0;
+  var w=parseFloat(document.getElementById(px+'lvl-w').value)||0;
+  var out=document.getElementById(px+'lvl-out');
+  if(!out)return;
+  if(span<=0||w<=0){out.textContent='Enter span and load.';return;}
+  var hint=span<=8?'1.75" LVL 7¼–9½"':span<=14?'1.75" LVL 9½–11⅞"':span<=20?'3.5" LVL 11⅞–14"':'Engineered — consult engineer';
+  out.innerHTML='<strong>'+hint+'</strong> typical for '+span+' ft @ '+w+' plf. <span class="rf-tool-note">Rule-of-thumb only.</span>';
+}
+function calcLbRun(ti){
+  var px='rf-'+curR+'-'+ti+'-';
+  var o=parseFloat(document.getElementById(px+'lb-o').value)||0;
+  var w=parseFloat(document.getElementById(px+'lb-w').value)||0;
+  var out=document.getElementById(px+'lb-out');
+  if(!out)return;
+  if(o<=0){out.textContent='Enter opening width.';return;}
+  var beam=o<=8?'(2) LVL 1.75×11⅞" or built-up 2×12':o<=12?'(2) LVL 1.75×14"':o<=16?'(3) LVL 1.75×14"':'Engineered beam — engineer required';
+  var posts=2;
+  var lab=Math.ceil(o*3)+posts*8;
+  out.innerHTML='<strong>Beam:</strong> '+beam+'.<br/><strong>Posts:</strong> '+posts+' (bearing at each end).<br/><strong>Labour hint:</strong> ~'+lab+' hrs (rough estimate).';
+}
+function calcStairRun(ti){
+  var px='rf-'+curR+'-'+ti+'-';
+  var rise=parseFloat(document.getElementById(px+'st-r').value)||0;
+  var out=document.getElementById(px+'st-out');
+  if(!out)return;
+  if(rise<=0){out.textContent='Enter total rise.';return;}
+  var n=Math.max(2,Math.round(rise/7.5));
+  var riserH=rise/n;
+  if(riserH>8.25){n=Math.ceil(rise/7);riserH=rise/n;}
+  var tread=10;
+  out.innerHTML='<strong>'+n+' risers</strong> — riser <strong>'+riserH.toFixed(2)+' in</strong> (aim 7–7¾").<br/>Suggested tread run <strong>'+tread+' in</strong> (verify local code).';
+}
+function calcSlopeRun(ti){
+  var px='rf-'+curR+'-'+ti+'-';
+  var L=parseFloat(document.getElementById(px+'sl-l').value)||0;
+  var dIn=parseFloat(document.getElementById(px+'sl-d').value)||0;
+  var out=document.getElementById(px+'sl-out');
+  if(!out)return;
+  if(L<=0){out.textContent='Enter pipe length.';return;}
+  var dropFt=dIn/12;
+  var pct=(dropFt/L)*100;
+  var perFt=dIn/L;
+  out.innerHTML='<strong>Slope:</strong> '+pct.toFixed(2)+'% — <strong>'+perFt.toFixed(3)+' in</strong> drop per foot.';
+}
+function calcCrownRun(ti){
+  var px='rf-'+curR+'-'+ti+'-';
+  var p=parseFloat(document.getElementById(px+'cr-p').value)||0;
+  var wf=parseFloat(document.getElementById(px+'cr-w').value)||1.1;
+  var out=document.getElementById(px+'cr-out');
+  if(!out)return;
+  if(p<=0){out.textContent='Enter perimeter.';return;}
+  out.innerHTML='<strong>'+(p*wf).toFixed(1)+' linear ft</strong> to order (includes '+((wf-1)*100).toFixed(0)+'% waste).';
+}
+function calcDeckRun(ti){
+  var px='rf-'+curR+'-'+ti+'-';
+  var area=parseFloat(document.getElementById(px+'dk-a').value)||0;
+  var bw=parseFloat(document.getElementById(px+'dk-bw').value)||5.5;
+  var j=parseFloat(document.getElementById(px+'dk-j').value)||16;
+  var fl=parseFloat(document.getElementById(px+'fn-l').value)||0;
+  var ps=parseFloat(document.getElementById(px+'fn-ps').value)||8;
+  var out=document.getElementById(px+'dk-out');
+  if(!out)return;
+  var lines=[];
+  if(area>0&&bw>0&&j>0){
+    var brd=Math.ceil((area*144)/(bw*j));
+    lines.push('~<strong>'+brd+'</strong> decking board placements (order LF from supplier)');
+  }
+  if(fl>0&&ps>0){
+    var posts=Math.ceil(fl/ps)+1;
+    var bags=Math.ceil(posts*2*0.5);
+    lines.push('Fence: ~<strong>'+posts+'</strong> posts, ~<strong>'+bags+'</strong> bags concrete (50 lb, rule-of-thumb)');
+  }
+  if(lines.length===0){out.textContent='Enter deck area and/or fence length.';return;}
+  out.innerHTML=lines.join('<br/>')+'<br/><span class="rf-tool-note">Verify on site.</span>';
+}
+function calcInsRun(ti){
+  var px='rf-'+curR+'-'+ti+'-';
+  var zone=parseInt(document.getElementById(px+'in-z').value,10)||6;
+  var surf=document.getElementById(px+'in-s').value;
+  var a=parseFloat(document.getElementById(px+'in-a').value)||0;
+  var out=document.getElementById(px+'in-out');
+  if(!out)return;
+  var r=20;
+  if(surf==='wall') r=zone>=6?24:20;
+  else if(surf==='ceil') r=zone>=6?60:50;
+  else r=zone>=6?30:25;
+  var battR=3.7;
+  var thick=Math.ceil(r/battR);
+  var bags=a>0?Math.ceil(a/40):0;
+  out.innerHTML='<strong>Target ~R-'+r+'</strong> ('+surf+', zone '+zone+'). ~'+thick+' in batt @ R-'+battR+'/in.'+(a>0?' ~'+bags+' bags for '+a+' sqft (≈40 sqft/bag R20).':'')+' <span class="rf-tool-note">Match local code.</span>';
+}
+function roofSlopeFactor(pitchOver12){
+  var r=pitchOver12/12;
+  return Math.sqrt(1+r*r);
+}
+function calcRoofRun(ti){
+  var px='rf-'+curR+'-'+ti+'-';
+  var L=parseFloat(document.getElementById(px+'rf-l').value)||0;
+  var W=parseFloat(document.getElementById(px+'rf-w').value)||0;
+  var pitch=parseFloat(document.getElementById(px+'rf-p').value)||6;
+  var wastePct=parseFloat(document.getElementById(px+'rf-wf').value);
+  if(!isFinite(wastePct)) wastePct=10;
+  var out=document.getElementById(px+'rf-out');
+  if(!out)return;
+  if(L<=0||W<=0){out.textContent='Enter roof length and width (horizontal footprint).';return;}
+  var slopeF=roofSlopeFactor(pitch);
+  var areaFlat=L*W;
+  var roofSurf=areaFlat*slopeF;
+  var wasteMult=1+Math.max(0,wastePct)/100;
+  var areaOrder=roofSurf*wasteMult;
+  var squares=areaOrder/100;
+  var shBundles=Math.ceil(squares*3);
+  var undRolls=Math.ceil(areaOrder/1000);
+  var dripLf=2*(L+W);
+  var ridgeLf=Math.max(L,W);
+  var ridgeBundles=Math.ceil(ridgeLf/25);
+  var nailsLb=Math.ceil(squares*5);
+  out.innerHTML='<strong>'+squares.toFixed(2)+' squares</strong> roofing (100 sqft/sq) — pitch <strong>'+pitch+' / 12</strong>, slope factor <strong>'+slopeF.toFixed(3)+'</strong>, waste <strong>'+wastePct+'%</strong><br/>'
+    +'<strong>'+shBundles+'</strong> shingle bundles (3 bundles per square)<br/>'
+    +'<strong>'+undRolls+'</strong> underlayment roll(s) (~1000 sqft/roll)<br/>'
+    +'<strong>'+Math.round(dripLf)+' linear ft</strong> drip edge (perimeter 2(L+W))<br/>'
+    +'<strong>'+ridgeBundles+'</strong> ridge cap bundle(s) (~25 lf/bundle, ridge est. '+ridgeLf+' ft gable)<br/>'
+    +'<strong>~'+nailsLb+' lb</strong> roofing nails (~5 lb/sq rule-of-thumb)<br/>'
+    +'<span class="rf-tool-note">Slope factor adjusts plane area for pitch. Ridge length is approximate — verify plan.</span>';
+}
+function concFt3ToYd(ft3){ return ft3/27; }
+function concBagsForFt3(ft3, lb60){
+  var perBag=lb60?0.45:0.60;
+  return Math.max(0, Math.ceil(ft3/perBag-1e-9));
+}
+function calcBulkRun(ti){
+  var px='rf-'+curR+'-'+ti+'-';
+  var L=parseFloat(document.getElementById(px+'bk-l').value)||0;
+  var W=parseFloat(document.getElementById(px+'bk-w').value)||0;
+  var D=parseFloat(document.getElementById(px+'bk-d').value)||0;
+  var layerSel=document.getElementById(px+'bk-layer');
+  var layers=layerSel&&layerSel.value==='2'?2:1;
+  var out=document.getElementById(px+'bk-out');
+  if(!out)return;
+  if(L<=0||W<=0||D<=0){out.textContent='Enter length, width, and drop.';return;}
+  var perim=2*(L+W);
+  var topTrack=perim;
+  var botTrack=perim;
+  var areaBottom=L*W;
+  var areaFaces=L*D+2*W*D;
+  var areaOne=areaBottom+areaFaces;
+  var sheetSqft=32;
+  var sheets=Math.ceil((areaOne*layers)/sheetSqft);
+  var screwsPerSheet=36;
+  var screws=sheets*screwsPerSheet;
+  var screwBoxes=Math.ceil(screws/1000);
+  var cornerLf=2*L+2*W+4*D;
+  var labourLf=perim;
+  var labourHrs=Math.ceil(labourLf*0.35*10)/10;
+  out.innerHTML='<strong>Metal track:</strong> top <strong>'+topTrack.toFixed(1)+' lf</strong>, bottom <strong>'+botTrack.toFixed(1)+' lf</strong> (plan perimeter each, U-soffit)<br/>'
+    +'<strong>Drywall:</strong> ~<strong>'+sheets+'</strong> sheet(s) (4×8, '+layers+' layer'+(layers>1?'s':'')+'; faces + soffit bottom ≈ '+areaOne.toFixed(1)+' sqft/layer)<br/>'
+    +'<strong>Screws:</strong> ~<strong>'+screws+'</strong> (~'+screwsPerSheet+'/sheet) → <strong>'+screwBoxes+'</strong> box(es) @ 1000 ct<br/>'
+    +'<strong>Corner bead:</strong> ~<strong>'+cornerLf.toFixed(1)+' linear ft</strong> (outside corners / exposed edges, estimate)<br/>'
+    +'<strong>Labour (planning):</strong> ~<strong>'+labourHrs+'</strong> hrs @ ~0.35 hr/lf of plan perimeter (<strong>'+labourLf.toFixed(1)+' lf</strong>)'
+    +'<br/><span class="rf-tool-note">U-shaped soffit (open to wall on one long side). Verify layout and code for fire/layer requirements.</span>';
+}
+function calcConcRun(ti){
+  var px='rf-'+curR+'-'+ti+'-';
+  var typ=document.getElementById(px+'cf-type').value;
+  var out=document.getElementById(px+'cf-out');
+  if(!out)return;
+  var ft3=0;
+  var perHole='';
+  if(typ==='slab'||typ==='walkway'){
+    var sl=parseFloat(document.getElementById(px+'cf-sl-l').value)||0;
+    var sw=parseFloat(document.getElementById(px+'cf-sl-w').value)||0;
+    var sd=parseFloat(document.getElementById(px+'cf-sl-d').value)||0;
+    if(sl<=0||sw<=0||sd<=0){out.textContent='Enter length, width, and depth.';return;}
+    ft3=sl*sw*(sd/12);
+  }else if(typ==='foundation_wall'){
+    var wl=parseFloat(document.getElementById(px+'cf-fw-l').value)||0;
+    var wh=parseFloat(document.getElementById(px+'cf-fw-h').value)||0;
+    var wt=parseFloat(document.getElementById(px+'cf-fw-t').value)||0;
+    if(wl<=0||wh<=0||wt<=0){out.textContent='Enter wall length, height, and thickness.';return;}
+    ft3=wl*wh*(wt/12);
+  }else if(typ==='footings'){
+    var fl=parseFloat(document.getElementById(px+'cf-ft-l').value)||0;
+    var fw=parseFloat(document.getElementById(px+'cf-ft-w').value)||0;
+    var fd=parseFloat(document.getElementById(px+'cf-ft-d').value)||0;
+    if(fl<=0||fw<=0||fd<=0){out.textContent='Enter footing length, width, and depth.';return;}
+    ft3=fl*fw*fd;
+  }else if(typ==='post_holes'){
+    var n=parseInt(document.getElementById(px+'cf-ph-n').value,10)||0;
+    var di=parseFloat(document.getElementById(px+'cf-ph-di').value)||0;
+    var dep=parseFloat(document.getElementById(px+'cf-ph-dep').value)||0;
+    if(n<=0||di<=0||dep<=0){out.textContent='Enter hole count, diameter, and depth.';return;}
+    var rFt=(di/2)/12;
+    var holeFt3=Math.PI*rFt*rFt*dep;
+    ft3=n*holeFt3;
+    perHole='<br/><strong>Per hole:</strong> ~'+holeFt3.toFixed(2)+' cu ft — ~<strong>'+concBagsForFt3(holeFt3,true)+'</strong> × 60 lb or ~<strong>'+concBagsForFt3(holeFt3,false)+'</strong> × 80 lb bags';
+  }else{
+    out.textContent='Select a pour type.';return;
+  }
+  if(ft3<=0){out.textContent='Volume is zero — check inputs.';return;}
+  var yd=concFt3ToYd(ft3);
+  var b60=concBagsForFt3(ft3,true);
+  var b80=concBagsForFt3(ft3,false);
+  var truckYd=9;
+  var truckHtml='';
+  truckHtml+='<br/><strong>Ready-mix:</strong> <strong>'+yd.toFixed(3)+'</strong> cubic yards (same volume for a cement truck order)';
+  if(yd>0&&yd<1){
+    truckHtml+='<br/><span class="rf-over">Under ~1 yd</span> — many plants have a <strong>minimum order near 1 yd</strong>; <strong>premix bags</strong> are often more practical.';
+  }else if(yd>1){
+    var loads=Math.ceil(yd/truckYd);
+    truckHtml+='<br/><strong>Truck loads:</strong> ~<strong>'+loads+'</strong> at ~'+truckYd+' yd per load (standard trucks carry <strong>8–10 yd</strong>; confirm with supplier).';
+  }else{
+    truckHtml+='<br/>~1 yd — typically <strong>one short load</strong>; confirm minimums and truck size (8–10 yd).';
+  }
+  out.innerHTML='<strong>'+yd.toFixed(3)+' cubic yards</strong> total volume<br/>'
+    +'<strong>'+b60+'</strong> bags (60 lb, ~0.45 cu ft/bag) &nbsp;·&nbsp; <strong>'+b80+'</strong> bags (80 lb, ~0.60 cu ft/bag)'
+    +perHole
+    +truckHtml
+    +'<br/><span class="rf-tool-note">Bag yields vary by mix; verify with supplier.</span>';
+}
+
+var TRADE_CAT={demo:"Structure",framing:"Structure",concrete:"Structure",roofing:"Structure",electrical:"Mechanical & power",plumbing:"Mechanical & power",hvac:"Mechanical & power",lowvolt:"Mechanical & power",security:"Mechanical & power",insulation:"Shell",drywall:"Shell",comdoor:"Doors, trim & tile",trim:"Doors, trim & tile",tile:"Doors, trim & tile",flooring:"Paint & finals",painting:"Paint & finals",cabinets:"Paint & finals",closets:"Paint & finals",finishing:"Paint & finals"};
+var TRADE_ICON_SVG={
+demo:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#1a1a1a"/><rect x="3" y="7" width="16" height="2" fill="#f0c030"/><rect x="3" y="12" width="16" height="2" fill="#f0c030"/></svg>',
+framing:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#7a5030"/><path d="M2 7h18M2 11h18M2 15h18" stroke="#f0d8b8" stroke-width="1"/></svg>',
+concrete:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#d0d8dc"/><rect x="3" y="4" width="7" height="6" fill="#b8c0c4" stroke="#9aa4a8"/><rect x="12" y="4" width="7" height="6" fill="#b8c0c4" stroke="#9aa4a8"/><rect x="3" y="12" width="7" height="6" fill="#b8c0c4" stroke="#9aa4a8"/><rect x="12" y="12" width="7" height="6" fill="#b8c0c4" stroke="#9aa4a8"/></svg>',
+roofing:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#3a4a4a"/><path d="M1 8c2-1 4-2 6-1s4 2 6 1 4-2 6-1 4 2 6 1" stroke="#2a3838" fill="none"/><path d="M1 12c2-1 4-2 6-1s4 2 6 1 4-2 6-1 4 2 6 1" stroke="#2a3838" fill="none"/></svg>',
+electrical:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#f0c030"/><path d="M11 4L8 13h3l-1 5 5-9h-3l1-5z" fill="#1a1a1a"/></svg>',
+plumbing:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#fff" stroke="#e0e0e0"/><path d="M4 6h6M12 6h6M6 12v6M16 12v6" stroke="#2e6aae" stroke-width="1.5"/><circle cx="11" cy="11" r="2.5" fill="none" stroke="#2e6aae"/><path d="M4 16h6M12 16h6" stroke="#ae2e2e" stroke-width="1.5"/></svg>',
+hvac:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#f8f8f8" stroke="#9a9a9a"/><path d="M6 9h10M6 12h10M6 15h8" stroke="#9a9a9a"/></svg>',
+lowvolt:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#b8d8f0"/><path d="M11 14c3-2 5-4 5-7M11 14c-3-2-5-4-5-7" stroke="#fff" stroke-width="1.5" fill="none"/></svg>',
+security:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#cc2020" stroke="#1a1a1a" stroke-width="1.5"/><path d="M11 6l-4 2v5c0 3 2 5 4 6 2-1 4-3 4-6V8l-4-2z" fill="#fff"/></svg>',
+comdoor:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#f8f8f8" stroke="#1a1a1a"/><rect x="6" y="5" width="10" height="12" fill="none" stroke="#444"/><circle cx="15" cy="11" r="1" fill="#333"/></svg>',
+insulation:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#f5c0cc"/><rect x="4" y="6" width="14" height="2.5" fill="#fff" opacity=".9"/><rect x="4" y="10" width="14" height="2.5" fill="#fff" opacity=".9"/><rect x="4" y="14" width="14" height="2.5" fill="#fff" opacity=".9"/></svg>',
+drywall:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#dde3e8"/><rect x="3" y="4" width="7" height="5" fill="#c5ccd2" stroke="#a8b0b8"/><rect x="12" y="4" width="7" height="5" fill="#c5ccd2" stroke="#a8b0b8"/><rect x="3" y="13" width="7" height="5" fill="#c5ccd2" stroke="#a8b0b8"/><rect x="12" y="13" width="7" height="5" fill="#c5ccd2" stroke="#a8b0b8"/></svg>',
+tile:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#00b5cc"/><rect x="4" y="4" width="6" height="6" fill="#fff"/><rect x="12" y="4" width="6" height="6" fill="#fff"/><rect x="4" y="12" width="6" height="6" fill="#fff"/><rect x="12" y="12" width="6" height="6" fill="#fff"/></svg>',
+flooring:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#d4b896"/><path d="M2 6h18M2 10h18M2 14h18M2 18h18" stroke="#c4a882" stroke-width=".8"/></svg>',
+painting:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#f8f8f8" stroke="#1a1a1a"/><rect x="5" y="12" width="8" height="3" fill="#ccc"/><path d="M8 12V6l3-2v8" fill="#555"/></svg>',
+trim:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#ede0cc"/><path d="M3 14Q11 8 19 14" stroke="#c4b49a" fill="none" stroke-width="2"/></svg>',
+cabinets:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#fff" stroke="#d4b896"/><rect x="5" y="7" width="12" height="9" fill="none" stroke="#999"/><circle cx="9" cy="11.5" r=".8" fill="#b5922a"/><circle cx="13" cy="11.5" r=".8" fill="#b5922a"/></svg>',
+closets:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#ede0cc"/><rect x="6" y="5" width="10" height="12" fill="none" stroke="#a08f70"/></svg>',
+finishing:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#fff" stroke="#c8cfd4"/><path d="M6 14L11 9l5 5M8 14h6" stroke="#666" fill="none"/></svg>'
+};
+function tradeIconSvg(id){return TRADE_ICON_SVG[id]||TRADE_ICON_SVG.demo;}
+function _escTrade(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
 function tradeSectionHtml(room, ti, idPx, isModal){
   idPx=idPx||'';
   isModal=!!isModal;
   var t=room.trades[ti];
   var c=calcDims(room.d||{})||{};
-  var col=TC[t.id]||"#888",tt=tradeCost(t);
+  var tt=tradeCost(t);
   var px=idPx;
+  var catStr=TRADE_CAT[t.id]||'';
 
   var hint=formulaHint(t.id, room);
   var daysRow = '<div class="days-row">'
@@ -1957,11 +2576,11 @@ function tradeSectionHtml(room, ti, idPx, isModal){
   var tools='<div class="th-act">'+expBtn
     +'<button type="button" class="th-ico th-ico-del" title="Remove trade" aria-label="Remove trade" onclick="event.stopPropagation();delTrade('+ti+')">✕</button>'
     +'</div>';
-  var bodyInner='<div class="tb'+(t.open?' op':'')+'">'+daysRow+itemsH+fxH
+  var bodyInner='<div class="tb'+(t.open?' op':'')+'">'+daysRow+itemsH+fxH+tradeToolsBlock(room,ti,t)
     +'<div class="sep"></div>'
-    +'<div class="sub" style="background:var(--sf2);margin:0 -14px -14px;padding:10px 14px;border-top:1px solid var(--bd);flex-wrap:wrap;gap:8px">'
+    +'<div class="sub trade-footer-total" style="margin:0 -14px -14px;padding:12px 14px;border-top:1px solid var(--bd);flex-wrap:wrap;gap:8px">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;width:100%">'
-    +'<span class="sub-l" style="font-weight:600;color:var(--tx)">'+TIC[t.id]+' '+t.n+' Total</span>'
+    +'<span class="sub-l">'+_escTrade(TN[t.id]||t.n)+' Total</span>'
     +'<span class="sub-v" style="font-size:16px" id="'+px+'ts'+ti+'">'+f(tt)+'</span>'
     +'</div>'
     +'<button type="button" onclick="openMats(\''+t.id+'\')" style="width:100%;margin-top:8px;padding:8px;background:transparent;border:1px solid var(--ac);color:var(--ac);border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:1px">📦 VIEW MATERIALS</button>'
@@ -1971,11 +2590,17 @@ function tradeSectionHtml(room, ti, idPx, isModal){
   return '<div class="ts ts-'+t.id+(isModal?' ts-in-modal':'')+'">'
     +'<div class="th">'
     +'<div class="th-main" onclick="togT('+ti+')">'
-    +'<div class="tdot" style="background:'+col+'"></div>'
-    +'<div class="tn">'+TIC[t.id]+' '+t.n+'</div>'
+    +'<div class="th-head-row">'
+    +'<span class="trade-ic-wrap">'+tradeIconSvg(t.id)+'</span>'
+    +'<div class="th-text-block">'
+    +'<div class="tn">'+_escTrade(t.n)+'</div>'
+    +(catStr?'<div class="trade-cat">'+_escTrade(catStr)+'</div>':'')
+    +'</div>'
+    +'<div class="th-meta-right">'
     +'<div class="tt-days" data-tiday="'+ti+'" style="'+(t.days>0?'':'display:none')+'">'+(t.days>0?t.days+'d':'')+'</div>'
     +'<div class="tt-tot" id="'+px+'tt'+ti+'">'+(tt>0?f(tt):'')+'</div>'
     +'<div class="ta'+(t.open?' op':'')+'">▾</div>'
+    +'</div></div>'
     +'</div>'
     +tools
     +'</div>'
@@ -2079,6 +2704,7 @@ function rRoom(){
     +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
     +'<button type="button" class="btn bp sm" onclick="saveWorkspaceNow()" title="Save workspace to this device now">Save</button>'
     +'<button class="btn bg sm" onclick="gP(\'tl\')">Timeline</button>'
+    +'<button class="btn bg sm" onclick="openRoomMaterials('+curR+')">Materials</button>'
     +'<button class="btn bg sm" onclick="gP(\'quote\')">View Quote</button>'
     +'</div></div><div style="height:24px"></div>';
   var expOverlay=(expandedTi!==null&&room.trades[expandedTi])
@@ -2116,8 +2742,6 @@ function rRoom(){
 function delTrade(ti){
   var room=S.rooms[curR];
   if(!room||!room.trades[ti])return;
-  var lab=room.trades[ti].n||TN[room.trades[ti].id];
-  if(!confirm("Remove "+lab+" from this room?"))return;
   if(expandedTi===ti)expandedTi=null;
   else if(expandedTi!==null&&expandedTi>ti)expandedTi--;
   room.trades.splice(ti,1);
@@ -2377,6 +3001,9 @@ function rTimeline(){
     +'<div><div class="tl-toggle-lbl">'+(S.proj.parallelRooms?'Parallel':'Sequential')+'</div>'
     +'<div class="tl-toggle-sub">'+(S.proj.parallelRooms?'all rooms at once':'one room after another')+'</div></div>'
     +'</div></div>'
+    +'<div class="tl-field"><div class="tl-fl">Schedule view</div>'
+    +'<div class="tl-fv"><button type="button" class="btn bg sm" onclick="pushTimelineToCalendar()" style="width:100%;max-width:280px">View on schedule (calendar)</button></div>'
+    +'<div class="tl-toggle-sub" style="margin-top:6px">Opens the multi-project calendar focused on your start month.</div></div>'
     +'</div></div>';
 
   if(!hasData){
@@ -2443,8 +3070,20 @@ function togTlRoom(ri){
   r._tlOpen=!r._tlOpen;
   rTimeline();
 }
-function sStartDate(v){S.proj.startDate=v;ss();rTimeline();}
-function togParallel(){S.proj.parallelRooms=!S.proj.parallelRooms;ss();rTimeline();}
+function sStartDate(v){S.proj.startDate=v;ss();rTimeline();if(curPg==='cal')rCalendar();}
+function togParallel(){S.proj.parallelRooms=!S.proj.parallelRooms;ss();rTimeline();if(curPg==='cal')rCalendar();}
+/** From Timeline: jump to Schedule (calendar) on the month of the project start (or today). */
+function pushTimelineToCalendar(){
+  var s=S.proj&&S.proj.startDate;
+  if(s&&/^\d{4}-\d{2}-\d{2}$/.test(s)){
+    var p=s.split('-');
+    window.__rfCalMonth=p[0]+'-'+p[1];
+  }else{
+    var d=new Date();
+    window.__rfCalMonth=String(d.getFullYear())+'-'+String(d.getMonth()+1).padStart(2,'0');
+  }
+  gP('cal');
+}
 
 function buildClientPreview(ps, startStr){
   if(ps.totalDays===0) return '';
@@ -2490,53 +3129,253 @@ function buildClientPreview(ps, startStr){
     +'</div>';
 }
 
-function rShop(){
-  var el=document.getElementById("p-shop");
-  var byT={},totI=0,totC=0;
-  S.rooms.forEach(function(room){
-    room.trades.forEach(function(t){
-      t.items.forEach(function(it){
-        if(!(it.qty>0))return;
-        if(!byT[t.id])byT[t.id]={n:t.n,items:[]};
-        var ex=byT[t.id].items.find(function(x){return x.id===it.id;});
-        var cost=ic(it);
-        if(ex){ex.qty+=it.qty;ex.cost+=cost;}
-        else byT[t.id].items.push({id:it.id,l:it.l,qty:it.qty,u:it.u,cost:cost});
-      });
-      Object.keys(t.fx||{}).forEach(function(k){
-        (t.fx[k]||[]).forEach(function(fx){
-          if(!(fx.qty>0))return;
-          if(!byT[t.id])byT[t.id]={n:t.n,items:[]};
-          var cost=fxCost(fx);
-          var ex=byT[t.id].items.find(function(x){return x.id==="fx_"+fx.id;});
-          if(ex){ex.qty+=fx.qty;ex.cost+=cost;}
-          else byT[t.id].items.push({id:"fx_"+fx.id,l:fx.l+" (fixture)",qty:fx.qty,u:fx.u,cost:cost});
+function escMat(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function calParseMonth(){
+  var vm=window.__rfCalMonth;
+  if(vm&&/^\d{4}-\d{2}$/.test(vm)){
+    var p=vm.split('-');
+    return {y:parseInt(p[0],10),m:parseInt(p[1],10)};
+  }
+  var d=new Date();
+  return {y:d.getFullYear(),m:d.getMonth()+1};
+}
+function rCalNavPrev(){
+  var o=calParseMonth();
+  var d=new Date(o.y,o.m-1,1);
+  d.setMonth(d.getMonth()-1);
+  window.__rfCalMonth=String(d.getFullYear())+'-'+String(d.getMonth()+1).padStart(2,'0');
+  rCalendar();
+}
+function rCalNavNext(){
+  var o=calParseMonth();
+  var d=new Date(o.y,o.m-1,1);
+  d.setMonth(d.getMonth()+1);
+  window.__rfCalMonth=String(d.getFullYear())+'-'+String(d.getMonth()+1).padStart(2,'0');
+  rCalendar();
+}
+function rCalNavToday(){
+  var d=new Date();
+  window.__rfCalMonth=String(d.getFullYear())+'-'+String(d.getMonth()+1).padStart(2,'0');
+  rCalendar();
+}
+function calBarDragEl(ev){
+  var el=ev.currentTarget;
+  var projectId=el.getAttribute('data-pid');
+  var origYmd=el.getAttribute('data-ymd');
+  calBarDrag(ev, projectId, origYmd);
+}
+function rCalendar(){
+  var el=document.getElementById("p-cal");
+  if(!el)return;
+  var o=calParseMonth();
+  var y=o.y, mo=o.m;
+  window.__rfCalMonth=String(y)+'-'+String(mo).padStart(2,'0');
+  var monthName=new Date(y,mo-1,1).toLocaleDateString('en-CA',{month:'long',year:'numeric'});
+  var list=window.__rfProjectList||[];
+  if(!list.length){
+    el.innerHTML='<div class="ph"><button onclick="gP(\'dash\')" style="font-size:18px;background:transparent;border:none;color:var(--tx2);cursor:pointer;padding:4px">←</button>'
+      +'<div><div class="pt">Project <em>Schedule</em></div><div class="ps">Multi-project workload</div></div></div>'
+      +'<div class="pc"><div class="tl-empty"><div class="tl-empty-i">📅</div><div>No projects yet</div></div></div>';
+    return;
+  }
+  el.innerHTML='<div class="ph"><button onclick="gP(\'dash\')" style="font-size:18px;background:transparent;border:none;color:var(--tx2);cursor:pointer;padding:4px">←</button>'
+    +'<div><div class="pt">Project <em>Schedule</em></div><div class="ps">Loading…</div></div>'
+    +'<button type="button" class="btn bp sm" onclick="gP(\'tl\')">Timeline</button>'
+    +'</div><div class="pc"><div class="tl-empty">Loading calendar…</div></div>';
+  Promise.all(list.map(function(p){
+    return getWorkspaceForCalendar(p.id).then(function(snap){
+      return {id:p.id,name:(p.name||'Untitled').trim(),snapshot:snap};
+    });
+  })).then(function(bundles){
+    var rangeStart=new Date(y,mo-1,1);
+    var rangeEnd=new Date(y,mo,0);
+    var msDay=86400000;
+    var pxPerDay=14;
+    var monthDays=rangeEnd.getDate();
+    var trackW=Math.max(420, monthDays*pxPerDay);
+    var ganttRows=bundles.map(function(b){
+      var col=calColorForPid(b.id);
+      var snap=b.snapshot;
+      var shortName=b.name.length>22?b.name.slice(0,20)+'…':b.name;
+      if(!snap||!snap.rooms){
+        return '<div class="cal-gantt-row"><div class="cal-gantt-lbl" title="'+escMat(b.name)+'">'+escMat(shortName)+'</div><div class="cal-gantt-track" style="width:'+trackW+'px"><span style="font-size:10px;color:var(--tx3);padding:4px;display:inline-block">No data</span></div></div>';
+      }
+      var ps=projectScheduleForState(snap.rooms, !!snap.proj.parallelRooms);
+      var startStr=snap.proj.startDate||'';
+      var psStart=getWorkingDate(startStr,1);
+      var psEnd=ps.totalDays>0?getWorkingDate(startStr, ps.totalDays):null;
+      if(!startStr||!psStart||!ps.totalDays||!psEnd){
+        return '<div class="cal-gantt-row"><div class="cal-gantt-lbl" title="'+escMat(b.name)+'">'+escMat(shortName)+'</div><div class="cal-gantt-track" style="width:'+trackW+'px"><span style="font-size:10px;color:var(--tx3);padding:4px;display:inline-block">Set start date</span></div></div>';
+      }
+      var visS=Math.max(psStart.getTime(), rangeStart.getTime());
+      var visE=Math.min(psEnd.getTime(), rangeEnd.getTime());
+      if(visS>visE){
+        return '<div class="cal-gantt-row"><div class="cal-gantt-lbl" title="'+escMat(b.name)+'">'+escMat(shortName)+'</div><div class="cal-gantt-track" style="width:'+trackW+'px"><span style="font-size:10px;color:var(--tx3);padding:4px;display:inline-block">—</span></div></div>';
+      }
+      var left=Math.floor((visS-rangeStart.getTime())/msDay)*pxPerDay;
+      var spanDays=Math.floor((visE-visS)/msDay)+1;
+      var width=Math.max(pxPerDay, spanDays*pxPerDay);
+      var barHtml='<div class="cal-bar" data-pid="'+String(b.id).replace(/"/g,'&quot;')+'" data-ymd="'+String(startStr).replace(/"/g,'&quot;')+'" style="left:'+left+'px;width:'+width+'px;background:'+col+'" title="Drag to shift project start" onpointerdown="calBarDragEl(event)">'
+        +escMat(b.name.length>14?b.name.slice(0,12)+'…':b.name)+'<span class="cal-bar-hint">'+ps.totalDays+'d</span></div>';
+      return '<div class="cal-gantt-row"><div class="cal-gantt-lbl" title="'+escMat(b.name)+'">'+escMat(shortName)+'</div><div class="cal-gantt-track" style="width:'+trackW+'px">'+barHtml+'</div></div>';
+    }).join('');
+    var dayMap={};
+    var di;
+    for(di=1;di<=monthDays;di++) dayMap[di]=[];
+    bundles.forEach(function(b){
+      var snap=b.snapshot;
+      if(!snap||!snap.rooms)return;
+      var ps=projectScheduleForState(snap.rooms, !!snap.proj.parallelRooms);
+      var startStr=snap.proj.startDate||'';
+      if(!startStr||ps.totalDays===0)return;
+      var col=calColorForPid(b.id);
+      var projShort=b.name.length>18?b.name.slice(0,16)+'…':b.name;
+      ps.roomSchedules.forEach(function(rs){
+        rs.schedule.forEach(function(day){
+          var dDate=getWorkingDate(startStr, day.dayNum);
+          if(!dDate)return;
+          if(dDate.getFullYear()!==y||dDate.getMonth()!==mo-1)return;
+          var dom=dDate.getDate();
+          day.trades.forEach(function(tr){
+            var t=escMat(projShort+': '+TIC[tr.id]+' '+tr.name);
+            dayMap[dom].push('<span class="cal-chip" style="background:'+col+'22;color:'+col+';border:1px solid '+col+'44" title="'+escMat(b.name)+'">'+t+'</span>');
+          });
         });
       });
     });
+    var d0=new Date(y,mo-1,1).getDay();
+    var cells=[];
+    for(di=0;di<d0;di++) cells.push('<div class="cal-cell cal-out"></div>');
+    var today=new Date();
+    for(di=1;di<=monthDays;di++){
+      var cellD=new Date(y,mo-1,di);
+      var isToday=today.getFullYear()===y&&today.getMonth()===mo-1&&today.getDate()===di;
+      var wend=cellD.getDay()===0||cellD.getDay()===6;
+      var arr=dayMap[di]||[];
+      var chips=arr.slice(0,8).join('');
+      if(arr.length>8) chips+='<div style="font-size:9px;color:var(--tx3)">+'+(arr.length-8)+' more</div>';
+      cells.push('<div class="cal-cell'+(isToday?' cal-today':'')+(wend&&!isToday?' cal-out':'')+'"><div class="cal-dn">'+di+'</div>'+chips+'</div>');
+    }
+    while(cells.length%7!==0) cells.push('<div class="cal-cell cal-out"></div>');
+    while(cells.length<42) cells.push('<div class="cal-cell cal-out"></div>');
+    var wk=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var wh=wk.map(function(w){return '<div class="cal-dh">'+w+'</div>';}).join('');
+    el.innerHTML='<div class="ph"><button onclick="gP(\'dash\')" style="font-size:18px;background:transparent;border:none;color:var(--tx2);cursor:pointer;padding:4px">←</button>'
+      +'<div><div class="pt">Project <em>Schedule</em></div><div class="ps">'+bundles.length+' projects · '+escMat(monthName)+'</div></div></div>'
+      +'<button type="button" class="btn bp sm" onclick="gP(\'tl\')">Timeline</button>'
+      +'</div>'
+      +'<div class="pc cal-wrap">'
+      +'<div class="cal-nav">'
+      +'<button type="button" class="btn bg sm" onclick="rCalNavPrev()">← Month</button>'
+      +'<h2>'+escMat(monthName)+'</h2>'
+      +'<button type="button" class="btn bg sm" onclick="rCalNavNext()">Month →</button>'
+      +'<button type="button" class="btn bp sm" onclick="rCalNavToday()">Today</button>'
+      +'</div>'
+      +'<div class="cal-gantt"><div class="cal-gantt-h">Workload (this month) — drag a bar to shift start date</div>'+ganttRows+'</div>'
+      +'<div class="cal-grid-wrap"><div class="cal-grid-h">Trades by working day (matches timeline sequence)</div><div class="cal-grid">'+wh+cells.join('')+'</div>'
+      +'<p class="cal-legend">Dates follow <strong>working days</strong> from the Timeline (weekends skipped). Shifting a bar updates that project’s start date and syncs with Timeline &amp; quotes. Colors distinguish projects.</p>'
+      +'</div></div>';
+  }).catch(function(){
+    el.innerHTML='<div class="ph"><button onclick="gP(\'dash\')" style="font-size:18px;background:transparent;border:none;color:var(--tx2);cursor:pointer;padding:4px">←</button><div class="pt">Schedule</div></div><div class="pc"><div class="tl-empty">Could not load projects.</div></div>';
   });
-  var cats=Object.keys(byT).map(function(tid){
-    var cat=byT[tid],col=TC[tid]||"#888",ct=cat.items.reduce(function(s,x){return s+x.cost;},0);
-    totC+=ct;
-    var rows=cat.items.map(function(it){
-      totI++;var ck=S.ck[it.id];
-      return '<div class="sh-it"><div class="ck'+(ck?' on':'')+'" onclick="togCk(\''+it.id+'\')">'+(ck?"✓":"")+'</div>'
-        +'<div class="sh-lb'+(ck?' on':'')+'">'+it.l+'</div>'
-        +'<div class="sh-q">'+it.qty+' '+it.u+'</div>'
-        +'<div class="sh-p">'+f(it.cost)+'</div></div>';
-    }).join("");
-    return '<div class="sh-cat"><div class="sh-h"><div class="sh-dot" style="background:'+col+'"></div>'
-      +'<div class="sh-n">'+TIC[tid]+' '+cat.n+'</div><div class="sh-t">'+f(ct)+'</div></div>'+rows+'</div>';
-  }).join("");
-  var empty=Object.keys(byT).length===0;
-  el.innerHTML='<div class="ph"><div style="display:flex;align-items:center;gap:8px">'
-    +'<button onclick="gP(\'dash\')" style="font-size:18px;background:transparent;border:none;color:var(--tx2);cursor:pointer;padding:4px">←</button>'
-    +'<div><div class="pt">Shopping <em>List</em></div><div class="ps">'+totI+' items · '+f(totC)+'</div></div></div>'
-    +'<button class="btn bg sm" onclick="clearCk()">Clear Checked</button></div>'
-    +'<div class="pc">'+(empty?'<div class="empty"><div class="empty-i">🛒</div><div>Enter quantities in your rooms to build the list</div></div>':cats)+'</div>';
 }
-function togCk(k){S.ck[k]=!S.ck[k];ss();rShop();}
-function clearCk(){S.ck={};ss();rShop();}
+function openProjectMaterials(){ matListScope='project'; matListRoomIdx=null; gP('shop'); }
+function openRoomMaterials(ri){ matListScope='room'; matListRoomIdx=ri; gP('shop'); }
+function materialsListBack(){
+  if(matListScope==='room'&&matListRoomIdx!=null) gRoom(matListRoomIdx);
+  else gP('dash');
+}
+function setMatHideZero(on){
+  S.matHideZero=!!on; ss(); rShop();
+}
+function exportMaterialsCsv(){
+  var rows=collectMaterialsRows({roomIdx:matListScope==='room'?matListRoomIdx:null,aggregate:matListScope!=='room'});
+  if(!rows.length){ try{alert('No rows to export.');}catch(e){} return; }
+  var lines=['trade,product,qty,unit,unit_price,total,rooms'];
+  rows.forEach(function(r){
+    var esc=function(f){ return '"'+String(f).replace(/"/g,'""')+'"'; };
+    lines.push([esc(r.tradeLabel),esc(r.product),r.qty,r.unit,f(r.unitPrice),f(r.total),esc(r.room||'')].join(','));
+  });
+  var blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=(S.proj&&S.proj.name?S.proj.name.replace(/[^\w\-]+/g,'_'):'renoflow')+'-materials.csv';
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); },1500);
+}
+function rShop(){
+  if(matListScope==='room'&&(matListRoomIdx==null||!S.rooms[matListRoomIdx])){
+    matListScope='project'; matListRoomIdx=null;
+  }
+  var el=document.getElementById("p-shop");
+  var isRoom=matListScope==='room'&&matListRoomIdx!=null;
+  var rows=collectMaterialsRows({roomIdx:isRoom?matListRoomIdx:null,aggregate:!isRoom});
+  var byTrade={};
+  var tradeOrder=INTAKE_TRADE_IDS.slice();
+  rows.forEach(function(r){
+    if(!byTrade[r.tradeId]) byTrade[r.tradeId]=[];
+    byTrade[r.tradeId].push(r);
+  });
+  var totC=0, totQ=0;
+  rows.forEach(function(r){ totC+=r.total; totQ+=r.qty; });
+  var catsHtml=tradeOrder.map(function(tid){
+    var arr=byTrade[tid];
+    if(!arr||!arr.length) return '';
+    var col=TC[tid]||'#888', tsum=arr.reduce(function(s,x){return s+x.total;},0);
+    var tb=arr.map(function(it){
+      var z=!(it.qty>0)?' ml-z':'';
+      return '<tr class="'+z+'">'
+        +'<td><div class="ml-prod"><img class="ml-img" src="'+escMat(it.img)+'" alt="" loading="lazy" width="48" height="48"/>'
+        +'<div><div class="ml-pn">'+escMat(it.product)+'</div>'
+        +(isRoom||!it.room?'':'<div class="ml-rn">'+escMat(it.room)+'</div>')+'</div></div></td>'
+        +'<td>'+(it.qty>0?it.qty:'0')+'</td>'
+        +'<td>'+escMat(it.unit)+'</td>'
+        +'<td>'+f(it.unitPrice)+'</td>'
+        +'<td>'+f(it.total)+'</td></tr>';
+    }).join('');
+    return '<div class="ml-cat">'
+      +'<div class="ml-ch"><span class="ml-cdot" style="background:'+col+'"></span>'
+      +'<span class="ml-cn">'+escMat(TIC[tid]+' '+TN[tid])+'</span>'
+      +'<span class="ml-ct">'+f(tsum)+'</span></div>'
+      +'<table class="ml-table" role="grid"><thead><tr><th>Product</th><th>Qty</th><th>Unit</th><th>Unit $</th><th>Total</th></tr></thead>'
+      +'<tbody>'+tb+'</tbody></table></div>';
+  }).join('');
+  var extraTids=Object.keys(byTrade).filter(function(tid){ return tradeOrder.indexOf(tid)<0; });
+  extraTids.forEach(function(tid){
+    var arr=byTrade[tid], col=TC[tid]||'#888', tsum=arr.reduce(function(s,x){return s+x.total;},0);
+    var tb=arr.map(function(it){
+      var z=!(it.qty>0)?' ml-z':'';
+      return '<tr class="'+z+'"><td><div class="ml-prod"><img class="ml-img" src="'+escMat(it.img)+'" alt="" loading="lazy" width="48" height="48"/>'
+        +'<div><div class="ml-pn">'+escMat(it.product)+'</div>'
+        +(isRoom||!it.room?'':'<div class="ml-rn">'+escMat(it.room)+'</div>')+'</div></div></td>'
+        +'<td>'+(it.qty>0?it.qty:'0')+'</td><td>'+escMat(it.unit)+'</td><td>'+f(it.unitPrice)+'</td><td>'+f(it.total)+'</td></tr>';
+    }).join('');
+    catsHtml+='<div class="ml-cat"><div class="ml-ch"><span class="ml-cdot" style="background:'+col+'"></span>'
+      +'<span class="ml-cn">'+escMat(TIC[tid]+' '+TN[tid])+'</span><span class="ml-ct">'+f(tsum)+'</span></div>'
+      +'<table class="ml-table"><thead><tr><th>Product</th><th>Qty</th><th>Unit</th><th>Unit $</th><th>Total</th></tr></thead><tbody>'+tb+'</tbody></table></div>';
+  });
+  var title=isRoom&&S.rooms[matListRoomIdx]?(S.rooms[matListRoomIdx].ic+' '+S.rooms[matListRoomIdx].n):'Project materials';
+  var rc=(S.rooms||[]).length;
+  var sub=isRoom?'This room only':'All rooms · '+rc+' room'+(rc!==1?'s':'');
+  var empty=!rows.length;
+  var pname=S.proj&&S.proj.name?escMat(S.proj.name):'Project';
+  el.innerHTML='<div class="ml-page">'
+    +'<div class="ml-print-head" style="display:none;padding:16px 18px 0;font-family:DM Serif Display,serif;font-size:20px;font-weight:700">'+pname+'</div>'
+    +'<div class="ml-ph no-print">'
+    +'<div class="ml-ph-left">'
+    +'<button type="button" class="btn bg sm" onclick="materialsListBack()" style="padding:6px 12px">← Back</button>'
+    +'<div><div class="ml-title">'+escMat(title)+'</div><div class="ml-sub">'+escMat(sub)+' · '+rows.length+' line'+(rows.length!==1?'s':'')+' · '+f(totC)+'</div></div></div>'
+    +'<div class="ml-toolbar">'
+    +'<label class="ml-tog"><input type="checkbox" '+(S.matHideZero!==false?'checked':'')+' onchange="setMatHideZero(this.checked)"/> Hide zero qty</label>'
+    +'<button type="button" class="btn bp sm" onclick="window.print()">Print</button>'
+    +'<button type="button" class="btn bg sm" onclick="exportMaterialsCsv()">Export CSV</button>'
+    +'</div></div>'
+    +'<div class="pc" style="padding:16px 18px 24px">'
+    +(empty?'<div class="ml-empty"><div style="font-size:40px;margin-bottom:12px;opacity:.5">📦</div><div>No materials to show. Turn off “Hide zero qty” or enter quantities in trade line items.</div></div>'
+      :catsHtml
+      +'<div class="ml-foot no-print"><span>Grand total</span><strong>'+f(totC)+'</strong></div>')
+    +'</div></div>';
+}
 
 function buildQuoteTimeline(){
   if(!S.proj.includeTimeline) return '';
@@ -2759,7 +3598,7 @@ function rSett(){
     +'<button class="btn bd-btn" onclick="resetAll()">Reset Everything</button>'
     +'</div></div></div>';
 }
-function resetAll(){if(confirm("Delete everything?")){S=DS();ss();curR=null;rNav();uSide();gP("dash");}}
+function resetAll(){S=DS();ss();curR=null;rNav();uSide();gP("dash");}
 
 function pickClientFromSett(id){
   if(!id){S.proj.clientId="";ss();return;}
@@ -2794,7 +3633,6 @@ async function addRoom(ti){
 }
 function delRoom(i){
   if(i<0||i>=S.rooms.length)return;
-  if(!confirm("Remove “"+S.rooms[i].n+"” from this project?"))return;
   var room=S.rooms[i];
   var dbId=room.dbRoomId;
 
@@ -2870,6 +3708,16 @@ var MATDB = {
     {id:"fr_m2",ic:"🪵", name:"SPF Stud 2x6x92 5/8in",      unit:"ea",  price:6.50},
     {id:"fr_m3",ic:"🔩", name:"Framing Nails 3in 5lb Box",   unit:"box", price:22.00}
   ],
+  concrete:[
+    {id:"cf_m1",ic:"🧱", name:"Ready-Mix Concrete 32 MPa", unit:"cy", price:185.00},
+    {id:"cf_m2",ic:"📦", name:"Sakrete 60lb Concrete Mix", unit:"bag", price:6.50},
+    {id:"cf_m3",ic:"📦", name:"Quikrete 80lb Concrete Mix", unit:"bag", price:8.50}
+  ],
+  roofing:[
+    {id:"rf_m1",ic:"🔲", name:"Architectural Shingles (bundle)", unit:"bundle", price:42.00},
+    {id:"rf_m2",ic:"📄", name:"Synthetic Underlayment 1000 sqft", unit:"roll", price:95.00},
+    {id:"rf_m3",ic:"📐", name:"Aluminum Drip Edge 10ft", unit:"ea", price:12.00}
+  ],
   electrical:[
     {id:"el_m1",ic:"🔌", name:"Romex 14/2 NMD90 75m Roll",  unit:"roll",price:85.00},
     {id:"el_m2",ic:"📦", name:"Single Gang PVC Box",         unit:"ea",  price:1.80},
@@ -2944,8 +3792,161 @@ var MATDB = {
     {id:"fn_m1",ic:"🔧", name:"Cabinet Hardware Pull Pack", unit:"ea",price:24.00},
     {id:"fn_m2",ic:"✨", name:"Touch-Up Paint Pen Set", unit:"ea",price:18.00},
     {id:"fn_m3",ic:"🧽", name:"Microfiber Detail Kit", unit:"ea",price:12.00}
+  ],
+  security:[
+    {id:"se_m1",ic:"📼", name:"4-Channel NVR 4K", unit:"ea",price:420.00},
+    {id:"se_m2",ic:"🔌", name:"8-Port PoE+ Switch", unit:"ea",price:280.00},
+    {id:"se_m3",ic:"🚪", name:"Access Control Panel", unit:"ea",price:1200.00},
+    {id:"se_m4",ic:"🧲", name:"Magnetic Lock 600lb", unit:"ea",price:165.00},
+    {id:"se_m5",ic:"💳", name:"Proximity Card Reader", unit:"ea",price:120.00}
+  ],
+  comdoor:[
+    {id:"cd_m1",ic:"🚪", name:"Surface Door Closer Grade 1", unit:"ea",price:95.00},
+    {id:"cd_m2",ic:"🚪", name:"Rim Exit Device", unit:"ea",price:380.00},
+    {id:"cd_m3",ic:"📎", name:"Ball Bearing Hinge 4.5in", unit:"ea",price:32.00},
+    {id:"cd_m4",ic:"🔐", name:"Mortise Lockset", unit:"ea",price:220.00},
+    {id:"cd_m5",ic:"🛑", name:"Wall / Floor Door Stop", unit:"ea",price:8.00}
   ]
 };
+(function patchMatDbImages(){
+  var POOL=[
+    'https://images.pexels.com/photos/221540/pexels-photo-221540.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
+    'https://images.pexels.com/photos/534220/pexels-photo-534220.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
+    'https://images.pexels.com/photos/1267338/pexels-photo-1267338.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
+    'https://images.pexels.com/photos/8961144/pexels-photo-8961144.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
+    'https://images.pexels.com/photos/159358/construction-site-build-construction-work-159358.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
+    'https://images.pexels.com/photos/162553/keys-workshop-mechanic-tools-162553.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
+    'https://images.pexels.com/photos/5691641/pexels-photo-5691641.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
+    'https://images.pexels.com/photos/5691622/pexels-photo-5691622.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
+    'https://images.pexels.com/photos/5691546/pexels-photo-5691546.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
+    'https://images.pexels.com/photos/5691584/pexels-photo-5691584.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
+    'https://images.pexels.com/photos/1080705/pexels-photo-1080705.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
+    'https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg?auto=compress&cs=tinysrgb&w=120&h=120'
+  ];
+  function h(s){var x=0;for(var i=0;i<s.length;i++)x=(x*31+s.charCodeAt(i))>>>0;return x;}
+  for(var tid in MATDB){
+    MATDB[tid].forEach(function(m){
+      if(!m.img) m.img=POOL[h(m.id)%POOL.length];
+    });
+  }
+})();
+var ITEM_MAT_MAP={
+  d1:'d_m1',d2:'d_m2',d3:'d_m3',
+  fr1:'fr_m1',fr2:'fr_m2',fr3:'fr_m3',fr4:'d_m1',
+  cf1:'cf_m1',cf2:'cf_m2',cf3:'cf_m3',cf4:'cf_m2',cf5:'d_m1',
+  rf1:'rf_m1',rf2:'rf_m2',rf3:'rf_m3',rf4:'rf_m1',rf5:'rf_m3',rf6:'d_m1',
+  el1:'d_m1',el2:'el_m1',el3:'el_m2',
+  pl1:'d_m1',pl2:'pl_m1',
+  hv1:'hv_m1',hv2:'hv_m2',hv3:'d_m1',
+  in1:'in_m1',in2:'in_m2',in3:'d_m1',
+  dw1:'dw_m1',dw2:'dw_m2',dw3:'dw_m3',dw4:'d_m1',dw5:'d_m1',dw6:'dw_m3',
+  ti1:'ti_m1',ti2:'ti_m2',ti3:'ti_m3',ti4:'ti_m3',ti5:'d_m1',
+  fl1:'fl_m1',fl2:'fl_m3',fl3:'d_m1',
+  pa1:'pa_m1',pa2:'pa_m2',pa3:'pa_m3',pa4:'d_m1',
+  tr1:'tr_m1',tr2:'tr_m2',tr3:'tr_m1',tr4:'tr_m2',tr5:'d_m1',
+  ca1:'d_m1',ca2:'ca_m3',
+  lv1:'d_m1',lv2:'lv_m1',lv3:'lv_m2',lv4:'lv_m4',lv5:'lv_m5',lv6:'lv_m6',lv7:'lv_m7',lv8:'lv_m8',lv9:'lv_m9',lv10:'lv_m10',lv11:'lv_m11',lv12:'lv_m12',lv13:'lv_m13',
+  cl1:'d_m1',cl2:'cl_m1',cl3:'cl_m2',
+  fn1:'d_m1',fn2:'fn_m2',fn3:'d_m1',
+  se1:'se_m1',se2:'se_m2',se3:'se_m3',se4:'se_m4',se5:'se_m5',se6:'d_m1',
+  cd1:'cd_m1',cd2:'cd_m2',cd3:'cd_m3',cd4:'cd_m4',cd5:'cd_m5',cd6:'d_m1'
+};
+var FX_MAT_MAP={
+  outlet:'el_m3',switch:'el_m3',potlight:'el_m1',gfci:'el_m3',exhaust:'hv_m1',panel:'el_m1',fixture:'el_m1',
+  toilet:'pl_m1',vanity:'pl_m1',shower:'pl_m1',tub:'pl_m1',kitchen:'pl_m1',dishwash:'pl_m1',roughin:'pl_m1',
+  upper:'ca_m1',lower:'ca_m1',counter:'ca_m3',island:'ca_m2',pantry:'ca_m1'
+};
+function matFindRowByMid(mid){
+  if(!mid)return null;
+  for(var tid in MATDB){
+    var arr=MATDB[tid];
+    for(var i=0;i<arr.length;i++) if(arr[i].id===mid) return arr[i];
+  }
+  var cm=loadCustomMats();
+  for(var ct in cm){
+    var a=cm[ct]||[];
+    for(var j=0;j<a.length;j++) if(a[j].id===mid) return a[j];
+  }
+  return null;
+}
+function stripLineLabel(s){
+  if(!s)return'';
+  try{ return s.replace(/[\u{1F300}-\u{1FAFF}]/gu,'').replace(/\s+/g,' ').trim(); }
+  catch(e){ return s.replace(/\s+/g,' ').trim(); }
+}
+function matProductName(tradeId,it,mid){
+  var row=matFindRowByMid(mid);
+  if(row&&row.name) return row.name;
+  return stripLineLabel(it.l)||(it.l||'Item');
+}
+function matImgForMid(mid){
+  var row=matFindRowByMid(mid);
+  if(row&&row.img) return row.img;
+  return 'https://placehold.co/96x96/e8e4dc/2d4a3a?text=RF';
+}
+function matUnitPrice(it){ return (it.p||0)*(1+(S.mk&&S.mk.mat?S.mk.mat:0)/100); }
+function collectMaterialsRows(opts){
+  opts=opts||{};
+  var roomIdx=opts.roomIdx;
+  var aggregate=opts.aggregate!==false;
+  var hideZero=S.matHideZero!==false;
+  var rooms=S.rooms||[];
+  var list=[];
+  function pushRow(rname,ri,tid,t,it,fx){
+    var qty=fx?(fx.qty||0):(it.qty||0);
+    if(hideZero&&!(qty>0))return;
+    var up=matUnitPrice(fx||it);
+    var tot=fx?fxCost(fx):ic(it);
+    var mid=fx?(FX_MAT_MAP[fx.id]||'el_m1'):ITEM_MAT_MAP[it.id];
+    var pname=fx?matProductName(tid,{l:fx.l,u:fx.u,p:fx.p},mid):matProductName(tid,it,mid);
+    var imgMid=mid||'d_m1';
+    list.push({
+      tradeId:tid,tradeLabel:TN[tid]||tid,
+      room:rname,roomIdx:ri,
+      key:fx?('fx:'+tid+':'+fx.id):('li:'+tid+':'+it.id),
+      product:pname,
+      qty:qty,unit:(fx?fx.u:it.u),
+      unitPrice:up,total:tot,
+      img:matImgForMid(imgMid)
+    });
+  }
+  function walkRoom(room,ri){
+    var rname=room.n||('Room '+(ri+1));
+    (room.trades||[]).forEach(function(t){
+      var tid=t.id;
+      (t.items||[]).forEach(function(it){
+        pushRow(rname,ri,tid,t,it,null);
+      });
+      Object.keys(t.fx||{}).forEach(function(fk){
+        (t.fx[fk]||[]).forEach(function(fx){
+          pushRow(rname,ri,tid,t,null,fx);
+        });
+      });
+    });
+  }
+  if(roomIdx!=null&&roomIdx>=0&&rooms[roomIdx]) walkRoom(rooms[roomIdx],roomIdx);
+  else rooms.forEach(function(room,ri){ walkRoom(room,ri); });
+  if(!aggregate||list.length===0) return list;
+  var map={}, order=[];
+  list.forEach(function(row){
+    var k=row.tradeId+'|'+row.key;
+    if(!map[k]){
+      map[k]={tradeId:row.tradeId,tradeLabel:row.tradeLabel,product:row.product,qty:0,unit:row.unit,unitPrice:row.unitPrice,total:0,img:row.img,rooms:[]};
+      order.push(k);
+    }
+    var m=map[k];
+    m.qty+=row.qty;
+    m.total+=row.total;
+    if(row.room&&m.rooms.indexOf(row.room)<0) m.rooms.push(row.room);
+    m.unitPrice=m.qty>0?m.total/m.qty:row.unitPrice;
+  });
+  return order.map(function(k){ var m=map[k]; return {
+    tradeId:m.tradeId,tradeLabel:m.tradeLabel,
+    room:m.rooms.length>1?m.rooms.length+' rooms':(m.rooms[0]||''),
+    roomIdx:-1,
+    key:k,product:m.product,qty:m.qty,unit:m.unit,unitPrice:m.unitPrice,total:m.total,img:m.img
+  }; });
+}
 
 function loadCustomMats() {
   try { return JSON.parse(localStorage.getItem("rf7_mats")||"{}"); } catch(e){ return {}; }
@@ -2969,7 +3970,7 @@ function openMats(tradeId) {
     var ckCls = ck ? " on" : "";
     var ckMark = ck ? "&#10003;" : "";
     prodRows += '<div class="mat-row'+boughtCls+'" id="matr-'+m.id+'">';
-    prodRows += '<div class="mat-ic">'+m.ic+'</div>';
+    prodRows += m.img?'<img class="mat-thumb" src="'+escMat(m.img)+'" alt="" loading="lazy"/>':'<div class="mat-ic">'+m.ic+'</div>';
     prodRows += '<div class="mat-info">';
     prodRows += '<div class="mat-name">'+m.name+'</div>';
     prodRows += '<div class="mat-price">$'+m.price.toFixed(2)+' / '+m.unit+'</div>';
@@ -3447,7 +4448,6 @@ function unmarkInvPaid(id){
   ss(); rInvDetail(inv);
 }
 function markInvVoid(id){
-  if(!confirm('Void this invoice? It will be kept on record but excluded from totals.'))return;
   var inv=(S.invoices||[]).find(function(x){return x.id===id;});
   if(!inv)return;
   inv.void=true;
@@ -3477,7 +4477,6 @@ function setInvDeposit(id,v){
   ss(); rInvDetail(inv);
 }
 function deleteInv(id){
-  if(!confirm('Delete this invoice? This cannot be undone.'))return;
   S.invoices=S.invoices.filter(function(x){return x.id!==id;});
   curInvId=null; ss(); uSide(); rInvList();
 }
@@ -3836,7 +4835,6 @@ function clientIdIsLocalOnly(id){
 function delClient(i){
   var cl=S.clients[i];
   if(!cl)return;
-  if(!confirm("Delete "+cl.name+"? This cannot be undone."))return;
   var cid=cl.id;
   if(clientIdIsLocalOnly(cid)){
     S.clients.splice(i,1);

@@ -17,10 +17,12 @@ export default async function LoginPage({ searchParams }: Props) {
   const params = await searchParams;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-100 px-4">
-      <div className="w-full max-w-sm rounded-xl border border-zinc-200 bg-white p-8 shadow-sm">
-        <h1 className="mb-1 text-center font-serif text-2xl text-emerald-900">RenoFlow</h1>
-        <p className="mb-6 text-center text-sm text-zinc-500">Sign in with username and password</p>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#f0f4f0] px-4">
+      <div className="w-full max-w-sm rounded-[12px] border border-[#e8eee8] bg-white p-8 shadow-sm">
+        <h1 className="mb-1 text-center text-2xl font-bold tracking-tight text-[#1a2e1a]">
+          RenoFlow
+        </h1>
+        <p className="mb-6 text-center text-sm text-[#aaa]">Sign in with username and password</p>
         <LoginForm error={params.error} errorMessage={params.msg} />
       </div>
     </div>
