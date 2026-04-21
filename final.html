@@ -841,6 +841,11 @@ function ss(){
       var key=(S.proj&&S.proj.dbProjectId)?("rf7_ws_"+S.proj.dbProjectId):"rf7";
       localStorage.setItem(key,JSON.stringify(S));
     }catch(e){}
+    try{
+      if(curPg==="room"&&typeof curR==="number"&&S.rooms&&S.rooms[curR]&&S.rooms[curR].dbRoomId){
+        syncRoomToSupabase(curR).catch(function(e){ console.warn("[room sync]",e); });
+      }
+    }catch(e2){}
   },900);
 }
 
@@ -875,14 +880,18 @@ function refreshClientsFromServer(){
     });
 }
 function saveWorkspaceNow(){
-  try{
-    persistCurrentWorkspaceNow();
-    var i=document.getElementById("sind");
-    if(i){
-      i.classList.add("show");
-      setTimeout(function(){i.classList.remove("show");},1200);
-    }
-  }catch(e){}
+  flushAllRoomsTradesToSupabase()
+    .catch(function(e){ console.warn("[flush rooms]",e); })
+    .then(function(){
+      try{
+        persistCurrentWorkspaceNow();
+        var i=document.getElementById("sind");
+        if(i){
+          i.classList.add("show");
+          setTimeout(function(){i.classList.remove("show");},1200);
+        }
+      }catch(e){}
+    });
 }
 
 function loadWorkspaceFromStorage(projectId){
@@ -1169,25 +1178,31 @@ function submitNewProject(){
 
 function activateProjectId(id,list,opts){
   opts=opts||{};
-  if(!opts.skipPersist)persistCurrentWorkspaceNow();
-  localStorage.setItem("rf7_active_project",id);
-  var hadLocalWorkspace=loadWorkspaceFromStorage(id);
-  curInvId=null;
-  return fetch("/api/projects/"+encodeURIComponent(id)+"/workspace",{credentials:"include"})
-  .then(function(res){
-    return res.json().then(function(j){
-      if(!res.ok)throw new Error(j.error||("HTTP "+res.status));
-      return j;
+  function loadNewProject(){
+    if(!opts.skipPersist)persistCurrentWorkspaceNow();
+    localStorage.setItem("rf7_active_project",id);
+    var hadLocalWorkspace=loadWorkspaceFromStorage(id);
+    curInvId=null;
+    return fetch("/api/projects/"+encodeURIComponent(id)+"/workspace",{credentials:"include"})
+    .then(function(res){
+      return res.json().then(function(j){
+        if(!res.ok)throw new Error(j.error||("HTTP "+res.status));
+        return j;
+      });
+    })
+    .then(function(payload){
+      mergeServerWorkspace(payload,{hadLocalWorkspace:hadLocalWorkspace});
+      (S.rooms||[]).forEach(function(r){try{applyAuto(r);}catch(e){}});
+      return refreshClientsFromServer().catch(function(e){ console.warn("refreshClientsFromServer",e); });
+    })
+    .then(function(){
+      ss();
     });
-  })
-  .then(function(payload){
-    mergeServerWorkspace(payload,{hadLocalWorkspace:hadLocalWorkspace});
-    (S.rooms||[]).forEach(function(r){try{applyAuto(r);}catch(e){}});
-    return refreshClientsFromServer().catch(function(e){ console.warn("refreshClientsFromServer",e); });
-  })
-  .then(function(){
-    ss();
-  });
+  }
+  if(opts.skipPersist)return loadNewProject();
+  return flushAllRoomsTradesToSupabase()
+    .catch(function(e){ console.warn("[flush rooms before switch]",e); })
+    .then(function(){ return loadNewProject(); });
 }
 
 function initFromServer(){
@@ -1236,6 +1251,54 @@ function initFromServer(){
     uSide();
     gP("dash");
   });
+}
+
+function syncRoomToSupabase(roomIndex){
+  var room=(S.rooms||[])[roomIndex];
+  if(!room||!room.dbRoomId)return Promise.resolve();
+  var trades=(room.trades||[]).map(function(t){
+    return {
+      id:t.id,
+      note:t.note||"",
+      open:!!t.open,
+      days:t.days||0,
+      daysCustom:!!t.daysCustom,
+      items:(t.items||[]).map(function(it){
+        return {id:it.id,qty:it.qty||0,p:it.p,wasAuto:!!it.wasAuto};
+      })
+    };
+  });
+  return fetch("/api/rooms/"+encodeURIComponent(room.dbRoomId),{
+    method:"PATCH",
+    credentials:"include",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      name:room.n,
+      icon:room.ic||null,
+      sort_order:roomIndex,
+      dimensions:room.d||{},
+      trades:trades
+    })
+  }).then(function(res){
+    if(!res.ok){
+      return res.json().catch(function(){return {};}).then(function(j){
+        throw new Error((j&&j.error)?j.error:("HTTP "+res.status));
+      });
+    }
+    return res.json().catch(function(){return {};});
+  });
+}
+
+function flushAllRoomsTradesToSupabase(){
+  var rooms=S.rooms||[];
+  var chain=Promise.resolve();
+  for(var i=0;i<rooms.length;i++){
+    if(!rooms[i].dbRoomId) continue;
+    (function(idx){
+      chain=chain.then(function(){ return syncRoomToSupabase(idx); });
+    })(i);
+  }
+  return chain;
 }
 
 function saveRoomToSupabase(room, roomIndex){
@@ -1643,6 +1706,9 @@ var INTAKE_TRADE_IDS=['demo','framing','concrete','roofing','electrical','plumbi
 var expandedTi=null;
 
 function gP(pg){
+  if(curPg==="room"&&typeof curR==="number"&&S.rooms&&S.rooms[curR]&&S.rooms[curR].dbRoomId){
+    syncRoomToSupabase(curR).catch(function(e){ console.warn("[room sync]",e); });
+  }
   curPg=pg;curR=null;expandedTi=null;
   document.querySelectorAll(".ni[data-pg],.mn[data-pg]").forEach(function(n){n.classList.remove("on");});
   document.querySelectorAll("[data-pg='"+pg+"']").forEach(function(n){n.classList.add("on");});
@@ -1650,6 +1716,9 @@ function gP(pg){
 }
 function gRoom(i){
   expandedTi=null;
+  if(curPg==="room"&&typeof curR==="number"&&curR!==i&&S.rooms&&S.rooms[curR]&&S.rooms[curR].dbRoomId){
+    syncRoomToSupabase(curR).catch(function(e){ console.warn("[room sync]",e); });
+  }
   curR=i;curPg="room";
   document.querySelectorAll(".ni,.mn").forEach(function(n){n.classList.remove("on");});
   var el=document.getElementById("nr"+i);if(el)el.classList.add("on");
