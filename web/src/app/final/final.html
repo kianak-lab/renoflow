@@ -154,7 +154,6 @@ a.ni{color:inherit;text-decoration:none;}
 .trade-ic-wrap svg{display:block;width:22px;height:22px;}
 .trade-ic-wrap .trade-ic-emoji{font-size:20px;line-height:1;}
 .th-text-block{flex:1;min-width:0;}
-.trade-cat{font-size:9px;color:#bbbbbb;letter-spacing:0.3px;margin-top:3px;line-height:1.2;}
 .th-meta-right{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0;}
 .th-act{flex-shrink:0;display:flex;align-items:center;gap:4px;padding:8px 10px 8px 0;border-left:1px solid var(--bd2);}
 .th-ico{width:32px;height:32px;border-radius:6px;border:1px solid var(--bd2);background:var(--sf2);cursor:pointer;font-size:15px;line-height:1;color:var(--tx2);display:flex;align-items:center;justify-content:center;padding:0;}
@@ -189,30 +188,48 @@ a.ni{color:inherit;text-decoration:none;}
 .days-reset{font-size:10px;color:var(--ac);cursor:pointer;font-family:'Inter',system-ui,sans-serif;text-transform:uppercase;letter-spacing:1px;padding:3px 7px;border:1px solid rgba(90,154,90,.25);border-radius:4px;background:rgba(90,154,90,.05);}
 .days-reset:hover{background:rgba(90,154,90,.12);}
 
-.irow{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--sf2);}
-.il{font-size:12px;font-weight:500;color:#444;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
-.il-name{flex:1;}
-.il small{display:inline-block;font-size:10px;color:var(--grn);font-family:'Inter',system-ui,sans-serif;margin-left:6px;background:rgba(90,154,90,.12);padding:1px 6px;border-radius:10px;}
+/* Trade card — material rows (reference layout): name+unit on line 1; price | stepper | subtotal line 2; 44px controls */
+.tc-mat-row{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--sf2);}
+.tc-mat-line1{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 8px;margin-bottom:8px;line-height:1.3;}
+.tc-mat-name{font-size:16px;font-weight:700;color:var(--tx);font-family:'Inter',system-ui,sans-serif;}
+.tc-mat-unit{font-size:12px;color:#8a8f8a;font-family:'Inter',system-ui,sans-serif;}
+.tc-mat-line2{display:flex;align-items:stretch;gap:10px;width:100%;flex-wrap:nowrap;}
+.tc-cell-price{display:flex;align-items:stretch;flex:0 0 auto;border-radius:8px;overflow:hidden;border:1px solid #d8ddd8;background:#fff;}
+.tc-dollar{width:36px;min-width:36px;display:flex;align-items:center;justify-content:center;background:#eceeea;font-size:14px;color:#777;font-family:'Inter',system-ui,sans-serif;flex-shrink:0;}
+.tc-inp-price{width:80px;min-width:72px;max-width:100px;border:none!important;border-radius:0!important;box-shadow:none!important;margin:0!important;}
+.tc-cell-step{display:flex;align-items:stretch;flex:0 0 auto;border:1px solid #d8ddd8;border-radius:8px;overflow:hidden;background:#fff;}
+.tc-step-btn{width:44px;min-width:44px;max-width:44px;height:44px;padding:0;margin:0;border:none;background:#fafcfa;cursor:pointer;font-size:18px;color:var(--tx2);line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tc-step-btn:hover{background:#eef4ee;color:var(--ac);}
+.tc-step-mid{width:52px;min-width:48px;max-width:64px;height:44px;border:none;border-left:1px solid #d8ddd8;border-right:1px solid #d8ddd8;border-radius:0!important;text-align:center;font-size:15px;font-family:'Inter',system-ui,sans-serif;box-sizing:border-box;flex-shrink:0;}
+.tc-step-mid:focus{outline:2px solid rgba(90,154,90,.35);outline-offset:-2px;}
+.tc-step-mid.af{color:var(--grn)!important;}
+.tc-line-sub{flex:1;min-width:80px;display:flex;align-items:center;justify-content:flex-end;font-size:15px;font-weight:700;color:#5a9a5a;font-family:'Inter',system-ui,sans-serif;padding-left:8px;}
+.tc-h44,.tc-cell-price .tc-inp-price,.tc-cell-step .tc-step-btn,.tc-cell-step .tc-step-mid{height:44px!important;min-height:44px!important;max-height:44px!important;box-sizing:border-box!important;}
 
-.irow-inputs{display:flex;gap:8px;align-items:flex-start;}
-.qty-wrap{flex:1;display:flex;flex-direction:column;min-width:0;}
-.qty-wrap input{width:100%;max-width:90px;box-sizing:border-box;background:#f8faf8;border:1px solid #e0e8e0;border-radius:5px;padding:8px 10px;color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:16px;outline:none;transition:border .15s;}
-.qty-wrap input:focus{border-color:var(--ac);}
-.qty-wrap input.af{border-color:rgba(40,160,96,.5);color:var(--grn);}
-.irow-field-hint{font-size:10px;color:#bbbbbb;font-family:'Inter',system-ui,sans-serif;margin-top:5px;line-height:1.25;}
-.rate-wrap{flex:1;display:flex;flex-direction:column;min-width:0;}
-.rate-inp-row{position:relative;display:flex;align-items:center;width:100%;}
-.rate-inp-row input{flex:1;width:100%;box-sizing:border-box;min-width:0;max-width:120px;background:#f8faf8;border:1px solid #e0e8e0;border-radius:5px;padding:8px 12px 8px 22px;color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:16px;outline:none;transition:border .15s;}
-.rate-inp-row input:focus{border-color:var(--ac);}
-.rate-prefix{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--tx3);pointer-events:none;z-index:1;}
-.irow-sub{font-size:12px;color:var(--tx3);margin-top:6px;text-align:right;font-family:'Inter',system-ui,sans-serif;padding-top:5px;border-top:1px dashed var(--bd);}
-.irow-sub strong{color:#5a9a5a;font-weight:600;}
+.tc-sec-h-lab{background:#1a3d2e;color:#b8d4c4;padding:10px 14px;font-size:10px;letter-spacing:1.4px;font-weight:700;font-family:'Inter',system-ui,sans-serif;text-transform:uppercase;margin:0 -14px 12px -14px;border-radius:0;}
+.tc-sec-h-mat{background:#e8f3ea;color:#2d5a3d;padding:10px 14px;font-size:10px;letter-spacing:1.4px;font-weight:700;font-family:'Inter',system-ui,sans-serif;text-transform:uppercase;margin:18px -14px 12px -14px;border-radius:0;}
+.tc-lab-tog{display:flex;gap:4px;background:#eef1ee;padding:5px;border-radius:12px;margin-bottom:12px;}
+.tc-lab-pill{flex:1;padding:10px 12px;border:none;border-radius:10px;background:transparent;cursor:pointer;font-size:13px;font-family:'Inter',system-ui,sans-serif;color:var(--tx2);white-space:nowrap;}
+.tc-lab-pill.on{background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.08);font-weight:600;color:var(--tx);}
+.tc-lab-row .tc-mat-line1{margin-bottom:6px;}
+.tc-lab-row .tc-dollar{background:#eceeea;}
+.tc-suffix-hr{min-width:44px;padding:0 8px;display:flex;align-items:center;justify-content:center;background:#eceeea;font-size:12px;color:#777;font-family:'Inter',system-ui,sans-serif;border-left:1px solid #d8ddd8;flex-shrink:0;height:44px;box-sizing:border-box;}
+.tc-inp-price{padding:0 8px!important;font-size:15px!important;color:var(--tx)!important;background:#fff!important;}
+.tc-lab-jobrow .tc-cell-price{flex:0 0 auto;}
+.tc-lab-hourly .tc-cell-price{border-radius:8px;}
+.tc-foot-inner{display:flex;justify-content:space-between;align-items:center;width:100%;gap:12px;}
+.tc-foot-l{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#2d5a3d;font-family:'Inter',system-ui,sans-serif;}
+.tc-subbar-lab{display:flex;justify-content:space-between;align-items:center;padding:11px 12px;background:#eef6ef;border-radius:8px;margin-top:12px;font-size:13px;font-family:'Inter',system-ui,sans-serif;color:var(--tx2);}
+.tc-subbar-lab strong{color:#5a9a5a;font-weight:700;}
+.trade-cat{font-size:10px!important;letter-spacing:0.4px;text-transform:uppercase;color:#9aa29a!important;margin-top:3px;line-height:1.2;}
+.th-tot-big{font-size:22px;font-weight:700;color:#5a9a5a;font-family:'Inter',system-ui,sans-serif;}
+.ts .th-meta-right .tt-tot{text-align:right;}
+.tn{font-size:17px;}
 .sep{height:1px;background:var(--bd);margin:10px 0;}
 .sub{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
 .sub-l{font-size:12px;color:var(--tx2);}
 .sub-v{font-family:'Inter',system-ui,sans-serif;font-size:14px;color:#5a9a5a;font-weight:600;}
-.trade-footer-total{background:#f8fdf8!important;border-top:1px solid var(--bd)!important;}
-.trade-footer-total .sub-l,.trade-footer-total .sub-v{color:var(--tot)!important;font-weight:700!important;}
+.trade-footer-total{background:#e8f3ea!important;border-top:1px solid var(--bd)!important;}
 .note{width:100%;background:#fff;border:1px solid var(--bd);border-radius:5px;padding:8px 10px;color:var(--tx2);font-size:16px;resize:vertical;outline:none;min-height:50px;margin-top:10px;font-family:'Inter',system-ui,sans-serif;}
 .note::placeholder{color:var(--tx3);}
 .fx-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:7px;margin-bottom:10px;}
@@ -832,6 +849,9 @@ function migrate(d){
       if(r.d.floorArea===undefined)r.d.floorArea="";
     }
     try{applyAuto(r);}catch(e){}
+    (r.trades||[]).forEach(function(t){
+      if(!t.labour)t.labour={mode:'hourly',rate:55,qty:0,jobPrice:0};
+    });
   });
   return d;
 }
@@ -1345,10 +1365,44 @@ function saveRoomToSupabase(room, roomIndex){
 function f(n){return "$"+Math.round(n).toLocaleString();}
 function ic(it){return(it.p||0)*(it.qty||0)*(1+S.mk.mat/100);}
 function fxCost(fx){return(fx.p||0)*(fx.qty||0)*(1+S.mk.mat/100);}
+function ensureTradeLabour(t){
+  if(!t.labour)t.labour={mode:'hourly',rate:55,qty:0,jobPrice:0};
+}
+function labourLineAmount(t){
+  ensureTradeLabour(t);
+  var L=t.labour,mk=1+S.mk.mat/100;
+  if(L.mode==='job')return Math.max(0,(parseFloat(L.jobPrice)||0))*mk;
+  return Math.max(0,(parseFloat(L.rate)||0))*Math.max(0,(parseFloat(L.qty)||0))*mk;
+}
 function tradeCost(t){
   var c=t.items.reduce(function(s,it){return s+ic(it);},0);
+  c+=labourLineAmount(t);
   Object.keys(t.fx||{}).forEach(function(k){(t.fx[k]||[]).forEach(function(fx){c+=fxCost(fx);});});
   return c;
+}
+function syncTradeMoneyDom(ti, tc){
+  var tot=f(tc), head=tc>0?tot:'';
+  var a=document.getElementById('ts'+ti);if(a) a.textContent=tot;
+  var b=document.getElementById('exp-ts'+ti);if(b) b.textContent=tot;
+  var c=document.getElementById('tt'+ti);if(c) c.textContent=head;
+  var d=document.getElementById('exp-tt'+ti);if(d) d.textContent=head;
+}
+function syncLabourAmountDom(ti){
+  var room=S.rooms[curR]; if(!room||!room.trades||!room.trades[ti]) return;
+  var t=room.trades[ti]; ensureTradeLabour(t);
+  var sub=f(labourLineAmount(t));
+  document.querySelectorAll('#p-room [data-labline="'+ti+'"]').forEach(function(el){ el.textContent=sub; });
+  document.querySelectorAll('#p-room [data-labbar="'+ti+'"]').forEach(function(el){ el.textContent=sub; });
+}
+function syncLabourUi(ti,t){
+  ensureTradeLabour(t);
+  var job=t.labour.mode==='job';
+  document.querySelectorAll('#p-room #lab-hourly-'+ti+', #p-room #exp-lab-hourly-'+ti).forEach(function(el){ el.style.display=job?'none':''; });
+  document.querySelectorAll('#p-room #lab-job-'+ti+', #p-room #exp-lab-job-'+ti).forEach(function(el){ el.style.display=job?'':'none'; });
+  document.querySelectorAll('#p-room .ts[data-trade-ti="'+ti+'"] .tc-lab-pill').forEach(function(p,idx){
+    p.classList.toggle('on', (idx===0&&!job)||(idx===1&&!!job));
+  });
+  document.querySelectorAll('#p-room [data-lab-unit="'+ti+'"]').forEach(function(el){ el.textContent=job?'per job':'per hour'; });
 }
 function roomTotal(r){return(r.trades||[]).reduce(function(s,t){return s+tradeCost(t);},0);}
 function projTotal(){return S.rooms.reduce(function(s,r){return s+roomTotal(r);},0);}
@@ -2593,27 +2647,69 @@ function tradeSectionHtml(room, ti, idPx, isModal){
     +(t.daysCustom?'<span class="days-reset" onclick="resetDays('+ti+')">Reset auto</span>':'')
     +'</div>';
 
+  ensureTradeLabour(t);
+  var L=t.labour;
+  var labHour=L.mode!=='job';
+  var labAmt=labourLineAmount(t);
+  var labStr=f(labAmt);
+  var labourH='<div class="tc-sec-h-lab">Labour</div>'
+    +'<div class="tc-lab-tog">'
+    +'<button type="button" class="tc-lab-pill'+(labHour?' on':'')+'" onclick="sLabMode('+ti+',\'hourly\')">Hourly Rate</button>'
+    +'<button type="button" class="tc-lab-pill'+(!labHour?' on':'')+'" onclick="sLabMode('+ti+',\'job\')">Per Job Price</button>'
+    +'</div>'
+    +'<div class="tc-lab-row tc-mat-row">'
+    +'<div class="tc-mat-line1">'
+    +'<span class="tc-mat-name">⏱ Install Labour</span>'
+    +'<span class="tc-mat-unit" data-lab-unit="'+ti+'" id="'+px+'lab-unit-'+ti+'">'+(labHour?'per hour':'per job')+'</span>'
+    +'</div>'
+    +'<div class="tc-mat-line2 tc-lab-hourly" id="'+px+'lab-hourly-'+ti+'" style="'+(labHour?'':'display:none')+'">'
+    +'<div class="tc-cell-price tc-h44">'
+    +'<span class="tc-dollar">$</span>'
+    +'<input type="number" class="tc-inp-price" min="0" step="0.5" value="'+(L.rate||0)+'" oninput="sLabRate('+ti+',this.value)"/>'
+    +'<span class="tc-suffix-hr">/hr</span>'
+    +'</div>'
+    +'<div class="tc-cell-step">'
+    +'<button type="button" class="tc-step-btn" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabQty('+ti+',-0.5)">−</button>'
+    +'<input type="number" class="tc-step-mid" min="0" step="0.5" data-labqty-ti="'+ti+'" value="'+(L.qty>0?L.qty:'')+'" oninput="sLabQty('+ti+',this.value)"/>'
+    +'<button type="button" class="tc-step-btn" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabQty('+ti+',0.5)">+</button>'
+    +'</div>'
+    +'<div class="tc-line-sub" data-labline="'+ti+'">'+labStr+'</div>'
+    +'</div>'
+    +'<div class="tc-mat-line2 tc-lab-jobrow" id="'+px+'lab-job-'+ti+'" style="'+(labHour?'display:none':'')+'">'
+    +'<div class="tc-cell-price tc-h44">'
+    +'<span class="tc-dollar">$</span>'
+    +'<input type="number" class="tc-inp-price" min="0" step="1" value="'+(L.jobPrice||0)+'" oninput="sLabJob('+ti+',this.value)"/>'
+    +'</div>'
+    +'<div class="tc-line-sub" data-labline="'+ti+'">'+labStr+'</div>'
+    +'</div>'
+    +'</div>'
+    +'<div class="tc-subbar-lab">'
+    +'<span>Labour subtotal</span>'
+    +'<strong data-labbar="'+ti+'">'+labStr+'</strong>'
+    +'</div>';
+
+  var matHead=t.items.length?'<div class="tc-sec-h-mat">Materials</div>':'';
   var itemsH=t.items.map(function(it,ii){
     var autoKey=AM[it.id],autoVal=autoKey&&c[autoKey]!=null?c[autoKey]:null;
     var qty=it.qty||0,cost=ic(it);
-    return '<div class="irow">'
-      +'<div class="il">'
-      +'<span class="il-name" data-ilname="'+ti+'-'+ii+'">'+it.l+(autoVal?'<small>auto '+autoVal+'</small>':'')+'</span>'
+    var unitStr=_escTrade(it.u)+(autoVal!=null?' · auto: '+autoVal:'');
+    return '<div class="tc-mat-row">'
+      +'<div class="tc-mat-line1">'
+      +'<span class="tc-mat-name" data-tcname="'+ti+'-'+ii+'">'+_escTrade(it.l)+'</span>'
+      +'<span class="tc-mat-unit" data-tcunit="'+ti+'-'+ii+'">'+unitStr+'</span>'
       +'</div>'
-      +'<div class="irow-inputs">'
-      +'<div class="qty-wrap">'
-      +'<input class="'+(it.wasAuto?'af':'')+'" type="number" data-qty-ti="'+ti+'" data-qty-ii="'+ii+'" min="0" step="0.5" value="'+(qty>0?qty:'')+'" oninput="sQty('+ti+','+ii+',this.value)"/>'
-      +'<span class="irow-field-hint">'+it.u+'</span>'
+      +'<div class="tc-mat-line2">'
+      +'<div class="tc-cell-price tc-h44">'
+      +'<span class="tc-dollar">$</span>'
+      +'<input type="number" class="tc-inp-price" min="0" step="0.5" value="'+it.p+'" oninput="sPrice('+ti+','+ii+',this.value)"/>'
       +'</div>'
-      +'<div class="rate-wrap">'
-      +'<div class="rate-inp-row">'
-      +'<span class="rate-prefix">$</span>'
-      +'<input type="number" min="0" step="0.5" value="'+it.p+'" oninput="sPrice('+ti+','+ii+',this.value)"/>'
+      +'<div class="tc-cell-step">'
+      +'<button type="button" class="tc-step-btn" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjMatQty('+ti+','+ii+',-0.5)">−</button>'
+      +'<input type="number" class="tc-step-mid'+(it.wasAuto?' af':'')+'" min="0" step="0.5" data-qty-ti="'+ti+'" data-qty-ii="'+ii+'" value="'+(qty>0?qty:'')+'" oninput="sQty('+ti+','+ii+',this.value)"/>'
+      +'<button type="button" class="tc-step-btn" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjMatQty('+ti+','+ii+',0.5)">+</button>'
       +'</div>'
-      +'<span class="irow-field-hint">per '+it.u+'</span>'
+      +'<div class="tc-line-sub" data-irowsub="'+ti+'-'+ii+'">'+f(cost)+'</div>'
       +'</div>'
-      +'</div>'
-      +'<div class="irow-sub" data-irowsub="'+ti+'-'+ii+'">'+(cost>0?'Subtotal: <strong>'+f(cost)+'</strong>':'Enter qty to calculate')+'</div>'
       +'</div>';
   }).join("");
   var fxH="";
@@ -2641,18 +2737,18 @@ function tradeSectionHtml(room, ti, idPx, isModal){
   var tools='<div class="th-act">'+expBtn
     +'<button type="button" class="th-ico th-ico-del" title="Remove trade" aria-label="Remove trade" onclick="event.stopPropagation();delTrade('+ti+')">✕</button>'
     +'</div>';
-  var bodyInner='<div class="tb'+(t.open?' op':'')+'">'+daysRow+itemsH+fxH+tradeToolsBlock(room,ti,t,idPx)
+  var bodyInner='<div class="tb'+(t.open?' op':'')+'">'+daysRow+labourH+matHead+itemsH+fxH+tradeToolsBlock(room,ti,t,idPx)
     +'<div class="sep"></div>'
-    +'<div class="sub trade-footer-total" style="margin:0 -14px -14px;padding:12px 14px;border-top:1px solid var(--bd);flex-wrap:wrap;gap:8px">'
-    +'<div style="display:flex;align-items:center;justify-content:space-between;width:100%">'
-    +'<span class="sub-l">'+_escTrade(TN[t.id]||t.n)+' Total</span>'
-    +'<span class="sub-v" style="font-size:16px" id="'+px+'ts'+ti+'">'+f(tt)+'</span>'
+    +'<div class="sub trade-footer-total tc-footer-total" style="margin:0 -14px -14px;padding:12px 14px;border-top:1px solid var(--bd);flex-wrap:wrap;gap:8px">'
+    +'<div class="tc-foot-inner">'
+    +'<span class="tc-foot-l">'+_escTrade(String(TN[t.id]||t.n).toUpperCase())+' Total</span>'
+    +'<span class="th-tot-big" id="'+px+'ts'+ti+'">'+f(tt)+'</span>'
     +'</div>'
     +'<button type="button" onclick="openMats(\''+t.id+'\')" style="width:100%;margin-top:8px;padding:8px;background:transparent;border:1px solid var(--ac);color:var(--ac);border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:1px">📦 VIEW MATERIALS</button>'
     +'</div>'
     +'<textarea class="note" placeholder="Notes for this trade..." oninput="sNote('+ti+',this.value)">'+( t.note||"")+'</textarea>'
     +'</div>';
-  return '<div class="ts ts-'+t.id+(isModal?' ts-in-modal':'')+'">'
+  return '<div class="ts ts-'+t.id+(isModal?' ts-in-modal':'')+'" data-trade-ti="'+ti+'">'
     +'<div class="th">'
     +'<div class="th-main" onclick="togT('+ti+')">'
     +'<div class="th-head-row">'
@@ -2663,7 +2759,7 @@ function tradeSectionHtml(room, ti, idPx, isModal){
     +'</div>'
     +'<div class="th-meta-right">'
     +'<div class="tt-days" data-tiday="'+ti+'" style="'+(t.days>0?'':'display:none')+'">'+(t.days>0?t.days+'d':'')+'</div>'
-    +'<div class="tt-tot" id="'+px+'tt'+ti+'">'+(tt>0?f(tt):'')+'</div>'
+    +'<div class="tt-tot th-tot-big" id="'+px+'tt'+ti+'">'+(tt>0?f(tt):'')+'</div>'
     +'<div class="ta'+(t.open?' op':'')+'">▾</div>'
     +'</div></div>'
     +'</div>'
@@ -2860,6 +2956,7 @@ function addTradeById(tid){
   if(!room||tradeIndexById(room,tid)>=0)return;
   room.trades.push({
     id:tid,n:TN[tid],open:true,note:"",fx:{},days:0,daysCustom:false,
+    labour:{mode:'hourly',rate:55,qty:0,jobPrice:0},
     items:(TB[tid]||[]).map(function(it){ return {id:it.id,l:it.l,u:it.u,p:it.p,qty:0}; })
   });
   applyAuto(room);
@@ -2963,27 +3060,27 @@ function syncFormulaHintsForRoom(){
   });
 }
 function syncTradeLineQtyAndTotalsAfterDim(){
-  function _e(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");}
   var room=S.rooms[curR]; if(!room||!room.trades) return;
   var c=calcDims(room.d||{});
   room.trades.forEach(function(t, ti){
+    ensureTradeLabour(t);
     var tc=tradeCost(t);
-    var s=document.getElementById("ts"+ti); if(s) s.textContent=f(tc);
-    var h=document.getElementById("tt"+ti); if(h) h.textContent=tc>0?f(tc):"";
+    syncTradeMoneyDom(ti,tc);
     t.items.forEach(function(it, ii){
       var autoKey=AM[it.id], autoVal=autoKey&&c&&c[autoKey]!=null?c[autoKey]:null;
       document.querySelectorAll("input[data-qty-ti=\""+ti+"\"][data-qty-ii=\""+ii+"\"]").forEach(function(inp){
         inp.value=it.qty>0?it.qty:"";
-        inp.className=(it.wasAuto?"af":"");
+        inp.className="tc-step-mid"+(it.wasAuto?" af":"");
       });
       var cost=ic(it);
       document.querySelectorAll("#p-room [data-irowsub=\""+ti+"-"+ii+"\"]").forEach(function(sub){
-        sub.innerHTML=cost>0?"Subtotal: <strong>"+f(cost)+"</strong>":"Enter qty to calculate";
+        sub.textContent=f(cost);
       });
-      document.querySelectorAll("#p-room [data-ilname=\""+ti+"-"+ii+"\"]").forEach(function(nm){
-        if(c) nm.innerHTML=_e(it.l)+(autoVal?"<small>auto "+autoVal+"</small>":"");
-      });
+      var unitStr=(it.u||"")+(autoVal!=null?' · auto: '+autoVal:'');
+      document.querySelectorAll("#p-room [data-tcname=\""+ti+"-"+ii+"\"]").forEach(function(nm){ nm.textContent=it.l; });
+      document.querySelectorAll("#p-room [data-tcunit=\""+ti+"-"+ii+"\"]").forEach(function(un){ un.textContent=unitStr; });
     });
+    syncLabourAmountDom(ti);
   });
   syncRoomHeaderFooterDurations();
 }
@@ -3045,19 +3142,83 @@ function resetDays(ti){
   syncRoomHeaderFooterDurations();
 }
 
+function sLabMode(ti, mode){
+  var t=S.rooms[curR].trades[ti]; if(!t) return;
+  ensureTradeLabour(t);
+  t.labour.mode=mode==="job"?"job":"hourly";
+  ss();uSide();rNav();
+  syncTradeMoneyDom(ti,tradeCost(t));
+  syncLabourUi(ti,t);
+  syncLabourAmountDom(ti);
+  syncRoomHeaderFooterDurations();
+}
+function sLabRate(ti,v){
+  var t=S.rooms[curR].trades[ti]; if(!t) return;
+  ensureTradeLabour(t);
+  t.labour.rate=parseFloat(v)||0;
+  ss();uSide();rNav();
+  syncTradeMoneyDom(ti,tradeCost(t));
+  syncLabourAmountDom(ti);
+  syncRoomHeaderFooterDurations();
+}
+function sLabQty(ti,v){
+  var t=S.rooms[curR].trades[ti]; if(!t) return;
+  ensureTradeLabour(t);
+  t.labour.qty=parseFloat(v)||0;
+  ss();uSide();rNav();
+  syncTradeMoneyDom(ti,tradeCost(t));
+  syncLabourAmountDom(ti);
+  syncRoomHeaderFooterDurations();
+}
+function sLabJob(ti,v){
+  var t=S.rooms[curR].trades[ti]; if(!t) return;
+  ensureTradeLabour(t);
+  t.labour.jobPrice=parseFloat(v)||0;
+  ss();uSide();rNav();
+  syncTradeMoneyDom(ti,tradeCost(t));
+  syncLabourAmountDom(ti);
+  syncRoomHeaderFooterDurations();
+}
+function adjLabQty(ti,delta){
+  var t=S.rooms[curR].trades[ti]; if(!t) return;
+  ensureTradeLabour(t);
+  t.labour.qty=Math.max(0,(parseFloat(t.labour.qty)||0)+delta);
+  ss();uSide();rNav();
+  document.querySelectorAll('input[data-labqty-ti="'+ti+'"]').forEach(function(inp){ inp.value=t.labour.qty>0?t.labour.qty:''; });
+  syncTradeMoneyDom(ti,tradeCost(t));
+  syncLabourAmountDom(ti);
+  syncRoomHeaderFooterDurations();
+}
+function adjMatQty(ti,ii,delta){
+  var it=S.rooms[curR].trades[ti].items[ii];
+  it.qty=Math.max(0,(parseFloat(it.qty)||0)+delta);
+  it.wasAuto=false;it.autoSet=false;
+  applyAuto(S.rooms[curR]);
+  ss();uSide();rNav();
+  document.querySelectorAll('input[data-qty-ti="'+ti+'"][data-qty-ii="'+ii+'"]').forEach(function(inp){
+    inp.value=it.qty>0?it.qty:'';
+    inp.className='tc-step-mid'+(it.wasAuto?' af':'');
+  });
+  syncTradeMoneyDom(ti,tradeCost(S.rooms[curR].trades[ti]));
+  document.querySelectorAll('#p-room [data-irowsub="'+ti+'-'+ii+'"]').forEach(function(el){ el.textContent=f(ic(it)); });
+  syncAllDaysUiForRoom();
+}
+
 function sQty(ti,ii,v){
   var it=S.rooms[curR].trades[ti].items[ii];
   it.qty=parseFloat(v)||0;it.wasAuto=false;it.autoSet=false;
   applyAuto(S.rooms[curR]);
   ss();uSide();rNav();
-  var s=document.getElementById("ts"+ti);if(s)s.textContent=f(tradeCost(S.rooms[curR].trades[ti]));
-  var h=document.getElementById("tt"+ti);var tc=tradeCost(S.rooms[curR].trades[ti]);if(h)h.textContent=tc>0?f(tc):'';
+  var tc=tradeCost(S.rooms[curR].trades[ti]);
+  syncTradeMoneyDom(ti,tc);
+  document.querySelectorAll('#p-room [data-irowsub="'+ti+'-'+ii+'"]').forEach(function(el){ el.textContent=f(ic(it)); });
   syncAllDaysUiForRoom();
 }
 function sPrice(ti,ii,v){
   S.rooms[curR].trades[ti].items[ii].p=parseFloat(v)||0;ss();uSide();
-  var s=document.getElementById("ts"+ti);if(s)s.textContent=f(tradeCost(S.rooms[curR].trades[ti]));
-  var h=document.getElementById("tt"+ti);var tc=tradeCost(S.rooms[curR].trades[ti]);if(h)h.textContent=tc>0?f(tc):'';
+  var t=S.rooms[curR].trades[ti], tc=tradeCost(t);
+  syncTradeMoneyDom(ti,tc);
+  document.querySelectorAll('#p-room [data-irowsub="'+ti+'-'+ii+'"]').forEach(function(el){ el.textContent=f(ic(t.items[ii])); });
   syncRoomHeaderFooterDurations();
 }
 function adjFx(ti,tid,fi,delta){
