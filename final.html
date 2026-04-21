@@ -2149,12 +2149,14 @@ function tradeIndexById(room,tid){
 }
 
 function ensureElecLoad(t){
-  if(!t.elecLoad) t.elecLoad={cap:100,lit:0,rec:0,heavy:0};
+  if(!t.elecLoad) t.elecLoad={cap:100,lit:0,rec:0,heavy:0,a40:0,sub:0};
+  if(t.elecLoad.a40===undefined)t.elecLoad.a40=0;
+  if(t.elecLoad.sub===undefined)t.elecLoad.sub=0;
 }
 function elAmpTotal(t){
   ensureElecLoad(t);
   var e=t.elecLoad;
-  return e.lit*0.5+e.rec*1.5+e.heavy*20;
+  return e.lit*0.5+e.rec*1.5+e.heavy*20+(e.a40||0)*40+(e.sub||0);
 }
 function elAdj(ti,field,delta){
   var room=S.rooms[curR];if(!room||!room.trades[ti])return;
@@ -2174,17 +2176,19 @@ function elSet(ti,field,val){
 function elSetCap(ti,val){
   var room=S.rooms[curR];if(!room||!room.trades[ti])return;
   ensureElecLoad(room.trades[ti]);
-  room.trades[ti].elecLoad.cap=parseInt(val,10)||100;
+  var c=parseInt(val,10)||100;
+  if(c!==100&&c!==200&&c!==400) c=100;
+  room.trades[ti].elecLoad.cap=c;
   ss();rRoom();
 }
 function elCatRow(ti,field,label,val){
   return '<div class="rf-elec-row"><div class="rf-elec-lbl">'+label+'</div>'
     +'<div class="rf-elec-btns">'
-    +'<button type="button" class="fxb" onclick="elAdj('+ti+',\''+field+'\',-10)">−10</button>'
-    +'<button type="button" class="fxb" onclick="elAdj('+ti+',\''+field+'\',-1)">−1</button>'
+    +'<button type="button" class="fxb" tabindex="-1" onmousedown="event.preventDefault()" onclick="elAdj('+ti+',\''+field+'\',-10)">−10</button>'
+    +'<button type="button" class="fxb" tabindex="-1" onmousedown="event.preventDefault()" onclick="elAdj('+ti+',\''+field+'\',-1)">−1</button>'
     +'<input class="rf-elec-inp" type="number" min="0" step="1" value="'+val+'" onchange="elSet('+ti+',\''+field+'\',this.value)"/>'
-    +'<button type="button" class="fxb" onclick="elAdj('+ti+',\''+field+'\',1)">+1</button>'
-    +'<button type="button" class="fxb" onclick="elAdj('+ti+',\''+field+'\',10)">+10</button>'
+    +'<button type="button" class="fxb" tabindex="-1" onmousedown="event.preventDefault()" onclick="elAdj('+ti+',\''+field+'\',1)">+1</button>'
+    +'<button type="button" class="fxb" tabindex="-1" onmousedown="event.preventDefault()" onclick="elAdj('+ti+',\''+field+'\',10)">+10</button>'
     +'</div></div>';
 }
 /** Prefix for trade calculator DOM ids — must match `tradeSectionHtml` idPx ('' grid vs 'exp-' expanded overlay) so ids stay unique. */
@@ -2205,12 +2209,15 @@ function tradeToolsBlock(room,ti,t,idPx){
     html+='<div class="rf-tool-h">⚡ Electrician mode — panel load</div>';
     html+='<div class="rf-elec-cap">Service <select onchange="elSetCap('+ti+',this.value)">';
     html+='<option value="100"'+(cap==100?' selected':'')+'>100A</option>';
-    html+='<option value="200"'+(cap==200?' selected':'')+'>200A</option></select></div>';
+    html+='<option value="200"'+(cap==200?' selected':'')+'>200A</option>';
+    html+='<option value="400"'+(cap==400?' selected':'')+'>400A</option></select></div>';
     html+='<div class="rf-elec-bar-wrap"><div class="rf-elec-bar" style="width:'+pct+'%;background:'+barColor+'"></div></div>';
     html+='<div class="rf-elec-tot'+(over?' rf-over':'')+'">'+tot.toFixed(1)+' / '+cap+' A estimated</div>';
     html+=elCatRow(ti,'lit','Lighting (LED pts)',e.lit||0);
     html+=elCatRow(ti,'rec','Receptacles',e.rec||0);
     html+=elCatRow(ti,'heavy','Heavy loads (20A ea)',e.heavy||0);
+    html+=elCatRow(ti,'a40','40A circuits (ea @ 40A)',e.a40||0);
+    html+=elCatRow(ti,'sub','Subpanel feeder (A total)',e.sub||0);
     html+='<p class="rf-tool-note">Approximate amps; not a formal load calc.</p></div>';
     return html;
   }
@@ -2623,9 +2630,9 @@ function tradeSectionHtml(room, ti, idPx, isModal){
         +'<div class="fx-n">'+fx.l+'</div>'
         +'<div class="fx-p">'+f(fx.p)+'/'+fx.u+'</div>'
         +'<div class="fx-q">'
-        +'<div class="fxb" onclick="adjFx('+ti+',\''+t.id+'\','+fi+',-1)">−</div>'
+        +'<div class="fxb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjFx('+ti+',\''+t.id+'\','+fi+',-1)">−</div>'
         +'<div class="fxc" id="'+px+'fxc-'+t.id+'-'+fi+'">'+qty+'</div>'
-        +'<div class="fxb" onclick="adjFx('+ti+',\''+t.id+'\','+fi+',1)">+</div>'
+        +'<div class="fxb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjFx('+ti+',\''+t.id+'\','+fi+',1)">+</div>'
         +'</div></div>';
     });
     fxH+='</div>';
@@ -2801,7 +2808,11 @@ function rRoom(){
     +expOverlay;
   requestAnimationFrame(function(){
     requestAnimationFrame(function(){
-      try{ __rfScrollRestore(); }catch(e){}
+      function doRestore(){ try{ __rfScrollRestore(); }catch(e){} }
+      doRestore();
+      requestAnimationFrame(doRestore);
+      setTimeout(doRestore,0);
+      setTimeout(doRestore,48);
       if(__rfDimFocus&&__rfDimFocus.k){
         var el=document.querySelector('#p-room input.di[data-dim="'+__rfDimFocus.k+'"]');
         if(el&&el.focus){
@@ -2811,6 +2822,7 @@ function rRoom(){
               el.setSelectionRange(__rfDimFocus.ss,__rfDimFocus.se);
             }
           }catch(x){}
+          setTimeout(doRestore,0);
         }
       }
     });
