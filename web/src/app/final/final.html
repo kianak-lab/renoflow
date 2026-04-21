@@ -150,8 +150,9 @@ a.ni{color:inherit;text-decoration:none;}
 .th-main{display:flex;align-items:flex-start;gap:0;padding:12px 16px;flex:1;min-width:0;cursor:pointer;}
 .th-main:hover{background:#f4f8f4;}
 .th-head-row{display:flex;align-items:flex-start;gap:10px;width:100%;}
-.trade-ic-wrap{flex-shrink:0;width:22px;height:22px;border-radius:5px;overflow:hidden;display:flex;align-items:center;justify-content:center;line-height:0;}
+.trade-ic-wrap{flex-shrink:0;width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;line-height:1;}
 .trade-ic-wrap svg{display:block;width:22px;height:22px;}
+.trade-ic-wrap .trade-ic-emoji{font-size:20px;line-height:1;}
 .th-text-block{flex:1;min-width:0;}
 .trade-cat{font-size:9px;color:#bbbbbb;letter-spacing:0.3px;margin-top:3px;line-height:1.2;}
 .th-meta-right{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0;}
@@ -745,7 +746,7 @@ a.ni{color:inherit;text-decoration:none;}
 
 var TC={demo:"#e85547",framing:"#e87747",concrete:"#78909c",roofing:"#5c7a8a",electrical:"#e8c547",plumbing:"#47a0e8",hvac:"#8847e8",lowvolt:"#5c6bc0",security:"#455a64",comdoor:"#6d4c41",insulation:"#47e8c5",drywall:"#e847a0",tile:"#a0e847",flooring:"#e8a047",painting:"#47e8a0",trim:"#e88847",cabinets:"#7047e8",closets:"#8b7355",finishing:"#5d9c8a"};
 var TN={demo:"Demolition",framing:"Framing",concrete:"Concrete",roofing:"Roofing",electrical:"Electrical",plumbing:"Plumbing",hvac:"HVAC",lowvolt:"Low voltage",security:"Security",comdoor:"Commercial door hardware",insulation:"Insulation",drywall:"Drywall",tile:"Tile",flooring:"Flooring",painting:"Painting",trim:"Trim & Millwork",cabinets:"Cabinets & tops",closets:"Closets",finishing:"Finishing"};
-var TIC={demo:"🔨",framing:"🪵",concrete:"🪨",roofing:"🏠",electrical:"⚡",plumbing:"🚿",hvac:"🌀",lowvolt:"📡",security:"🛡",comdoor:"🚪",insulation:"🧱",drywall:"⬜",tile:"🔲",flooring:"🪵",painting:"🎨",trim:"📏",cabinets:"🗄",closets:"👔",finishing:"✨"};
+var TIC={demo:"🔨",framing:"🪵",concrete:"🪨",roofing:"🏠",electrical:"⚡",plumbing:"💧",hvac:"🌀",lowvolt:"🔌",security:"🛡",comdoor:"🚪",insulation:"🧱",drywall:"⬜",tile:"🔲",flooring:"🪵",painting:"🎨",trim:"📏",cabinets:"🗄",closets:"👔",finishing:"✨"};
 var TB={
   demo:[{id:"d1",l:"👷 Demo Labour",u:"hrs",p:65},{id:"d2",l:"🗑 Disposal Bin",u:"load",p:350},{id:"d3",l:"📋 Permit",u:"flat",p:0}],
   framing:[{id:"fr1",l:"🪵 Studs 2x4",u:"stud",p:4.50},{id:"fr2",l:"🪵 Studs 2x6",u:"stud",p:6.50},{id:"fr3",l:"📏 Plates 2x4",u:"ea",p:5},{id:"fr4",l:"👷 Framing Labour",u:"hrs",p:75}],
@@ -2553,28 +2554,11 @@ function calcConcRun(ti){
 }
 
 var TRADE_CAT={demo:"Structure",framing:"Structure",concrete:"Structure",roofing:"Structure",electrical:"Mechanical & power",plumbing:"Mechanical & power",hvac:"Mechanical & power",lowvolt:"Mechanical & power",security:"Mechanical & power",insulation:"Shell",drywall:"Shell",comdoor:"Doors, trim & tile",trim:"Doors, trim & tile",tile:"Doors, trim & tile",flooring:"Paint & finals",painting:"Paint & finals",cabinets:"Paint & finals",closets:"Paint & finals",finishing:"Paint & finals"};
-var TRADE_ICON_SVG={
-demo:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#1a1a1a"/><rect x="3" y="7" width="16" height="2" fill="#f0c030"/><rect x="3" y="12" width="16" height="2" fill="#f0c030"/></svg>',
-framing:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#7a5030"/><path d="M2 7h18M2 11h18M2 15h18" stroke="#f0d8b8" stroke-width="1"/></svg>',
-concrete:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#d0d8dc"/><rect x="3" y="4" width="7" height="6" fill="#b8c0c4" stroke="#9aa4a8"/><rect x="12" y="4" width="7" height="6" fill="#b8c0c4" stroke="#9aa4a8"/><rect x="3" y="12" width="7" height="6" fill="#b8c0c4" stroke="#9aa4a8"/><rect x="12" y="12" width="7" height="6" fill="#b8c0c4" stroke="#9aa4a8"/></svg>',
-roofing:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#3a4a4a"/><path d="M1 8c2-1 4-2 6-1s4 2 6 1 4-2 6-1 4 2 6 1" stroke="#2a3838" fill="none"/><path d="M1 12c2-1 4-2 6-1s4 2 6 1 4-2 6-1 4 2 6 1" stroke="#2a3838" fill="none"/></svg>',
-electrical:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#f0c030"/><path d="M11 4L8 13h3l-1 5 5-9h-3l1-5z" fill="#1a1a1a"/></svg>',
-plumbing:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#fff" stroke="#e0e0e0"/><path d="M4 6h6M12 6h6M6 12v6M16 12v6" stroke="#2e6aae" stroke-width="1.5"/><circle cx="11" cy="11" r="2.5" fill="none" stroke="#2e6aae"/><path d="M4 16h6M12 16h6" stroke="#ae2e2e" stroke-width="1.5"/></svg>',
-hvac:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#f8f8f8" stroke="#9a9a9a"/><path d="M6 9h10M6 12h10M6 15h8" stroke="#9a9a9a"/></svg>',
-lowvolt:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#b8d8f0"/><path d="M11 14c3-2 5-4 5-7M11 14c-3-2-5-4-5-7" stroke="#fff" stroke-width="1.5" fill="none"/></svg>',
-security:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#cc2020" stroke="#1a1a1a" stroke-width="1.5"/><path d="M11 6l-4 2v5c0 3 2 5 4 6 2-1 4-3 4-6V8l-4-2z" fill="#fff"/></svg>',
-comdoor:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#f8f8f8" stroke="#1a1a1a"/><rect x="6" y="5" width="10" height="12" fill="none" stroke="#444"/><circle cx="15" cy="11" r="1" fill="#333"/></svg>',
-insulation:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#f5c0cc"/><rect x="4" y="6" width="14" height="2.5" fill="#fff" opacity=".9"/><rect x="4" y="10" width="14" height="2.5" fill="#fff" opacity=".9"/><rect x="4" y="14" width="14" height="2.5" fill="#fff" opacity=".9"/></svg>',
-drywall:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#dde3e8"/><rect x="3" y="4" width="7" height="5" fill="#c5ccd2" stroke="#a8b0b8"/><rect x="12" y="4" width="7" height="5" fill="#c5ccd2" stroke="#a8b0b8"/><rect x="3" y="13" width="7" height="5" fill="#c5ccd2" stroke="#a8b0b8"/><rect x="12" y="13" width="7" height="5" fill="#c5ccd2" stroke="#a8b0b8"/></svg>',
-tile:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#00b5cc"/><rect x="4" y="4" width="6" height="6" fill="#fff"/><rect x="12" y="4" width="6" height="6" fill="#fff"/><rect x="4" y="12" width="6" height="6" fill="#fff"/><rect x="12" y="12" width="6" height="6" fill="#fff"/></svg>',
-flooring:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#d4b896"/><path d="M2 6h18M2 10h18M2 14h18M2 18h18" stroke="#c4a882" stroke-width=".8"/></svg>',
-painting:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#f8f8f8" stroke="#1a1a1a"/><rect x="5" y="12" width="8" height="3" fill="#ccc"/><path d="M8 12V6l3-2v8" fill="#555"/></svg>',
-trim:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#ede0cc"/><path d="M3 14Q11 8 19 14" stroke="#c4b49a" fill="none" stroke-width="2"/></svg>',
-cabinets:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#fff" stroke="#d4b896"/><rect x="5" y="7" width="12" height="9" fill="none" stroke="#999"/><circle cx="9" cy="11.5" r=".8" fill="#b5922a"/><circle cx="13" cy="11.5" r=".8" fill="#b5922a"/></svg>',
-closets:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#ede0cc"/><rect x="6" y="5" width="10" height="12" fill="none" stroke="#a08f70"/></svg>',
-finishing:'<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><rect width="22" height="22" rx="5" fill="#fff" stroke="#c8cfd4"/><path d="M6 14L11 9l5 5M8 14h6" stroke="#666" fill="none"/></svg>'
-};
-function tradeIconSvg(id){return TRADE_ICON_SVG[id]||TRADE_ICON_SVG.demo;}
+/** Trade header / grid icons — emoji from `TIC` (same as Add trade modal), not custom SVG. */
+function tradeIconSvg(id){
+  var e=TIC[id]||TIC.demo;
+  return '<span class="trade-ic-emoji" style="font-size:1.35em;line-height:1;display:inline-flex;align-items:center;justify-content:center" role="img" aria-hidden="true">'+e+'</span>';
+}
 function _escTrade(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 function tradeSectionHtml(room, ti, idPx, isModal){
