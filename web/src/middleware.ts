@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
   if (isPublicPath(pathname)) {
     if (pathname.startsWith("/login")) {
       if (await hasSession(request)) {
-        return redirectTo("/");
+        return NextResponse.redirect(new URL("/", getRequestOrigin(request)));
       }
     }
     return next;
