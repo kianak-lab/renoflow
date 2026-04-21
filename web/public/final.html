@@ -2668,6 +2668,23 @@ function tradeSectionHtml(room, ti, idPx, isModal){
 
 function rRoom(){
   if(curR===null||!S.rooms[curR]){rDash();return;}
+  var __rfScrollRestore=(function(){
+    var mainEl=document.getElementById("main");
+    var mainST=mainEl?mainEl.scrollTop:0;
+    var paneST=[];
+    document.querySelectorAll("#p-room .ts-scroll-pane").forEach(function(el){ paneST.push(el.scrollTop); });
+    var expEl=document.querySelector(".ts-exp-box");
+    var expST=expEl?expEl.scrollTop:0;
+    return function(){
+      var m=document.getElementById("main");
+      if(m) m.scrollTop=mainST;
+      var panes=document.querySelectorAll("#p-room .ts-scroll-pane");
+      var i,n=Math.min(panes.length,paneST.length);
+      for(i=0;i<n;i++) panes[i].scrollTop=paneST[i];
+      var ex=document.querySelector(".ts-exp-box");
+      if(ex) ex.scrollTop=expST;
+    };
+  })();
   var __rfDimFocus=null;
   var __ae=document.activeElement;
   if(__ae&&__ae.getAttribute&&__ae.classList&&__ae.classList.contains("di")){
@@ -2782,19 +2799,22 @@ function rRoom(){
     +tradesH+footer
     +'</div>'
     +expOverlay;
-  if(__rfDimFocus&&__rfDimFocus.k){
+  requestAnimationFrame(function(){
     requestAnimationFrame(function(){
-      var el=document.querySelector('#p-room input.di[data-dim="'+__rfDimFocus.k+'"]');
-      if(el&&el.focus){
-        el.focus();
-        try{
-          if(__rfDimFocus.ss!=null&&typeof el.setSelectionRange==="function"){
-            el.setSelectionRange(__rfDimFocus.ss,__rfDimFocus.se);
-          }
-        }catch(x){}
+      try{ __rfScrollRestore(); }catch(e){}
+      if(__rfDimFocus&&__rfDimFocus.k){
+        var el=document.querySelector('#p-room input.di[data-dim="'+__rfDimFocus.k+'"]');
+        if(el&&el.focus){
+          el.focus();
+          try{
+            if(__rfDimFocus.ss!=null&&typeof el.setSelectionRange==="function"){
+              el.setSelectionRange(__rfDimFocus.ss,__rfDimFocus.se);
+            }
+          }catch(x){}
+        }
       }
     });
-  }
+  });
 }
 
 function delTrade(ti){
