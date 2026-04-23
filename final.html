@@ -66,6 +66,8 @@ button.sb-foot-link.proj-new-btn.on{box-shadow:inset 0 0 0 1px var(--ac-line);co
 .ni.on{background:var(--ac-muted);border-left-color:var(--ac);color:var(--tx);font-weight:600;}
 .ni.disabled{opacity:.35;cursor:default;pointer-events:none;}
 .ni-i{width:18px;text-align:center;font-size:16px;flex-shrink:0;}
+.ni-i.ni-i--img{width:22px;height:22px;padding:0;border-radius:6px;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;}
+.ni-i.ni-i--img img{width:100%;height:100%;object-fit:cover;display:block}
 .ni-i svg{display:block;}
 .ni-l{font-size:13px;flex:1;}
 .ni-b{font-size:10px;font-family:'Inter',system-ui,sans-serif;color:var(--tx2);background:var(--sf2);padding:1px 6px;border-radius:10px;}
@@ -1657,6 +1659,16 @@ a.ni{color:inherit;text-decoration:none;}
     font-weight: 600;
     color: #c2185b;
   }
+  .pl-thumb.pl-thumb--photo{padding:0;overflow:hidden;border:1px solid #ebebeb;}
+  .pl-thumb.pl-thumb--photo img{display:block;width:100%;height:100%;object-fit:cover;}
+  .dproj-thumb{width:48px;height:48px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#fceef2,#e8e4ed);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;color:#c2185b;overflow:hidden;border:1px solid var(--bd2);}
+  .dproj-thumb.dproj-thumb--photo{padding:0;}
+  .dproj-thumb.dproj-thumb--photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .dproj-top{display:flex;gap:12px;align-items:flex-start;min-width:0}
+  .dproj-mid{flex:1;min-width:0}
+  .dproj-reintake{margin-top:10px;padding-top:10px;border-top:1px solid var(--bd)}
+  .pl-room-avatar-wrap{position:relative;cursor:pointer}
+  .pl-room-avatar-wrap input[type=file]{position:absolute;width:0;height:0;opacity:0;pointer-events:none}
   .pl-initial {
     position: absolute;
     bottom: -2px;
@@ -2224,7 +2236,7 @@ var SEQ=['demo','framing','concrete','roofing','ROUGHIN','insulation','drywall',
 var ROUGHIN=['electrical','plumbing','hvac','lowvolt','security'];
 
 function DS(){return{
-  proj:{name:"My Renovation",client:"",clientId:"",addr:"",qnum:"Q-001",notes:"All prices include labour and materials. HST extra. 50% deposit required.",startDate:"",deadlineDate:"",parallelRooms:false,includeTimeline:true,dbProjectId:""},
+  proj:{name:"My Renovation",client:"",clientId:"",addr:"",qnum:"Q-001",notes:"All prices include labour and materials. HST extra. 50% deposit required.",startDate:"",deadlineDate:"",parallelRooms:false,includeTimeline:true,dbProjectId:"",cover:""},
   co:{name:"Your Company",phone:"",email:"",lic:"",addr:"",logo:""},
   mk:{mat:20,tax:13},
   rooms:[],ck:{},clients:[],invoices:[],quotes:[],invNum:1,matHideZero:true
@@ -2255,8 +2267,10 @@ function migrate(d){
   if(!d.invNum)d.invNum=1;
   if(d.matHideZero===undefined)d.matHideZero=true;
   if(d.co&&d.co.logo===undefined)d.co.logo="";
+  if(d.proj.cover===undefined)d.proj.cover="";
   try{ applyGlobalCoProfileToData(d); }catch(e){}
   (d.rooms||[]).forEach(function(r){
+    if(r.thumb===undefined)r.thumb="";
     (r.trades||[]).forEach(function(t){
       if(t.days===undefined)t.days=0;
       if(t.daysCustom===undefined)t.daysCustom=false;
@@ -2400,6 +2414,7 @@ function mergeRoomsPayloadIntoLocal(localRooms, serverRooms){
     if(idx>=0){
       mergeRoomFromServer(rooms[idx], sr);
     } else {
+      if(sr.thumb===undefined) sr.thumb="";
       rooms.push(sr);
     }
   });
@@ -2407,6 +2422,7 @@ function mergeRoomsPayloadIntoLocal(localRooms, serverRooms){
 }
 
 function mergeRoomFromServer(localRoom, serverRoom){
+  if(localRoom.thumb===undefined) localRoom.thumb="";
   if(serverRoom.d&&(!localRoom.d||!Object.keys(localRoom.d||{}).length)) localRoom.d=serverRoom.d;
   if(serverRoom.n!==undefined) localRoom.n=serverRoom.n;
   if(serverRoom.ic!==undefined) localRoom.ic=serverRoom.ic;
@@ -3741,7 +3757,7 @@ function appendRoomFromIntake(rtIndex,tradeIds){
     return {id:tid,n:TN[tid],open:false,note:"",fx:{},days:0,daysCustom:false,
       items:(TB[tid]||[]).map(function(it){return {id:it.id,l:it.l,u:it.u,p:it.p,qty:0};})};
   });
-  var newRoom={n:name,ic:type.ic,trades:trades,d:{}};
+  var newRoom={n:name,ic:type.ic,trades:trades,d:{},thumb:""};
   applyAuto(newRoom);
   S.rooms.push(newRoom);
   var idx=S.rooms.length-1;
@@ -3751,7 +3767,7 @@ function appendEmptyRoomFromIntake(rtIndex){
   var type=RT[rtIndex];
   var ex=S.rooms.filter(function(r){return r.n.startsWith(type.n);}).length;
   var name=ex>0?type.n+" "+(ex+1):type.n;
-  var newRoom={n:name,ic:type.ic,trades:[],d:{}};
+  var newRoom={n:name,ic:type.ic,trades:[],d:{},thumb:""};
   applyAuto(newRoom);
   S.rooms.push(newRoom);
   return saveRoomToSupabase(newRoom, S.rooms.length-1);
@@ -3870,9 +3886,12 @@ function rNav(){
   var h="";
   S.rooms.forEach(function(r,i){
     var rt=roomTotal(r);
+    var ico=(r.thumb&&String(r.thumb).trim())
+      ?'<span class="ni-i ni-i--img" aria-hidden="true"><img src="'+safeDataUrlForAttr(r.thumb)+'" alt=""/></span>'
+      :'<span class="ni-i">'+r.ic+"</span>";
     h+='<div class="ni rnav-row" id="nr'+i+'">'
       +'<div class="rnav-main" onclick="gRoom('+i+')">'
-      +'<span class="ni-i">'+r.ic+'</span><span class="ni-l">'+r.n+'</span>'
+      +ico+'<span class="ni-l">'+r.n+'</span>'
       +(rt>0?'<span class="ni-b">'+f(rt)+'</span>':'')
       +'</div>'
       +'<button type="button" class="rnav-del" onclick="event.stopPropagation();delRoom('+i+')" title="Remove room" aria-label="Remove room">✕</button>'
@@ -3999,7 +4018,7 @@ function rProj(){
     var tletter=nm?nm.charAt(0).toUpperCase():"?";
     return '<div class="pl-row'+(isOn?" pl-row--on":"")+'" role="button" tabindex="0" data-pid="'+escAttr(p.id)+'">'
       +'<div class="pl-avatar-wrap">'
-      +'<div class="pl-thumb" aria-hidden="true">'+escHtml(tletter)+'</div>'
+      +htmlProjectThumbInner(p.id,tletter)
       +'<div class="pl-initial">'+escHtml(initialsFromName(cn))+'</div>'
       +'</div>'
       +'<div class="pl-txt">'
@@ -4059,13 +4078,17 @@ function rRooms(){
       :"Choose trades to add, then open this room";
     return '<div class="pl-row pl-room" data-ri="'+i+'">'
       +'<div class="pl-row-mobmain" role="button" tabindex="0" data-ri="'+i+'" style="display:flex;flex:1;min-width:0;align-items:flex-start;gap:14px">'
-      +'<div class="pl-avatar-wrap"><div class="pl-thumb" aria-hidden="true">'+escHtml((r.n||"?").charAt(0))+'</div></div>'
+      +'<div class="pl-avatar-wrap pl-room-avatar-wrap" title="Add room photo" onclick="event.stopPropagation();roomThumbInputClick('+i+')">'
+      +htmlRoomThumbInner(r)
+      +'<input type="file" id="room-thumb-f-'+i+'" accept="image/*" onchange="handleRoomThumbFile('+i+',this)"/>'
+      +'</div>'
       +'<div class="pl-txt">'
       +'<div class="pl-line1"><span class="pl-name">'+escHtml(r.n)+'</span><span class="pl-date">'+f(rt)+'</span></div>'
       +'<div class="pl-line2">'+tcount+' trade'+(tcount===1?"":"s")+'</div>'
       +'<div class="pl-line3">'+sub+'</div>'
       +'</div></div>'
       +'<div class="pl-room-actions">'
+      +(r.thumb?'<button type="button" class="btn bg sm pl-room-edit-btn" data-ri="'+i+'" onclick="event.stopPropagation();clearRoomThumb('+i+',event)">Clear photo</button>':'')
       +'<button type="button" class="btn bg sm pl-room-edit-btn" data-ri="'+i+'" onclick="event.stopPropagation();openRoomTradesFromList('+i+')">Edit</button>'
       +'</div></div>';
   }).join("");
@@ -4089,6 +4112,130 @@ function rRooms(){
 
 function companyLogoDataUrl(){
   return (S.co&&S.co.logo)?String(S.co.logo).trim():"";
+}
+var __rfPendingProjectCover="";
+function getLocalProjectCover(projectId){
+  if(!projectId) return "";
+  var pid=String(projectId);
+  if(S.proj&&String(S.proj.dbProjectId)===pid&&S.proj.cover) return String(S.proj.cover);
+  try{
+    var w=localStorage.getItem("rf7_ws_"+pid);
+    if(!w) return "";
+    var j=JSON.parse(w);
+    return (j.proj&&j.proj.cover)?String(j.proj.cover):"";
+  }catch(e){ return ""; }
+}
+function htmlProjectThumbInner(projectId, letter){
+  var u=getLocalProjectCover(projectId);
+  if(u) return '<div class="pl-thumb pl-thumb--photo" aria-hidden="true"><img src="'+safeDataUrlForAttr(u)+'" alt=""/></div>';
+  return '<div class="pl-thumb" aria-hidden="true">'+escHtml(letter||"?")+"</div>";
+}
+function htmlRoomThumbInner(r){
+  var u=r&&r.thumb?String(r.thumb).trim():"";
+  if(u) return '<div class="pl-thumb pl-thumb--photo" aria-hidden="true"><img src="'+safeDataUrlForAttr(u)+'" alt=""/></div>';
+  return '<div class="pl-thumb" aria-hidden="true">'+escHtml((r&&r.n)?String(r.n).charAt(0):"?")+"</div>";
+}
+function readImageFileToDataUrl(inp, maxBytes, okFn){
+  var f=inp&&inp.files&&inp.files[0];
+  if(inp) inp.value="";
+  if(!f) return;
+  if(!f.type||f.type.indexOf("image")!==0){
+    try{ alert("Please choose an image (PNG, JPG, or WebP)."); }catch(e){}
+    return;
+  }
+  if(f.size>(maxBytes||800*1024)){
+    try{ alert("File is too large. Use an image under "+Math.round((maxBytes||800*1024)/1024)+" KB."); }catch(e){}
+    return;
+  }
+  var reader=new FileReader();
+  reader.onload=function(){ try{ okFn(String(reader.result||"")); }catch(e){ console.warn(e); } };
+  reader.onerror=function(){ try{ alert("Could not read that file."); }catch(e){} };
+  reader.readAsDataURL(f);
+}
+function handlePendingProjectCover(inp){
+  readImageFileToDataUrl(inp,800*1024,function(data){
+    __rfPendingProjectCover=data;
+    try{ renderCfPendingCoverPreview(); }catch(e){}
+  });
+}
+function clearPendingProjectCover(){
+  __rfPendingProjectCover="";
+  try{ renderCfPendingCoverPreview(); }catch(e){}
+}
+function renderCfPendingCoverPreview(){
+  var box=document.getElementById("cf-proj-photo-preview");
+  if(!box) return;
+  var u=__rfPendingProjectCover?String(__rfPendingProjectCover):"";
+  if(u) box.innerHTML='<div class="pl-thumb pl-thumb--photo" style="width:56px;height:56px"><img src="'+safeDataUrlForAttr(u)+'" alt="Project"/></div>';
+  else{
+    var nm=document.getElementById("cf-np-name");
+    var t=(nm&&nm.value)?nm.value.trim():"";
+    if(!t){
+      var nf=document.getElementById("cf-name");
+      t=nf?String(nf.value||"").trim():"";
+    }
+    var ch=t?t.charAt(0).toUpperCase():"?";
+    box.innerHTML='<div class="pl-thumb" style="width:56px;height:56px">'+escHtml(ch)+"</div>";
+  }
+}
+function handleProjectCoverFile(inp){
+  readImageFileToDataUrl(inp,800*1024,function(data){
+    if(!S.proj) S.proj=DS().proj;
+    S.proj.cover=data;
+    ss();
+    uSide();
+    rSett();
+    if(typeof rDash==="function"&&curPg==="dash") rDash();
+    if(typeof rProj==="function"&&curPg==="proj") rProj();
+  });
+}
+function clearProjectCoverField(){
+  if(!S.proj) S.proj=DS().proj;
+  S.proj.cover="";
+  ss();
+  uSide();
+  rSett();
+  if(typeof rDash==="function"&&curPg==="dash") rDash();
+  if(typeof rProj==="function"&&curPg==="proj") rProj();
+}
+function roomThumbInputClick(ri){
+  var el=document.getElementById("room-thumb-f-"+ri);
+  if(el) el.click();
+}
+function handleRoomThumbFile(ri, inp){
+  if(ri<0||!S.rooms||!S.rooms[ri]) return;
+  readImageFileToDataUrl(inp,800*1024,function(data){
+    S.rooms[ri].thumb=data;
+    ss();
+    uSide();
+    if(typeof rRooms==="function"&&curPg==="rooms") rRooms();
+    if(typeof rNav==="function") rNav();
+  });
+}
+function clearRoomThumb(ri, ev){
+  if(ev) try{ ev.stopPropagation(); }catch(x){}
+  if(ri<0||!S.rooms||!S.rooms[ri]) return;
+  S.rooms[ri].thumb="";
+  ss();
+  uSide();
+  if(typeof rRooms==="function"&&curPg==="rooms") rRooms();
+  if(typeof rNav==="function") rNav();
+}
+function restartProjectIntake(projectId){
+  if(projectId==null||projectId==="") return;
+  var pid=String(projectId);
+  var list=window.__rfProjectList||[];
+  activateProjectId(pid,list,{skipPersist:false}).then(function(){
+    try{ updateSidebarProjectHeader(); }catch(e){}
+    uSide();
+    rNav();
+    __rfIntakeMode="full";
+    __rfAddJobFromQuick=false;
+    gP("intake");
+  }).catch(function(e){
+    console.error(e);
+    try{ alert("Could not open that project. Try again."); }catch(x){}
+  });
 }
 function safeDataUrlForAttr(u){
   if(!u) return "";
@@ -4286,16 +4433,25 @@ function rDash(){
     else if(dr<0) dueLine='<div class="dpc-warn">Past deadline by '+Math.abs(dr)+' day'+(Math.abs(dr)!==1?'s':'')+'</div>';
     else if(dr===0) dueLine='<div><strong>Due today</strong></div>';
     else dueLine='<div><strong>'+dr+'</strong> day'+(dr!==1?'s':'')+' until deadline</div>';
+    var cthumb=getLocalProjectCover(p.id);
+    var tInit=String(nm).trim().charAt(0).toUpperCase()||"?";
+    var dThumb=cthumb
+      ?'<div class="dproj-thumb dproj-thumb--photo" aria-hidden="true"><img src="'+safeDataUrlForAttr(cthumb)+'" alt=""/></div>'
+      :'<div class="dproj-thumb" aria-hidden="true">'+escHtml(tInit)+"</div>";
     return '<div class="rc dash-proj'+(active?' on':'')+'" data-pid="'+escAttr(p.id)+'" role="button" tabindex="0">'
       +'<div class="dproj-acts" onclick="event.stopPropagation();">'
       +'<button type="button" class="dproj-fab dproj-fab--arch" title="Archive" aria-label="Archive project" onclick="event.stopPropagation();dashProjectArchive(\''+escAttr(p.id)+'\')">📦</button>'
       +'<button type="button" class="dproj-fab dproj-fab--del" title="Delete" aria-label="Delete project" onclick="event.stopPropagation();dashProjectDelete(\''+escAttr(p.id)+'\')">×</button>'
       +'</div>'
-      +'<div>'
-      +'<div class="dpc-client">'+cn+'</div>'
-      +'<div class="dpc-addr">'+ad+'</div>'
-      +'<div class="dpc-name">'+nm+'</div>'
+      +'<div class="dproj-top">'+dThumb
+      +'<div class="dproj-mid">'
+      +'<div class="dpc-client">'+escHtml(String(cn))+'</div>'
+      +'<div class="dpc-addr">'+escHtml(String(ad))+'</div>'
+      +'<div class="dpc-name">'+escHtml(String(nm))+'</div>'
       +'<div class="dpc-meta">'+activeLine+dueLine+'</div>'
+      +'</div></div>'
+      +'<div class="dproj-reintake">'
+      +'<button type="button" class="btn bg sm" title="Re-run the room and trade intake for this project" onclick="event.stopPropagation();restartProjectIntake(\''+String(p.id).replace(/\\/g,"\\\\").replace(/'/g,"\\'")+'\')">Re-run intake</button>'
       +'</div></div>';
   }).join('');
 
@@ -4338,7 +4494,7 @@ function rDash(){
     card.addEventListener('pointerdown', function(e){
       if(e.pointerType==="mouse"&&e.button!==0) return;
       if(__rfDashJiggleMode) return;
-      if(e.target&&e.target.closest&&e.target.closest(".dproj-acts button")) return;
+      if(e.target&&e.target.closest&&(e.target.closest(".dproj-acts button")||e.target.closest(".dproj-reintake button"))) return;
       longFired=false;
       holdT=setTimeout(function(){
         holdT=null;
@@ -4353,6 +4509,7 @@ function rDash(){
       cancelHold();
       if(__rfDashJiggleMode) return;
       if(longFired) return;
+      if(e.target&&e.target.closest&&(e.target.closest(".dproj-acts button")||e.target.closest(".dproj-reintake button"))) return;
       var pid=card.getAttribute("data-pid");
       if(pid) switchProjectFromDash(pid);
     });
@@ -6796,7 +6953,14 @@ function rSett(){
     +'<div class="field"><label>Project Start Date</label><input type="date" value="'+(S.proj.startDate||'')+'" oninput="S.proj.startDate=this.value;ss();" onblur="patchProjectMeta({start_date:this.value||null})"/></div>'
     +'<div class="field"><label>Project Deadline</label><input type="date" value="'+(S.proj.deadlineDate||'')+'" oninput="S.proj.deadlineDate=this.value;ss();" onblur="patchProjectMeta({deadline_date:this.value||null})"/><div style="font-size:11px;color:var(--tx3);margin-top:6px">Used on the dashboard for “days until deadline”.</div></div>'
     +'<div class="field"><label>Terms / Notes</label><textarea oninput="S.proj.notes=this.value;ss()">'+S.proj.notes+'</textarea></div>'
+    +'<div class="field"><label>Project photo</label>'
+    +'<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px">'
+    +'<input type="file" id="proj-cover-file" accept="image/*" onchange="handleProjectCoverFile(this)" style="max-width:100%;font-size:13px"/>'
+    +'<button type="button" class="btn bg sm" onclick="clearProjectCoverField()">Remove photo</button>'
     +'</div>'
+    +'<div style="font-size:12px;color:var(--tx3);margin-top:8px;line-height:1.5">Optional thumbnail for this job (lists and dashboard). PNG or JPG, under 800 KB. Stored in this browser only.</div>'
+    +((S.proj&&S.proj.cover)?'<div style="margin-top:10px"><span style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em">Preview</span><div class="pl-thumb pl-thumb--photo" style="width:72px;height:72px;margin-top:6px"><img src="'+safeDataUrlForAttr(S.proj.cover)+'" alt="Project" style="width:100%;height:100%;object-fit:cover"/></div></div>':'')
+    +'</div></div>'
     +'<div class="ss"><div class="ss-t">Pricing</div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
     +'<div class="field"><label>Materials Markup %</label><input type="number" min="0" value="'+S.mk.mat+'" oninput="S.mk.mat=parseFloat(this.value)||0;ss();uSide()"/></div>'
@@ -6839,7 +7003,7 @@ async function addRoom(ti){
     return {id:tid,n:TN[tid],open:false,note:"",fx:{},days:0,daysCustom:false,
       items:(TB[tid]||[]).map(function(it){return {id:it.id,l:it.l,u:it.u,p:it.p,qty:0};})};
   });
-  var newRoom={n:name,ic:type.ic,trades:trades,d:{}};
+  var newRoom={n:name,ic:type.ic,trades:trades,d:{},thumb:""};
   applyAuto(newRoom);
   S.rooms.push(newRoom);
   saveRoomToSupabase(newRoom, S.rooms.length-1);
@@ -7846,10 +8010,12 @@ function toggleCfProjectMode(){
   var cb=document.getElementById("cf-newproj");
   var nf=document.getElementById("cf-newproj-fields");
   var ew=document.getElementById("cf-existing-proj-wrap");
+  var ph=document.getElementById("cf-proj-photo-field");
   if(!cb||!nf||!ew)return;
   var createOn=cb.checked;
   nf.style.display=createOn?"":"none";
   ew.style.display=createOn?"none":"";
+  if(ph) ph.style.display=createOn?"":"none";
 }
 
 function openNewProjectClientFlow(){
@@ -7918,11 +8084,37 @@ function showClientForm(idx, cl){
     +'<div class="cf-field"><div class="cf-label">Address</div>'
     +'<input class="cf-input" id="cf-address" type="text" placeholder="123 Main St, Toronto ON" value="'+escHtml(v.address||'')+'"/></div>'
     +'<div class="cf-field"><div class="cf-label">Notes</div>'
-    +'<textarea class="cf-textarea" id="cf-notes" placeholder="Referral source, special notes...">'+escHtml(v.notes||'')+'</textarea></div>';
+    +'<textarea class="cf-textarea" id="cf-notes" placeholder="Referral source, special notes...">'+escHtml(v.notes||'')+'</textarea></div>'
+    +(isNew?'<div class="cf-field" id="cf-proj-photo-field" style="display:none">'
+    +'<div class="cf-label">Project photo (optional)</div>'
+    +'<div style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:12px">'
+    +'<div id="cf-proj-photo-preview"></div>'
+    +'<div style="flex:1;min-width:200px">'
+    +'<input type="file" class="cf-input" id="cf-proj-photo-file" accept="image/*" onchange="handlePendingProjectCover(this)" style="font-size:13px;max-width:100%"/>'
+    +'<div style="margin-top:8px"><button type="button" class="btn bg sm" onclick="clearPendingProjectCover()">Remove photo</button></div>'
+    +'<p style="font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.45">Shown on project cards and the job list. Stored in this browser with the project.</p>'
+    +'</div></div></div>':'');
 
   var saveFn = isNew ? "saveNewClient()" : "saveEditClient("+idx+")";
   showMo(isNew?"New Client":"Edit Client", body, [{l:"Save Client", fn:saveFn}]);
-  if(isNew){try{toggleCfProjectMode();}catch(e){}}
+  if(isNew){
+    try{toggleCfProjectMode();}catch(e){}
+    var pf=document.getElementById("cf-proj-photo-field");
+    if(pf) pf.style.display="";
+    __rfPendingProjectCover="";
+    setTimeout(function(){
+      try{
+        var np=document.getElementById("cf-np-name");
+        var n=document.getElementById("cf-name");
+        function onNm(){
+          if(!__rfPendingProjectCover) try{ renderCfPendingCoverPreview(); }catch(e){}
+        }
+        if(np) np.addEventListener("input", onNm);
+        if(n) n.addEventListener("input", onNm);
+        renderCfPendingCoverPreview();
+      }catch(e1){}
+    },0);
+  }
 }
 
 function escHtml(s){return String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");}
@@ -8078,6 +8270,12 @@ function saveNewClient(){
       window.__rfProjectList=[o.project].concat(window.__rfProjectList.filter(function(x){return x.id!==o.project.id;}));
       return activateProjectId(o.project.id,window.__rfProjectList,{skipPersist:false}).then(function(){
         try{updateSidebarProjectHeader();}catch(e){}
+        if(__rfPendingProjectCover){
+          if(!S.proj) S.proj=DS().proj;
+          S.proj.cover=__rfPendingProjectCover;
+          __rfPendingProjectCover="";
+          try{ ss(); }catch(e1){}
+        }
         uSide();rClients();
         if(goIntake) gP("intake");
         else gP("dash");
