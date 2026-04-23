@@ -247,8 +247,21 @@ a.ni{color:inherit;text-decoration:none;}
   #p-room .m-tc-dots{display:flex;}
   #p-room .m-tc-viewport{min-height:min(62dvh,540px);flex:1 1 min(62dvh,540px);}
   #p-room .m-tc-slide .ts-scroll-pane{max-height:none;}
+  #p-room .ph--room-prime .ph-room-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px;}
+  #p-room .ph-room-mid{flex:1;min-width:0;}
+  #p-room .ph-title-line{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;}
+  #p-room .ph-title-line .pt{flex:1;min-width:0;}
+  #p-room .ph-mob-tog{align-items:center;gap:6px;flex-shrink:0;}
+  #p-room .ph-mob-tog-l{font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;white-space:nowrap;}
+  #p-room .dim-mob-outer{margin-bottom:10px;}
+  #p-room .dim-mob-summary{width:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--bd);border-radius:var(--r);background:var(--sf);font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;text-align:left;transition:background .15s,border-color .15s;}
+  #p-room .dim-mob-summary:hover{border-color:var(--bd2);background:#fff;}
+  #p-room .dim-mob-ch{flex-shrink:0;font-size:10px;opacity:0.75;}
+  #p-room .dim-mob-panel .dim-bar{padding-top:2px;}
 }
 /* Maximized plumbing/electrical: room dimensions full width above labour */
+.p-room--plumb-max .ph-mob-tog,
+.p-room--plumb-max .dim-mob-outer{display:none !important;}
 .ts-plumb-dim-labour-stack{display:flex;flex-direction:column;gap:14px;align-items:stretch;width:100%;min-width:0;box-sizing:border-box;}
 .ts-plumb-dim-top{width:100%;min-width:0;box-sizing:border-box;background:var(--sf2);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;}
 .ts-plumb-labour-below,.ts-plumb-section-bubble{width:100%;min-width:0;box-sizing:border-box;}
@@ -4399,14 +4412,13 @@ function buildRoomDimBarHtml(room, idSuffix, opts){
     +wallsRowsHtml
     +'<div class="dim-add-wall"><button type="button" class="btn bg sm" onclick="addWallRow()">+ Add wall</button></div>'
     +wallsBlockWallsEnd;
-  var dimH='<div class="dim-bar">'
-    +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px">'
+  var dimHeaderTogRow='<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px">'
     +'<div class="dim-t" style="margin-bottom:0">📐 Room Dimensions</div>'
-    +'<div style="display:flex;align-items:center;gap:10px;flex-shrink:0">'
+    +'<div class="dim-bar-togrow" style="display:flex;align-items:center;gap:10px;flex-shrink:0">'
     +'<span style="font-size:11px;color:var(--tx3);font-family:\'DM Mono\',monospace;max-width:140px;line-height:1.35">Auto-apply to trades</span>'
-    +'<div class="tog'+(autoOn?' on':'')+'" onclick="togDimAuto()" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();togDimAuto();}" title="'+(autoOn?'On: dimensions update quantities and trade days':'Off: keep manual quantities and days; calculations below stay visible')+'"></div>'
-    +'</div></div>'
-    +'<div class="dim-mode-row">'
+    +'<div class="tog tdim-autosw'+(autoOn?' on':'')+'" onclick="togDimAuto()" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();togDimAuto();}" title="'+(autoOn?'On: dimensions update quantities and trade days':'Off: keep manual quantities and days; calculations below stay visible')+'"></div>'
+    +'</div></div>';
+  var dimBody='<div class="dim-mode-row">'
     +'<span style="font-size:11px;color:var(--tx3);font-family:\'DM Mono\',monospace;">Mode</span>'
     +'<button type="button" class="btn '+(dimM==="rect"?"bp":"bg")+' sm" onclick="setDimMode(\'rect\')">Rectangle</button>'
     +'<button type="button" class="btn '+(dimM==="walls"?"bp":"bg")+' sm" onclick="setDimMode(\'walls\')">'+wallsBtnLabel+'</button>'
@@ -4414,10 +4426,16 @@ function buildRoomDimBarHtml(room, idSuffix, opts){
     +(dimM==="rect"?rectGrid:wallsBlock);
   var showDimPills=!!(c&&((c.fl>0)||(dimM==="walls"&&c.pr>0)));
   var pillsId=idSuffix?("dim-pills-"+idSuffix):"dim-pills";
-  dimH+='<div class="pills dim-pills" id="'+pillsId+'" data-pill-set="'+dimPillSet+'" style="'+(showDimPills?'':'display:none')+'">';
-  if(showDimPills) dimH+=dimPillsInnerHtml(c, dimPillSet);
-  dimH+='</div></div>';
-  return dimH;
+  dimBody+='<div class="pills dim-pills" id="'+pillsId+'" data-pill-set="'+dimPillSet+'" style="'+(showDimPills?'':'display:none')+'">';
+  if(showDimPills) dimBody+=dimPillsInnerHtml(c, dimPillSet);
+  dimBody+='</div>';
+  if(opts&&opts.mobileLayout){
+    return '<div class="dim-mob-outer" id="dim-mob-outer">'
+      +'<button type="button" class="dim-mob-summary" id="dim-mob-sum" onclick="toggleDimMobPanel(event)" aria-expanded="false" aria-controls="room-dim-mob-panel">'
+      +'<span>Room dimensions</span><span class="dim-mob-ch" aria-hidden="true">▼</span></button>'
+      +'<div class="dim-mob-panel" id="room-dim-mob-panel" hidden><div class="dim-bar">'+dimBody+'</div></div></div>';
+  }
+  return '<div class="dim-bar">'+dimHeaderTogRow+dimBody+'</div>';
 }
 function buildExpPlumbSideColHtml(room){
   return buildRoomDimBarHtml(room, "exp-plumb", {wallsModeLabel:"Custom Length",includeDoorsWins:false,dimPillSet:"mep"});
@@ -4599,7 +4617,14 @@ function rRoom(){
   var autoOn=roomDimAutoOn(room);
   var et=expandedTi!==null&&room.trades[expandedTi]?room.trades[expandedTi]:null;
   var hideRoomDim=et&&(et.id==="electrical"||et.id==="plumbing"||RICH_MEP_TRADES[et.id]);
-  var dimH=hideRoomDim?"":buildRoomDimBarHtml(room);
+  var isRoomMob=typeof window!=='undefined' && window.innerWidth<768;
+  var dimH=hideRoomDim?"":buildRoomDimBarHtml(room,"",isRoomMob?{mobileLayout:true}:{});
+  var phMobTog=(!hideRoomDim&&isRoomMob)
+    ?('<div class="ph-mob-tog" id="ph-room-dim-tog">'
+    +'<span class="ph-mob-tog-l">Auto</span>'
+    +'<div class="tog tdim-autosw'+(autoOn?' on':'')+'" onclick="togDimAuto()" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();togDimAuto();}" title="'+(autoOn?'On: dimensions update quantities and trade days':'Off: keep manual quantities and days; calculations below stay visible')+'"></div>'
+    +"</div>")
+    :'';
 
   var durSubTxt=autoOn?'Totals from trade days (auto when enabled) · edit per trade below':'Manual trade days · turn auto-apply on to sync from dimensions';
   var durH = '<div class="room-dur" id="room-dur-banner" style="'+(dur>0?'':'display:none')+'">'
@@ -4642,12 +4667,13 @@ function rRoom(){
   var prEl=document.getElementById("p-room");
   prEl.innerHTML=(isMepMaxRoom
     ? ''
-    : ('<div class="ph"><div style="display:flex;align-items:center;gap:10px">'
+    : ('<div class="ph ph--room-prime"><div class="ph-room-row">'
     +'<button class="btn bg sm" onclick="gP(\'dash\')" style="padding:5px 10px;font-size:18px;border:none;background:transparent;color:var(--tx2);cursor:pointer;">←</button>'
-    +'<span style="font-size:24px">'+room.ic+'</span>'
-    +'<div><div class="pt" style="font-size:22px">'+room.n+'</div>'
-    +'<div class="ps" id="room-ph-est">'+f(rt)+' estimated'+(dur>0?' · '+dur+' days':'')+'</div></div></div>'
-    +'<button class="btn bd-btn sm" onclick="delRoom('+curR+')">Delete</button></div>'))
+    +'<span class="ph-room-ic" style="font-size:24px">'+room.ic+'</span>'
+    +'<div class="ph-room-mid">'
+    +'<div class="ph-title-line"><div class="pt" style="font-size:22px">'+room.n+'</div>'+phMobTog+"</div>"
+    +'<div class="ps" id="room-ph-est">'+f(rt)+' estimated'+(dur>0?' · '+dur+' days':'')+'</div></div>'
+    +'<button class="btn bd-btn sm" onclick="delRoom('+curR+')">Delete</button></div></div>'))
     +'<div class="p-room-body">'
     +'<div class="pc">'+dimH+durH
     +'<div class="room-trade-tools"><button type="button" class="btn bg sm" onclick="addTradeMo()">+ Add trade</button></div>'
@@ -4730,6 +4756,16 @@ function addTradeById(tid){
   ss();rRoom();uSide();rNav();
 }
 
+function toggleDimMobPanel(e){
+  if(e) e.preventDefault();
+  var p=document.getElementById("room-dim-mob-panel");
+  var b=document.getElementById("dim-mob-sum");
+  if(!p||!b) return;
+  p.hidden=!p.hidden;
+  b.setAttribute("aria-expanded", p.hidden ? "false" : "true");
+  var ch=b.querySelector(".dim-mob-ch");
+  if(ch) ch.textContent=p.hidden ? "▼" : "▲";
+}
 function togDimAuto(){
   var room=S.rooms[curR];if(!room)return;
   if(!room.d)room.d={};
@@ -4737,8 +4773,7 @@ function togDimAuto(){
   if(roomDimAutoOn(room)) applyAuto(room);
   ss();uSide();rNav();
   var autoOn=roomDimAutoOn(room);
-  var tog=document.querySelector("#p-room .dim-bar .tog");
-  if(tog) tog.classList.toggle("on", autoOn);
+  document.querySelectorAll("#p-room .tdim-autosw").forEach(function(tg){ tg.classList.toggle("on", autoOn); });
   var sub=document.getElementById("room-dur-sub");
   if(sub){
     sub.textContent=autoOn
