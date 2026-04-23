@@ -2725,14 +2725,14 @@ function switchProjectFromDash(id){
   var sid=String(id);
   var cur=String((S.proj&&S.proj.dbProjectId)!=null?S.proj.dbProjectId:"");
   if(sid===cur){
-    goToProjectTradeEditor();
+    gP("rooms");
     return;
   }
   activateProjectId(sid,window.__rfProjectList||[],{skipPersist:false}).then(function(){
     updateSidebarProjectHeader();
     rNav();
     uSide();
-    goToProjectTradeEditor();
+    gP("rooms");
   }).catch(function(e){
     console.error(e);
     try{alert("Could not switch project: "+(e&&e.message?e.message:String(e)));}catch(x){}
