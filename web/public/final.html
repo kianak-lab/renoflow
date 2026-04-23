@@ -1614,6 +1614,32 @@ a.ni{color:inherit;text-decoration:none;}
   .pl-row--on {
     background: rgba(255, 56, 92, 0.07);
   }
+  .ph--proj-rooms {
+    display: block;
+  }
+  .ph-proj-rooms-h {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .pr-back {
+    flex-shrink: 0;
+    border: 1px solid #ebebeb;
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #222;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pr-back:active {
+    background: #fafafa;
+  }
+  .ph-proj-rooms-t {
+    flex: 1;
+    min-width: 0;
+  }
   .pl-avatar-wrap {
     position: relative;
     flex-shrink: 0;
@@ -1909,7 +1935,7 @@ a.ni{color:inherit;text-decoration:none;}
 
 <nav id="mob-nav" class="app-tabbar mob-nav" role="navigation" aria-label="Main">
   <button type="button" class="mn on" data-pg="dash" onclick="gP('dash')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-9.5z"/></svg></span><span class="mn-l">Home</span></button>
-  <button type="button" class="mn" data-pg="proj" onclick="gP('proj')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/><rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span><span class="mn-l">Projects</span></button>
+  <button type="button" class="mn" data-pg="proj" onclick="__rfProjUi='list';gP('proj')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/><rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span><span class="mn-l">Projects</span></button>
   <button type="button" class="mn" data-pg="tl" onclick="gP('tl')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg></span><span class="mn-l">Time</span></button>
   <button type="button" class="mn" data-pg="clients" onclick="gP('clients')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="mn-l">Clients</span></button>
   <button type="button" class="mn" data-pg="quote" onclick="gP('quote')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg></span><span class="mn-l">Quote</span></button>
@@ -3296,6 +3322,7 @@ function fmtDateFull(d){return d?d.toLocaleDateString('en-CA',{weekday:'short',m
 function fmtDateLong(d){return d?d.toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}):'—';}
 
 var curPg="dash",curR=null;
+var __rfProjUi="list";
 var MOB_TAB_ORDER=["dash","proj","tl","clients","quote","sett"];
 var __mobScrollBusy=false;
 var __mobScrollTimer=null;
@@ -3317,7 +3344,7 @@ function mobStripScrollEnd(){
     slab.classList.toggle("mob-slab--active", slab.getAttribute("data-pg")===np);
   });
   if(np==="dash") rDash();
-  if(np==="proj") rProj();
+  if(np==="proj"){ __rfProjUi="list"; rProj(); }
   if(np==="tl") rTimeline();
   if(np==="quote") rQuote();
   if(np==="clients") rClients();
@@ -3663,14 +3690,22 @@ function pickProjectList(id){
   var sid=String(id);
   var cur=String((S.proj&&S.proj.dbProjectId)!=null?S.proj.dbProjectId:"");
   if(sid===cur){
-    gP("dash");
+    if(isMobTabLayout()){
+      __rfProjUi="rooms";
+      if(curPg!=="proj") gP("proj");
+      else rProj();
+    }else gP("dash");
     return;
   }
   activateProjectId(sid,window.__rfProjectList||[],{skipPersist:false}).then(function(){
     updateSidebarProjectHeader();
     rNav();
     uSide();
-    gP("dash");
+    if(isMobTabLayout()){
+      __rfProjUi="rooms";
+      if(curPg!=="proj") gP("proj");
+      else rProj();
+    }else gP("dash");
   }).catch(function(e){
     console.error(e);
     try{ alert("Could not open project: "+(e&&e.message?e.message:String(e))); }catch(x){}
@@ -3682,6 +3717,11 @@ function rProj(){
   if(!window.__rfProjectList){
     el.innerHTML='<div class="ph ph--proj"><div class="pt">Projects</div></div><div class="pc pc--proj"><div class="pl-loading">Loading projects…</div></div>';
     refreshProjectList().then(function(){ rProj(); });
+    return;
+  }
+  if(!isMobTabLayout()&&__rfProjUi==="rooms") __rfProjUi="list";
+  if(isMobTabLayout()&&__rfProjUi==="rooms"&&S.proj){
+    rProjRooms();
     return;
   }
   var plist=window.__rfProjectList||[];
@@ -3721,6 +3761,58 @@ function rProj(){
     function go(){
       var pid=row.getAttribute("data-pid");
       if(pid) pickProjectList(pid);
+    }
+    row.addEventListener("click", go);
+    row.addEventListener("keydown", function(ev){
+      if(ev.key!=="Enter"&&ev.key!==" ") return;
+      ev.preventDefault();
+      go();
+    });
+  });
+}
+function projRoomsBackToList(){
+  __rfProjUi="list";
+  rProj();
+}
+function rProjRooms(){
+  var el=document.getElementById("p-proj");
+  if(!el) return;
+  var pnm=escHtml((S.proj&&S.proj.name)?String(S.proj.name):"Project");
+  var rooms=S.rooms||[];
+  if(rooms.length===0){
+    el.innerHTML='<div class="ph ph--proj ph--proj-rooms">'
+      +'<div class="ph-proj-rooms-h">'
+      +'<button type="button" class="pr-back" onclick="projRoomsBackToList()">← All projects</button>'
+      +'<div class="ph-proj-rooms-t"><div class="pt">'+pnm+'</div><div class="ps">No rooms yet. Add a room to start estimating.</div></div>'
+      +'</div></div>'
+      +'<div class="pc pc--proj">'
+      +'<div class="pl-empty">No rooms in this project yet.<br/><button type="button" class="btn bp sm" style="margin-top:14px" onclick="addRoomMo()">+ Add room</button></div>'
+      +'</div>';
+    return;
+  }
+  var cards=rooms.map(function(r,i){
+    var rt=roomTotal(r);
+    var tcount=(r.trades||[]).length;
+    return '<div class="pl-row pl-room" role="button" tabindex="0" data-ri="'+i+'">'
+      +'<div class="pl-avatar-wrap"><div class="pl-thumb" aria-hidden="true">'+escHtml((r.n||"?").charAt(0))+'</div></div>'
+      +'<div class="pl-txt">'
+      +'<div class="pl-line1"><span class="pl-name">'+escHtml(r.n)+'</span><span class="pl-date">'+f(rt)+'</span></div>'
+      +'<div class="pl-line2">'+tcount+' trade'+(tcount===1?"":"s")+'</div>'
+      +'<div class="pl-line3">Open trade overview &amp; estimates</div>'
+      +'</div></div>';
+  }).join("");
+  el.innerHTML='<div class="ph ph--proj ph--proj-rooms">'
+    +'<div class="ph-proj-rooms-h">'
+    +'<button type="button" class="pr-back" onclick="projRoomsBackToList()">← All projects</button>'
+    +'<div class="ph-proj-rooms-t"><div class="pt">'+pnm+'</div><div class="ps">Select a room, then a trade to edit.</div></div>'
+    +'</div></div>'
+    +'<div class="pc pc--proj">'
+    +'<div class="pl-stack pl-stack-rooms">'+cards+"</div>"
+    +'</div>';
+  el.querySelectorAll(".pl-row.pl-room").forEach(function(row){
+    function go(){
+      var i=parseInt(row.getAttribute("data-ri"),10);
+      if(!isNaN(i)) gRoom(i);
     }
     row.addEventListener("click", go);
     row.addEventListener("keydown", function(ev){
