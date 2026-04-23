@@ -1221,6 +1221,13 @@ a.ni{color:inherit;text-decoration:none;}
 
 .qp{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:32px;max-width:660px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
 .qt{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid var(--bd2);}
+.q-qt-left{display:flex;align-items:flex-start;gap:14px;flex:1;min-width:0}
+.q-logo-ring{flex-shrink:0;width:56px;height:56px;border-radius:50%;border:2px solid #c2007a;box-sizing:border-box;background:#fff;padding:3px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.q-logo-ring img{width:100%;height:100%;object-fit:contain;vertical-align:middle}
+.dash-circ-sett{width:64px;height:64px;min-width:64px;min-height:64px;border-radius:50%;border:2px solid #c2007a;background:#fff;box-sizing:border-box;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:opacity .15s,box-shadow .15s;box-shadow:0 0 0 1px rgba(194,0,122,.12)}
+.dash-circ-sett:hover{opacity:.95;box-shadow:0 0 0 1px rgba(194,0,122,.2)}
+.dash-circ-sett__img{width:100%;height:100%;object-fit:contain;border-radius:50%;pointer-events:none}
+.dash-circ-sett__hint{font-size:6.5px;line-height:1.1;text-align:center;color:#c2007a;font-weight:600;letter-spacing:.02em;max-width:100%;padding:0 2px;pointer-events:none}
 .qco{font-family:'Inter',system-ui,sans-serif;font-size:22px;color:var(--ac);}
 .qci{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;margin-top:3px;line-height:1.8;}
 .qnum{font-family:'Inter',system-ui,sans-serif;font-size:18px;}
@@ -2183,7 +2190,7 @@ var ROUGHIN=['electrical','plumbing','hvac','lowvolt','security'];
 
 function DS(){return{
   proj:{name:"My Renovation",client:"",clientId:"",addr:"",qnum:"Q-001",notes:"All prices include labour and materials. HST extra. 50% deposit required.",startDate:"",deadlineDate:"",parallelRooms:false,includeTimeline:true,dbProjectId:""},
-  co:{name:"Your Company",phone:"",email:"",lic:"",addr:""},
+  co:{name:"Your Company",phone:"",email:"",lic:"",addr:"",logo:""},
   mk:{mat:20,tax:13},
   rooms:[],ck:{},clients:[],invoices:[],quotes:[],invNum:1,matHideZero:true
 };}
@@ -2212,6 +2219,7 @@ function migrate(d){
   if(!d.quotes)d.quotes=[];
   if(!d.invNum)d.invNum=1;
   if(d.matHideZero===undefined)d.matHideZero=true;
+  if(d.co&&d.co.logo===undefined)d.co.logo="";
   (d.rooms||[]).forEach(function(r){
     (r.trades||[]).forEach(function(t){
       if(t.days===undefined)t.days=0;
@@ -3805,6 +3813,75 @@ function rRooms(){
   });
 }
 
+function companyLogoDataUrl(){
+  return (S.co&&S.co.logo)?String(S.co.logo).trim():"";
+}
+function safeDataUrlForAttr(u){
+  if(!u) return "";
+  return String(u).replace(/"/g,"%22");
+}
+function htmlCoBlockFromS(){
+  var u=companyLogoDataUrl();
+  var logo=u?('<div class="q-logo-ring" aria-hidden="true"><img src="'+safeDataUrlForAttr(u)+'" alt=""/></div>'):"";
+  if(typeof escHtml!=="function") return '<div class="q-qt-left"><div><div class="qco">'+S.co.name+'</div><div class="qci"></div></div></div>';
+  var name=escHtml(S.co.name||"Your Company");
+  var c=(S.co.addr?escHtml(S.co.addr)+"<br>":"")+(S.co.phone?escHtml(S.co.phone)+"<br>":"")+(S.co.email?escHtml(S.co.email)+"<br>":"")+(S.co.lic?"Lic: "+escHtml(S.co.lic):"");
+  return '<div class="q-qt-left">'+logo+'<div><div class="qco">'+name+'</div><div class="qci">'+c+"</div></div></div>";
+}
+function htmlCoBlockFromInv(inv){
+  inv=inv||{};
+  var u=inv.coLogo?String(inv.coLogo).trim():"";
+  var logo=u?('<div class="q-logo-ring" aria-hidden="true"><img src="'+safeDataUrlForAttr(u)+'" alt=""/></div>'):"";
+  if(typeof escHtml!=="function"){
+    return '<div class="q-qt-left"><div><div class="qco">'+(inv.coName||"Your Company")+"</div><div class=\"qci\"></div></div></div>";
+  }
+  var name=escHtml(inv.coName||"Your Company");
+  var c=(inv.coAddr?escHtml(inv.coAddr)+"<br>":"")+(inv.coPhone?escHtml(inv.coPhone)+"<br>":"")+(inv.coEmail?escHtml(inv.coEmail)+"<br>":"")+(inv.coLic?"Lic: "+escHtml(inv.coLic):"");
+  return '<div class="q-qt-left">'+logo+'<div><div class="qco">'+name+'</div><div class="qci">'+c+"</div></div></div>";
+}
+function dashHeaderSettingsCircle(){
+  var u=companyLogoDataUrl();
+  if(u) return '<button type="button" class="dash-circ-sett" onclick="gP(\'sett\')" title="Settings" aria-label="Open settings"><img class="dash-circ-sett__img" src="'+safeDataUrlForAttr(u)+'" alt=""/></button>';
+  return '<button type="button" class="dash-circ-sett" onclick="gP(\'sett\')" title="Logo and settings" aria-label="Open settings"><span class="dash-circ-sett__hint">Logo/Settings</span></button>';
+}
+function handleCompanyLogoFile(inp){
+  var f=inp&&inp.files&&inp.files[0];
+  if(!f){
+    if(inp) inp.value="";
+    return;
+  }
+  if(!f.type||f.type.indexOf("image")!==0){
+    try{ alert("Please choose an image (PNG, JPG, or WebP)."); }catch(e){}
+    inp.value="";
+    return;
+  }
+  if(f.size>1200*1024){
+    try{ alert("File is too large. Use an image under 1.2 MB."); }catch(e){}
+    inp.value="";
+    return;
+  }
+  var reader=new FileReader();
+  reader.onload=function(){
+    S.co.logo=String(reader.result||"");
+    ss();
+    uSide();
+    rSett();
+    if(curPg==="dash") rDash();
+  };
+  reader.onerror=function(){
+    try{ alert("Could not read that file."); }catch(e){}
+  };
+  reader.readAsDataURL(f);
+  inp.value="";
+}
+function clearCompanyLogo(){
+  S.co.logo="";
+  ss();
+  uSide();
+  rSett();
+  if(curPg==="dash") rDash();
+}
+
 function rDash(){
   var el=document.getElementById("p-dash");
   if(!window.__rfProjectList){
@@ -3954,9 +4031,9 @@ function rDash(){
   el.innerHTML='<div class="ph">'
     +'<div><div class="pt">'+S.proj.name+(S.proj.client?'<br><em>'+S.proj.client+'</em>':'')+' </div>'
     +(S.proj.addr?'<div class="ps">'+S.proj.addr+'</div>':'')+'</div>'
-    +'<div style="display:flex;gap:8px;flex-shrink:0">'
+    +'<div style="display:flex;gap:10px;flex-shrink:0;align-items:center">'
     +'<button class="btn bp sm" onclick="addRoomMo()">+ Job</button>'
-    +'<button class="btn bp sm" onclick="gP(\'quote\')">Quote</button>'
+    +dashHeaderSettingsCircle()
     +'</div></div>'
     +'<div class="pc">'
     +'<div class="brief-wrap">'
@@ -6270,8 +6347,7 @@ function rQuote(){
     +'<button class="btn bp sm" onclick="openPdf()">Generate PDF</button>'
     +'</div></div>'
     +'<div class="pc"><div class="qp">'
-    +'<div class="qt"><div><div class="qco">'+S.co.name+'</div>'
-    +'<div class="qci">'+(S.co.addr?S.co.addr+"<br>":"")+(S.co.phone?S.co.phone+"<br>":"")+(S.co.email?S.co.email+"<br>":"")+(S.co.lic?"Lic: "+S.co.lic:"")+'</div></div>'
+    +'<div class="qt">'+htmlCoBlockFromS()
     +'<div style="text-align:right"><div class="qnum">'+S.proj.qnum+'</div><div class="qdate">'+ds+'</div><div class="qbadge">ESTIMATE</div></div></div>'
     +'<div style="margin-bottom:20px">'
     +'<div style="font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px">Prepared For</div>'
@@ -6356,8 +6432,7 @@ function buildPrintQuote(fmt,mkPct){
     +'<button class="btn bp sm" onclick="openPdf()">Generate PDF</button>'
     +'</div></div>'
     +'<div class="pc"><div class="qp">'
-    +'<div class="qt"><div><div class="qco">'+S.co.name+'</div>'
-    +'<div class="qci">'+(S.co.addr?S.co.addr+"<br>":"")+(S.co.phone?S.co.phone+"<br>":"")+(S.co.email?S.co.email+"<br>":"")+(S.co.lic?"Lic: "+S.co.lic:"")+'</div></div>'
+    +'<div class="qt">'+htmlCoBlockFromS()
     +'<div style="text-align:right"><div class="qnum">'+S.proj.qnum+'</div><div class="qdate">'+ds+'</div><div class="qbadge">ESTIMATE</div></div></div>'
     +'<div style="margin-bottom:20px">'
     +'<div style="font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px">Prepared For</div>'
@@ -6389,7 +6464,14 @@ function rSett(){
     +'<div class="field"><label>Email</label><input type="email" value="'+S.co.email+'" oninput="S.co.email=this.value;ss()"/></div>'
     +'<div class="field"><label>License #</label><input type="text" value="'+S.co.lic+'" oninput="S.co.lic=this.value;ss()"/></div>'
     +'<div class="field"><label>Address</label><textarea oninput="S.co.addr=this.value;ss()">'+S.co.addr+'</textarea></div>'
+    +'<div class="field"><label>Company logo</label>'
+    +'<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px">'
+    +'<input type="file" id="co-logo-file" accept="image/*" onchange="handleCompanyLogoFile(this)" style="max-width:100%;font-size:13px"/>'
+    +'<button type="button" class="btn bg sm" onclick="clearCompanyLogo()">Remove logo</button>'
     +'</div>'
+    +'<div style="font-size:12px;color:var(--tx3);margin-top:8px;line-height:1.5">PNG or JPG, under 1.2 MB. Shown in the dashboard circle, on quotes, and invoices. Stored in this browser only.</div>'
+    +(companyLogoDataUrl()?'<div style="margin-top:12px"><span style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em">Preview</span><div class="q-logo-ring" style="width:72px;height:72px;margin-top:6px"><img src="'+safeDataUrlForAttr(companyLogoDataUrl())+'" alt="Company logo" style="width:100%;height:100%;object-fit:contain"/></div></div>':'')
+    +'</div></div>'
     +'<div class="ss"><div class="ss-t">Project Info</div>'
     +'<div class="field"><label>Project Name</label><input type="text" value="'+S.proj.name+'" oninput="S.proj.name=this.value;ss();uSide()"/></div>'
     +(S.clients&&S.clients.length>0?'<div class="field"><label>Pick Client</label>'
@@ -6956,12 +7038,17 @@ function buildInvoiceEmailHtml(inv){
   var totalLabel=st==="paid"?"Total (Paid)":"Balance Due";
   var showBal=st==="paid"?inv.total:bal;
   var balColor=st==="paid"?"#28a060":"#e85547";
+  var emLogo=inv&&inv.coLogo?String(inv.coLogo).trim():"";
+  var emLogoB=emLogo?("<div style=\"flex-shrink:0;width:64px;height:64px;border-radius:50%;border:2px solid #c2007a;overflow:hidden;padding:3px;box-sizing:border-box;background:#fff\">"
+    +"<img src=\""+emLogo.replace(/"/g,"%22")+"\" alt=\"\" style=\"width:100%;height:100%;object-fit:contain\"/></div>"):"";
   return "<!DOCTYPE html><html><body style=\"margin:0;padding:24px;background:#f0ede8;font-family:Arial,Helvetica,sans-serif;color:#1a1612\">"
     +"<div style=\"max-width:640px;margin:0 auto;background:#fff;border:1px solid #e0dbd4;border-radius:8px;padding:32px\">"
-    +"<div style=\"display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #ccc7be\">"
+    +"<div style=\"display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #ccc7be;gap:16px\">"
+    +"<div style=\"display:flex;align-items:flex-start;gap:12px;flex:1;min-width:0\">"
+    +emLogoB
     +"<div><div style=\"font-family:Georgia,serif;font-size:22px;color:#2d7a4f;font-weight:600\">"+escHtml(inv.coName||"Your Company")+"</div>"
-    +"<div style=\"font-size:11px;color:#9a958e;margin-top:8px;line-height:1.8\">"+escHtml(inv.coAddr||"")+(inv.coAddr?"<br>":"")+escHtml(inv.coPhone||"")+(inv.coPhone?"<br>":"")+escHtml(inv.coEmail||"")+"</div></div>"
-    +"<div style=\"text-align:right\"><div style=\"font-family:monospace;font-size:18px\">"+escHtml(inv.num)+"</div>"
+    +"<div style=\"font-size:11px;color:#9a958e;margin-top:8px;line-height:1.8\">"+escHtml(inv.coAddr||"")+(inv.coAddr?"<br>":"")+escHtml(inv.coPhone||"")+(inv.coPhone?"<br>":"")+escHtml(inv.coEmail||"")+"</div></div></div>"
+    +"<div style=\"text-align:right;flex-shrink:0\"><div style=\"font-family:monospace;font-size:18px\">"+escHtml(inv.num)+"</div>"
     +"<div style=\"font-size:11px;color:#9a958e;margin-top:4px\">"+(inv.sentDate?escHtml(fmtDispDate(inv.sentDate)):escHtml(fmtDispDate(inv.createdDate)))+"</div>"
     +"<div style=\"display:inline-block;margin-top:6px;padding:4px 10px;border-radius:20px;font-size:10px;font-family:monospace;text-transform:uppercase;background:#2d7a4f;color:#fff\">INVOICE</div></div></div>"
     +"<div style=\"margin-bottom:20px\">"
@@ -7042,7 +7129,7 @@ function buildInvFromQuote(){
     deposit:Math.round(sub*0.5), depositPaid:false,
     subtotal:sub, taxRate:S.mk.tax, tax:tax, total:sub+tax,
     rooms:rooms, notes:S.proj.notes||'',
-    coName:S.co.name, coPhone:S.co.phone, coEmail:S.co.email, coAddr:S.co.addr, coLic:S.co.lic
+    coName:S.co.name, coPhone:S.co.phone, coEmail:S.co.email, coAddr:S.co.addr, coLic:S.co.lic, coLogo:S.co.logo||""
   };
   if(S.proj.clientId){
     var cl=(S.clients||[]).find(function(c){return c.id===S.proj.clientId;});
@@ -7192,8 +7279,7 @@ function rInvDetail(inv){
 
   var doc='<div class="inv-doc">'
     +'<div class="qt">'
-    +'<div><div class="qco">'+(inv.coName||'Your Company')+'</div>'
-    +'<div class="qci">'+(inv.coAddr?inv.coAddr+'<br>':'')+(inv.coPhone?inv.coPhone+'<br>':'')+(inv.coEmail?inv.coEmail+'<br>':'')+(inv.coLic?'Lic: '+inv.coLic:'')+'</div></div>'
+    +htmlCoBlockFromInv(inv)
     +'<div style="text-align:right">'
     +'<div class="qnum">'+inv.num+'</div>'
     +'<div class="qdate">'+(inv.sentDate?fmtDispDate(inv.sentDate):fmtDispDate(inv.createdDate))+'</div>'
@@ -7255,7 +7341,7 @@ function createInvBlank(){
     paid:false, void:false, deposit:0, depositPaid:false,
     subtotal:0, taxRate:S.mk.tax, tax:0, total:0,
     rooms:[], notes:S.proj.notes||'',
-    coName:S.co.name, coPhone:S.co.phone, coEmail:S.co.email, coAddr:S.co.addr, coLic:S.co.lic
+    coName:S.co.name, coPhone:S.co.phone, coEmail:S.co.email, coAddr:S.co.addr, coLic:S.co.lic, coLogo:S.co.logo||""
   };
   if(S.proj.clientId){
     var cl0=(S.clients||[]).find(function(c){return c.id===S.proj.clientId;});
