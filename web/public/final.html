@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<title>RenoFlow</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,minimum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#5b8c6a" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#3d5c48" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="RenoFlow">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="/manifest.json">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 :root{
@@ -1310,9 +1316,79 @@ a.ni{color:inherit;text-decoration:none;}
 #mob-nav{display:none;}
 @media (max-width: 767px) {
   #shell{flex-direction:column;}
-  .mob-topnav{display:block;}
+  .mob-topnav{display:none !important;}
   #sb{display:none !important;}
-  #main{flex:1;min-height:0;min-width:0;}
+  #main{
+    flex:1;
+    min-height:0;
+    min-width:0;
+    padding-bottom:calc(56px + max(8px, env(safe-area-inset-bottom, 0px)));
+  }
+  #mob-nav{
+    display:flex !important;
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:100;
+    box-sizing:border-box;
+    flex-direction:row;
+    align-items:stretch;
+    justify-content:space-between;
+    gap:0;
+    background:rgba(255,255,255,.98);
+    -webkit-backdrop-filter:saturate(180%) blur(20px);
+    backdrop-filter:saturate(180%) blur(20px);
+    border-top:1px solid rgba(0,0,0,.08);
+    padding:4px 2px max(4px, env(safe-area-inset-bottom, 0px));
+    box-shadow:0 -1px 0 rgba(0,0,0,.04);
+  }
+  #mob-nav .mn{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    gap:2px;
+    padding:6px 2px 4px;
+    margin:0;
+    border:none;
+    background:transparent;
+    color:var(--tx2);
+    font-family:'Inter',system-ui,sans-serif;
+    font-size:10px;
+    font-weight:500;
+    line-height:1.15;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    transition:color .15s,transform .1s;
+    appearance:none;
+    -webkit-appearance:none;
+    font:inherit;
+    text-align:center;
+  }
+  #mob-nav .mn:active{transform:scale(.97);}
+  #mob-nav .mn.on{color:var(--ac);}
+  #mob-nav .mn-i{
+    font-size:24px;
+    line-height:1;
+    margin-bottom:1px;
+    filter:grayscale(1) opacity(.72);
+    transition:filter .15s,transform .15s;
+  }
+  #mob-nav .mn.on .mn-i{filter:none;transform:scale(1.04);}
+  #mob-nav .mn-l{
+    font-size:10px;
+    font-weight:500;
+    letter-spacing:-0.01em;
+    max-width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    padding:0 1px;
+  }
+  #mob-nav .mn.on .mn-l{font-weight:600;color:var(--ac2);}
 }
 
 .mat-page{min-height:100%;background:var(--bg);}
@@ -1533,13 +1609,13 @@ a.ni{color:inherit;text-decoration:none;}
   </div>
 </div>
 
-<div id="mob-nav">
-  <div class="mn on" data-pg="dash" onclick="gP('dash')"><div class="mn-i">⬡</div><div class="mn-l">Home</div></div>
-  <div class="mn" data-pg="tl" onclick="gP('tl')"><div class="mn-i">📅</div><div class="mn-l">Timeline</div></div>
-  <div class="mn" data-pg="clients" onclick="gP('clients')"><div class="mn-i">👥</div><div class="mn-l">Clients</div></div>
-  <div class="mn" data-pg="quote" onclick="gP('quote')"><div class="mn-i">📄</div><div class="mn-l">Quote</div></div>
-  <div class="mn" data-pg="sett" onclick="gP('sett')"><div class="mn-i">⚙</div><div class="mn-l">Setup</div></div>
-</div>
+<nav id="mob-nav" class="app-tabbar mob-nav" role="navigation" aria-label="Main">
+  <button type="button" class="mn on" data-pg="dash" onclick="gP('dash')"><div class="mn-i" aria-hidden="true">⬡</div><div class="mn-l">Home</div></button>
+  <button type="button" class="mn" data-pg="tl" onclick="gP('tl')"><div class="mn-i" aria-hidden="true">📅</div><div class="mn-l">Timeline</div></button>
+  <button type="button" class="mn" data-pg="clients" onclick="gP('clients')"><div class="mn-i" aria-hidden="true">👥</div><div class="mn-l">Clients</div></button>
+  <button type="button" class="mn" data-pg="quote" onclick="gP('quote')"><div class="mn-i" aria-hidden="true">📄</div><div class="mn-l">Quote</div></button>
+  <button type="button" class="mn" data-pg="sett" onclick="gP('sett')"><div class="mn-i" aria-hidden="true">⚙</div><div class="mn-l">Me</div></button>
+</nav>
 
 <div class="mo" id="modal" onclick="closeMo(event)">
   <div class="mb"><div class="mb-t" id="mo-t"></div><div id="mo-b"></div><div class="mb-b" id="mo-btn"></div></div>

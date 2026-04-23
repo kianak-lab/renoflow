@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -38,6 +38,13 @@ function metadataBase(): URL {
 
 export const metadata: Metadata = {
   metadataBase: metadataBase(),
+  manifest: "/manifest.json",
+  applicationName: "RenoFlow",
+  appleWebApp: {
+    capable: true,
+    title: "RenoFlow",
+    statusBarStyle: "default",
+  },
   title: "RenoFlow",
   description: ogDescription,
   openGraph: {
@@ -61,6 +68,17 @@ export const metadata: Metadata = {
     description: ogDescription,
     images: ["/og-image.png"],
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { color: "#5b8c6a", media: "(prefers-color-scheme: light)" },
+    { color: "#3d5c48", media: "(prefers-color-scheme: dark)" },
+  ],
 };
 
 export default function RootLayout({

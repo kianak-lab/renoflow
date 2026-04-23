@@ -1,0 +1,19 @@
+{
+  "name": "RenoFlow",
+  "short_name": "RenoFlow",
+  "description": "Renovation quoting and invoicing for contractors",
+  "start_url": "/final",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fafafa",
+  "theme_color": "#5b8c6a",
+  "icons": [
+    {
+      "src": "/og-image.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -736,6 +736,43 @@ export default function DashboardShell({
         </div>
       </div>
 
+      <nav id="mob-nav" className="mob-nav" aria-label="Main">
+        <div className="mob-nav-in">
+          <button
+            type="button"
+            className={`mob-ni ${currentPage === "dash" ? "on" : ""}`}
+            onClick={() => setCurrentPage("dash")}
+            aria-current={currentPage === "dash" ? "page" : undefined}
+          >
+            <span className="mob-ni-ic">
+              <span className="mob-ni-i" aria-hidden>⬡</span>
+            </span>
+            <span className="mob-ni-l">Home</span>
+          </button>
+          <button
+            type="button"
+            className={`mob-ni ${currentPage === "clients" ? "on" : ""}`}
+            onClick={() => setCurrentPage("clients")}
+            aria-current={currentPage === "clients" ? "page" : undefined}
+          >
+            <span className="mob-ni-ic">
+              <span className="mob-ni-i" aria-hidden>👥</span>
+              {clients.length > 0 ? <span className="mob-ni-b">{clients.length}</span> : null}
+            </span>
+            <span className="mob-ni-l">Clients</span>
+          </button>
+          <button type="button" className="mob-ni" onClick={openRoomModal}>
+            <span className="mob-ni-ic">
+              <span className="mob-ni-i" aria-hidden>🏠</span>
+              {activeProjectRooms.length > 0 ? (
+                <span className="mob-ni-b">{activeProjectRooms.length}</span>
+              ) : null}
+            </span>
+            <span className="mob-ni-l">Rooms</span>
+          </button>
+        </div>
+      </nav>
+
       <div className={`mo ${wizardOpen ? "show" : ""}`} onClick={() => !saving && setWizardOpen(false)}>
         <div className="mb" onClick={(e) => e.stopPropagation()}>
           <div className="mb-t">{activeProject ? "Project Details" : "Create Project"}</div>
