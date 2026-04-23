@@ -4135,6 +4135,104 @@ function htmlRoomThumbInner(r){
   if(u) return '<div class="pl-thumb pl-thumb--photo" aria-hidden="true"><img src="'+safeDataUrlForAttr(u)+'" alt=""/></div>';
   return '<div class="pl-thumb" aria-hidden="true">'+escHtml((r&&r.n)?String(r.n).charAt(0):"?")+"</div>";
 }
+/** ~bytes for a data URL (base64 payload). */
+function approxBytesFromDataUrl(du){
+  if(!du||typeof du!=="string") return 0;
+  var i=du.indexOf("base64,");
+  if(i<0) return du.length;
+  return Math.floor((du.length-i-7)*0.75);
+}
+/**
+ * Downscale and re-encode as JPEG so the result fits under maxBytes (phone camera photos, etc.).
+ */
+function compressDataUrlToMaxBytes(dataUrl, maxBytes, done){
+  maxBytes=Math.max(1, maxBytes|0);
+  if(approxBytesFromDataUrl(dataUrl)<=maxBytes){
+    try{ done(dataUrl); }catch(e){}
+    return;
+  }
+  var img=new Image();
+  img.onload=function(){
+    var w=img.naturalWidth, h=img.naturalHeight;
+    if(!w||!h){
+      try{ done(dataUrl); }catch(e){}
+      return;
+    }
+    var minEdge=300, maxEdge=1280, q=0.9;
+    function drawAndTry(){
+      var s=Math.min(1, maxEdge/Math.max(w,h));
+      var tw=Math.max(1, Math.round(w*s));
+      var th=Math.max(1, Math.round(h*s));
+      var c=document.createElement("canvas");
+      c.width=tw; c.height=th;
+      var ctx=c.getContext("2d");
+      if(!ctx){
+        try{ done(dataUrl); }catch(e1){}
+        return;
+      }
+      try{
+        ctx.imageSmoothingEnabled=true;
+        ctx.imageSmoothingQuality="high";
+        ctx.drawImage(img,0,0,tw,th);
+      }catch(e2){
+        try{ done(dataUrl); }catch(e3){}
+        return;
+      }
+      function jpegDataUrl(quality){
+        return c.toDataURL("image/jpeg", quality);
+      }
+      function bumpOrShrink(){
+        if(q>0.12){
+          q=Math.max(0.1, q-0.08);
+          tryQuality();
+          return;
+        }
+        if(maxEdge>minEdge){
+          maxEdge=Math.max(minEdge, Math.floor(maxEdge*0.82));
+          q=0.88;
+          drawAndTry();
+          return;
+        }
+        var last=jpegDataUrl(0.1);
+        try{ done(last); }catch(e4){}
+      }
+      function tryQuality(){
+        if(c.toBlob){
+          c.toBlob(function(blob){
+            if(!blob){
+              var du=jpegDataUrl(q);
+              if(approxBytesFromDataUrl(du)<=maxBytes) try{ done(du); }catch(e5){}
+              else bumpOrShrink();
+              return;
+            }
+            if(blob.size<=maxBytes){
+              var r=new FileReader();
+              r.onload=function(){ try{ done(String(r.result||"")); }catch(e6){} };
+              r.onerror=function(){ if(approxBytesFromDataUrl(jpegDataUrl(q))<=maxBytes) try{ done(jpegDataUrl(q)); }catch(e7){} else bumpOrShrink(); };
+              r.readAsDataURL(blob);
+              return;
+            }
+            bumpOrShrink();
+          },"image/jpeg", q);
+        } else {
+          var du2=jpegDataUrl(q);
+          if(approxBytesFromDataUrl(du2)<=maxBytes) try{ done(du2); }catch(e8){}
+          else bumpOrShrink();
+        }
+      }
+      tryQuality();
+    }
+    drawAndTry();
+  };
+  img.onerror=function(){
+    if(approxBytesFromDataUrl(dataUrl)<=maxBytes) try{ done(dataUrl); }catch(e){}
+    else{
+      try{ alert("Could not process that image."); }catch(x){}
+      try{ done(dataUrl); }catch(e8){}
+    }
+  };
+  img.src=dataUrl;
+}
 function readImageFileToDataUrl(inp, maxBytes, okFn){
   var f=inp&&inp.files&&inp.files[0];
   if(inp) inp.value="";
@@ -4143,12 +4241,14 @@ function readImageFileToDataUrl(inp, maxBytes, okFn){
     try{ alert("Please choose an image (PNG, JPG, or WebP)."); }catch(e){}
     return;
   }
-  if(f.size>(maxBytes||800*1024)){
-    try{ alert("File is too large. Use an image under "+Math.round((maxBytes||800*1024)/1024)+" KB."); }catch(e){}
-    return;
-  }
+  var cap=maxBytes||800*1024;
   var reader=new FileReader();
-  reader.onload=function(){ try{ okFn(String(reader.result||"")); }catch(e){ console.warn(e); } };
+  reader.onload=function(){
+    var raw=String(reader.result||"");
+    compressDataUrlToMaxBytes(raw, cap, function(data){
+      try{ okFn(data); }catch(e){ console.warn(e); }
+    });
+  };
   reader.onerror=function(){ try{ alert("Could not read that file."); }catch(e){} };
   reader.readAsDataURL(f);
 }
@@ -4276,25 +4376,23 @@ function handleCompanyLogoFile(inp){
     inp.value="";
     return;
   }
-  if(f.size>1200*1024){
-    try{ alert("File is too large. Use an image under 1.2 MB."); }catch(e){}
-    inp.value="";
-    return;
-  }
+  if(inp) inp.value="";
   var reader=new FileReader();
   reader.onload=function(){
-    S.co.logo=String(reader.result||"");
-    try{ persistCoProfileNow(); } catch(e) {}
-    ss();
-    uSide();
-    rSett();
-    if(curPg==="dash") rDash();
+    var raw=String(reader.result||"");
+    compressDataUrlToMaxBytes(raw, 1200*1024, function(data){
+      S.co.logo=String(data||"");
+      try{ persistCoProfileNow(); } catch(e) {}
+      ss();
+      uSide();
+      rSett();
+      if(curPg==="dash") rDash();
+    });
   };
   reader.onerror=function(){
     try{ alert("Could not read that file."); }catch(e){}
   };
   reader.readAsDataURL(f);
-  inp.value="";
 }
 function clearCompanyLogo(){
   S.co.logo="";
@@ -6937,7 +7035,7 @@ function rSett(){
     +'<input type="file" id="co-logo-file" accept="image/*" onchange="handleCompanyLogoFile(this)" style="max-width:100%;font-size:13px"/>'
     +'<button type="button" class="btn bg sm" onclick="clearCompanyLogo()">Remove logo</button>'
     +'</div>'
-    +'<div style="font-size:12px;color:var(--tx3);margin-top:8px;line-height:1.5">PNG or JPG, under 1.2 MB. Shown in the dashboard circle, on quotes, and invoices. Stored in this browser only.</div>'
+    +'<div style="font-size:12px;color:var(--tx3);margin-top:8px;line-height:1.5">Phone photos are automatically resized to fit. Shown in the dashboard circle, on quotes, and invoices. Stored in this browser only.</div>'
     +(companyLogoDataUrl()?'<div style="margin-top:12px"><span style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em">Preview</span><div class="q-logo-ring" style="width:72px;height:72px;margin-top:6px"><img src="'+safeDataUrlForAttr(companyLogoDataUrl())+'" alt="Company logo" style="width:100%;height:100%;object-fit:cover;object-position:center"/></div></div>':'')
     +'</div></div>'
     +'<div class="ss"><div class="ss-t">Project Info</div>'
@@ -6958,7 +7056,7 @@ function rSett(){
     +'<input type="file" id="proj-cover-file" accept="image/*" onchange="handleProjectCoverFile(this)" style="max-width:100%;font-size:13px"/>'
     +'<button type="button" class="btn bg sm" onclick="clearProjectCoverField()">Remove photo</button>'
     +'</div>'
-    +'<div style="font-size:12px;color:var(--tx3);margin-top:8px;line-height:1.5">Optional thumbnail for this job (lists and dashboard). PNG or JPG, under 800 KB. Stored in this browser only.</div>'
+    +'<div style="font-size:12px;color:var(--tx3);margin-top:8px;line-height:1.5">Optional thumbnail for this job. Large and camera images are automatically shrunk to fit. Stored in this browser only.</div>'
     +((S.proj&&S.proj.cover)?'<div style="margin-top:10px"><span style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em">Preview</span><div class="pl-thumb pl-thumb--photo" style="width:72px;height:72px;margin-top:6px"><img src="'+safeDataUrlForAttr(S.proj.cover)+'" alt="Project" style="width:100%;height:100%;object-fit:cover"/></div></div>':'')
     +'</div></div>'
     +'<div class="ss"><div class="ss-t">Pricing</div>'
@@ -8092,7 +8190,7 @@ function showClientForm(idx, cl){
     +'<div style="flex:1;min-width:200px">'
     +'<input type="file" class="cf-input" id="cf-proj-photo-file" accept="image/*" onchange="handlePendingProjectCover(this)" style="font-size:13px;max-width:100%"/>'
     +'<div style="margin-top:8px"><button type="button" class="btn bg sm" onclick="clearPendingProjectCover()">Remove photo</button></div>'
-    +'<p style="font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.45">Shown on project cards and the job list. Stored in this browser with the project.</p>'
+    +'<p style="font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.45">Shown on project cards and the job list. Camera photos are auto-resized to save space. Stored in this browser with the project.</p>'
     +'</div></div></div>':'');
 
   var saveFn = isNew ? "saveNewClient()" : "saveEditClient("+idx+")";
