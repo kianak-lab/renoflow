@@ -947,7 +947,9 @@ a.ni{color:inherit;text-decoration:none;}
   .ts-exp-box.ts-exp-compact:has(.ts-plumbing) .tc-card-lab--plumb-row,
   .ts-exp-box.ts-exp-compact:has(.ts-electrical) .tc-card-lab--plumb-row{min-height:96px!important;max-height:none!important;height:auto!important;}
 }
-#p-room{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
+#p-room,#p-rooms{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
+#p-rooms .p-rooms-inner{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
+#p-rooms .p-rooms-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 /* Chevrons (e.g. timeline room rows) — not used on room trade card headers */
 .ta{color:var(--tx3);font-size:11px;transition:transform .2s;}
 .ta.op{transform:rotate(180deg);}
@@ -1563,7 +1565,10 @@ a.ni{color:inherit;text-decoration:none;}
   }
   #p-proj,
   #p-proj .ph,
-  #p-proj .pc {
+  #p-proj .pc,
+  #p-rooms,
+  #p-rooms .ph,
+  #p-rooms .pc {
     background: transparent;
   }
   #p-proj .pt em {
@@ -1927,6 +1932,7 @@ a.ni{color:inherit;text-decoration:none;}
     </div>
     <div id="p-intake" style="display:none"></div>
     <div id="p-room" style="display:none"></div>
+    <div id="p-rooms" style="display:none"></div>
     <div id="p-cal" style="display:none"></div>
     <div id="p-shop" style="display:none"></div>
     <div id="p-inv" style="display:none"></div>
@@ -1935,7 +1941,7 @@ a.ni{color:inherit;text-decoration:none;}
 
 <nav id="mob-nav" class="app-tabbar mob-nav" role="navigation" aria-label="Main">
   <button type="button" class="mn on" data-pg="dash" onclick="gP('dash')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-9.5z"/></svg></span><span class="mn-l">Home</span></button>
-  <button type="button" class="mn" data-pg="proj" onclick="__rfProjUi='list';gP('proj')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/><rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span><span class="mn-l">Projects</span></button>
+  <button type="button" class="mn" data-pg="proj" onclick="gP('proj')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/><rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span><span class="mn-l">Projects</span></button>
   <button type="button" class="mn" data-pg="tl" onclick="gP('tl')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg></span><span class="mn-l">Time</span></button>
   <button type="button" class="mn" data-pg="clients" onclick="gP('clients')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="mn-l">Clients</span></button>
   <button type="button" class="mn" data-pg="quote" onclick="gP('quote')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg></span><span class="mn-l">Quote</span></button>
@@ -3322,7 +3328,6 @@ function fmtDateFull(d){return d?d.toLocaleDateString('en-CA',{weekday:'short',m
 function fmtDateLong(d){return d?d.toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}):'—';}
 
 var curPg="dash",curR=null;
-var __rfProjUi="list";
 var MOB_TAB_ORDER=["dash","proj","tl","clients","quote","sett"];
 var __mobScrollBusy=false;
 var __mobScrollTimer=null;
@@ -3344,7 +3349,7 @@ function mobStripScrollEnd(){
     slab.classList.toggle("mob-slab--active", slab.getAttribute("data-pg")===np);
   });
   if(np==="dash") rDash();
-  if(np==="proj"){ __rfProjUi="list"; rProj(); }
+  if(np==="proj") rProj();
   if(np==="tl") rTimeline();
   if(np==="quote") rQuote();
   if(np==="clients") rClients();
@@ -3405,7 +3410,7 @@ function showPg(pg){
 
   if(pg==="intake"){
     if(pager) pager.style.display="none";
-    ["dash","proj","room","tl","cal","shop","quote","inv","clients","sett"].forEach(function(p){
+    ["dash","proj","room","rooms","tl","cal","shop","quote","inv","clients","sett"].forEach(function(p){
       var el=document.getElementById("p-"+p);if(el)el.style.display="none";
     });
     var pi=document.getElementById("p-intake");if(pi)pi.style.display="block";
@@ -3420,7 +3425,7 @@ function showPg(pg){
 
   if(inMob){
     if(pager) pager.style.display="flex";
-    var hideThese=["intake","room","cal","shop","inv"];
+    var hideThese=["intake","room","rooms","cal","shop","inv"];
     for(var hi=0;hi<hideThese.length;hi++){
       var h=document.getElementById("p-"+hideThese[hi]);
       if(h) h.style.display="none";
@@ -3453,11 +3458,11 @@ function showPg(pg){
       if(el) el.style.display="none";
     });
     document.querySelectorAll(".mob-tab-slab").forEach(function(slab){ slab.classList.remove("mob-slab--active"); });
-    ["intake","room","cal","shop","quote","inv","clients","sett"].forEach(function(p){
+    ["intake","room","rooms","cal","shop","quote","inv","clients","sett"].forEach(function(p){
       var el=document.getElementById("p-"+p);
       if(!el) return;
       if(p===pg){
-        if(p==="room"){
+        if(p==="room"||p==="rooms"){
           el.style.display="flex";
           el.style.flexDirection="column";
           el.style.flex="1";
@@ -3475,6 +3480,7 @@ function showPg(pg){
   if(pg==="dash")rDash();
   if(pg==="proj")rProj();
   if(pg==="room")rRoom();
+  if(pg==="rooms")rRooms();
   if(pg==="tl")rTimeline();
   if(pg==="cal")rCalendar();
   if(pg==="shop")rShop();
@@ -3482,6 +3488,11 @@ function showPg(pg){
   if(pg==="inv")rInv();
   if(pg==="clients")rClients();
   if(pg==="sett")rSett();
+  if(isMobTabLayout()&&pg==="rooms"){
+    document.querySelectorAll(".mn[data-pg]").forEach(function(n){ n.classList.remove("on"); });
+    var mnProj=document.querySelector(".mn[data-pg='proj']");
+    if(mnProj) mnProj.classList.add("on");
+  }
   syncShellTradeExp();
 }
 
@@ -3691,9 +3702,8 @@ function pickProjectList(id){
   var cur=String((S.proj&&S.proj.dbProjectId)!=null?S.proj.dbProjectId:"");
   if(sid===cur){
     if(isMobTabLayout()){
-      __rfProjUi="rooms";
-      if(curPg!=="proj") gP("proj");
-      else rProj();
+      if(curPg!=="rooms") gP("rooms");
+      else rRooms();
     }else gP("dash");
     return;
   }
@@ -3702,9 +3712,8 @@ function pickProjectList(id){
     rNav();
     uSide();
     if(isMobTabLayout()){
-      __rfProjUi="rooms";
-      if(curPg!=="proj") gP("proj");
-      else rProj();
+      if(curPg!=="rooms") gP("rooms");
+      else rRooms();
     }else gP("dash");
   }).catch(function(e){
     console.error(e);
@@ -3717,11 +3726,6 @@ function rProj(){
   if(!window.__rfProjectList){
     el.innerHTML='<div class="ph ph--proj"><div class="pt">Projects</div></div><div class="pc pc--proj"><div class="pl-loading">Loading projects…</div></div>';
     refreshProjectList().then(function(){ rProj(); });
-    return;
-  }
-  if(!isMobTabLayout()&&__rfProjUi==="rooms") __rfProjUi="list";
-  if(isMobTabLayout()&&__rfProjUi==="rooms"&&S.proj){
-    rProjRooms();
     return;
   }
   var plist=window.__rfProjectList||[];
@@ -3770,24 +3774,32 @@ function rProj(){
     });
   });
 }
-function projRoomsBackToList(){
-  __rfProjUi="list";
-  rProj();
+function roomsPageBackToProjects(){
+  gP("proj");
 }
-function rProjRooms(){
-  var el=document.getElementById("p-proj");
+function rRooms(){
+  var el=document.getElementById("p-rooms");
   if(!el) return;
+  if(!isMobTabLayout()){
+    gP("proj");
+    return;
+  }
+  if(!S.proj){
+    gP("proj");
+    return;
+  }
   var pnm=escHtml((S.proj&&S.proj.name)?String(S.proj.name):"Project");
   var rooms=S.rooms||[];
   if(rooms.length===0){
-    el.innerHTML='<div class="ph ph--proj ph--proj-rooms">'
+    el.innerHTML='<div class="p-rooms-inner">'
+      +'<div class="ph ph--proj ph--proj-rooms">'
       +'<div class="ph-proj-rooms-h">'
-      +'<button type="button" class="pr-back" onclick="projRoomsBackToList()">← All projects</button>'
-      +'<div class="ph-proj-rooms-t"><div class="pt">'+pnm+'</div><div class="ps">No rooms yet. Add a room to start estimating.</div></div>'
+      +'<button type="button" class="pr-back" onclick="roomsPageBackToProjects()">← Projects</button>'
+      +'<div class="ph-proj-rooms-t"><div class="pt">Rooms</div><div class="ps">'+pnm+' · Add a room to start estimating.</div></div>'
       +'</div></div>'
-      +'<div class="pc pc--proj">'
+      +'<div class="pc pc--proj p-rooms-scroll">'
       +'<div class="pl-empty">No rooms in this project yet.<br/><button type="button" class="btn bp sm" style="margin-top:14px" onclick="addRoomMo()">+ Add room</button></div>'
-      +'</div>';
+      +'</div></div>';
     return;
   }
   var cards=rooms.map(function(r,i){
@@ -3798,17 +3810,18 @@ function rProjRooms(){
       +'<div class="pl-txt">'
       +'<div class="pl-line1"><span class="pl-name">'+escHtml(r.n)+'</span><span class="pl-date">'+f(rt)+'</span></div>'
       +'<div class="pl-line2">'+tcount+' trade'+(tcount===1?"":"s")+'</div>'
-      +'<div class="pl-line3">Open trade overview &amp; estimates</div>'
+      +'<div class="pl-line3">Open trade overview and estimates</div>'
       +'</div></div>';
   }).join("");
-  el.innerHTML='<div class="ph ph--proj ph--proj-rooms">'
+  el.innerHTML='<div class="p-rooms-inner">'
+    +'<div class="ph ph--proj ph--proj-rooms">'
     +'<div class="ph-proj-rooms-h">'
-    +'<button type="button" class="pr-back" onclick="projRoomsBackToList()">← All projects</button>'
-    +'<div class="ph-proj-rooms-t"><div class="pt">'+pnm+'</div><div class="ps">Select a room, then a trade to edit.</div></div>'
+    +'<button type="button" class="pr-back" onclick="roomsPageBackToProjects()">← Projects</button>'
+    +'<div class="ph-proj-rooms-t"><div class="pt">Rooms</div><div class="ps">'+pnm+' — tap a room, then a trade to edit.</div></div>'
     +'</div></div>'
-    +'<div class="pc pc--proj">'
+    +'<div class="pc pc--proj p-rooms-scroll">'
     +'<div class="pl-stack pl-stack-rooms">'+cards+"</div>"
-    +'</div>';
+    +"</div></div>";
   el.querySelectorAll(".pl-row.pl-room").forEach(function(row){
     function go(){
       var i=parseInt(row.getAttribute("data-ri"),10);
