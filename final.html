@@ -1800,6 +1800,22 @@ a.ni{color:inherit;text-decoration:none;}
 
 .inv-doc{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:32px;max-width:660px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
 
+/* Intake wizard — #p-intake sits in #main flex; let .pc scroll so room grid + Save stay reachable */
+#p-intake{
+  flex:1;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+#p-intake > .pc{
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:max(28px, env(safe-area-inset-bottom, 0px));
+}
 /* Intake wizard */
 .intake-wrap{max-width:720px;}
 .intake-progress{font-size:11px;font-family:'Inter',system-ui,sans-serif;color:var(--tx3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;}
@@ -3405,7 +3421,7 @@ function showPg(pg){
     ["dash","proj","room","rooms","tl","cal","shop","quote","inv","clients","sett","push"].forEach(function(p){
       var el=document.getElementById("p-"+p);if(el)el.style.display="none";
     });
-    var pi=document.getElementById("p-intake");if(pi)pi.style.display="block";
+    var pi=document.getElementById("p-intake");if(pi)pi.style.display="flex";
     intakeStep=1;
     intakeRoomPick=RT.map(function(){return false;});
     intakeSlots=[];
