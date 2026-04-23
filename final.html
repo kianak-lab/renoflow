@@ -111,7 +111,8 @@ a.ni{color:inherit;text-decoration:none;}
 @media (max-width:380px){:root{--rf-thumb-bubble:76px}}
 .dproj-thumb{
   width:100%;min-width:0;max-width:100%;
-  height:var(--rf-thumb-bubble);min-height:var(--rf-thumb-bubble);
+  height:calc(var(--rf-thumb-bubble) * 4 / 3);
+  min-height:calc(var(--rf-thumb-bubble) * 4 / 3);
   box-sizing:border-box;border-radius:12px;flex-shrink:0;
   background:linear-gradient(135deg,#fceef2,#e8e4ed);
   display:flex;align-items:center;justify-content:center;
@@ -120,15 +121,56 @@ a.ni{color:inherit;text-decoration:none;}
 }
 .dproj-thumb.dproj-thumb--photo{padding:0}
 .dproj-thumb.dproj-thumb--photo img{width:100%;height:100%;object-fit:cover;display:block}
-.dproj-top{display:flex;flex-direction:column;align-items:stretch;gap:10px;min-width:0}
+.dproj-top{display:flex;flex-direction:column;align-items:stretch;gap:4px;min-width:0}
 .dproj-mid{flex:0 0 auto;min-width:0;width:100%}
+/* Active project cards: same tile width as before; +⅓ strip height; text compressed to fit; inset from edges */
+.rc.dash-proj{
+  box-sizing:border-box;
+  min-height:0;
+  max-height:min(220px,50vh);
+  display:flex;flex-direction:column;
+  align-items:stretch;
+  padding:8px 8px 6px
+}
+.rc.dash-proj .dproj-top{
+  flex:0 0 auto;
+  gap:2px;
+  min-width:0;
+  /* horizontal inset: space between card edge and strip / copy */
+  padding:0 6px
+}
 .rc.dash-proj .dproj-thumb{
-  width:calc(100% + 28px);
-  max-width:none;
-  margin-left:-14px;
-  margin-right:-14px;
+  width:100%;
+  max-width:100%;
+  margin:0;
   border-radius:10px
 }
+.rc.dash-proj .dpc-client{font-size:12px!important;font-weight:600;line-height:1.1;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc.dash-proj .dpc-addr{
+  font-size:10px!important;margin-top:0!important;line-height:1.1!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.rc.dash-proj .dpc-name{font-size:9px!important;margin-top:0!important;line-height:1.1!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc.dash-proj .dpc-meta{
+  margin-top:2px!important;
+  padding-top:2px!important;
+  font-size:9px!important;
+  line-height:1.1!important;
+  border-top:1px solid var(--bd)
+}
+.rc.dash-proj .dpc-meta div{line-height:1.1!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc.dash-proj .dpc-meta strong{color:var(--ac)}
+.rc.dash-proj .dpc-warn{color:var(--red);font-weight:600}
+.rc.dash-proj .dproj-reintake{
+  flex:0 0 auto;
+  margin-top:2px!important;
+  padding-top:2px!important
+}
+.rc.dash-proj .dproj-reintake .btn{
+  font-size:10px!important;
+  padding:2px 7px!important;
+  line-height:1.2
+}
+.rc.dash-proj .dproj-mid{flex:0 1 auto;min-height:0;max-height:56px;overflow:hidden}
 .pl-avatar-wrap{position:relative;flex-shrink:0;width:var(--rf-thumb-bubble)}
 .pl-thumb{
   width:var(--rf-thumb-bubble);height:var(--rf-thumb-bubble);box-sizing:border-box;
@@ -216,13 +258,6 @@ a.ni{color:inherit;text-decoration:none;}
 .rc-n{font-size:13px;font-weight:500;}
 .rc-t{font-size:12px;color:var(--ac);font-family:'Inter',system-ui,sans-serif;margin-top:2px;}
 .rc-d{font-size:11px;color:var(--tx3);margin-top:1px;}
-.rc.dash-proj{padding:16px 14px;align-items:stretch;}
-.rc.dash-proj .dpc-client{font-size:15px;font-weight:600;color:var(--tx);line-height:1.25;}
-.rc.dash-proj .dpc-addr{font-size:12px;color:var(--tx2);margin-top:6px;line-height:1.35;}
-.rc.dash-proj .dpc-name{font-size:12px;color:var(--tx3);margin-top:8px;font-weight:500;}
-.rc.dash-proj .dpc-meta{margin-top:12px;padding-top:10px;border-top:1px solid var(--bd);font-size:11px;font-family:'Inter',system-ui,sans-serif;color:var(--tx2);line-height:1.5;}
-.rc.dash-proj .dpc-meta strong{color:var(--ac);}
-.rc.dash-proj .dpc-warn{color:var(--red);font-weight:600;}
 .dash-rg--jiggle .rc.dash-proj{animation:dprojWobble 0.18s ease-in-out infinite;transform-origin:center center;will-change:transform;}
 .dash-rg--jiggle .rc.dash-proj:nth-child(2n){animation-delay:0.04s;}
 .dash-rg--jiggle .rc.dash-proj:nth-child(3n){animation-delay:0.08s;}
