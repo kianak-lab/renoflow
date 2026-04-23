@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#5b8c6a" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#3d5c48" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ff385c" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#b32548" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="RenoFlow">
@@ -1389,6 +1389,154 @@ a.ni{color:inherit;text-decoration:none;}
     padding:0 1px;
   }
   #mob-nav .mn.on .mn-l{font-weight:600;color:var(--ac2);}
+}
+
+/* ── Mobile: Airbnb-style surface (no search bar) ── */
+@media (max-width: 767px) {
+  :root {
+    --bg: #f7f7f7;
+    --sf: #ffffff;
+    --bd: #dddddd;
+    --bd2: #dddddd;
+    --tx: #222222;
+    --tx2: #717171;
+    --tx3: #b0b0b0;
+    --ac: #ff385c;
+    --ac2: #e31c5f;
+    --ac-hi: #ff5a7a;
+    --ac-muted: rgba(255, 56, 92, 0.1);
+    --ac-line: rgba(255, 56, 92, 0.35);
+    --grn: #008a05;
+    --tot: #222222;
+    --ph-bg: transparent;
+    --sb-bg: #ffffff;
+  }
+  html { -webkit-tap-highlight-color: transparent; }
+  html, body {
+    background: #ffffff;
+    background-image: linear-gradient(180deg, #f7f7f7 0%, #f7f7f5 8%, #ffffff 28%, #ffffff 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100%;
+    min-height: 100dvh;
+  }
+  #main {
+    background: transparent;
+  }
+  .ph {
+    background: transparent !important;
+    border-bottom: none !important;
+    padding: max(10px, env(safe-area-inset-top, 0px)) 20px 12px;
+  }
+  .pt {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--tx);
+  }
+  .pt em { color: var(--tx2); font-style: normal; font-weight: 500; }
+  .ps { font-size: 15px; line-height: 1.4; color: var(--tx2); margin-top: 4px; }
+  .pc { padding: 0 20px 24px; }
+  .mobi-sec-h {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--tx);
+    margin: 8px 0 16px;
+    padding: 0 2px 2px 0;
+  }
+  .brief-wrap { gap: 16px; }
+  #p-dash .brief-header,
+  #main .brief-header {
+    background: #ffffff;
+    color: var(--tx);
+    border: 1px solid var(--bd);
+    border-radius: 16px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    padding: 20px 18px;
+  }
+  #main .brief-date {
+    color: var(--tx2);
+    opacity: 1;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  #main .brief-greeting {
+    color: var(--tx);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-top: 6px;
+  }
+  #main .brief-sub {
+    color: var(--tx2);
+    opacity: 1;
+    font-size: 15px;
+    line-height: 1.4;
+    margin-top: 6px;
+  }
+  .brief-stat {
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+  .brief-quick {
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+  .brief-quick-t { color: var(--tx2); font-size: 12px; letter-spacing: 0.04em; }
+  .brief-all-clear { border-color: var(--bd); }
+  .btn.bp { background: var(--ac); }
+  .btn.bp:hover, .btn.bp:focus-visible { background: var(--ac2); }
+  #p-dash .rg {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    padding: 0 0 6px;
+    margin: 0 -4px;
+    padding-left: 4px;
+  }
+  #p-dash .rg::-webkit-scrollbar { height: 0; }
+  #p-dash .rg .rc.dash-proj,
+  #p-dash .rg .arc {
+    flex: 0 0 min(78vw, 300px);
+    min-width: min(78vw, 300px);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    scroll-snap-align: start;
+  }
+  .rc {
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  .rc.on {
+    background: rgba(255, 56, 92, 0.06);
+    border-color: var(--ac);
+  }
+  .rc.on::before { background: var(--ac); }
+  .rc.dash-proj .dpc-meta strong { color: var(--ac); }
+  .arc {
+    border-radius: 16px;
+    min-height: 100px;
+  }
+  .arc:hover { border-color: var(--ac); color: var(--ac); }
+  .alert-card {
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+  #mob-nav {
+    background: #ffffff;
+    border-top: 1px solid var(--bd);
+  }
+  #mob-nav .mn.on { color: #ff385c; }
+  #mob-nav .mn.on .mn-l { color: #ff385c; }
+  #mob-nav .mn-i { filter: grayscale(1) opacity(0.5); }
+  #mob-nav .mn.on .mn-i { filter: none; color: #ff385c; }
 }
 
 .mat-page{min-height:100%;background:var(--bg);}
@@ -3423,7 +3571,7 @@ function rDash(){
     +allClear
     +alertHtml
     +stats
-    +(plist.length>0?'<div style="font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:\'DM Mono\',monospace;margin-bottom:8px">Active Projects</div>'
+    +(plist.length>0?'<div class="mobi-sec-h">Active projects</div>'
     +'<div class="rg">'+projectCards
     +'<div class="arc" onclick="newProjectMo()"><div style="font-size:22px;margin-bottom:5px">+</div><div style="font-size:13px">New Project</div></div>'
     +'</div>':'<div class="brief-wrap" style="margin-top:12px;padding:20px;background:#fff;border:1px solid var(--bd);border-radius:var(--r);"><div style="font-size:14px;font-weight:600;margin-bottom:6px">No projects yet</div><div style="font-size:13px;color:var(--tx3);margin-bottom:14px">Create a job to see it here.</div><button class="btn bp sm" onclick="newProjectMo()">+ New Project</button></div>')
