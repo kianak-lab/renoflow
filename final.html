@@ -1855,6 +1855,10 @@ a.ni{color:inherit;text-decoration:none;}
           <span class="ni-i"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="5.5" r="3"/><path d="M2 15c0-3.6 2.9-6.5 6.5-6.5S15 11.4 15 15"/></svg></span>
           <span class="ni-l">Clients</span><span class="ni-b" id="cl-count">0</span>
         </div>
+        <div class="ni" data-pg="push" onclick="gP('push')">
+          <span class="ni-i"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 8.5L15.5 2.5L9.5 15.5L7.5 9.5L1.5 8.5Z"/></svg></span>
+          <span class="ni-l">PUSH</span>
+        </div>
         <div class="ni" data-pg="sett" onclick="gP('sett')">
           <span class="ni-i"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="2.2"/><path d="M8.5 1.5v1.8M8.5 13.7v1.8M1.5 8.5h1.8M13.7 8.5h1.8M3.6 3.6l1.3 1.3M12.1 12.1l1.3 1.3M12.1 4.9l1.3-1.3M3.6 13.4l1.3-1.3"/></svg></span>
           <span class="ni-l">Settings</span>
@@ -1912,6 +1916,7 @@ a.ni{color:inherit;text-decoration:none;}
       </div>
     </div>
     <div id="p-intake" style="display:none"></div>
+    <div id="p-push" style="display:none"></div>
     <div id="p-room" style="display:none"></div>
     <div id="p-rooms" style="display:none"></div>
     <div id="p-cal" style="display:none"></div>
@@ -3393,7 +3398,7 @@ function showPg(pg){
 
   if(pg==="intake"){
     if(pager) pager.style.display="none";
-    ["dash","proj","room","rooms","tl","cal","shop","quote","inv","clients","sett"].forEach(function(p){
+    ["dash","proj","room","rooms","tl","cal","shop","quote","inv","clients","sett","push"].forEach(function(p){
       var el=document.getElementById("p-"+p);if(el)el.style.display="none";
     });
     var pi=document.getElementById("p-intake");if(pi)pi.style.display="block";
@@ -3408,7 +3413,7 @@ function showPg(pg){
 
   if(inMob){
     if(pager) pager.style.display="flex";
-    var hideThese=["intake","room","rooms","cal","inv","sett"];
+    var hideThese=["intake","room","rooms","cal","inv","sett","push"];
     for(var hi=0;hi<hideThese.length;hi++){
       var h=document.getElementById("p-"+hideThese[hi]);
       if(h) h.style.display="none";
@@ -3441,7 +3446,7 @@ function showPg(pg){
       if(el) el.style.display="none";
     });
     document.querySelectorAll(".mob-tab-slab").forEach(function(slab){ slab.classList.remove("mob-slab--active"); });
-    ["intake","room","rooms","cal","shop","quote","inv","clients","sett"].forEach(function(p){
+    ["intake","room","rooms","cal","shop","quote","inv","clients","sett","push"].forEach(function(p){
       var el=document.getElementById("p-"+p);
       if(!el) return;
       if(p===pg){
@@ -3470,6 +3475,7 @@ function showPg(pg){
   if(pg==="quote")rQuote();
   if(pg==="inv")rInv();
   if(pg==="clients")rClients();
+  if(pg==="push")rPush();
   if(pg==="sett")rSett();
   if(isMobTabLayout()&&pg==="rooms"){
     document.querySelectorAll(".mn[data-pg]").forEach(function(n){ n.classList.remove("on"); });
@@ -7427,6 +7433,53 @@ function saveInvMeta(id){
 
 // ── CLIENT DATABASE ──────────────────────────────────────────
 
+function rPush(){
+  function paint(){
+    var el=document.getElementById("p-push");
+    if(!el)return;
+    var plist=window.__rfProjectList||[];
+    var form='<div class="ss" style="max-width:560px">'
+      +'<p style="font-size:14px;color:var(--tx2);line-height:1.5;margin:0 0 16px">Create a secure link (no login). When the customer submits, their details are saved to your account. Set the project below, then send the link by email or SMS.</p>'
+      +'<div class="cf-field" style="margin-top:0">'
+      +'<label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;color:var(--tx);line-height:1.35">'
+      +'<input type="checkbox" id="push-newproj" checked style="margin-top:3px;flex-shrink:0" onchange="togglePushProjectMode()"/>'
+      +'<span><strong>Create a new project</strong> for this intake (saved when they submit)</span>'
+      +'</label></div>'
+      +'<div id="push-newproj-fields">'
+      +'<div class="cf-field"><div class="cf-label">Project name</div>'
+      +'<input class="cf-input" id="push-np-name" type="text" placeholder="e.g. Smith — main bath" /></div>'
+      +'</div>'
+      +'<div id="push-existing-proj-wrap" style="display:none">'
+      +'<div class="cf-field"><div class="cf-label">Link to an existing project</div>'
+      +'<select class="cf-input" id="push-project">'
+      +'<option value="">— None —</option>'
+      +plist.map(function(p){
+          return '<option value="'+escHtml(p.id)+'">'+escHtml(p.name||"Untitled")+'</option>';
+        }).join("")
+      +'</select>'
+      +'<p style="font-size:11px;color:var(--tx3);margin-top:6px;line-height:1.45">Uncheck “Create a new project” to attach the intake to a job that already exists.</p>'
+      +'</div></div>'
+      +'<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd)">'
+      +'<div class="cf-field"><div class="cf-label">Their email (optional)</div>'
+      +'<input class="cf-input" id="push-intake-email" type="email" placeholder="Sends the invite if Resend is configured"/></div>'
+      +'<div class="cf-field"><div class="cf-label">Their mobile (optional)</div>'
+      +'<input class="cf-input" id="push-intake-phone" type="tel" placeholder="“Open SMS with link” on your phone"/></div>'
+      +'<button type="button" class="btn bg sm" onclick="createClientIntakeLink()" style="width:100%;margin-top:4px">Create link &amp; send invite</button>'
+      +'</div>'
+      +'</div>';
+    el.innerHTML='<div class="ph">'
+      +'<div><div class="pt">PUSH</div>'
+      +'<div class="ps">Invite customers to share their information</div></div>'
+      +'</div>'
+      +'<div class="pc">'+form+'</div>';
+    try{ togglePushProjectMode(); } catch(e) {}
+  }
+  if(typeof refreshProjectList!=="function"){ paint(); return; }
+  var p=refreshProjectList();
+  if(p&&typeof p.then==="function") p.then(paint).catch(paint);
+  else paint();
+}
+
 // ── CLIENT DATABASE ──────────────────────────────────────────
 function clInitials(name){
   var parts=(name||"?").trim().split(/\s+/);
@@ -7511,9 +7564,9 @@ function showClientForm(idx, cl){
   var isNew = idx===null;
   var v = cl || {name:"",phone:"",email:"",address:"",notes:""};
   var plist=window.__rfProjectList||[];
-  var projBlock="";
+  var topBlock="";
   if(isNew){
-    projBlock='<div class="cf-field" style="margin-top:4px">'
+    topBlock='<div class="cf-field" style="margin-top:0">'
       +'<label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;color:var(--tx);line-height:1.35">'
       +'<input type="checkbox" id="cf-newproj" checked style="margin-top:3px;flex-shrink:0" onchange="toggleCfProjectMode()"/>'
       +'<span><strong>Create a new project</strong> for this client (saved in Supabase and linked automatically)</span>'
@@ -7521,8 +7574,6 @@ function showClientForm(idx, cl){
       +'<div id="cf-newproj-fields">'
       +'<div class="cf-field"><div class="cf-label">Project name</div>'
       +'<input class="cf-input" id="cf-np-name" type="text" placeholder="Leave blank to use “Client name — Job”" /></div>'
-      +'<div class="cf-field"><div class="cf-label">Job site address</div>'
-      +'<input class="cf-input" id="cf-np-addr" type="text" placeholder="Optional — uses client address if empty" /></div>'
       +'</div>'
       +'<div id="cf-existing-proj-wrap" style="display:none">'
       +'<div class="cf-field"><div class="cf-label">Or link to an existing project</div>'
@@ -7533,18 +7584,10 @@ function showClientForm(idx, cl){
         }).join("")
       +'</select>'
       +'<p style="font-size:11px;color:var(--tx3);margin-top:6px;line-height:1.45">Uncheck “Create a new project” above to attach this client to a job that already exists.</p>'
-      +'</div></div>'
-      +'<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bd)">'
-      +'<div style="font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:6px">Invite customer to fill this out</div>'
-      +'<p style="font-size:12px;color:var(--tx3);line-height:1.45;margin-bottom:12px">Creates a secure link (no login). When they submit, their info is saved to your account with the same project options as above.</p>'
-      +'<div class="cf-field"><div class="cf-label">Their email (optional)</div>'
-      +'<input class="cf-input" id="cf-intake-email" type="email" placeholder="Sends the invite automatically if email is set and Resend is configured"/></div>'
-      +'<div class="cf-field"><div class="cf-label">Their mobile (optional)</div>'
-      +'<input class="cf-input" id="cf-intake-phone" type="tel" placeholder="You’ll get an “Open SMS” button with the link"/></div>'
-      +'<button type="button" class="btn bg sm" onclick="createClientIntakeLink()" style="width:100%;margin-top:4px">Create link &amp; send invite</button>'
-      +'</div>';
+      +'</div></div>';
   }
-  var body='<div class="cf-field"><div class="cf-label">Full Name *</div>'
+  var body=topBlock
+    +'<div class="cf-field"><div class="cf-label">Full Name *</div>'
     +'<input class="cf-input" id="cf-name" type="text" placeholder="Jane Smith" value="'+escHtml(v.name)+'"/></div>'
     +'<div class="cf-field"><div class="cf-label">Phone</div>'
     +'<input class="cf-input" id="cf-phone" type="tel" placeholder="(416) 555-0100" value="'+escHtml(v.phone||'')+'"/></div>'
@@ -7553,8 +7596,7 @@ function showClientForm(idx, cl){
     +'<div class="cf-field"><div class="cf-label">Address</div>'
     +'<input class="cf-input" id="cf-address" type="text" placeholder="123 Main St, Toronto ON" value="'+escHtml(v.address||'')+'"/></div>'
     +'<div class="cf-field"><div class="cf-label">Notes</div>'
-    +'<textarea class="cf-textarea" id="cf-notes" placeholder="Referral source, special notes...">'+escHtml(v.notes||'')+'</textarea></div>'
-    +projBlock;
+    +'<textarea class="cf-textarea" id="cf-notes" placeholder="Referral source, special notes...">'+escHtml(v.notes||'')+'</textarea></div>';
 
   var saveFn = isNew ? "saveNewClient()" : "saveEditClient("+idx+")";
   showMo(isNew?"New Client":"Edit Client", body, [{l:"Save Client", fn:saveFn}]);
@@ -7573,27 +7615,32 @@ function readClientForm(){
   };
 }
 
-function buildCfIntakeOptions(){
+function togglePushProjectMode(){
+  var cb=document.getElementById("push-newproj");
+  var nf=document.getElementById("push-newproj-fields");
+  var ew=document.getElementById("push-existing-proj-wrap");
+  if(!cb||!nf||!ew)return;
+  var createOn=cb.checked;
+  nf.style.display=createOn?"":"none";
+  ew.style.display=createOn?"none":"";
+}
+function buildPushIntakeOptions(){
   var payload={};
-  var cb=document.getElementById("cf-newproj");
-  if(cb&&cb.checked){
-    var npn=document.getElementById("cf-np-name");
-    var npa=document.getElementById("cf-np-addr");
-    payload.new_project={
-      enabled:true,
-      name:npn?npn.value.trim():"",
-      address:npa&&npa.value.trim()?npa.value.trim():null
-    };
+  var cb=document.getElementById("push-newproj");
+  if(!cb) return payload;
+  if(cb.checked){
+    var npn=document.getElementById("push-np-name");
+    payload.new_project={enabled:true,name:npn?npn.value.trim():"",address:null};
   }else{
-    var pe=document.getElementById("cf-project");
-    if(pe&&(pe.value||"").trim())payload.project_id=(pe.value||"").trim();
+    var pe=document.getElementById("push-project");
+    if(pe&&(pe.value||"").trim()) payload.project_id=(pe.value||"").trim();
   }
   return payload;
 }
 function createClientIntakeLink(){
-  var bodyObj={options:buildCfIntakeOptions()};
-  var em=document.getElementById("cf-intake-email");
-  var ph=document.getElementById("cf-intake-phone");
+  var bodyObj={options:buildPushIntakeOptions()};
+  var em=document.getElementById("push-intake-email");
+  var ph=document.getElementById("push-intake-phone");
   if(em&&em.value.trim())bodyObj.notify_email=em.value.trim();
   if(ph&&ph.value.trim())bodyObj.notify_phone=ph.value.trim();
   fetch("/api/client-intake/link",{
@@ -7663,11 +7710,10 @@ function saveNewClient(){
   var cb=document.getElementById("cf-newproj");
   if(cb&&cb.checked){
     var npn=document.getElementById("cf-np-name");
-    var npa=document.getElementById("cf-np-addr");
     payload.new_project={
       enabled:true,
       name:npn?npn.value.trim():"",
-      address:npa&&npa.value.trim()?npa.value.trim():null
+      address:(d.address&&d.address.trim())?d.address.trim():null
     };
   }else{
     var pe=document.getElementById("cf-project");
