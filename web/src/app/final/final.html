@@ -19,9 +19,18 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
 input[type=number]{-moz-appearance:textfield;appearance:textfield;}
 html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:15px;font-weight:400;line-height:1.5;}
 .pt,.brief-greeting,.brief-stat-v,.qco,.tot-a,.tl-sv,.qtr.gd .qr,.dep-bal-v,.inv-stat-v{font-weight:700;letter-spacing:-0.3px;}
-#shell{display:flex;height:100vh;max-height:100dvh;overflow:hidden;}
+#shell{display:flex;flex-direction:row;height:100vh;max-height:100dvh;overflow:hidden;}
+.mob-topnav{display:none;flex-shrink:0;background:var(--sb-bg);border-bottom:1px solid var(--sb-bd);color:#c8dcc8;z-index:50;}
+.mob-topnav__scroll{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:6px;padding:8px 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;box-sizing:border-box;min-height:48px;}
+.mob-topnav__scroll::-webkit-scrollbar{display:none;}
+.mtn{flex:0 0 auto;appearance:none;border:1px solid var(--sb-bd);background:rgba(255,255,255,.1);color:#e8f4e8;font-family:'Inter',system-ui,sans-serif;font-size:11px;font-weight:600;letter-spacing:0.02em;padding:8px 12px;border-radius:10px;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,box-shadow .15s;min-height:40px;box-sizing:border-box;}
+.mtn:hover{background:rgba(255,255,255,.16);}
+.mtn.on{background:rgba(125,200,125,.3);border-color:rgba(125,200,125,.5);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);}
+.mtn--gear{display:inline-flex;align-items:center;justify-content:center;min-width:44px;padding-left:10px;padding-right:10px;}
+.mtn--gear svg{flex-shrink:0;display:block;}
 #sb{width:250px;min-width:250px;background:var(--sb-bg);border-right:1px solid var(--sb-bd);display:flex;flex-direction:column;color:#c8dcc8;overflow:hidden;transition:width .32s cubic-bezier(0.4,0,0.2,1),min-width .32s cubic-bezier(0.4,0,0.2,1),border-color .28s ease;}
 #shell.shell--trade-exp #sb{width:0;min-width:0;border-right-color:transparent;pointer-events:none;}
+#shell.shell--trade-exp .mob-topnav{display:none!important;pointer-events:none;}
 #shell.shell--trade-exp #mob-nav{display:none!important;pointer-events:none;}
 #shell.shell--trade-exp #main{min-width:0;overflow:hidden;}
 @media (prefers-reduced-motion:reduce){
@@ -1254,7 +1263,7 @@ a.ni{color:inherit;text-decoration:none;}
 .empty-i{font-size:34px;margin-bottom:10px;opacity:.4;}
 
 @media print{
-  #sb,#mob-nav,#sind,.ph button,.sfooter,#pdf-mo,.inv-status-bar,.dep-box,.inv-actions,.cal-nav button,.ts-exp-bg{display:none!important;}
+  #sb,#mob-nav,#mob-topnav,#sind,.ph button,.sfooter,#pdf-mo,.inv-status-bar,.dep-box,.inv-actions,.cal-nav button,.ts-exp-bg{display:none!important;}
   #shell{display:block!important;}
   body{background:#fff!important;}
   #main{overflow:visible!important;min-height:0!important;}
@@ -1265,7 +1274,6 @@ a.ni{color:inherit;text-decoration:none;}
 @media(max-width:700px){
   .logo-full{display:none;}
   .logo-rf{display:block;}
-  #sb{width:62px;min-width:62px;}
   .logo{padding:12px 0;display:flex;justify-content:center;align-items:center;border-bottom:none;}
   .logo-s{display:none;}
   .ns{padding:8px 0 2px;text-align:center;font-size:7px;letter-spacing:1px;}
@@ -1286,6 +1294,12 @@ a.ni{color:inherit;text-decoration:none;}
   .tl-day-date{width:80px;}
 }
 #mob-nav{display:none;}
+@media (max-width: 767px) {
+  #shell{flex-direction:column;}
+  .mob-topnav{display:block;}
+  #sb{display:none !important;}
+  #main{flex:1;min-height:0;min-width:0;}
+}
 
 .mat-page{min-height:100%;background:var(--bg);}
 .mat-header{display:flex;align-items:center;gap:10px;padding:16px 20px;background:#eef4ee;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:10;}
@@ -1416,6 +1430,19 @@ a.ni{color:inherit;text-decoration:none;}
 <div id="sind">Saved</div>
 
 <div id="shell">
+  <header class="mob-topnav" id="mob-topnav" aria-label="Primary navigation">
+    <div class="mob-topnav__scroll" role="toolbar" aria-label="App actions">
+      <button type="button" class="mtn" data-wn="newjob" onclick="openNewProjectClientFlow()">New Job</button>
+      <button type="button" class="mtn" data-pg="dash" onclick="gP('dash')">Project</button>
+      <button type="button" class="mtn" data-pg="shop" onclick="openProjectMaterials()">Materials</button>
+      <button type="button" class="mtn" data-pg="tl" onclick="gP('tl')">Timeline</button>
+      <button type="button" class="mtn" data-pg="cal" onclick="gP('cal')">Schedule</button>
+      <button type="button" class="mtn" data-pg="quote" onclick="gP('quote')">Quote</button>
+      <button type="button" class="mtn mtn--gear" data-pg="sett" onclick="gP('sett')" title="Settings" aria-label="Settings">
+        <svg width="20" height="20" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8.5" cy="8.5" r="2.2"/><path d="M8.5 1.5v1.8M8.5 13.7v1.8M1.5 8.5h1.8M13.7 8.5h1.8M3.6 3.6l1.3 1.3M12.1 12.1l1.3 1.3M12.1 4.9l1.3-1.3M3.6 13.4l1.3-1.3"/></svg>
+      </button>
+    </div>
+  </header>
   <div id="sb">
     <div class="logo">
       <div class="logo-full"><div class="logo-t">RenoFlow</div><div class="logo-s">Renovation Calculator</div></div>
@@ -2900,7 +2927,7 @@ function gP(pg){
     syncRoomToSupabase(curR).catch(function(e){ console.warn("[room sync]",e); });
   }
   curPg=pg;curR=null;expandedTi=null;
-  document.querySelectorAll(".ni[data-pg],.mn[data-pg]").forEach(function(n){n.classList.remove("on");});
+  document.querySelectorAll(".ni[data-pg],.mn[data-pg],.mtn[data-pg]").forEach(function(n){n.classList.remove("on");});
   document.querySelectorAll("[data-pg='"+pg+"']").forEach(function(n){n.classList.add("on");});
   showPg(pg);
 }
@@ -2910,7 +2937,7 @@ function gRoom(i){
     syncRoomToSupabase(curR).catch(function(e){ console.warn("[room sync]",e); });
   }
   curR=i;curPg="room";
-  document.querySelectorAll(".ni,.mn").forEach(function(n){n.classList.remove("on");});
+  document.querySelectorAll(".ni,.mn,.mtn").forEach(function(n){n.classList.remove("on");});
   var el=document.getElementById("nr"+i);if(el)el.classList.add("on");
   showPg("room");
 }
