@@ -3538,6 +3538,8 @@ function fmtDateFull(d){return d?d.toLocaleDateString('en-CA',{weekday:'short',m
 function fmtDateLong(d){return d?d.toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}):'—';}
 
 var curPg="dash",curR=null;
+/** Set when navigating to All rooms — blocks the same pointer/ghost click from opening a room's trades view. */
+var __rfNavToRoomsAt=0;
 var __rfListPickRoomI=null, __rfAddRoomStayOnList=false;
 var MOB_TAB_ORDER=["dash","proj","shop","tl","quote","clients"];
 var __mobScrollBusy=false;
@@ -3595,6 +3597,7 @@ function gP(pg){
     syncRoomToSupabase(curR).catch(function(e){ console.warn("[room sync]",e); });
   }
   curPg=pg;curR=null;expandedTi=null;
+  if(pg==="rooms") __rfNavToRoomsAt=Date.now();
   document.querySelectorAll(".ni[data-pg],.mn[data-pg],.mtn[data-pg]").forEach(function(n){n.classList.remove("on");});
   document.querySelectorAll("[data-pg='"+pg+"']").forEach(function(n){n.classList.add("on");});
   showPg(pg);
@@ -6079,6 +6082,7 @@ function addTradeById(tid){
 }
 function openRoomListTradesModal(ri){
   if(ri<0 || ri>=S.rooms.length) return;
+  if(__rfNavToRoomsAt && Date.now()-__rfNavToRoomsAt<450) return;
   var room=S.rooms[ri];
   if(!room) return;
   var opts=INTAKE_TRADE_IDS.filter(function(tid){ return tradeIndexById(room,tid)<0; });
