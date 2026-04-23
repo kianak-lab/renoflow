@@ -3350,6 +3350,10 @@ function isMobTabLayout(){
 var matListScope="project",matListRoomIdx=null;
 /** When true, after POST /api/clients creates a project, go to project intake instead of dashboard. */
 var __rfAfterNewClientGoIntake=false;
+/** Quick Actions "Add Job": after new client+project, room pick only then all-rooms list. */
+var __rfAddJobFromQuick=false;
+/** "full" = intake step 1+2 (trades) then add rooms. "roomsThenList" = step 1 only, empty trade shells, then all rooms. */
+var __rfIntakeMode="full";
 var intakeStep=1,intakeRoomPick=[],intakeSlots=[],intakeTrades=[];
 var INTAKE_TRADE_IDS=['demo','framing','concrete','roofing','electrical','plumbing','hvac','lowvolt','security','comdoor','insulation','drywall','tile','flooring','painting','trim','cabinets','closets','finishing'];
 
@@ -3492,6 +3496,10 @@ function intakeNext1(){
     try{alert("Select at least one room to continue.");}catch(e){}
     return;
   }
+  if(__rfIntakeMode==="roomsThenList"){
+    intakeFinishRoomsOnlyList();
+    return;
+  }
   intakeSlots=[];
   for(var j=0;j<RT.length;j++) if(intakeRoomPick[j]) intakeSlots.push(j);
   intakeTrades=intakeSlots.map(function(ri){ return RT[ri].trades.slice(); });
@@ -3530,6 +3538,39 @@ function appendRoomFromIntake(rtIndex,tradeIds){
   var idx=S.rooms.length-1;
   return saveRoomToSupabase(newRoom, idx);
 }
+function appendEmptyRoomFromIntake(rtIndex){
+  var type=RT[rtIndex];
+  var ex=S.rooms.filter(function(r){return r.n.startsWith(type.n);}).length;
+  var name=ex>0?type.n+" "+(ex+1):type.n;
+  var newRoom={n:name,ic:type.ic,trades:[],d:{}};
+  applyAuto(newRoom);
+  S.rooms.push(newRoom);
+  return saveRoomToSupabase(newRoom, S.rooms.length-1);
+}
+function intakeFinishRoomsOnlyList(){
+  var any=false;
+  for(var i=0;i<intakeRoomPick.length;i++) if(intakeRoomPick[i]) any=true;
+  if(!any){
+    try{alert("Select at least one room to continue.");}catch(e){}
+    return;
+  }
+  intakeSlots=[];
+  for(var j=0;j<RT.length;j++) if(intakeRoomPick[j]) intakeSlots.push(j);
+  var p=Promise.resolve();
+  intakeSlots.forEach(function(ri){
+    p=p.then(function(){ return appendEmptyRoomFromIntake(ri); });
+  });
+  p.then(function(){
+    __rfIntakeMode="full";
+    ss(); rNav(); uSide();
+    gP("rooms");
+  }).catch(function(e){
+    console.error(e);
+    __rfIntakeMode="full";
+    ss(); rNav(); uSide();
+    gP("rooms");
+  });
+}
 
 function intakeFinish(){
   for(var si=0;si<intakeSlots.length;si++){
@@ -3554,23 +3595,29 @@ function intakeFinish(){
 
 function rIntake(){
   var el=document.getElementById("p-intake");
-  var head='<div class="ph"><div><div class="pt">Project intake</div>'
+  var headRaw='<div class="ph"><div><div class="pt">Project intake</div>'
     +'<div class="ps">'+S.proj.name+(S.proj.client?" · "+S.proj.client:"")+'</div></div>'
     +'<button type="button" class="btn bg sm" onclick="gP(\'dash\')">Exit</button></div><div class="pc">';
+  var head=headRaw.replace('onclick="gP(\'dash\')"','onclick="__rfIntakeMode=\'full\';gP(\'dash\')"');
 
   if(intakeStep===1){
+    var isQuick=__rfIntakeMode==="roomsThenList";
     var grid=RT.map(function(rt,i){
       return '<label class="intake-cb'+(intakeRoomPick[i]?" on":"")+'">'
         +'<input type="checkbox" '+(intakeRoomPick[i]?"checked":"")+' onchange="intakeRoomSet('+i+',this.checked);rIntake();"/>'
         +'<span class="ic">'+rt.ic+'</span><span>'+rt.n+'</span></label>';
     }).join("");
     el.innerHTML=head+'<div class="intake-wrap">'
-      +'<div class="intake-progress">Step 1 of 2</div>'
+      +'<div class="intake-progress">'+(isQuick?"Choose rooms for this job":"Step 1 of 2")+'</div>'
       +'<div class="intake-q">Which rooms are we working on?</div>'
-      +'<p class="intake-sub">Select every space included in this renovation. You can add or remove rooms later from the sidebar.</p>'
+      +'<p class="intake-sub">'
+      +(isQuick
+        ?"Select every space for this job. On the next screen you’ll open each room to choose trades, then line items and pricing."
+        :"Select every space included in this renovation. You can add or remove rooms later from the sidebar.")
+      +'</p>'
       +'<div class="intake-cb-grid">'+grid+'</div>'
       +'<div class="intake-actions">'
-      +'<button type="button" class="btn bp" onclick="intakeNext1()">Continue</button>'
+      +'<button type="button" class="btn bp" onclick="intakeNext1()">'+(isQuick?"Save &amp; go to all rooms":"Continue")+"</button>"
       +'</div></div></div>';
     return;
   }
@@ -3766,10 +3813,6 @@ function rProj(){
 function rRooms(){
   var el=document.getElementById("p-rooms");
   if(!el) return;
-  if(!isMobTabLayout()){
-    gP("proj");
-    return;
-  }
   if(!S.proj){
     gP("proj");
     return;
@@ -4028,7 +4071,7 @@ function rDash(){
   var quick='<div class="brief-quick">'
     +'<div class="brief-quick-t">Quick Actions</div>'
     +'<div class="brief-quick-btns">'
-    +'<button class="btn bp sm" onclick="addRoomMo()">+ Add Job</button>'
+    +'<button class="btn bp sm" onclick="startAddJobFromQuickActions()">+ Add Job</button>'
     +'<button class="btn bg sm" onclick="gP(\'quote\')">View Quote</button>'
     +'<button class="btn bg sm" onclick="gP(\'inv\')">Invoices</button>'
     +'<button class="btn bg sm" onclick="gP(\'clients\')">Clients</button>'
@@ -6584,7 +6627,14 @@ function showMo(t,b,btns){
   document.getElementById("mo-btn").innerHTML=bh;
   document.getElementById("modal").classList.add("show");
 }
-function closeMo(e){if(e&&e.target!==document.getElementById("modal"))return;document.getElementById("modal").classList.remove("show");}
+function closeMo(e){
+  if(e&&e.target!==document.getElementById("modal"))return;
+  if(__rfAddJobFromQuick){
+    __rfAddJobFromQuick=false;
+    if(__rfIntakeMode==="roomsThenList")__rfIntakeMode="full";
+  }
+  document.getElementById("modal").classList.remove("show");
+}
 
 document.addEventListener('keydown', function(e) {
   if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'PageUp' || e.key === 'PageDown') {
@@ -7542,6 +7592,8 @@ function toggleCfProjectMode(){
 function openNewProjectClientFlow(){
   function go(){
     __rfAfterNewClientGoIntake=true;
+    __rfIntakeMode="full";
+    __rfAddJobFromQuick=false;
     try{ showClientForm(null, null); }catch(e){ console.warn(e); }
   }
   if(typeof refreshProjectList!=="function"){ go(); return; }
@@ -7550,8 +7602,16 @@ function openNewProjectClientFlow(){
   else go();
 }
 
+function startAddJobFromQuickActions(){
+  __rfAddJobFromQuick=true;
+  __rfIntakeMode="roomsThenList";
+  showClientForm(null, null);
+}
+
 function newClient(){
   __rfAfterNewClientGoIntake=false;
+  __rfAddJobFromQuick=false;
+  __rfIntakeMode="full";
   showClientForm(null, null);
 }
 
@@ -7746,6 +7806,9 @@ function saveNewClient(){
     var c=o.client;
     if(!c||!c.id)throw new Error("Invalid server response");
     if(o.warning){try{alert(o.warning);}catch(e){}}
+    var goIntake=__rfAfterNewClientGoIntake||__rfAddJobFromQuick;
+    __rfAfterNewClientGoIntake=false;
+    __rfAddJobFromQuick=false;
     ss();closeMo();
     if(o.project&&o.project.id){
       window.__rfProjectList=window.__rfProjectList||[];
@@ -7753,13 +7816,12 @@ function saveNewClient(){
       return activateProjectId(o.project.id,window.__rfProjectList,{skipPersist:false}).then(function(){
         try{updateSidebarProjectHeader();}catch(e){}
         uSide();rClients();
-        var goIntake=__rfAfterNewClientGoIntake;
-        __rfAfterNewClientGoIntake=false;
         if(goIntake) gP("intake");
         else gP("dash");
       });
     }
     __rfAfterNewClientGoIntake=false;
+    __rfAddJobFromQuick=false;
     return refreshClientsFromServer()
       .catch(function(e){ console.warn("refreshClientsFromServer",e); })
       .then(function(){
@@ -7770,6 +7832,8 @@ function saveNewClient(){
   })
   .catch(function(e){
     __rfAfterNewClientGoIntake=false;
+    __rfAddJobFromQuick=false;
+    if(__rfIntakeMode==="roomsThenList")__rfIntakeMode="full";
     console.warn("Client API create:",e);
     var msg=e&&e.message?e.message:String(e);
     pushLocal({
