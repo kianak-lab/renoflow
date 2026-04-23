@@ -509,7 +509,7 @@ export default function DashboardShell({
               alignItems: "center",
               justifyContent: "space-between",
               padding: "10px 16px",
-              background: "#faf7f2",
+              background: "var(--topbar-bg)",
               borderBottom: "1px solid var(--bd)",
               flexShrink: 0,
             }}
