@@ -1619,32 +1619,6 @@ a.ni{color:inherit;text-decoration:none;}
   .pl-row--on {
     background: rgba(255, 56, 92, 0.07);
   }
-  .ph--proj-rooms {
-    display: block;
-  }
-  .ph-proj-rooms-h {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-  }
-  .pr-back {
-    flex-shrink: 0;
-    border: 1px solid #ebebeb;
-    background: #fff;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 14px;
-    color: #222;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .pr-back:active {
-    background: #fafafa;
-  }
-  .ph-proj-rooms-t {
-    flex: 1;
-    min-width: 0;
-  }
   .pl-avatar-wrap {
     position: relative;
     flex-shrink: 0;
@@ -3328,6 +3302,7 @@ function fmtDateFull(d){return d?d.toLocaleDateString('en-CA',{weekday:'short',m
 function fmtDateLong(d){return d?d.toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}):'—';}
 
 var curPg="dash",curR=null;
+var __rfListPickRoomI=null, __rfAddRoomStayOnList=false;
 var MOB_TAB_ORDER=["dash","proj","tl","clients","quote","sett"];
 var __mobScrollBusy=false;
 var __mobScrollTimer=null;
@@ -3774,9 +3749,6 @@ function rProj(){
     });
   });
 }
-function roomsPageBackToProjects(){
-  gP("proj");
-}
 function rRooms(){
   var el=document.getElementById("p-rooms");
   if(!el) return;
@@ -3790,16 +3762,18 @@ function rRooms(){
   }
   var pnm=escHtml((S.proj&&S.proj.name)?String(S.proj.name):"Project");
   var rooms=S.rooms||[];
+  var head='<div class="p-rooms-inner">'
+    +'<div class="ph ph--proj">'
+    +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">'
+    +'<div><div class="pt">All <em>rooms</em></div><div class="ps">'
+    +'Every space in '+pnm+' — add rooms, then open one to add trades and estimates.</div></div>'
+    +'<button type="button" class="btn bg sm" onclick="addRoomMo()" style="flex-shrink:0;margin-top:2px">+ Add room</button>'
+    +'</div></div>';
   if(rooms.length===0){
-    el.innerHTML='<div class="p-rooms-inner">'
-      +'<div class="ph ph--proj ph--proj-rooms">'
-      +'<div class="ph-proj-rooms-h">'
-      +'<button type="button" class="pr-back" onclick="roomsPageBackToProjects()">← Projects</button>'
-      +'<div class="ph-proj-rooms-t"><div class="pt">Rooms</div><div class="ps">'+pnm+' · Add a room to start estimating.</div></div>'
-      +'</div></div>'
+    el.innerHTML=head
       +'<div class="pc pc--proj p-rooms-scroll">'
-      +'<div class="pl-empty">No rooms in this project yet.<br/><button type="button" class="btn bp sm" style="margin-top:14px" onclick="addRoomMo()">+ Add room</button></div>'
-      +'</div></div>';
+      +'<div class="pl-empty">No rooms in this project yet. Use <strong>+ Add room</strong> above to create your first space.</div>'
+      +"</div></div>";
     return;
   }
   var cards=rooms.map(function(r,i){
@@ -3810,22 +3784,17 @@ function rRooms(){
       +'<div class="pl-txt">'
       +'<div class="pl-line1"><span class="pl-name">'+escHtml(r.n)+'</span><span class="pl-date">'+f(rt)+'</span></div>'
       +'<div class="pl-line2">'+tcount+' trade'+(tcount===1?"":"s")+'</div>'
-      +'<div class="pl-line3">Open trade overview and estimates</div>'
+      +'<div class="pl-line3">Choose trades to add, then open this room</div>'
       +'</div></div>';
   }).join("");
-  el.innerHTML='<div class="p-rooms-inner">'
-    +'<div class="ph ph--proj ph--proj-rooms">'
-    +'<div class="ph-proj-rooms-h">'
-    +'<button type="button" class="pr-back" onclick="roomsPageBackToProjects()">← Projects</button>'
-    +'<div class="ph-proj-rooms-t"><div class="pt">Rooms</div><div class="ps">'+pnm+' — tap a room, then a trade to edit.</div></div>'
-    +'</div></div>'
+  el.innerHTML=head
     +'<div class="pc pc--proj p-rooms-scroll">'
     +'<div class="pl-stack pl-stack-rooms">'+cards+"</div>"
     +"</div></div>";
   el.querySelectorAll(".pl-row.pl-room").forEach(function(row){
     function go(){
       var i=parseInt(row.getAttribute("data-ri"),10);
-      if(!isNaN(i)) gRoom(i);
+      if(!isNaN(i)) openRoomListTradesModal(i);
     }
     row.addEventListener("click", go);
     row.addEventListener("keydown", function(ev){
@@ -5382,6 +5351,20 @@ function expandTrade(ti){
 }
 function closeExpTrade(){ expandedTi=null; rRoom(); }
 
+function tradeObjectFromTid(tid, opt){
+  var o=opt||{};
+  return {
+    id:tid,
+    n:TN[tid],
+    open:!!o.open,
+    note:"",
+    fx:{},
+    days:0,
+    daysCustom:false,
+    labour:{mode:"hourly",rate:55,qty:0,jobPrice:0},
+    items:(TB[tid]||[]).map(function(it){ return {id:it.id,l:it.l,u:it.u,p:it.p,qty:0}; })
+  };
+}
 function addTradeMo(){
   var room=S.rooms[curR];
   if(!room)return;
@@ -5391,22 +5374,67 @@ function addTradeMo(){
     return;
   }
   var rows=opts.map(function(tid){
-    return '<button type="button" class="btn bg" style="display:block;width:100%;margin-bottom:6px;text-align:left" onclick="addTradeById(\''+tid+'\')">'+(TIC[tid]||"")+" "+TN[tid]+"</button>";
+    var col=TC[tid]||"#888";
+    return '<label class="intake-cb" style="border-left:3px solid '+col+'">'
+      +'<input type="checkbox" class="rf-tpick-cb" data-tid="'+escAttr(tid)+'"/>'
+      +'<span class="ic">'+(TIC[tid]||"•")+"</span><span>"+escHtml(TN[tid]||tid)+"</span></label>";
   }).join("");
-  showMo("Add trade — "+room.n,'<div style="max-height:50vh;overflow-y:auto">'+rows+"</div>",[]);
+  showMo("Add trades — "+room.n,'<p style="font-size:13px;color:var(--tx2);margin:0 0 10px">Select one or more trades, then Save.</p><div class="intake-trade-grid" style="max-height:50vh;overflow-y:auto">'+rows+"</div>",[{l:"Save",fn:"saveAddTradesPick()"}]);
 }
-
-function addTradeById(tid){
+function saveAddTradesPick(){
   var room=S.rooms[curR];
-  if(!room||tradeIndexById(room,tid)>=0)return;
-  room.trades.push({
-    id:tid,n:TN[tid],open:true,note:"",fx:{},days:0,daysCustom:false,
-    labour:{mode:'hourly',rate:55,qty:0,jobPrice:0},
-    items:(TB[tid]||[]).map(function(it){ return {id:it.id,l:it.l,u:it.u,p:it.p,qty:0}; })
-  });
+  if(!room){ closeMo(); return; }
+  var list=document.querySelectorAll("#mo-b input.rf-tpick-cb:checked");
+  for(var k=0;k<list.length;k++){
+    var tid=list[k].getAttribute("data-tid");
+    if(!tid || tradeIndexById(room,tid)>=0) continue;
+    room.trades.push(tradeObjectFromTid(tid, {open:false}));
+  }
   applyAuto(room);
   closeMo();
   ss();rRoom();uSide();rNav();
+}
+function addTradeById(tid){
+  var room=S.rooms[curR];
+  if(!room||tradeIndexById(room,tid)>=0)return;
+  room.trades.push(tradeObjectFromTid(tid, {open:true}));
+  applyAuto(room);
+  closeMo();
+  ss();rRoom();uSide();rNav();
+}
+function openRoomListTradesModal(ri){
+  if(ri<0 || ri>=S.rooms.length) return;
+  var room=S.rooms[ri];
+  if(!room) return;
+  var opts=INTAKE_TRADE_IDS.filter(function(tid){ return tradeIndexById(room,tid)<0; });
+  if(!opts.length){
+    gRoom(ri);
+    return;
+  }
+  var rows=opts.map(function(tid){
+    var col=TC[tid]||"#888";
+    return '<label class="intake-cb" style="border-left:3px solid '+col+'">'
+      +'<input type="checkbox" class="rf-tpick-cb" data-tid="'+escAttr(tid)+'"/>'
+      +'<span class="ic">'+(TIC[tid]||"•")+"</span><span>"+escHtml(TN[tid]||tid)+"</span></label>";
+  }).join("");
+  __rfListPickRoomI=ri;
+  showMo("Trades for "+room.n,'<p style="font-size:13px;color:var(--tx2);margin:0 0 10px">Select one or more trades to add, then Save to open the room.</p><div class="intake-trade-grid" style="max-height:50vh;overflow-y:auto">'+rows+"</div>",[{l:"Save",fn:"applyRoomListTradesPick()"}]);
+}
+function applyRoomListTradesPick(){
+  var ri=__rfListPickRoomI;
+  __rfListPickRoomI=null;
+  if(ri==null || ri<0 || !S.rooms[ri]){ closeMo(); return; }
+  var room=S.rooms[ri];
+  var list=document.querySelectorAll("#mo-b input.rf-tpick-cb:checked");
+  for(var k=0;k<list.length;k++){
+    var tid=list[k].getAttribute("data-tid");
+    if(!tid || tradeIndexById(room,tid)>=0) continue;
+    room.trades.push(tradeObjectFromTid(tid, {open:false}));
+  }
+  applyAuto(room);
+  closeMo();
+  ss();rNav();uSide();
+  gRoom(ri);
 }
 
 function toggleDimMobPanel(e){
@@ -6401,6 +6429,7 @@ function pickClientFromSett(id){
 }
 
 function addRoomMo(){
+  __rfAddRoomStayOnList=isMobTabLayout() && curPg==="rooms";
   var btns=RT.map(function(rt,i){
     return '<button class="btn bg" style="justify-content:flex-start;width:100%;margin-bottom:5px" onclick="addRoom('+i+')">'
       +rt.ic+' '+rt.n+'</button>';
@@ -6408,6 +6437,8 @@ function addRoomMo(){
   showMo("Choose Room Type",'<div style="max-height:55vh;overflow-y:auto">'+btns+'</div>',[]);
 }
 async function addRoom(ti){
+  var stay=__rfAddRoomStayOnList;
+  __rfAddRoomStayOnList=false;
   var type=RT[ti];
   var ex=S.rooms.filter(function(r){return r.n.startsWith(type.n);}).length;
   var name=ex>0?type.n+" "+(ex+1):type.n;
@@ -6419,7 +6450,9 @@ async function addRoom(ti){
   applyAuto(newRoom);
   S.rooms.push(newRoom);
   saveRoomToSupabase(newRoom, S.rooms.length-1);
-  ss();closeMo();rNav();uSide();gRoom(S.rooms.length-1);
+  ss();closeMo();rNav();uSide();
+  if(stay && isMobTabLayout() && curPg==="rooms") rRooms();
+  else gRoom(S.rooms.length-1);
 }
 function delRoom(i){
   if(i<0||i>=S.rooms.length)return;
