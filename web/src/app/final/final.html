@@ -174,6 +174,20 @@ a.ni{color:inherit;text-decoration:none;}
 .rc.dash-proj .dpc-meta{margin-top:12px;padding-top:10px;border-top:1px solid var(--bd);font-size:11px;font-family:'Inter',system-ui,sans-serif;color:var(--tx2);line-height:1.5;}
 .rc.dash-proj .dpc-meta strong{color:var(--ac);}
 .rc.dash-proj .dpc-warn{color:var(--red);font-weight:600;}
+.dash-rg--jiggle .rc.dash-proj{animation:dprojWobble 0.18s ease-in-out infinite;transform-origin:center center;will-change:transform;}
+.dash-rg--jiggle .rc.dash-proj:nth-child(2n){animation-delay:0.04s;}
+.dash-rg--jiggle .rc.dash-proj:nth-child(3n){animation-delay:0.08s;}
+@keyframes dprojWobble{0%,100%{transform:rotate(-0.8deg) translateY(0);}25%{transform:rotate(0.8deg) translateY(-1px);}50%{transform:rotate(-0.5deg) translateY(1px);}75%{transform:rotate(0.5deg) translateY(-0.5px);}}
+.dproj-acts{position:absolute;right:6px;top:6px;z-index:3;display:none;align-items:center;gap:4px;pointer-events:none;}
+.dash-rg--jiggle .dproj-acts{display:flex;pointer-events:auto;}
+.dproj-fab{box-sizing:border-box;min-width:32px;height:32px;padding:0 8px;border-radius:8px;border:1px solid var(--bd2);background:#fff;font-size:16px;font-weight:700;cursor:pointer;line-height:1;box-shadow:0 1px 4px rgba(0,0,0,.1);-webkit-tap-highlight-color:transparent;}
+.dproj-fab--arch{font-size:13px;font-weight:600;}
+.dproj-fab--del{color:var(--red);border-color:rgba(232,85,71,.4);}
+.dash-jiggle-bar-row{display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 14px;margin:0 0 14px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);font-size:13px;color:var(--tx2);}
+.brief-wrap--jiggle .dash-jiggle-bar-row{display:flex !important;}
+.pl-row.pl-room{align-items:center;}
+.pl-room-actions{flex-shrink:0;margin-left:4px;}
+.pl-room-edit-btn{white-space:nowrap;}
 .arc{background:transparent;border:1px dashed var(--bd2);border-radius:var(--r);padding:14px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:88px;color:var(--tx3);}
 .arc:hover{border-color:var(--ac);color:var(--ac);}
 .dim-bar{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:18px;margin-bottom:16px;box-shadow:none;}
@@ -2513,7 +2527,106 @@ function refreshProjectList(){
     });
 }
 
+function exitDashJiggle(){
+  __rfDashJiggleMode=false;
+  var w=document.getElementById("dash-brief-wrap");
+  if(w) w.classList.remove("brief-wrap--jiggle");
+  var rg=document.querySelector(".dash-rg");
+  if(rg) rg.classList.remove("dash-rg--jiggle");
+}
+function startDashJiggle(){
+  if(__rfDashJiggleMode) return;
+  __rfDashJiggleMode=true;
+  var w=document.getElementById("dash-brief-wrap");
+  if(w) w.classList.add("brief-wrap--jiggle");
+  var rg=document.querySelector(".dash-rg");
+  if(rg) rg.classList.add("dash-rg--jiggle");
+  try{ if(navigator.vibrate) navigator.vibrate(10); }catch(e){}
+}
+function dashProjectArchive(pid){
+  if(!pid) return;
+  exitDashJiggle();
+  fetch("/api/projects/"+encodeURIComponent(String(pid)),{
+    method:"PATCH",
+    credentials:"include",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({archived:true})
+  })
+  .then(function(res){
+    return res.json().then(function(j){ return {ok:res.ok, j:j, res:res}; });
+  })
+  .then(function(o){
+    if(!o.ok){
+      var msg=(o.j&&o.j.error)?o.j.error:("HTTP "+o.res.status);
+      try{ alert(msg); }catch(e){}
+      return;
+    }
+    return refreshProjectList().then(function(){
+      if(S.proj && String(S.proj.dbProjectId)===String(pid)){
+        var list=window.__rfProjectList||[];
+        if(list.length){
+          return activateProjectId(String(list[0].id),list,{skipPersist:false}).then(function(){
+            try{ updateSidebarProjectHeader(); }catch(e){}
+            rNav(); uSide();
+            gP("dash");
+          });
+        }
+        gP("dash");
+      }
+      uSide();
+      if(curPg==="dash") rDash();
+    });
+  })
+  .catch(function(e){
+    console.error(e);
+    try{ alert("Network error."); }catch(x){}
+  });
+}
+function dashProjectDelete(pid){
+  if(!pid) return;
+  if(!confirm("Delete this project permanently? This cannot be undone.")) return;
+  exitDashJiggle();
+  fetch("/api/projects/"+encodeURIComponent(String(pid)),{
+    method:"DELETE",
+    credentials:"include"
+  })
+  .then(function(res){
+    return res.json().then(function(j){ return {ok:res.ok, j:j, res:res}; });
+  })
+  .then(function(o){
+    if(!o.ok){
+      var msg=(o.j&&o.j.error)?o.j.error:("HTTP "+o.res.status);
+      try{ alert(msg); }catch(e){}
+      return;
+    }
+    return refreshProjectList().then(function(){
+      if(S.proj && String(S.proj.dbProjectId)===String(pid)){
+        var list=window.__rfProjectList||[];
+        if(list.length){
+          return activateProjectId(String(list[0].id),list,{skipPersist:false}).then(function(){
+            try{ updateSidebarProjectHeader(); }catch(e){}
+            rNav(); uSide();
+            gP("dash");
+          });
+        }
+        gP("dash");
+      }
+      uSide();
+      if(curPg==="dash") rDash();
+    });
+  })
+  .catch(function(e){
+    console.error(e);
+    try{ alert("Network error."); }catch(x){}
+  });
+}
+function openRoomTradesFromList(ri){
+  var r=parseInt(ri,10);
+  if(isNaN(r)||r<0||!S.rooms||r>=S.rooms.length) return;
+  gRoom(r);
+}
 function switchProjectFromDash(id){
+  if(__rfDashJiggleMode) return;
   if(id==null||id==="")return;
   var sid=String(id);
   var cur=String((S.proj&&S.proj.dbProjectId)!=null?S.proj.dbProjectId:"");
@@ -3370,6 +3483,7 @@ var __rfAfterNewClientGoIntake=false;
 var __rfAddJobFromQuick=false;
 /** "full" = intake step 1+2 (trades) then add rooms. "roomsThenList" = step 1 only, empty trade shells, then all rooms. */
 var __rfIntakeMode="full";
+var __rfDashJiggleMode=false;
 var intakeStep=1,intakeRoomPick=[],intakeSlots=[],intakeTrades=[];
 var INTAKE_TRADE_IDS=['demo','framing','concrete','roofing','electrical','plumbing','hvac','lowvolt','security','comdoor','insulation','drywall','tile','flooring','painting','trim','cabinets','closets','finishing'];
 
@@ -3852,19 +3966,26 @@ function rRooms(){
   var cards=rooms.map(function(r,i){
     var rt=roomTotal(r);
     var tcount=(r.trades||[]).length;
-    return '<div class="pl-row pl-room" role="button" tabindex="0" data-ri="'+i+'">'
+    var sub=tcount>0
+      ?"Tap the row to add trades, or use Edit to open this room."
+      :"Choose trades to add, then open this room";
+    return '<div class="pl-row pl-room" data-ri="'+i+'">'
+      +'<div class="pl-row-mobmain" role="button" tabindex="0" data-ri="'+i+'" style="display:flex;flex:1;min-width:0;align-items:flex-start;gap:14px">'
       +'<div class="pl-avatar-wrap"><div class="pl-thumb" aria-hidden="true">'+escHtml((r.n||"?").charAt(0))+'</div></div>'
       +'<div class="pl-txt">'
       +'<div class="pl-line1"><span class="pl-name">'+escHtml(r.n)+'</span><span class="pl-date">'+f(rt)+'</span></div>'
       +'<div class="pl-line2">'+tcount+' trade'+(tcount===1?"":"s")+'</div>'
-      +'<div class="pl-line3">Choose trades to add, then open this room</div>'
+      +'<div class="pl-line3">'+sub+'</div>'
+      +'</div></div>'
+      +'<div class="pl-room-actions">'
+      +'<button type="button" class="btn bg sm pl-room-edit-btn" data-ri="'+i+'" onclick="event.stopPropagation();openRoomTradesFromList('+i+')">Edit</button>'
       +'</div></div>';
   }).join("");
   el.innerHTML=head
     +'<div class="pc pc--proj p-rooms-scroll">'
     +'<div class="pl-stack pl-stack-rooms">'+cards+"</div>"
     +"</div></div>";
-  el.querySelectorAll(".pl-row.pl-room").forEach(function(row){
+  el.querySelectorAll(".pl-row-mobmain").forEach(function(row){
     function go(){
       var i=parseInt(row.getAttribute("data-ri"),10);
       if(!isNaN(i)) openRoomListTradesModal(i);
@@ -3949,6 +4070,7 @@ function clearCompanyLogo(){
 
 function rDash(){
   var el=document.getElementById("p-dash");
+  __rfDashJiggleMode=false;
   if(!window.__rfProjectList){
     el.innerHTML='<div class="ph"><div class="pt">Dashboard</div></div><div class="pc"><div class="brief-wrap" style="text-align:center;padding:40px 20px;color:var(--tx3)">Loading projects…</div></div>';
     refreshProjectList().then(function(){ rDash(); });
@@ -4075,6 +4197,10 @@ function rDash(){
     else if(dr===0) dueLine='<div><strong>Due today</strong></div>';
     else dueLine='<div><strong>'+dr+'</strong> day'+(dr!==1?'s':'')+' until deadline</div>';
     return '<div class="rc dash-proj'+(active?' on':'')+'" data-pid="'+escAttr(p.id)+'" role="button" tabindex="0">'
+      +'<div class="dproj-acts" onclick="event.stopPropagation();">'
+      +'<button type="button" class="dproj-fab dproj-fab--arch" title="Archive" aria-label="Archive project" onclick="event.stopPropagation();dashProjectArchive(\''+escAttr(p.id)+'\')">📦</button>'
+      +'<button type="button" class="dproj-fab dproj-fab--del" title="Delete" aria-label="Delete project" onclick="event.stopPropagation();dashProjectDelete(\''+escAttr(p.id)+'\')">×</button>'
+      +'</div>'
       +'<div>'
       +'<div class="dpc-client">'+cn+'</div>'
       +'<div class="dpc-addr">'+ad+'</div>'
@@ -4100,7 +4226,8 @@ function rDash(){
     +dashHeaderSettingsCircle()
     +'</div></div>'
     +'<div class="pc">'
-    +'<div class="brief-wrap">'
+    +'<div class="brief-wrap" id="dash-brief-wrap">'
+    +'<div class="dash-jiggle-bar-row" id="dash-jiggle-bar"><span>Delete, archive, or</span><button type="button" class="btn bp sm" onclick="exitDashJiggle()">Done</button></div>'
     +'<div class="brief-header">'
     +'<div class="brief-date">'+dateStr+'</div>'
     +'<div class="brief-greeting">'+greeting+'</div>'
@@ -4110,18 +4237,41 @@ function rDash(){
     +alertHtml
     +stats
     +(plist.length>0?'<div class="mobi-sec-h">Active projects</div>'
-    +'<div class="rg">'+projectCards
+    +'<div class="rg dash-rg">'+projectCards
     +'<div class="arc" onclick="newProjectMo()"><div style="font-size:22px;margin-bottom:5px">+</div><div style="font-size:13px">New Project</div></div>'
     +'</div>':'<div class="brief-wrap" style="margin-top:12px;padding:20px;background:#fff;border:1px solid var(--bd);border-radius:var(--r);"><div style="font-size:14px;font-weight:600;margin-bottom:6px">No projects yet</div><div style="font-size:13px;color:var(--tx3);margin-bottom:14px">Create a job to see it here.</div><button class="btn bp sm" onclick="newProjectMo()">+ New Project</button></div>')
     +quick
     +'</div>'
     +'</div>';
   el.querySelectorAll('.rc.dash-proj[data-pid]').forEach(function(card){
-    card.addEventListener('click', function(){
-      var pid=card.getAttribute('data-pid');
+    var holdT=null, longFired=false;
+    card.addEventListener('pointerdown', function(e){
+      if(e.pointerType==="mouse"&&e.button!==0) return;
+      if(__rfDashJiggleMode) return;
+      if(e.target&&e.target.closest&&e.target.closest(".dproj-acts button")) return;
+      longFired=false;
+      holdT=setTimeout(function(){
+        holdT=null;
+        longFired=true;
+        startDashJiggle();
+      },520);
+    });
+    function cancelHold(){
+      if(holdT){ clearTimeout(holdT); holdT=null; }
+    }
+    card.addEventListener('pointerup', function(e){
+      cancelHold();
+      if(__rfDashJiggleMode) return;
+      if(longFired) return;
+      var pid=card.getAttribute("data-pid");
       if(pid) switchProjectFromDash(pid);
     });
+    card.addEventListener("pointercancel", cancelHold);
+    card.addEventListener("pointerleave", function(e){
+      if((e.buttons||0)===0) cancelHold();
+    });
     card.addEventListener('keydown', function(ev){
+      if(__rfDashJiggleMode) return;
       if(ev.key!=='Enter'&&ev.key!==' ')return;
       ev.preventDefault();
       var pid=card.getAttribute('data-pid');
@@ -5428,15 +5578,22 @@ function rRoom(){
     room.trades[expandedTi].id==="plumbing"||room.trades[expandedTi].id==="electrical"||RICH_MEP_TRADES[room.trades[expandedTi].id]
   );
   var prEl=document.getElementById("p-room");
-  prEl.innerHTML=(isMepMaxRoom
-    ? ''
+  var mepPh=isMepMaxRoom
+    ? ('<div class="ph ph--room-prime" style="padding:12px 16px;flex-shrink:0"><div class="ph-room-row" style="align-items:center;gap:10px">'
+    +'<button class="btn bg sm" onclick="gP(\'rooms\')" style="padding:5px 10px;font-size:18px;border:none;background:transparent;color:var(--tx2);cursor:pointer;" aria-label="Back to all rooms">←</button>'
+    +'<div class="pt" style="font-size:20px">'+escHtml(room.n)+'</div>'
+    +"</div></div>")
+    : '';
+  prEl.innerHTML=(mepPh
+    ? mepPh
     : ('<div class="ph ph--room-prime"><div class="ph-room-row">'
-    +'<button class="btn bg sm" onclick="gP(\'dash\')" style="padding:5px 10px;font-size:18px;border:none;background:transparent;color:var(--tx2);cursor:pointer;">←</button>'
+    +'<button class="btn bg sm" onclick="gP(\'rooms\')" style="padding:5px 10px;font-size:18px;border:none;background:transparent;color:var(--tx2);cursor:pointer;" aria-label="Back to all rooms">←</button>'
     +'<span class="ph-room-ic" style="font-size:24px">'+room.ic+'</span>'
     +'<div class="ph-room-mid">'
     +'<div class="ph-title-line"><div class="pt" style="font-size:22px">'+room.n+'</div>'+phMobTog+"</div>"
     +'<div class="ps" id="room-ph-est">'+f(rt)+' estimated'+(dur>0?' · '+dur+' days':'')+'</div></div>'
-    +'<button class="btn bd-btn sm" onclick="delRoom('+curR+')">Delete</button></div></div>'))
+    +'<button class="btn bd-btn sm" onclick="delRoom('+curR+')">Delete</button></div></div>')
+  )
     +'<div class="p-room-body">'
     +'<div class="pc">'+dimH+durH
     +'<div class="room-trade-tools"><button type="button" class="btn bg sm" onclick="addTradeMo()">+ Add trade</button></div>'

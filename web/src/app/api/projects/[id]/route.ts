@@ -16,6 +16,8 @@ type PatchBody = {
   deadline_date?: string | null;
   /** ISO date string YYYY-MM-DD or empty to clear */
   start_date?: string | null;
+  /** Soft-hide project from active lists */
+  archived?: boolean;
 };
 
 export async function PATCH(
@@ -140,6 +142,10 @@ export async function PATCH(
   } else if (body.client_name !== undefined) {
     const cn = String(body.client_name ?? "").trim();
     patch.client_name = cn || null;
+  }
+
+  if (body.archived !== undefined) {
+    patch.archived = Boolean(body.archived);
   }
 
   if (Object.keys(patch).length === 0) {

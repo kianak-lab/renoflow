@@ -25,9 +25,10 @@ export async function GET() {
   const rich = await supabase
     .from("projects")
     .select(
-      "id,name,client_id,client_name,address,quote_number,notes,updated_at,created_at,start_date,deadline_date",
+      "id,name,client_id,client_name,address,quote_number,notes,updated_at,created_at,start_date,deadline_date,archived",
     )
     .eq("user_id", auth.uid)
+    .eq("archived", false)
     .order("updated_at", { ascending: false });
 
   if (rich.error && isSupabaseSchemaMismatch(rich.error)) {

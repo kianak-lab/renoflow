@@ -51,6 +51,8 @@ create table if not exists public.projects (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+/** Soft-hide from active lists; run once on existing DBs. */
+alter table public.projects add column if not exists archived boolean not null default false;
 create index if not exists projects_user_id_idx on public.projects(user_id);
 
 create table if not exists public.trade_catalog (
