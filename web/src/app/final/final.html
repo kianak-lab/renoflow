@@ -1222,12 +1222,12 @@ a.ni{color:inherit;text-decoration:none;}
 .qp{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:32px;max-width:660px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
 .qt{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid var(--bd2);}
 .q-qt-left{display:flex;align-items:flex-start;gap:14px;flex:1;min-width:0}
-.q-logo-ring{flex-shrink:0;width:56px;height:56px;border-radius:50%;border:2px solid #c2007a;box-sizing:border-box;background:#fff;padding:3px;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.q-logo-ring img{width:100%;height:100%;object-fit:contain;vertical-align:middle}
-.dash-circ-sett{width:64px;height:64px;min-width:64px;min-height:64px;border-radius:50%;border:2px solid #c2007a;background:#fff;box-sizing:border-box;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:opacity .15s,box-shadow .15s;box-shadow:0 0 0 1px rgba(194,0,122,.12)}
-.dash-circ-sett:hover{opacity:.95;box-shadow:0 0 0 1px rgba(194,0,122,.2)}
-.dash-circ-sett__img{width:100%;height:100%;object-fit:contain;border-radius:50%;pointer-events:none}
-.dash-circ-sett__hint{font-size:6.5px;line-height:1.1;text-align:center;color:#c2007a;font-weight:600;letter-spacing:.02em;max-width:100%;padding:0 2px;pointer-events:none}
+.q-logo-ring{flex-shrink:0;width:56px;height:56px;border-radius:50%;border:2px solid #fff;box-sizing:border-box;background:#f4f4f4;padding:0;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 4px rgba(0,0,0,.06)}
+.q-logo-ring img{width:100%;height:100%;object-fit:cover;object-position:center;vertical-align:middle}
+.dash-circ-sett{width:64px;height:64px;min-width:64px;min-height:64px;border-radius:50%;border:2px solid #fff;background:#f4f4f4;box-sizing:border-box;padding:0;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:opacity .15s,box-shadow .15s;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 4px rgba(0,0,0,.08)}
+.dash-circ-sett:hover{opacity:.95;box-shadow:0 0 0 1px rgba(0,0,0,.14),0 2px 8px rgba(0,0,0,.1)}
+.dash-circ-sett__img{width:100%;height:100%;min-width:0;min-height:0;object-fit:cover;object-position:center;border-radius:50%;pointer-events:none;display:block}
+.dash-circ-sett__hint{font-size:6.5px;line-height:1.1;text-align:center;color:var(--tx2);font-weight:600;letter-spacing:.02em;max-width:100%;padding:6px 4px;pointer-events:none}
 .qco{font-family:'Inter',system-ui,sans-serif;font-size:22px;color:var(--ac);}
 .qci{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;margin-top:3px;line-height:1.8;}
 .qnum{font-family:'Inter',system-ui,sans-serif;font-size:18px;}
@@ -6470,7 +6470,7 @@ function rSett(){
     +'<button type="button" class="btn bg sm" onclick="clearCompanyLogo()">Remove logo</button>'
     +'</div>'
     +'<div style="font-size:12px;color:var(--tx3);margin-top:8px;line-height:1.5">PNG or JPG, under 1.2 MB. Shown in the dashboard circle, on quotes, and invoices. Stored in this browser only.</div>'
-    +(companyLogoDataUrl()?'<div style="margin-top:12px"><span style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em">Preview</span><div class="q-logo-ring" style="width:72px;height:72px;margin-top:6px"><img src="'+safeDataUrlForAttr(companyLogoDataUrl())+'" alt="Company logo" style="width:100%;height:100%;object-fit:contain"/></div></div>':'')
+    +(companyLogoDataUrl()?'<div style="margin-top:12px"><span style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em">Preview</span><div class="q-logo-ring" style="width:72px;height:72px;margin-top:6px"><img src="'+safeDataUrlForAttr(companyLogoDataUrl())+'" alt="Company logo" style="width:100%;height:100%;object-fit:cover;object-position:center"/></div></div>':'')
     +'</div></div>'
     +'<div class="ss"><div class="ss-t">Project Info</div>'
     +'<div class="field"><label>Project Name</label><input type="text" value="'+S.proj.name+'" oninput="S.proj.name=this.value;ss();uSide()"/></div>'
@@ -7039,8 +7039,8 @@ function buildInvoiceEmailHtml(inv){
   var showBal=st==="paid"?inv.total:bal;
   var balColor=st==="paid"?"#28a060":"#e85547";
   var emLogo=inv&&inv.coLogo?String(inv.coLogo).trim():"";
-  var emLogoB=emLogo?("<div style=\"flex-shrink:0;width:64px;height:64px;border-radius:50%;border:2px solid #c2007a;overflow:hidden;padding:3px;box-sizing:border-box;background:#fff\">"
-    +"<img src=\""+emLogo.replace(/"/g,"%22")+"\" alt=\"\" style=\"width:100%;height:100%;object-fit:contain\"/></div>"):"";
+  var emLogoB=emLogo?("<div style=\"flex-shrink:0;width:64px;height:64px;border-radius:50%;border:2px solid #fff;overflow:hidden;padding:0;box-sizing:border-box;background:#f4f4f4;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 4px rgba(0,0,0,.08)\">"
+    +"<img src=\""+emLogo.replace(/"/g,"%22")+"\" alt=\"\" style=\"width:100%;height:100%;object-fit:cover;object-position:center\"/></div>"):"";
   return "<!DOCTYPE html><html><body style=\"margin:0;padding:24px;background:#f0ede8;font-family:Arial,Helvetica,sans-serif;color:#1a1612\">"
     +"<div style=\"max-width:640px;margin:0 auto;background:#fff;border:1px solid #e0dbd4;border-radius:8px;padding:32px\">"
     +"<div style=\"display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid #ccc7be;gap:16px\">"
