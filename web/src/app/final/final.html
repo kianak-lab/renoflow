@@ -2255,6 +2255,7 @@ function migrate(d){
   if(!d.invNum)d.invNum=1;
   if(d.matHideZero===undefined)d.matHideZero=true;
   if(d.co&&d.co.logo===undefined)d.co.logo="";
+  try{ applyGlobalCoProfileToData(d); }catch(e){}
   (d.rooms||[]).forEach(function(r){
     (r.trades||[]).forEach(function(t){
       if(t.days===undefined)t.days=0;
@@ -2272,9 +2273,52 @@ function migrate(d){
   });
   return d;
 }
+function applyGlobalCoProfileToData(d){
+  if(!d||!d.co) return;
+  var o;
+  try{ var s=localStorage.getItem("rf7_co"); if(!s) return; o=JSON.parse(s); } catch(e1){ return; }
+  if(!o||typeof o!=="object") return;
+  if((o.name||"").toString().trim()!=="") d.co.name=String(o.name);
+  if(o.phone!=null) d.co.phone=String(o.phone);
+  if(o.email!=null) d.co.email=String(o.email);
+  if(o.lic!=null) d.co.lic=String(o.lic);
+  if(o.addr!=null) d.co.addr=String(o.addr);
+  if(String(o.logo||"").length>0) d.co.logo=String(o.logo);
+}
+function applyGlobalCoToS(){
+  if(!S) return;
+  if(!S.co) S.co=DS().co;
+  var o;
+  try{ var s=localStorage.getItem("rf7_co"); if(!s) return; o=JSON.parse(s); } catch(e1){ return; }
+  if(!o||typeof o!=="object") return;
+  if((o.name||"").toString().trim()!=="") S.co.name=String(o.name);
+  if(o.phone!=null) S.co.phone=String(o.phone);
+  if(o.email!=null) S.co.email=String(o.email);
+  if(o.lic!=null) S.co.lic=String(o.lic);
+  if(o.addr!=null) S.co.addr=String(o.addr);
+  if(String(o.logo||"").length>0) S.co.logo=String(o.logo);
+}
+function persistCoProfileNow(){
+  if(!S||!S.co) return;
+  try{
+    localStorage.setItem("rf7_co",JSON.stringify({
+      name:S.co.name||"",
+      phone:S.co.phone||"",
+      email:S.co.email||"",
+      lic:S.co.lic||"",
+      addr:S.co.addr||"",
+      logo:S.co.logo||""
+    }));
+  }catch(e){
+    if(String(e).indexOf("Quota")>=0) try{
+      localStorage.setItem("rf7_co",JSON.stringify({name:S.co.name||"",phone:"",email:"",lic:"",addr:"",logo:""}));
+    }catch(e2){}
+  }
+}
 function ss(){
   clearTimeout(st);
   st=setTimeout(function(){
+    try{ persistCoProfileNow(); } catch(e0){ }
     try{
       var key=(S.proj&&S.proj.dbProjectId)?("rf7_ws_"+S.proj.dbProjectId):"rf7";
       localStorage.setItem(key,JSON.stringify(S));
@@ -2338,6 +2382,7 @@ function loadWorkspaceFromStorage(projectId){
     if(w){S=migrate(JSON.parse(w));return true;}
   }catch(e){}
   S=DS();
+  try{ applyGlobalCoToS(); }catch(e){ }
   return false;
 }
 
@@ -2421,12 +2466,13 @@ function mergeServerWorkspace(payload, opts){
     } else {
       S.rooms=payload.rooms;
     }
-  } else if(!hadLocal){
+  } else   if(!hadLocal){
     S.rooms=[];
   }
   if(payload.invoices){S.invoices=payload.invoices;}
   if(payload.quotes){S.quotes=payload.quotes;}
   if(payload.invNumSuggested){S.invNum=Math.max(S.invNum||1,payload.invNumSuggested);}
+  try{ applyGlobalCoToS(); }catch(e){ }
 }
 
 /** Sidebar project dropdown: project name only (one line per project). */
@@ -3631,8 +3677,17 @@ function intakeNext1(){
     return;
   }
   intakeSlots=[];
-  for(var j=0;j<RT.length;j++) if(intakeRoomPick[j]) intakeSlots.push(j);
-  intakeTrades=intakeSlots.map(function(ri){ return RT[ri].trades.slice(); });
+  for(var j=0;j<RT.length;j++){
+    if(!intakeRoomPick[j]) continue;
+    if(!RT[j]||!RT[j].trades){
+      try{ alert("Could not load that room type. Try again."); }catch(e){}
+      return;
+    }
+    intakeSlots.push(j);
+  }
+  intakeTrades=intakeSlots.map(function(ri){
+    return (RT[ri]&&RT[ri].trades)?RT[ri].trades.slice():[];
+  });
   intakeStep=2;
   rIntake();
 }
@@ -3644,21 +3699,45 @@ function intakeBack2(){
 
 function intakeRoomSet(i,on){
   intakeRoomPick[i]=!!on;
+  var el=document.getElementById("p-intake");
+  if(!el) return;
+  var box=el.querySelector('.intake-cb[data-irm="'+i+'"]');
+  if(box){
+    box.classList.toggle("on",!!on);
+    var inp=box.querySelector("input");
+    if(inp) inp.checked=!!on;
+  }
 }
-
 function intakeTradeSet(si,tid,on){
+  on=!!on; tid=String(tid);
   var arr=intakeTrades[si];
-  if(!arr)return;
+  if(!arr){
+    var ri0=intakeSlots[si];
+    if(ri0==null||!RT[ri0]) return;
+    intakeTrades[si]=RT[ri0].trades?RT[ri0].trades.slice():[];
+    arr=intakeTrades[si];
+  }
   var ix=arr.indexOf(tid);
   if(on&&ix<0) arr.push(tid);
   if(!on&&ix>=0) arr.splice(ix,1);
+  var el=document.getElementById("p-intake");
+  if(!el) return;
+  var box=el.querySelector("[data-itsi=\""+si+"\"][data-itid=\""+tid+"\"]");
+  if(box){
+    box.classList.toggle("on",on);
+    var inp=box.querySelector("input");
+    if(inp) inp.checked=on;
+  }
 }
 
 function appendRoomFromIntake(rtIndex,tradeIds){
   var type=RT[rtIndex];
+  if(!type||!type.n){
+    return Promise.resolve(null);
+  }
   var ex=S.rooms.filter(function(r){return r.n.startsWith(type.n);}).length;
   var name=ex>0?type.n+" "+(ex+1):type.n;
-  var trades=tradeIds.map(function(tid){
+  var trades=tradeIds.filter(function(tid){ return TN[tid]; }).map(function(tid){
     return {id:tid,n:TN[tid],open:false,note:"",fx:{},days:0,daysCustom:false,
       items:(TB[tid]||[]).map(function(it){return {id:it.id,l:it.l,u:it.u,p:it.p,qty:0};})};
   });
@@ -3725,16 +3804,21 @@ function intakeFinish(){
 
 function rIntake(){
   var el=document.getElementById("p-intake");
+  if(!el) return;
+  try{
+  if(!S.proj) S.proj=DS().proj;
+  var pn=escHtml((S.proj&&S.proj.name)?String(S.proj.name):"Project");
+  var cli=S.proj&&S.proj.client?String(S.proj.client):"";
   var headRaw='<div class="ph"><div><div class="pt">Project intake</div>'
-    +'<div class="ps">'+S.proj.name+(S.proj.client?" · "+S.proj.client:"")+'</div></div>'
+    +'<div class="ps">'+pn+(cli?(" · "+escHtml(cli)):"")+'</div></div>'
     +'<button type="button" class="btn bg sm" onclick="gP(\'dash\')">Exit</button></div><div class="pc">';
   var head=headRaw.replace('onclick="gP(\'dash\')"','onclick="__rfIntakeMode=\'full\';gP(\'dash\')"');
 
   if(intakeStep===1){
     var isQuick=__rfIntakeMode==="roomsThenList";
     var grid=RT.map(function(rt,i){
-      return '<label class="intake-cb'+(intakeRoomPick[i]?" on":"")+'">'
-        +'<input type="checkbox" '+(intakeRoomPick[i]?"checked":"")+' onchange="intakeRoomSet('+i+',this.checked);rIntake();"/>'
+      return '<label class="intake-cb'+(intakeRoomPick[i]?" on":"")+'" data-irm="'+i+'">'
+        +'<input type="checkbox" '+(intakeRoomPick[i]?"checked":"")+' onchange="intakeRoomSet('+i+',this.checked)"/>'
         +'<span class="ic">'+rt.ic+'</span><span>'+rt.n+'</span></label>';
     }).join("");
     el.innerHTML=head+'<div class="intake-wrap">'
@@ -3754,12 +3838,13 @@ function rIntake(){
 
   var blocks=intakeSlots.map(function(ri, si){
     var rt=RT[ri];
+    if(!rt) return "";
     var tgrid=INTAKE_TRADE_IDS.map(function(tid){
       var has=(intakeTrades[si]||[]).indexOf(tid)>=0;
       var col=TC[tid]||"#888";
-      return '<label class="intake-cb'+(has?" on":"")+'" style="border-left:3px solid '+col+'">'
-        +'<input type="checkbox" '+(has?"checked":"")+' onchange="intakeTradeSet('+si+',\''+tid+'\',this.checked);rIntake();"/>'
-        +'<span class="ic">'+(TIC[tid]||"•")+'</span><span>'+TN[tid]+'</span></label>';
+      return '<label class="intake-cb'+(has?" on":"")+'" data-itsi="'+si+'" data-itid="'+escAttr(tid)+'" style="border-left:3px solid '+col+'">'
+        +'<input type="checkbox" '+(has?"checked":"")+' onchange="intakeTradeSet('+si+',\''+tid+'\',this.checked)"/>'
+        +'<span class="ic">'+(TIC[tid]||"•")+'</span><span>'+escHtml(String(TN[tid]||tid))+'</span></label>';
     }).join("");
     return '<div class="intake-room-block">'
       +'<div class="intake-room-h"><span class="ic">'+rt.ic+'</span><span class="t">'+rt.n+'</span></div>'
@@ -3777,6 +3862,9 @@ function rIntake(){
     +'<button type="button" class="btn bg" onclick="intakeBack2()">Back</button>'
     +'<button type="button" class="btn bp" onclick="intakeFinish()">Add rooms to project</button>'
     +'</div></div></div>';
+  }catch(e){
+    console.error("rIntake",e);
+  }
 }
 function rNav(){
   var h="";
@@ -4049,6 +4137,7 @@ function handleCompanyLogoFile(inp){
   var reader=new FileReader();
   reader.onload=function(){
     S.co.logo=String(reader.result||"");
+    try{ persistCoProfileNow(); } catch(e) {}
     ss();
     uSide();
     rSett();
@@ -4062,6 +4151,7 @@ function handleCompanyLogoFile(inp){
 }
 function clearCompanyLogo(){
   S.co.logo="";
+  try{ persistCoProfileNow(); } catch(e) {}
   ss();
   uSide();
   rSett();
