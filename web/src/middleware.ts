@@ -45,6 +45,26 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  if (pathname.startsWith("/final") && (await hasSession(request))) {
+    const gate = new URL("/api/onboarding/gate", request.nextUrl);
+    try {
+      const gr = await fetch(gate, {
+        headers: { cookie: request.headers.get("cookie") ?? "" },
+        cache: "no-store",
+      });
+      if (gr.ok) {
+        const j = (await gr.json()) as { toOnboarding?: boolean };
+        if (j.toOnboarding) {
+          const onb = new URL("/onboarding", getRequestOrigin(request));
+          onb.searchParams.set("next", "/final");
+          return NextResponse.redirect(onb);
+        }
+      }
+    } catch (e) {
+      console.error("[middleware] onboarding gate fetch failed", e);
+    }
+  }
+
   if (pathname.startsWith("/api/client-intake/link")) {
     if (!(await hasSession(request))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

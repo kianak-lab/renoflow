@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { isOnboardingEveryVisitMode } from "@/lib/onboarding-env";
-import { getProfileByUserId } from "@/lib/profile-service";
+import { shouldShowOnboarding } from "@/lib/should-show-onboarding";
 import { getSessionSupabaseUid } from "@/lib/session-uid";
 
 export const dynamic = "force-dynamic";
@@ -13,11 +13,7 @@ export default async function Home() {
   if (isOnboardingEveryVisitMode()) {
     redirect("/onboarding");
   }
-  const p = await getProfileByUserId(session.uid);
-  if (!p.ok) {
-    redirect("/onboarding");
-  }
-  if (!p.row || !p.row.onboarding_completed) {
+  if (await shouldShowOnboarding(session.uid)) {
     redirect("/onboarding");
   }
   redirect("/final");

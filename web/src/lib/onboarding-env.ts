@@ -1,9 +1,17 @@
 /**
- * When true, home always opens onboarding; page also calls API to set onboarding_completed = false on load.
- * For launch, set to false and rely on profiles.onboarding_completed in Supabase.
+ * When true, onboarding client may reset onboarding_completed; home and /final send users through onboarding.
+ * `next dev` defaults to this behavior so you see the flow without setting .env.
+ * Set `NEXT_PUBLIC_RESET_ONBOARDING_ON_EACH_VISIT=false` in production to rely only on Supabase.
+ * Set `NEXT_PUBLIC_RESET_ONBOARDING_ON_EACH_VISIT=true` to force the same "always play" in production builds.
  */
 export function shouldResetOnboardingOnEachVisit(): boolean {
-  return process.env.NEXT_PUBLIC_RESET_ONBOARDING_ON_EACH_VISIT === "true";
+  if (process.env.NEXT_PUBLIC_RESET_ONBOARDING_ON_EACH_VISIT === "true") {
+    return true;
+  }
+  if (process.env.NEXT_PUBLIC_RESET_ONBOARDING_ON_EACH_VISIT === "false") {
+    return false;
+  }
+  return process.env.NODE_ENV === "development";
 }
 
 export function isOnboardingEveryVisitMode(): boolean {
