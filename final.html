@@ -88,6 +88,19 @@ a.ni{color:inherit;text-decoration:none;}
 .brief-date{font-size:11px;font-family:'Inter',system-ui,sans-serif;opacity:.8;text-transform:uppercase;letter-spacing:1.5px;}
 .brief-greeting{font-family:'Inter',system-ui,sans-serif;font-size:26px;margin-top:4px;line-height:1.2;}
 .brief-sub{font-size:13px;opacity:.85;margin-top:4px;}
+#p-dash .pc{padding-top:14px;}
+#p-dash .brief-wrap{gap:10px;margin-bottom:14px;}
+#p-dash .brief-header{padding:16px 18px;}
+#p-dash .brief-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+#p-dash .brief-header-copy{flex:1;min-width:0;}
+#p-dash .brief-header .dash-circ-sett{width:52px;height:52px;min-width:52px;min-height:52px;}
+#p-dash .brief-date{font-size:10px;letter-spacing:1.2px;}
+#p-dash .brief-greeting{font-size:24px;margin-top:3px;}
+#p-dash .brief-sub{margin-top:3px;}
+#p-dash .brief-stats{gap:8px;}
+#p-dash .brief-stat{padding:12px;}
+#p-dash .brief-quick{padding:12px 14px;}
+#p-dash .mobi-sec-h{margin:4px 0 8px;}
 .brief-all-clear{background:#fff;border:1px solid var(--ac-line);border-radius:var(--r);padding:18px;display:flex;align-items:center;gap:14px;}
 .brief-clear-i{font-size:28px;}
 .brief-clear-t{font-size:15px;font-weight:600;color:var(--ac);}
@@ -1590,6 +1603,20 @@ a.ni{color:inherit;text-decoration:none;}
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     padding: 20px 18px;
   }
+  #p-dash .brief-header {
+    padding: 14px 14px;
+  }
+  #p-dash .brief-header .dash-circ-sett {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  #p-dash .brief-header-copy .brief-greeting {
+    font-size: 24px;
+  }
+  #p-dash .brief-wrap { gap: 12px; margin-bottom: 10px; }
+  #p-dash .mobi-sec-h { margin: 2px 0 10px; }
   #main .brief-date {
     color: var(--tx2);
     opacity: 1;
@@ -4442,7 +4469,7 @@ function rDash(){
   var el=document.getElementById("p-dash");
   __rfDashJiggleMode=false;
   if(!window.__rfProjectList){
-    el.innerHTML='<div class="ph"><div class="pt">Dashboard</div></div><div class="pc"><div class="brief-wrap" style="text-align:center;padding:40px 20px;color:var(--tx3)">Loading projects…</div></div>';
+    el.innerHTML='<div class="pc"><div class="brief-wrap" style="text-align:center;padding:40px 20px;color:var(--tx3)">Loading projects…</div></div>';
     refreshProjectList().then(function(){ rDash(); });
     return;
   }
@@ -4598,19 +4625,18 @@ function rDash(){
     +'<button class="btn bg sm" onclick="gP(\'clients\')">Clients</button>'
     +'</div></div>';
 
-  el.innerHTML='<div class="ph">'
-    +'<div><div class="pt">'+S.proj.name+(S.proj.client?'<br><em>'+S.proj.client+'</em>':'')+' </div>'
-    +(S.proj.addr?'<div class="ps">'+S.proj.addr+'</div>':'')+'</div>'
-    +'<div style="display:flex;gap:10px;flex-shrink:0;align-items:center">'
-    +dashHeaderSettingsCircle()
-    +'</div></div>'
-    +'<div class="pc">'
+  el.innerHTML='<div class="pc">'
     +'<div class="brief-wrap" id="dash-brief-wrap">'
     +'<div class="dash-jiggle-bar-row" id="dash-jiggle-bar"><span>Delete, archive, or</span><button type="button" class="btn bp sm" onclick="exitDashJiggle()">Done</button></div>'
     +'<div class="brief-header">'
+    +'<div class="brief-header-top">'
+    +'<div class="brief-header-copy">'
     +'<div class="brief-date">'+dateStr+'</div>'
     +'<div class="brief-greeting">'+greeting+'</div>'
     +'<div class="brief-sub">'+(alerts.length>0?alerts.length+' item'+(alerts.length!==1?'s':'')+' need your attention':'Everything looks good today')+'</div>'
+    +'</div>'
+    +dashHeaderSettingsCircle()
+    +'</div>'
     +'</div>'
     +allClear
     +alertHtml
