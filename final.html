@@ -85,15 +85,23 @@ a.ni{color:inherit;text-decoration:none;}
 /* Dashboard briefing */
 .brief-wrap{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
 .brief-header{padding:20px;background:linear-gradient(135deg,var(--ac2),var(--ac));border-radius:var(--r);color:#fff;}
+.brief-header__text{min-width:0;flex:1;}
+.brief-header__logo{display:flex;align-items:center;justify-content:flex-end;flex-shrink:0;align-self:center;}
 .brief-date{font-size:11px;font-family:'Inter',system-ui,sans-serif;opacity:.8;text-transform:uppercase;letter-spacing:1.5px;}
 .brief-greeting{font-family:'Inter',system-ui,sans-serif;font-size:26px;margin-top:4px;line-height:1.2;}
 .brief-sub{font-size:13px;opacity:.85;margin-top:4px;}
 #p-dash .pc{padding-top:14px;}
 #p-dash .brief-wrap{gap:10px;margin-bottom:14px;}
-#p-dash .brief-header{padding:16px 18px;}
-#p-dash .brief-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
-#p-dash .brief-header-copy{flex:1;min-width:0;}
-#p-dash .brief-header .dash-circ-sett{width:52px;height:52px;min-width:52px;min-height:52px;}
+#p-dash .brief-header{
+  padding:16px 18px;
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+#p-dash .brief-header__text{flex:1;min-width:0;}
+#p-dash .brief-header__logo .dash-circ-sett{width:52px;height:52px;min-width:52px;min-height:52px;}
 #p-dash .brief-date{font-size:10px;letter-spacing:1.2px;}
 #p-dash .brief-greeting{font-size:24px;margin-top:3px;}
 #p-dash .brief-sub{margin-top:3px;}
@@ -1602,17 +1610,44 @@ a.ni{color:inherit;text-decoration:none;}
     border-radius: 16px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     padding: 20px 18px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  #p-dash .brief-header__text,
+  #main .brief-header__text {
+    flex: 1;
+    min-width: 0;
+  }
+  #p-dash .brief-header__logo,
+  #main .brief-header__logo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    align-self: center;
+  }
+  #p-dash .brief-header__logo .dash-circ-sett,
+  #main .brief-header__logo .dash-circ-sett {
+    width: 128px;
+    height: 128px;
+    min-width: 128px;
+    min-height: 128px;
+  }
+  #p-dash .brief-header__logo .dash-circ-sett__hint,
+  #main .brief-header__logo .dash-circ-sett__hint {
+    font-size: 8.5px;
+    padding: 8px 6px;
+  }
+  #p-dash .ph .dash-circ-sett {
+    display: none !important;
   }
   #p-dash .brief-header {
     padding: 14px 14px;
   }
-  #p-dash .brief-header .dash-circ-sett {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-  }
-  #p-dash .brief-header-copy .brief-greeting {
+  #p-dash .brief-header__text .brief-greeting {
     font-size: 24px;
   }
   #p-dash .brief-wrap { gap: 12px; margin-bottom: 10px; }
@@ -4629,14 +4664,12 @@ function rDash(){
     +'<div class="brief-wrap" id="dash-brief-wrap">'
     +'<div class="dash-jiggle-bar-row" id="dash-jiggle-bar"><span>Delete, archive, or</span><button type="button" class="btn bp sm" onclick="exitDashJiggle()">Done</button></div>'
     +'<div class="brief-header">'
-    +'<div class="brief-header-top">'
-    +'<div class="brief-header-copy">'
+    +'<div class="brief-header__text">'
     +'<div class="brief-date">'+dateStr+'</div>'
     +'<div class="brief-greeting">'+greeting+'</div>'
     +'<div class="brief-sub">'+(alerts.length>0?alerts.length+' item'+(alerts.length!==1?'s':'')+' need your attention':'Everything looks good today')+'</div>'
     +'</div>'
-    +dashHeaderSettingsCircle()
-    +'</div>'
+    +'<div class="brief-header__logo">'+dashHeaderSettingsCircle()+'</div>'
     +'</div>'
     +allClear
     +alertHtml
