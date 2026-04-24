@@ -8,9 +8,9 @@ type Props = {
 };
 
 function safeNextPath(next: string | null): string {
-  if (!next || !next.startsWith("/") || next.startsWith("//")) return "/final";
-  if (next === "/" || next.startsWith("/final")) return next;
-  return "/final";
+  if (!next || !next.startsWith("/") || next.startsWith("//")) return "/";
+  if (next === "/" || next.startsWith("/final") || next.startsWith("/onboarding")) return next;
+  return "/";
 }
 
 export default function LoginForm({ error, errorMessage }: Props) {

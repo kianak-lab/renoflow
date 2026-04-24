@@ -396,3 +396,17 @@ create table if not exists public.client_intake_links (
 );
 create index if not exists client_intake_links_token_idx on public.client_intake_links(token);
 create index if not exists client_intake_links_user_id_idx on public.client_intake_links(user_id);
+
+-- Onboarding (see migrations/002_onboarding_profile_columns.sql for incremental deploys)
+alter table public.profiles add column if not exists onboarding_completed boolean not null default false;
+alter table public.profiles add column if not exists country text;
+alter table public.profiles add column if not exists region_code text;
+alter table public.profiles add column if not exists company_city text;
+alter table public.profiles add column if not exists company_postal text;
+alter table public.profiles add column if not exists tax_id text;
+alter table public.profiles add column if not exists selected_trades jsonb not null default '[]'::jsonb;
+alter table public.profiles add column if not exists default_labour_mode text;
+alter table public.profiles add column if not exists default_labour_rate numeric(12, 2);
+
+create or replace view public.user_profiles as
+  select p.*, p.id as user_id from public.profiles p;

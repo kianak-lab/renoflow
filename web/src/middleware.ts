@@ -26,10 +26,6 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const next = NextResponse.next();
 
-  if (pathname === "/") {
-    return NextResponse.redirect(new URL("/final", getRequestOrigin(request)));
-  }
-
   if (isPublicPath(pathname)) {
     if (pathname.startsWith("/login")) {
       if (await hasSession(request)) {
@@ -40,7 +36,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const needsAppGate =
-    pathname === "/" || pathname.startsWith("/final") || pathname.startsWith("/projects");
+    pathname === "/" || pathname.startsWith("/final") || pathname.startsWith("/projects") || pathname.startsWith("/onboarding");
   if (needsAppGate) {
     if (!(await hasSession(request))) {
       const login = new URL("/login", getRequestOrigin(request));
