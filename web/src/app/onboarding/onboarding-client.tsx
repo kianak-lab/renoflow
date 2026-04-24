@@ -158,7 +158,22 @@ export default function OnboardingClient({ nextHref }: Props) {
   const canSkipHeader = step >= 1 && step <= 7;
   const showWelcomeSkip = step === 0;
 
-  function goDashboard() {
+  function openDashboard() {
+    router.push(nextHref);
+  }
+
+  async function skipToDashboard() {
+    try {
+      const res = await fetch("/api/onboarding/set-bypass", { method: "POST" });
+      if (!res.ok) {
+        const j = (await res.json().catch(() => ({}))) as { error?: string };
+        setError(j.error ?? "Could not skip. Check RENOFLOW_SUPABASE_USER_ID and sign in.");
+        return;
+      }
+    } catch {
+      setError("Network error. Try again.");
+      return;
+    }
     router.push(nextHref);
   }
 
@@ -315,6 +330,7 @@ export default function OnboardingClient({ nextHref }: Props) {
         >
           {step === 0 && (
             <div className="flex flex-col items-center gap-4 pt-2">
+              {error && <p className="max-w-sm text-center text-sm text-red-600">{error}</p>}
               <button type="button" onClick={() => setStep(1)} className={btnBase} style={{ background: G }}>
                 Get Started
               </button>
@@ -564,7 +580,7 @@ export default function OnboardingClient({ nextHref }: Props) {
 
           {step === 8 && (
             <div className="flex flex-col items-center gap-4 pt-4 text-center">
-              <button type="button" onClick={goDashboard} className={btnBase} style={{ background: G }}>
+              <button type="button" onClick={openDashboard} className={btnBase} style={{ background: G }}>
                 Start building
               </button>
             </div>
@@ -574,7 +590,7 @@ export default function OnboardingClient({ nextHref }: Props) {
 
       {showWelcomeSkip && (
         <div className="absolute bottom-5 right-5 z-20">
-          <button type="button" onClick={goDashboard} className="text-xs text-[#aaa] transition hover:text-[#888]">
+          <button type="button" onClick={() => void skipToDashboard()} className="text-xs text-[#aaa] transition hover:text-[#888]">
             Skip to dashboard
           </button>
         </div>

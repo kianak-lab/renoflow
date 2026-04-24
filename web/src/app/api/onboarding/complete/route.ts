@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireSupabaseUidFromSession } from "@/lib/api-session";
+import { ONBOARDING_BYPASS_COOKIE } from "@/lib/onboarding-bypass-cookie";
 import { getProfileByUserId, upsertProfile } from "@/lib/profile-service";
 import { regionFromSelection, type OnboardingCountry } from "@/lib/onboarding-constants";
 
@@ -74,5 +75,7 @@ export async function POST(request: Request) {
   if (!u.ok) {
     return NextResponse.json({ error: u.error }, { status: 500 });
   }
-  return NextResponse.json({ ok: true });
+  const res = NextResponse.json({ ok: true });
+  res.cookies.set(ONBOARDING_BYPASS_COOKIE, "", { path: "/", maxAge: 0 });
+  return res;
 }

@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getRequestOrigin } from "@/lib/request-origin";
+import { ONBOARDING_BYPASS_COOKIE, ONBOARDING_BYPASS_VALUE } from "@/lib/onboarding-bypass-cookie";
 import { COOKIE_NAME, verifySessionCookieValue } from "@/lib/simple-auth";
 
 async function hasSession(request: NextRequest): Promise<boolean> {
@@ -46,6 +47,9 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname.startsWith("/final") && (await hasSession(request))) {
+    if (request.cookies.get(ONBOARDING_BYPASS_COOKIE)?.value === ONBOARDING_BYPASS_VALUE) {
+      return next;
+    }
     const gate = new URL("/api/onboarding/gate", request.nextUrl);
     try {
       const gr = await fetch(gate, {
