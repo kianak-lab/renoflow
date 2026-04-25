@@ -28,25 +28,6 @@ function getProductPrice(p: Record<string, unknown>) {
   return "—";
 }
 
-function getProductImage(p: Record<string, unknown>): string | null {
-  const t = p.thumbnail;
-  if (typeof t === "string" && t.trim()) return t;
-  if (t && typeof t === "object") {
-    const o = t as Record<string, unknown>;
-    if (typeof o.link === "string" && o.link.trim()) return o.link;
-  }
-  const th = p.thumbnails;
-  if (Array.isArray(th) && th[0] != null) {
-    const first = th[0] as unknown;
-    if (typeof first === "string" && first.trim()) return first;
-    if (first && typeof first === "object") {
-      const o = first as Record<string, unknown>;
-      if (typeof o.link === "string" && o.link.trim()) return o.link;
-    }
-  }
-  return null;
-}
-
 export default function MaterialSearch() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Record<string, unknown>[]>([]);
@@ -120,7 +101,7 @@ export default function MaterialSearch() {
           }}
         >
           {results.map((p, i) => {
-            const imgUrl = getProductImage(p);
+            const thumbnail = p.thumbnail as string | undefined;
             return (
             <li
               key={i}
@@ -128,19 +109,20 @@ export default function MaterialSearch() {
               style={{
                 padding: "12px 14px",
                 display: "flex",
+                flexDirection: "row",
                 gap: 12,
                 alignItems: "flex-start",
               }}
             >
-              {imgUrl ? (
+              {thumbnail ? (
                 <img
-                  src={imgUrl}
+                  src={thumbnail}
                   alt=""
-                  width={80}
-                  height={80}
+                  width={72}
+                  height={72}
                   style={{
-                    width: 80,
-                    height: 80,
+                    width: 72,
+                    height: 72,
                     objectFit: "cover",
                     borderRadius: 6,
                     flexShrink: 0,
