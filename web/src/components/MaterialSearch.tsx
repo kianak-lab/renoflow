@@ -16,16 +16,86 @@ function getProductTitle(p: Record<string, unknown>) {
   return "Untitled product";
 }
 
-function getProductPrice(p: Record<string, unknown>) {
-  const { price } = p;
-  if (price == null) return "—";
-  if (typeof price === "string" || typeof price === "number") return String(price);
-  if (typeof price === "object") {
-    const o = price as Record<string, unknown>;
-    if (typeof o.raw === "string") return o.raw;
-    if (typeof o.extracted === "number") return `$${o.extracted.toFixed(2)}`;
+function getThumbnailUrl(p: Record<string, unknown>): string | undefined {
+  const t = p.thumbnail;
+  if (typeof t === "string" && t.trim()) return t;
+  const th = p.thumbnails;
+  if (Array.isArray(th) && th[0] != null) {
+    const row = th[0] as unknown;
+    if (Array.isArray(row) && typeof row[0] === "string") return row[0];
+    if (typeof row === "string") return row;
+  }
+  return undefined;
+}
+
+function getBrandName(p: Record<string, unknown>): string {
+  const b = p.brand;
+  if (typeof b === "string" && b.trim()) return b;
+  if (b && typeof b === "object") {
+    const n = (b as Record<string, unknown>).name;
+    if (typeof n === "string" && n.trim()) return n;
+  }
+  return "";
+}
+
+function getModelSkuLine(p: Record<string, unknown>): string {
+  const parts: string[] = [];
+  const model = p.model_number;
+  if (typeof model === "string" && model.trim()) parts.push(`Model # ${model}`);
+  const sku = p.product_id ?? p.store_sku_number ?? p.sku;
+  if (sku !== undefined && sku !== null && String(sku).trim() !== "") {
+    parts.push(`SKU ${String(sku)}`);
+  }
+  return parts.join(" · ");
+}
+
+function getPriceDisplay(p: Record<string, unknown>): string {
+  const unit =
+    typeof p.unit === "string" && p.unit.trim() ? p.unit.trim() : "each";
+  const pr = p.price;
+  if (typeof pr === "number" && !Number.isNaN(pr)) {
+    return `$${pr.toFixed(2)} / ${unit}`;
+  }
+  if (typeof pr === "string" && pr.trim()) {
+    return pr.includes("/") ? pr : `${pr} / ${unit}`;
+  }
+  if (pr && typeof pr === "object") {
+    const o = pr as Record<string, unknown>;
+    if (typeof o.raw === "string") {
+      return o.raw.includes("/") ? o.raw : `${o.raw} / ${unit}`;
+    }
+    if (typeof o.extracted === "number") {
+      return `$${o.extracted.toFixed(2)} / ${unit}`;
+    }
   }
   return "—";
+}
+
+function getStockDisplay(p: Record<string, unknown>): {
+  text: string;
+  tone: "in" | "out" | "none";
+} {
+  const si = p.stock_information;
+  if (si && typeof si === "object") {
+    const g = (si as Record<string, unknown>).general_stock_status;
+    if (typeof g === "string" && g.trim()) {
+      const lower = g.toLowerCase();
+      if (lower.includes("in stock")) {
+        return { text: "In Stock", tone: "in" };
+      }
+      if (lower.includes("out")) {
+        return { text: g.replace(/_/g, " "), tone: "out" };
+      }
+      return { text: g, tone: "out" };
+    }
+  }
+  const av = p.availability;
+  if (typeof av === "string" && av.trim()) {
+    const lower = av.toLowerCase();
+    if (lower.includes("in stock")) return { text: "In Stock", tone: "in" };
+    return { text: av, tone: "out" };
+  }
+  return { text: "", tone: "none" };
 }
 
 export default function MaterialSearch() {
@@ -91,60 +161,135 @@ export default function MaterialSearch() {
         </p>
       ) : null}
       {results.length > 0 ? (
-        <ul
-          style={{
-            listStyle: "none",
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-            marginTop: 4,
-          }}
-        >
+        <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
           {results.map((p, i) => {
-            const thumbnail = p.thumbnail as string | undefined;
+            const thumbnail = getThumbnailUrl(p);
+            const brand = getBrandName(p);
+            const title = getProductTitle(p);
+            const modelSku = getModelSkuLine(p);
+            const priceLine = getPriceDisplay(p);
+            const stock = getStockDisplay(p);
             return (
-            <li
-              key={i}
-              className="sc"
-              style={{
-                padding: "12px 14px",
-                display: "flex",
-                flexDirection: "row",
-                gap: 12,
-                alignItems: "flex-start",
-              }}
-            >
-              {thumbnail ? (
-                <img
-                  src={thumbnail}
-                  alt=""
-                  width={72}
-                  height={72}
-                  style={{
-                    width: 72,
-                    height: 72,
-                    objectFit: "cover",
-                    borderRadius: 6,
-                    flexShrink: 0,
-                  }}
-                />
-              ) : null}
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--tx)" }}>
-                  {getProductTitle(p)}
-                </div>
+              <li key={i} style={{ marginBottom: 12 }}>
                 <div
                   style={{
-                    fontSize: 12,
-                    color: "var(--ac2)",
-                    marginTop: 4,
-                    fontFamily: "var(--font-inter), system-ui, sans-serif",
+                    background: "#fff",
+                    border: "1px solid var(--bd)",
+                    borderRadius: 10,
+                    padding: 14,
+                    boxShadow: "0 1px 3px rgba(0,0,0,.04)",
                   }}
                 >
-                  {getProductPrice(p)}
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: 12,
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    {thumbnail ? (
+                      <img
+                        src={thumbnail}
+                        alt=""
+                        width={80}
+                        height={80}
+                        style={{
+                          width: 80,
+                          height: 80,
+                          objectFit: "cover",
+                          borderRadius: 6,
+                          flexShrink: 0,
+                        }}
+                      />
+                    ) : null}
+                    <div
+                      style={{
+                        flex: 1,
+                        minWidth: 0,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 6,
+                      }}
+                    >
+                      {brand ? (
+                        <div
+                          style={{
+                            fontSize: 10,
+                            fontWeight: 700,
+                            letterSpacing: "0.08em",
+                            textTransform: "uppercase",
+                            color: "var(--tx)",
+                          }}
+                        >
+                          {brand}
+                        </div>
+                      ) : null}
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 500,
+                          lineHeight: 1.35,
+                          color: "var(--tx)",
+                        }}
+                      >
+                        {title}
+                      </div>
+                      {modelSku ? (
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: "var(--tx3)",
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          {modelSku}
+                        </div>
+                      ) : null}
+                      <div
+                        style={{
+                          fontSize: 20,
+                          fontWeight: 700,
+                          color: "var(--tx)",
+                          letterSpacing: "-0.02em",
+                        }}
+                      >
+                        {priceLine}
+                      </div>
+                      {stock.tone !== "none" ? (
+                        <div
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 600,
+                            color:
+                              stock.tone === "in" ? "#1a7f37" : "var(--tx3)",
+                          }}
+                        >
+                          {stock.text}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    style={{
+                      width: "100%",
+                      marginTop: 12,
+                      padding: "10px 14px",
+                      borderRadius: 8,
+                      border: "none",
+                      background: "#111",
+                      color: "#fff",
+                      fontWeight: 600,
+                      fontSize: 14,
+                      fontFamily: "inherit",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Add to List
+                  </button>
                 </div>
-              </div>
-            </li>
+              </li>
             );
           })}
         </ul>
