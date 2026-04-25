@@ -86,7 +86,7 @@ export default function LoginForm({ error, errorMessage }: Props) {
           required
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="w-full rounded-[5px] border border-[var(--bd2)] bg-white px-3 py-2 text-[var(--tx)] outline-none focus:border-[var(--ac)] focus:ring-2 focus:ring-[color:rgba(91,140,106,0.25)]"
+          className="w-full rounded-[5px] border border-[var(--bd2)] bg-white px-3 py-2 text-[var(--tx)] outline-none focus:border-[var(--ac)] focus:ring-2 focus:ring-[color:rgba(139,180,139,0.3)]"
           placeholder="Username"
         />
       </div>
@@ -105,7 +105,7 @@ export default function LoginForm({ error, errorMessage }: Props) {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-[5px] border border-[var(--bd2)] bg-white px-3 py-2 text-[var(--tx)] outline-none focus:border-[var(--ac)] focus:ring-2 focus:ring-[color:rgba(91,140,106,0.25)]"
+          className="w-full rounded-[5px] border border-[var(--bd2)] bg-white px-3 py-2 text-[var(--tx)] outline-none focus:border-[var(--ac)] focus:ring-2 focus:ring-[color:rgba(139,180,139,0.3)]"
           placeholder="Password"
         />
       </div>
