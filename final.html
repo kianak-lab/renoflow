@@ -1249,6 +1249,9 @@ a.ni{color:inherit;text-decoration:none;}
 .sh-p{font-size:12px;font-family:'Inter',system-ui,sans-serif;color:var(--tx2);width:70px;text-align:right;}
 
 .ml-page{background:var(--bg);min-height:100%;}
+#p-proj .pt em,
+#p-cal .pt em,
+#p-rooms .pt em,
 #p-shop .pt em,
 #p-tl .pt em,
 #p-quote .pt em,
@@ -1780,13 +1783,6 @@ a.ni{color:inherit;text-decoration:none;}
   #p-rooms .pc {
     background: transparent;
   }
-  #p-proj .pt em,
-  #p-cal .pt em,
-  #p-shop .pt em {
-    color: var(--ac);
-    font-style: normal;
-    font-weight: 600;
-  }
   .ph--proj {
     border-bottom: 1px solid #ebebeb;
   }
@@ -1834,15 +1830,22 @@ a.ni{color:inherit;text-decoration:none;}
   #p-clients .ml-ph-hero .pt {
     font-size: 22px;
   }
-  /* min-height = measured .ml-ph on materials / tab pages (see rfRecordMaterialsHeaderH) for same Y as separator */
+  /* Unified mobile tab header chrome: same as Active Projects (see rfRecordMaterialsHeaderH) */
   #p-proj .ph.ph--proj,
   #p-proj .ph--proj,
   #p-cal .ph.ph--proj,
-  #p-cal .ph--proj {
+  #p-cal .ph--proj,
+  #p-rooms .ph.ph--proj,
+  #p-rooms .ph--proj,
+  #p-shop .ml-ph,
+  #p-tl .ml-ph,
+  #p-quote .ml-ph,
+  #p-clients .ml-ph {
     border-bottom: 1px solid #d9d9d9 !important;
     margin: 0;
     box-sizing: border-box;
     padding: max(10px, env(safe-area-inset-top, 0px)) 20px 14px !important;
+    background: transparent !important;
     min-height: var(--rf-mob-hdr-h, auto);
   }
   #p-shop .ml-page,
@@ -1850,21 +1853,6 @@ a.ni{color:inherit;text-decoration:none;}
   #p-quote .ml-page,
   #p-clients .ml-page {
     background: transparent;
-  }
-  #p-shop .ml-ph,
-  #p-tl .ml-ph,
-  #p-quote .ml-ph,
-  #p-clients .ml-ph {
-    padding: max(10px, env(safe-area-inset-top, 0px)) 20px 14px;
-    background: transparent !important;
-    border-bottom: 1px solid #d9d9d9 !important;
-    margin: 0;
-    box-sizing: border-box;
-  }
-  #p-tl .ml-ph,
-  #p-quote .ml-ph,
-  #p-clients .ml-ph {
-    min-height: 7.35rem;
   }
   #p-shop .ml-page > .ml-page-body,
   #p-tl .ml-page > .ml-page-body,
@@ -4343,6 +4331,7 @@ function rProj(){
       go();
     });
   });
+  requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
 }
 function rRooms(){
   var el=document.getElementById("p-rooms");
@@ -4365,6 +4354,7 @@ function rRooms(){
       +'<div class="pc pc--proj p-rooms-scroll">'
       +'<div class="pl-empty">No rooms in this project yet. Use <strong>+ Add room</strong> above to create your first space.</div>'
       +"</div></div>";
+    requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
     return;
   }
   var cards=rooms.map(function(r,i){
@@ -4405,6 +4395,7 @@ function rRooms(){
       go();
     });
   });
+  requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
 }
 
 function companyLogoDataUrl(){
@@ -7288,7 +7279,7 @@ function exportMaterialsCsv(){
 function rfRecordMaterialsHeaderH(){
   try{
     if(typeof window.innerWidth!=="number"||window.innerWidth>767)return;
-    var map={shop:"#p-shop .ml-ph",tl:"#p-tl .ml-ph",quote:"#p-quote .ml-ph",clients:"#p-clients .ml-ph",cal:"#p-cal .ph.ph--proj",proj:"#p-proj .ph.ph--proj"};
+    var map={shop:"#p-shop .ml-ph",tl:"#p-tl .ml-ph",quote:"#p-quote .ml-ph",clients:"#p-clients .ml-ph",cal:"#p-cal .ph.ph--proj",proj:"#p-proj .ph.ph--proj",rooms:"#p-rooms .ph.ph--proj"};
     var id=typeof curPg==="string"?map[curPg]:"";
     if(!id)return;
     var m=document.querySelector(id);
@@ -7307,7 +7298,7 @@ if(typeof window!=="undefined"&&!window.__rfMobHdrBound){
         if(typeof window.innerWidth!=="number")return;
         if(window.innerWidth>767){
           if(document.documentElement.style.removeProperty) document.documentElement.style.removeProperty("--rf-mob-hdr-h");
-        }else if(typeof curPg==="string"&&{shop:1,tl:1,quote:1,clients:1,cal:1,proj:1}[curPg]) rfRecordMaterialsHeaderH();
+        }else if(typeof curPg==="string"&&{shop:1,tl:1,quote:1,clients:1,cal:1,proj:1,rooms:1}[curPg]) rfRecordMaterialsHeaderH();
       }catch(e){}
     },120);
   });
