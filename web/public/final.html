@@ -1240,7 +1240,10 @@ a.ni{color:inherit;text-decoration:none;}
 .sh-p{font-size:12px;font-family:'Inter',system-ui,sans-serif;color:var(--tx2);width:70px;text-align:right;}
 
 .ml-page{background:var(--bg);min-height:100%;}
-#p-shop .pt em{color:var(--ac);font-style:normal;font-weight:600;}
+#p-shop .pt em,
+#p-tl .pt em,
+#p-quote .pt em,
+#p-clients .pt em{color:var(--ac);font-style:normal;font-weight:600;}
 .ml-ph{display:block;padding:16px 18px 14px;background:var(--sf2);border-bottom:1px solid #d9d9d9;}
 .ml-ph-breadcrumb{margin:0 0 6px 0;padding:0;}
 .ml-ph-breadcrumb-btn{display:inline-block;background:none;border:none;padding:0;font-family:'Inter',system-ui,sans-serif;font-size:12px;font-weight:600;color:var(--ac2);cursor:pointer;-webkit-tap-highlight-color:transparent;}
@@ -1442,6 +1445,7 @@ a.ni{color:inherit;text-decoration:none;}
 
 @media print{
   #sb,#mob-nav,#mob-topnav,#sind,.ph button,.sfooter,#pdf-mo,.inv-status-bar,.dep-box,.inv-actions,.cal-nav button,.ts-exp-bg{display:none!important;}
+  .no-print{display:none!important;}
   #shell{display:block!important;}
   body{background:#fff!important;}
   #main{overflow:visible!important;min-height:0!important;}
@@ -1760,13 +1764,19 @@ a.ni{color:inherit;text-decoration:none;}
     display: block;
   }
   #p-proj .proj-ph-title-row,
-  #p-shop .ml-ph-hero .proj-ph-title-row {
+  #p-shop .ml-ph-hero .proj-ph-title-row,
+  #p-tl .ml-ph-hero .proj-ph-title-row,
+  #p-quote .ml-ph-hero .proj-ph-title-row,
+  #p-clients .ml-ph-hero .proj-ph-title-row {
     display: flex;
     align-items: flex-start;
     gap: 10px;
   }
   #p-proj .proj-ph-icon,
-  #p-shop .ml-ph-hero .ml-ph-icon {
+  #p-shop .ml-ph-hero .ml-ph-icon,
+  #p-tl .ml-ph-hero .ml-ph-icon,
+  #p-quote .ml-ph-hero .ml-ph-icon,
+  #p-clients .ml-ph-hero .ml-ph-icon {
     flex-shrink: 0;
     color: var(--ac);
     display: flex;
@@ -1774,16 +1784,22 @@ a.ni{color:inherit;text-decoration:none;}
     margin-top: 1px;
   }
   #p-proj .proj-ph-icon svg,
-  #p-shop .ml-ph-hero .ml-ph-icon svg {
+  #p-shop .ml-ph-hero .ml-ph-icon svg,
+  #p-tl .ml-ph-hero .ml-ph-icon svg,
+  #p-quote .ml-ph-hero .ml-ph-icon svg,
+  #p-clients .ml-ph-hero .ml-ph-icon svg {
     width: 24px;
     height: 24px;
     display: block;
   }
   #p-proj .proj-ph-title-row .pt,
-  #p-shop .ml-ph-hero .pt {
+  #p-shop .ml-ph-hero .pt,
+  #p-tl .ml-ph-hero .pt,
+  #p-quote .ml-ph-hero .pt,
+  #p-clients .ml-ph-hero .pt {
     font-size: 22px;
   }
-  /* min-height = measured #p-shop .ml-ph (see rfRecordMaterialsHeaderH) for same Y as separator */
+  /* min-height = measured .ml-ph on materials / tab pages (see rfRecordMaterialsHeaderH) for same Y as separator */
   #p-proj .ph.ph--proj,
   #p-proj .ph--proj {
     border-bottom: 1px solid #d9d9d9 !important;
@@ -1792,25 +1808,43 @@ a.ni{color:inherit;text-decoration:none;}
     padding: max(10px, env(safe-area-inset-top, 0px)) 20px 14px !important;
     min-height: var(--rf-mob-hdr-h, auto);
   }
-  #p-shop .ml-page {
+  #p-shop .ml-page,
+  #p-tl .ml-page,
+  #p-quote .ml-page,
+  #p-clients .ml-page {
     background: transparent;
   }
-  #p-shop .ml-ph-breadcrumb-btn {
+  #p-shop .ml-ph-breadcrumb-btn,
+  #p-tl .ml-ph-breadcrumb-btn,
+  #p-quote .ml-ph-breadcrumb-btn,
+  #p-clients .ml-ph-breadcrumb-btn {
     font-size: 14px;
   }
-  #p-shop .ml-ph {
+  #p-shop .ml-ph,
+  #p-tl .ml-ph,
+  #p-quote .ml-ph,
+  #p-clients .ml-ph {
     padding: max(10px, env(safe-area-inset-top, 0px)) 20px 14px;
     background: transparent !important;
     border-bottom: 1px solid #d9d9d9 !important;
     margin: 0;
   }
-  #p-shop .ml-page > .ml-page-body {
+  #p-shop .ml-page > .ml-page-body,
+  #p-tl .ml-page > .ml-page-body,
+  #p-quote .ml-page > .ml-page-body,
+  #p-clients .ml-page > .ml-page-body {
     padding: 8px 20px 28px;
   }
-  #p-shop .ml-actions-below {
+  #p-shop .ml-actions-below,
+  #p-tl .ml-actions-below,
+  #p-quote .ml-actions-below,
+  #p-clients .ml-actions-below {
     padding-left: 34px;
   }
-  #p-shop .ml-actions-below .btn.sm {
+  #p-shop .ml-actions-below .btn.sm,
+  #p-tl .ml-actions-below .btn.sm,
+  #p-quote .ml-actions-below .btn.sm,
+  #p-clients .ml-actions-below .btn.sm {
     padding: 5px 10px;
     font-size: 12px;
   }
@@ -6622,6 +6656,23 @@ function adjElecPartFx(ti,part,fi,delta){
 }
 function sNote(ti,v){S.rooms[curR].trades[ti].note=v;ss();}
 
+var RF_SVG_TL_IC='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>';
+var RF_SVG_QU_IC='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>';
+var RF_SVG_CL_IC='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+function rfMobTabPhBuild(icon, ptHtml, psHtml, below, col){
+  var h='';
+  h+='<div class="ml-page"><div class="ml-ph no-print rf-tab-hdr">';
+  h+='<div class="ml-ph-breadcrumb"><button type="button" class="ml-ph-breadcrumb-btn" onclick="gP(\'proj\')">Projects</button></div>';
+  h+='<div class="ml-ph-hero"><div class="ml-ph-left">';
+  h+='<div class="proj-ph-title-row"><span class="ml-ph-icon" aria-hidden="true">'+icon+'</span>';
+  h+='<div><div class="pt">'+ptHtml+'</div><div class="ps">'+psHtml+'</div></div></div>';
+  if(below) h+='<div class="ml-actions-below">'+below+'</div>';
+  h+='</div>';
+  if(col) h+='<div class="ml-actions-col">'+col+'</div>';
+  h+='</div></div><div class="pc ml-page-body">';
+  return h;
+}
+
 // ── TIMELINE PAGE ────────────────────────────────────────────
 function rTimeline(){
   var el=document.getElementById("p-tl");
@@ -6647,10 +6698,9 @@ function rTimeline(){
     +'</div></div>';
 
   if(!hasData){
-    el.innerHTML='<div class="ph"><div style="display:flex;align-items:center;gap:8px">'
-      +'<button onclick="gP(\'dash\')" style="font-size:18px;background:transparent;border:none;color:var(--tx2);cursor:pointer;padding:4px">←</button>'
-      +'<div><div class="pt">Project <em>Timeline</em></div><div class="ps">Auto-generated from your rooms &amp; trades</div></div></div></div>'
-      +'<div class="pc">'+settings+'<div class="tl-empty"><div class="tl-empty-i">📅</div><div>Add rooms with dimensions and quantities to see a timeline</div></div></div>';
+    el.innerHTML=rfMobTabPhBuild(RF_SVG_TL_IC,'Project <em>Timeline</em>','Auto-generated from your rooms &amp; trades','','')
+      +settings+'<div class="tl-empty"><div class="tl-empty-i">📅</div><div>Add rooms with dimensions and quantities to see a timeline</div></div></div></div>';
+    requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
     return;
   }
 
@@ -6696,12 +6746,10 @@ function rTimeline(){
 
   var clientPreview = buildClientPreview(ps, startStr);
 
-  el.innerHTML='<div class="ph"><div style="display:flex;align-items:center;gap:8px">'
-    +'<button onclick="gP(\'dash\')" style="font-size:18px;background:transparent;border:none;color:var(--tx2);cursor:pointer;padding:4px">←</button>'
-    +'<div><div class="pt">Project <em>Timeline</em></div><div class="ps">Auto-generated from your rooms &amp; trades</div></div></div>'
-    +'<button class="btn bp sm" onclick="gP(\'quote\')">View Quote</button>'
-    +'</div>'
-    +'<div class="pc">'+settings+summary+rooms+clientPreview+'</div>';
+  el.innerHTML=rfMobTabPhBuild(RF_SVG_TL_IC,'Project <em>Timeline</em>','Auto-generated from your rooms &amp; trades',
+    '<button type="button" class="btn bp sm" onclick="gP(\'quote\')">View Quote</button>','')
+    +settings+summary+rooms+clientPreview+'</div></div>';
+  requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
 }
 
 function togTlRoom(ri){
@@ -6946,7 +6994,10 @@ function exportMaterialsCsv(){
 function rfRecordMaterialsHeaderH(){
   try{
     if(typeof window.innerWidth!=="number"||window.innerWidth>767)return;
-    var m=document.querySelector("#p-shop .ml-ph");
+    var map={shop:"#p-shop .ml-ph",tl:"#p-tl .ml-ph",quote:"#p-quote .ml-ph",clients:"#p-clients .ml-ph"};
+    var id=typeof curPg==="string"?map[curPg]:"";
+    if(!id)return;
+    var m=document.querySelector(id);
     if(!m)return;
     var h=Math.round(m.getBoundingClientRect().height);
     if(h>0) document.documentElement.style.setProperty("--rf-mob-hdr-h",h+"px");
@@ -6962,7 +7013,7 @@ if(typeof window!=="undefined"&&!window.__rfMobHdrBound){
         if(typeof window.innerWidth!=="number")return;
         if(window.innerWidth>767){
           if(document.documentElement.style.removeProperty) document.documentElement.style.removeProperty("--rf-mob-hdr-h");
-        }else if(typeof curPg==="string"&&curPg==="shop") rfRecordMaterialsHeaderH();
+        }else if(typeof curPg==="string"&&{shop:1,tl:1,quote:1,clients:1}[curPg]) rfRecordMaterialsHeaderH();
       }catch(e){}
     },120);
   });
@@ -7117,14 +7168,11 @@ function rQuote(){
     return '<tr class="rr"><td>'+r.ic+' '+r.n+'</td><td></td><td>'+f(rt)+'</td></tr>'+tr;
   }).join("");
   var timelineSection = buildQuoteTimeline();
-  el.innerHTML='<div class="ph"><div><div class="pt">Quote <em>Preview</em></div><div class="ps">#'+S.proj.qnum+' · Valid until '+valid+'</div></div>'
-    +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end">'
-    +'<button onclick="gP(\'dash\')" style="font-size:18px;background:transparent;border:none;color:var(--tx2);cursor:pointer;padding:4px;margin-right:4px">←</button>'
-    +'<button class="btn bp sm" onclick="createInvFromQuote()">Create invoice from quote</button>'
-    +'<button class="btn bg sm" onclick="window.print()">Print</button>'
-    +'<button class="btn bp sm" onclick="openPdf()">Generate PDF</button>'
-    +'</div></div>'
-    +'<div class="pc"><div class="qp">'
+  var qHdrAct='<button type="button" class="btn bp sm" onclick="createInvFromQuote()">Create invoice from quote</button>'
+    +'<button type="button" class="btn bg sm" onclick="window.print()">Print</button>'
+    +'<button type="button" class="btn bp sm" onclick="openPdf()">Generate PDF</button>';
+  el.innerHTML=rfMobTabPhBuild(RF_SVG_QU_IC,'Quote <em>Preview</em>','#'+S.proj.qnum+' · Valid until '+valid,qHdrAct,'')
+    +'<div class="qp">'
     +'<div class="qt">'+htmlCoBlockFromS()
     +'<div style="text-align:right"><div class="qnum">'+S.proj.qnum+'</div><div class="qdate">'+ds+'</div><div class="qbadge">ESTIMATE</div></div></div>'
     +'<div style="margin-bottom:20px">'
@@ -7138,7 +7186,8 @@ function rQuote(){
     +'<div class="qtr gd" style="margin-top:8px;padding-top:10px;border-top:1px solid var(--bd2)"><div class="ql">Total</div><div class="qr">'+f(tot)+'</div></div></div>'
     +timelineSection
     +(S.proj.notes?'<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--bd);font-size:12px;color:var(--tx3);line-height:1.7"><strong style="color:var(--tx2)">Terms:</strong><br>'+S.proj.notes+'</div>':'')
-    +'</div></div>';
+    +'</div></div></div>';
+  requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
 }
 
 var pdfFmt="full", pdfMk=true;
@@ -7200,16 +7249,11 @@ function buildPrintQuote(fmt,mkPct){
   var fmtLabel={full:"Full Breakdown",total:"Total Only",labour:"Labour Only",material:"Material Only",trade:"Trade Summary"}[fmt];
   var timelineSection = buildQuoteTimeline();
 
-  document.getElementById("p-quote").innerHTML=
-    '<div class="ph"><div><div class="pt">Quote <em>Preview</em></div>'
-    +'<div class="ps">#'+S.proj.qnum+" · "+fmtLabel+' · Valid until '+valid+'</div></div>'
-    +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end">'
-    +'<button onclick="gP(\'dash\')" style="font-size:18px;background:transparent;border:none;color:var(--tx2);cursor:pointer;padding:4px;margin-right:4px">←</button>'
-    +'<button class="btn bp sm" onclick="createInvFromQuote()">Create invoice from quote</button>'
-    +'<button class="btn bg sm" onclick="window.print()">Print</button>'
-    +'<button class="btn bp sm" onclick="openPdf()">Generate PDF</button>'
-    +'</div></div>'
-    +'<div class="pc"><div class="qp">'
+  var qHdrAct2='<button type="button" class="btn bp sm" onclick="createInvFromQuote()">Create invoice from quote</button>'
+    +'<button type="button" class="btn bg sm" onclick="window.print()">Print</button>'
+    +'<button type="button" class="btn bp sm" onclick="openPdf()">Generate PDF</button>';
+  document.getElementById("p-quote").innerHTML=rfMobTabPhBuild(RF_SVG_QU_IC,'Quote <em>Preview</em>','#'+S.proj.qnum+" · "+fmtLabel+" · Valid until "+valid,qHdrAct2,"")
+    +'<div class="qp">'
     +'<div class="qt">'+htmlCoBlockFromS()
     +'<div style="text-align:right"><div class="qnum">'+S.proj.qnum+'</div><div class="qdate">'+ds+'</div><div class="qbadge">ESTIMATE</div></div></div>'
     +'<div style="margin-bottom:20px">'
@@ -7227,7 +7271,8 @@ function buildPrintQuote(fmt,mkPct){
     +'<div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--bd);display:grid;grid-template-columns:1fr 1fr;gap:20px;">'
     +'<div><div style="font-size:10px;color:var(--tx3);margin-bottom:22px">CLIENT SIGNATURE</div><div style="border-top:1px solid var(--bd2);padding-top:6px;font-size:10px;color:var(--tx3)">Signature &amp; Date</div></div>'
     +'<div><div style="font-size:10px;color:var(--tx3);margin-bottom:22px">AUTHORIZED BY</div><div style="border-top:1px solid var(--bd2);padding-top:6px;font-size:10px;color:var(--tx3)">'+S.co.name+'</div></div>'
-    +'</div></div></div>';
+    +'</div></div></div></div>';
+  requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
 }
 
 function rSett(){
@@ -8308,12 +8353,9 @@ function rClients(){
     }).join('')+'</div>';
   }
 
-  el.innerHTML='<div class="ph">'
-    +'<div><div class="pt">Client <em>Database</em></div>'
-    +'<div class="ps">'+(clients.length)+' client'+(clients.length!==1?'s':'')+'</div></div>'
-    +'<button class="btn bp sm" onclick="newClient()">+ New Client</button>'
-    +'</div>'
-    +'<div class="pc">'+cards+'</div>';
+  el.innerHTML=rfMobTabPhBuild(RF_SVG_CL_IC,'Client <em>Database</em>',(clients.length)+' client'+(clients.length!==1?'s':''),'<button type="button" class="btn bp sm" onclick="newClient()">+ New Client</button>','')
+    +cards+'</div></div>';
+  requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
 }
 
 function toggleCfProjectMode(){
