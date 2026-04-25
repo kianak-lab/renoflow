@@ -219,7 +219,7 @@ export default function ProjectsManager() {
                 <rect x="1.5" y="2.5" width="14" height="12" rx="1.5" />
               </svg>
             </span>
-            <span className="ni-l">All projects</span>
+            <span className="ni-l">Active projects</span>
             <span className="ni-b">{projects.length}</span>
           </div>
         </nav>
@@ -231,12 +231,28 @@ export default function ProjectsManager() {
       </aside>
 
       <div id="main">
-        <div className="ph">
-          <div>
+        <div
+          className="ph"
+          style={{ borderBottom: "1px solid #d9d9d9", paddingBottom: 16, alignItems: "flex-start" }}
+        >
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, flex: 1, minWidth: 0 }}>
+            <span className="text-[var(--ac)]" style={{ marginTop: 2, flexShrink: 0 }} aria-hidden>
+              <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1.25" />
+                <rect x="14" y="3" width="7" height="7" rx="1.25" />
+                <rect x="3" y="14" width="7" height="7" rx="1.25" />
+                <rect x="14" y="14" width="7" height="7" rx="1.25" />
+              </svg>
+            </span>
+            <div>
             <div className="pt">
-              Your <em>projects</em>
+              Active{" "}
+              <em className="font-semibold not-italic" style={{ color: "var(--ac)" }}>
+                Projects
+              </em>
             </div>
             <p className="ps">Edit jobs, link saved clients, and keep quote numbers aligned with the calculator.</p>
+            </div>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
             <Link href="/final" className="btn bp sm" prefetch={false}>

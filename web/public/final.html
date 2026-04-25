@@ -1746,6 +1746,35 @@ a.ni{color:inherit;text-decoration:none;}
   .ph--proj {
     border-bottom: 1px solid #ebebeb;
   }
+  #p-proj .ph.ph--proj {
+    display: block;
+  }
+  #p-proj .proj-ph-title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  #p-proj .proj-ph-icon {
+    flex-shrink: 0;
+    color: var(--ac);
+    display: flex;
+    align-items: center;
+    margin-top: 1px;
+  }
+  #p-proj .proj-ph-icon svg {
+    width: 24px;
+    height: 24px;
+    display: block;
+  }
+  #p-proj .proj-ph-title-row .pt {
+    font-size: 22px;
+  }
+  #p-proj .ph.ph--proj,
+  #p-proj .ph--proj {
+    border-bottom: 1px solid #d9d9d9 !important;
+    padding-bottom: 14px;
+    margin: 0;
+  }
   .pc--proj {
     padding: 8px 20px 28px;
   }
@@ -4094,7 +4123,14 @@ function rProj(){
   var el=document.getElementById("p-proj");
   if(!el) return;
   if(!window.__rfProjectList){
-    el.innerHTML='<div class="ph ph--proj"><div class="pt">Projects</div></div><div class="pc pc--proj"><div class="pl-loading">Loading projects…</div></div>';
+    el.innerHTML='<div class="ph ph--proj">'
+    +'<div class="proj-ph-title-row">'
+    +'<span class="proj-ph-icon" aria-hidden="true">'
+    +'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'
+    +'<rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/>'
+    +'<rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span>'
+    +'<div><div class="pt">Active <em>Projects</em></div><div class="ps">Open a job in the workspace — same data as the desktop list.</div></div></div></div>'
+    +'<div class="pc pc--proj"><div class="pl-loading">Loading projects…</div></div>';
     refreshProjectList().then(function(){ rProj(); });
     return;
   }
@@ -4125,7 +4161,12 @@ function rProj(){
       +'</div></div>';
   }).join("");
   el.innerHTML='<div class="ph ph--proj">'
-    +'<div><div class="pt">All <em>projects</em></div><div class="ps">Open a job in the workspace — same data as the desktop list.</div></div></div>'
+    +'<div class="proj-ph-title-row">'
+    +'<span class="proj-ph-icon" aria-hidden="true">'
+    +'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'
+    +'<rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/>'
+    +'<rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span>'
+    +'<div><div class="pt">Active <em>Projects</em></div><div class="ps">Open a job in the workspace — same data as the desktop list.</div></div></div></div>'
     +'<div class="pc pc--proj">'
     +(plist.length===0
       ?'<div class="pl-empty">No projects yet. Create one from <strong>Home</strong> or the sidebar link.</div>'
