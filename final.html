@@ -1325,7 +1325,20 @@ a.ni{color:inherit;text-decoration:none;}
 .tl-day:last-child{border-bottom:none;}
 .tl-day-num{width:58px;font-family:'Inter',system-ui,sans-serif;font-size:11px;color:var(--tx3);flex-shrink:0;}
 .tl-day-date{width:100px;font-family:'Inter',system-ui,sans-serif;font-size:11px;color:var(--tx2);flex-shrink:0;}
-.tl-day-trades{flex:1;display:flex;flex-wrap:wrap;gap:6px;}
+.tl-day-trades{flex:1;display:flex;flex-wrap:wrap;gap:6px;min-width:0;}
+.tl-day-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;align-items:flex-start;}
+.tl-day-client{font-size:12px;color:var(--ac);line-height:1.35;padding:4px 8px;background:rgba(90,154,90,.1);border-radius:6px;max-width:100%;word-break:break-word;}
+.tl-daynotes{margin:12px 0 0;padding:10px 12px;border:1px solid var(--bd);border-radius:var(--r);background:rgba(0,0,0,.02);}
+.tl-daynotes-h{font-family:'Inter',system-ui,sans-serif;font-size:12px;font-weight:600;color:var(--tx);}
+.tl-daynotes-s{font-size:11px;color:var(--tx3);margin:4px 0 8px;}
+.tl-dn-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:4px 0;border-bottom:1px dashed var(--bd);}
+.tl-dn-row:last-child{border-bottom:none;}
+.tl-dn-l{flex:0 0 140px;min-width:100px;font-size:11px;color:var(--tx2);font-family:'Inter',system-ui,sans-serif;}
+.tl-dn-l span{color:var(--tx3);display:block;}
+.tl-dn-inp{flex:1;min-width:160px;padding:5px 8px;font-size:12px;border:1px solid var(--bd2);border-radius:6px;background:#fff;color:var(--tx);font-family:'Inter',system-ui,sans-serif;}
+.tl-dn-inp:focus{outline:none;border-color:var(--ac);}
+.tl-week-client{border-top:1px dashed var(--bd);margin-top:6px;padding-top:6px;}
+.tl-wk-dnote{font-size:11px;color:var(--tx2);line-height:1.45;margin:4px 0 0;word-break:break-word;}
 .tl-trade-chip{padding:3px 9px;border-radius:12px;font-size:11px;font-family:'Inter',system-ui,sans-serif;font-weight:500;}
 
 .tl-empty{text-align:center;padding:50px 20px;color:var(--tx3);}
@@ -1395,6 +1408,12 @@ a.ni{color:inherit;text-decoration:none;}
 .q-tl-sub{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
 .q-tl-dates{font-size:12px;color:var(--tx2);font-family:'Inter',system-ui,sans-serif;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--bd);}
 .q-tl-dates strong{color:var(--ac);}
+.q-tl-daynotes-h{font-family:'Inter',system-ui,sans-serif;font-size:12px;font-weight:600;color:var(--tx);margin:4px 0 8px;}
+.q-tl-dayline{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;padding:4px 0;border-bottom:1px dashed var(--bd);font-size:12px;}
+.q-tl-dayline:last-child{border-bottom:none;}
+.q-tl-dl-num{width:44px;flex-shrink:0;font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
+.q-tl-dl-date{min-width:100px;flex-shrink:0;font-size:11px;color:var(--tx2);font-family:'Inter',system-ui,sans-serif;}
+.q-tl-dl-note{flex:1;min-width:200px;color:var(--tx);}
 .q-tl-week{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--bd);font-size:12px;}
 .q-tl-week:last-child{border-bottom:none;}
 .q-tl-wk{font-family:'Inter',system-ui,sans-serif;font-size:11px;color:var(--tx3);width:150px;flex-shrink:0;line-height:1.4;}
@@ -2477,7 +2496,7 @@ var SEQ=['demo','framing','concrete','roofing','ROUGHIN','insulation','drywall',
 var ROUGHIN=['electrical','plumbing','hvac','lowvolt','security'];
 
 function DS(){return{
-  proj:{name:"My Renovation",client:"",clientId:"",addr:"",qnum:"Q-001",notes:"All prices include labour and materials. HST extra. 50% deposit required.",startDate:"",deadlineDate:"",parallelRooms:false,includeTimeline:true,dbProjectId:"",cover:""},
+  proj:{name:"My Renovation",client:"",clientId:"",addr:"",qnum:"Q-001",notes:"All prices include labour and materials. HST extra. 50% deposit required.",startDate:"",deadlineDate:"",parallelRooms:false,includeTimeline:true,dbProjectId:"",cover:"",timelineDayNotes:{}},
   co:{name:"Your Company",phone:"",email:"",lic:"",addr:"",logo:""},
   mk:{mat:20,tax:13},
   rooms:[],ck:{},clients:[],invoices:[],quotes:[],invNum:1,matHideZero:true
@@ -2509,6 +2528,7 @@ function migrate(d){
   if(d.matHideZero===undefined)d.matHideZero=true;
   if(d.co&&d.co.logo===undefined)d.co.logo="";
   if(d.proj.cover===undefined)d.proj.cover="";
+  if(!d.proj.timelineDayNotes||typeof d.proj.timelineDayNotes!=="object")d.proj.timelineDayNotes={};
   try{ applyGlobalCoProfileToData(d); }catch(e){}
   (d.rooms||[]).forEach(function(r){
     if(r.thumb===undefined)r.thumb="";
@@ -2723,6 +2743,7 @@ function mergeServerWorkspace(payload, opts){
     if(p.parallelRooms!==undefined)S.proj.parallelRooms=p.parallelRooms;
     if(p.includeTimeline!==undefined)S.proj.includeTimeline=p.includeTimeline;
     if(p.clientId!==undefined)S.proj.clientId=p.clientId;
+    if(p.timelineDayNotes!==undefined&&typeof p.timelineDayNotes==="object")S.proj.timelineDayNotes=p.timelineDayNotes;
   }
   if(payload.rooms&&payload.rooms.length){
     if(hadLocal){
@@ -3693,6 +3714,7 @@ function snapshotFromWorkspacePayload(payload){
     if(p.parallelRooms!==undefined)snap.proj.parallelRooms=p.parallelRooms;
     if(p.includeTimeline!==undefined)snap.proj.includeTimeline=p.includeTimeline;
     if(p.clientId!==undefined)snap.proj.clientId=p.clientId;
+    if(p.timelineDayNotes!==undefined&&typeof p.timelineDayNotes==="object")snap.proj.timelineDayNotes=p.timelineDayNotes;
   }
   if(payload.rooms)snap.rooms=payload.rooms;
   return migrate(snap);
@@ -6890,6 +6912,29 @@ function rfMobTabPhBuild(icon, ptHtml, psHtml, below, col){
 }
 
 // ── TIMELINE PAGE ────────────────────────────────────────────
+function ensureTimelineDayNotes(){
+  if(!S.proj) S.proj=DS().proj;
+  if(!S.proj.timelineDayNotes||typeof S.proj.timelineDayNotes!=="object") S.proj.timelineDayNotes={};
+}
+function getTimelineDayNote(d){
+  ensureTimelineDayNotes();
+  return String(S.proj.timelineDayNotes[String(d)]||"");
+}
+function timelineDayNoteInput(d, v){
+  ensureTimelineDayNotes();
+  var k=String(d);
+  if(v==null||!String(v).trim()){ delete S.proj.timelineDayNotes[k]; }
+  else{ S.proj.timelineDayNotes[k]=String(v); }
+  ss();
+}
+function pruneTimelineDayNotes(maxDay){
+  if(!S.proj||!S.proj.timelineDayNotes) return;
+  var m=Math.max(0, maxDay|0);
+  Object.keys(S.proj.timelineDayNotes).forEach(function(x){
+    var n=parseInt(x,10);
+    if(!n||n>m) delete S.proj.timelineDayNotes[x];
+  });
+}
 function rTimeline(){
   var el=document.getElementById("p-tl");
   var ps=projectSchedule();
@@ -6927,6 +6972,22 @@ function rTimeline(){
     +'<div><div class="tl-sl">Rooms</div><div class="tl-sv">'+ps.roomSchedules.length+'</div><div class="tl-ss">'+(S.proj.parallelRooms?'in parallel':'sequential')+'</div></div>'
     +'</div>';
 
+  pruneTimelineDayNotes(ps.totalDays);
+  var dayNoteRows=[];
+  for(var di=1; di<=ps.totalDays; di++){
+    var dDt0=getWorkingDate(startStr, di);
+    var val0=getTimelineDayNote(di);
+    dayNoteRows.push('<div class="tl-dn-row">'
+      +'<div class="tl-dn-l">Day '+di+(dDt0?'<span>'+fmtDateFull(dDt0)+'</span>':'<span>—</span>')+'</div>'
+      +'<input type="text" class="tl-dn-inp" maxlength="200" placeholder="e.g. Rough-in walkthrough" value="'+escHtml(val0)+'" oninput="timelineDayNoteInput('+di+',this.value)"/>'
+      +'</div>');
+  }
+  var dayNotesBlock='<div class="tl-daynotes">'
+    +'<div class="tl-daynotes-h">Client-facing day notes</div>'
+    +'<div class="tl-daynotes-s">One short line per working day. Shown on the quote, print, and PDF for your client.</div>'
+    +dayNoteRows.join("")
+    +'</div>';
+
   var rooms = ps.roomSchedules.map(function(rs,ri){
     var r=rs.room;
     var rStart=getWorkingDate(startStr, rs.startDay);
@@ -6941,10 +7002,15 @@ function rTimeline(){
         return '<span class="tl-trade-chip" style="background:'+col+'22;color:'+col+';border:1px solid '+col+'55">'
           +TIC[tr.id]+' '+tr.name+' (Day '+tr.dayInTrade+'/'+tr.total+')</span>';
       }).join('');
+      var cNote=getTimelineDayNote(day.dayNum);
+      var cNoteH=cNote&&String(cNote).trim() ? '<div class="tl-day-client">'+escHtml(String(cNote).trim())+'</div>' : '';
       return '<div class="tl-day">'
         +'<div class="tl-day-num">Day '+day.dayNum+'</div>'
         +'<div class="tl-day-date">'+(dDate?fmtDateFull(dDate):'')+'</div>'
+        +'<div class="tl-day-main">'
         +'<div class="tl-day-trades">'+chips+'</div>'
+        +cNoteH
+        +'</div>'
         +'</div>';
     }).join('');
 
@@ -6964,7 +7030,7 @@ function rTimeline(){
 
   el.innerHTML=rfMobTabPhBuild(RF_SVG_TL_IC,'Project <em>Timeline</em>','Auto-generated from your rooms &amp; trades',
     '<button type="button" class="btn bp sm" onclick="gP(\'quote\')">View Quote</button>','')
-    +settings+summary+rooms+clientPreview+'</div></div>';
+    +settings+summary+dayNotesBlock+rooms+clientPreview+'</div></div>';
   requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
 }
 
@@ -7027,9 +7093,21 @@ function buildClientPreview(ps, startStr){
       +'</div>';
   }).join('');
 
+  var dayClientBits=[];
+  for(var dix=1; dix<=ps.totalDays; dix++){
+    var nt=String(getTimelineDayNote(dix)||'').trim();
+    if(!nt) continue;
+    var dDx=getWorkingDate(startStr, dix);
+    dayClientBits.push('<div class="tl-wk-dnote"><strong>Day '+dix+'</strong>'+(dDx?' ('+fmtDate(dDx)+')':'')+': '+escHtml(nt)+'</div>');
+  }
+  var dayClientBlock=dayClientBits.length
+    ? ('<div class="tl-week-client"><div class="tl-preview-s" style="margin-bottom:6px">Day updates (same as quote)</div>'+dayClientBits.join('')+'</div>')
+    : '';
+
   return '<div class="tl-preview">'
     +'<div class="tl-preview-h"><div class="tl-preview-t">Client Preview · Week Level</div><div class="tl-preview-s">what the client sees on the quote</div></div>'
     +rows
+    +dayClientBlock
     +'</div>';
 }
 
@@ -7362,9 +7440,26 @@ function buildQuoteTimeline(){
       +'</div>';
   }).join('');
 
+  var dayNoteLines=[];
+  for(var ddx=1; ddx<=ps.totalDays; ddx++){
+    var tn=String(getTimelineDayNote(ddx)||'').trim();
+    if(!tn) continue;
+    var dDt0=getWorkingDate(startStr, ddx);
+    var dt0=dDt0?fmtDate(dDt0):'';
+    dayNoteLines.push('<div class="q-tl-dayline">'
+      +'<div class="q-tl-dl-num">D'+ddx+'</div>'
+      +'<div class="q-tl-dl-date">'+(dt0||'—')+'</div>'
+      +'<div class="q-tl-dl-note">'+escHtml(tn)+'</div>'
+      +'</div>');
+  }
+  var dayNotesHtml=dayNoteLines.length
+    ? ('<div class="q-tl-daynotes-h">What&rsquo;s scheduled (your notes)</div>'+dayNoteLines.join(''))
+    : '';
+
   return '<div class="q-timeline">'
     +'<div class="q-tl-h"><div class="q-tl-t">Project Timeline</div><div class="q-tl-sub">'+ps.totalDays+' working days · '+ps.roomSchedules.length+' room'+(ps.roomSchedules.length!==1?'s':'')+'</div></div>'
     +'<div class="q-tl-dates">'+datesLine+'</div>'
+    +dayNotesHtml
     +rows
     +'<div class="q-tl-disc">Timeline reflects normal project conditions. Delays outside our control (permit processing, material backorders, client-initiated changes) may shift completion date.</div>'
     +'</div>';
