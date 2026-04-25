@@ -1364,6 +1364,13 @@ a.ni{color:inherit;text-decoration:none;}
 .cal-cell{background:#fff;min-height:92px;padding:6px 5px 8px;vertical-align:top;font-size:11px;}
 .cal-cell.cal-out{background:var(--sf2);opacity:.55;}
 .cal-cell.cal-today{outline:2px solid var(--ac);outline-offset:-2px;}
+.cal-cell.cal-cell--day{cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;transition:background .12s,box-shadow .12s;}
+.cal-cell.cal-cell--day:active{background:rgba(139,180,139,.12);}
+.cal-cell.cal-cell--start{box-shadow:inset 0 0 0 2px var(--ac);background:rgba(139,180,139,.1);}
+.cal-pick-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;margin-bottom:14px;padding:10px 12px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);font-size:12px;}
+.cal-pick-row label{color:var(--tx3);font-family:'Inter',system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:10px;flex-shrink:0;}
+.cal-pick-row select{flex:1;min-width:200px;max-width:min(100%,420px);padding:8px 10px;border:1px solid var(--bd2);border-radius:6px;font-size:14px;font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--tx);}
+.cal-pick-hint{flex:1 1 100%;font-size:11px;color:var(--tx2);line-height:1.4;margin:0;}
 .cal-dn{font-size:11px;font-weight:700;color:var(--tx2);margin-bottom:4px;font-family:'Inter',system-ui,sans-serif;}
 .cal-chip{display:block;font-size:9px;padding:2px 4px;margin-bottom:3px;border-radius:4px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .cal-legend{font-size:11px;color:var(--tx3);margin-top:12px;line-height:1.5;}
@@ -3749,24 +3756,6 @@ function persistProjectStartDate(projectId, ymd){
   }).catch(function(){});
   if(curPg==='cal')rCalendar();
 }
-function calBarDrag(ev, projectId, origYmd){
-  if(!origYmd){ try{alert('Set a start date on the Timeline tab first.');}catch(x){} return; }
-  ev.preventDefault();
-  ev.stopPropagation();
-  var startX=ev.clientX;
-  var pxPerDay=14;
-  function move(ev2){ ev2.preventDefault(); }
-  function up(ev2){
-    document.removeEventListener('pointermove',move);
-    document.removeEventListener('pointerup',up);
-    var dDays=Math.round((ev2.clientX-startX)/pxPerDay);
-    if(dDays!==0) persistProjectStartDate(projectId, addCalendarDaysYmd(origYmd, dDays));
-    else if(curPg==='cal') rCalendar();
-  }
-  document.addEventListener('pointermove',move,{passive:false});
-  document.addEventListener('pointerup',up);
-}
-
 function fmtDate(d){return d?d.toLocaleDateString('en-CA',{month:'short',day:'numeric'}):'—';}
 function fmtDateFull(d){return d?d.toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'}):'—';}
 function fmtDateLong(d){return d?d.toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}):'—';}
@@ -7123,11 +7112,18 @@ function rCalNavToday(){
   window.__rfCalMonth=String(d.getFullYear())+'-'+String(d.getMonth()+1).padStart(2,'0');
   rCalendar();
 }
-function calBarDragEl(ev){
-  var el=ev.currentTarget;
-  var projectId=el.getAttribute('data-pid');
-  var origYmd=el.getAttribute('data-ymd');
-  calBarDrag(ev, projectId, origYmd);
+function calFocusProjectChange(v){
+  window.__rfCalFocusPid=String(v||"");
+  if(typeof rCalendar==="function") rCalendar();
+}
+function calCellDayTap(ymd){
+  var pid=window.__rfCalFocusPid;
+  if(!pid){ try{ alert("Choose a project above first."); }catch(x){} return; }
+  if(!ymd||!/^\d{4}-\d{2}-\d{2}$/.test(ymd)) return;
+  var snap=readWorkspaceSnapshotForProject(pid);
+  var cur=(snap&&snap.proj&&snap.proj.startDate)?String(snap.proj.startDate):"";
+  if(cur&&cur===ymd) persistProjectStartDate(pid,"");
+  else persistProjectStartDate(pid,ymd);
 }
 var CAL_PH_SVG_S='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>';
 function calPageHeaderHtml(psLine){
@@ -7158,38 +7154,26 @@ function rCalendar(){
       return {id:p.id,name:(p.name||'Untitled').trim(),snapshot:snap};
     });
   })).then(function(bundles){
-    var rangeStart=new Date(y,mo-1,1);
-    var rangeEnd=new Date(y,mo,0);
-    var msDay=86400000;
-    var pxPerDay=14;
-    var monthDays=rangeEnd.getDate();
-    var trackW=Math.max(420, monthDays*pxPerDay);
-    var ganttRows=bundles.map(function(b){
-      var col=calColorForPid(b.id);
-      var snap=b.snapshot;
-      var shortName=b.name.length>22?b.name.slice(0,20)+'…':b.name;
-      if(!snap||!snap.rooms){
-        return '<div class="cal-gantt-row"><div class="cal-gantt-lbl" title="'+escMat(b.name)+'">'+escMat(shortName)+'</div><div class="cal-gantt-track" style="width:'+trackW+'px"><span style="font-size:10px;color:var(--tx3);padding:4px;display:inline-block">No data</span></div></div>';
-      }
-      var ps=projectScheduleForState(snap.rooms, !!snap.proj.parallelRooms);
-      var startStr=snap.proj.startDate||'';
-      var psStart=getWorkingDate(startStr,1);
-      var psEnd=ps.totalDays>0?getWorkingDate(startStr, ps.totalDays):null;
-      if(!startStr||!psStart||!ps.totalDays||!psEnd){
-        return '<div class="cal-gantt-row"><div class="cal-gantt-lbl" title="'+escMat(b.name)+'">'+escMat(shortName)+'</div><div class="cal-gantt-track" style="width:'+trackW+'px"><span style="font-size:10px;color:var(--tx3);padding:4px;display:inline-block">Set start date</span></div></div>';
-      }
-      var visS=Math.max(psStart.getTime(), rangeStart.getTime());
-      var visE=Math.min(psEnd.getTime(), rangeEnd.getTime());
-      if(visS>visE){
-        return '<div class="cal-gantt-row"><div class="cal-gantt-lbl" title="'+escMat(b.name)+'">'+escMat(shortName)+'</div><div class="cal-gantt-track" style="width:'+trackW+'px"><span style="font-size:10px;color:var(--tx3);padding:4px;display:inline-block">—</span></div></div>';
-      }
-      var left=Math.floor((visS-rangeStart.getTime())/msDay)*pxPerDay;
-      var spanDays=Math.floor((visE-visS)/msDay)+1;
-      var width=Math.max(pxPerDay, spanDays*pxPerDay);
-      var barHtml='<div class="cal-bar" data-pid="'+String(b.id).replace(/"/g,'&quot;')+'" data-ymd="'+String(startStr).replace(/"/g,'&quot;')+'" style="left:'+left+'px;width:'+width+'px;background:'+col+'" title="Drag to shift project start" onpointerdown="calBarDragEl(event)">'
-        +escMat(b.name.length>14?b.name.slice(0,12)+'…':b.name)+'<span class="cal-bar-hint">'+ps.totalDays+'d</span></div>';
-      return '<div class="cal-gantt-row"><div class="cal-gantt-lbl" title="'+escMat(b.name)+'">'+escMat(shortName)+'</div><div class="cal-gantt-track" style="width:'+trackW+'px">'+barHtml+'</div></div>';
-    }).join('');
+    var monthDays=new Date(y,mo,0).getDate();
+    var focusPid=String(window.__rfCalFocusPid||"");
+    if(!focusPid||!bundles.some(function(b){return String(b.id)===focusPid;})){
+      var ap=S.proj&&S.proj.dbProjectId;
+      if(ap&&bundles.some(function(b){return String(b.id)===String(ap);})) focusPid=String(ap);
+      else if(bundles[0]) focusPid=String(bundles[0].id);
+      else focusPid="";
+    }
+    if(focusPid) window.__rfCalFocusPid=focusPid;
+    var focusB=bundles.find(function(b){return String(b.id)===focusPid;});
+    var focusStart=focusB&&focusB.snapshot&&focusB.snapshot.proj?String(focusB.snapshot.proj.startDate||""):"";
+    var pickRow="";
+    if(bundles.length){
+      pickRow='<div class="cal-pick-row"><label for="cal-focus-pid">Project</label><select id="cal-focus-pid" onchange="calFocusProjectChange(this.value)">'
+        +bundles.map(function(b){
+            return '<option value="'+escAttr(String(b.id))+'"'+(String(b.id)===focusPid?' selected':'')+'>'
+              +escHtml(b.name.length>48?b.name.slice(0,46)+'…':b.name)+'</option>';
+          }).join("")
+        +'</select><p class="cal-pick-hint">Select a project, then <strong>tap a day</strong> to set that job&rsquo;s <strong>start date</strong> (same field as the Timeline). Tap the <strong>same day again</strong> to <strong>clear</strong> the start date.</p></div>';
+    }
     var dayMap={};
     var di;
     for(di=1;di<=monthDays;di++) dayMap[di]=[];
@@ -7222,10 +7206,14 @@ function rCalendar(){
       var cellD=new Date(y,mo-1,di);
       var isToday=today.getFullYear()===y&&today.getMonth()===mo-1&&today.getDate()===di;
       var wend=cellD.getDay()===0||cellD.getDay()===6;
+      var ymdStr=y+'-'+String(mo).padStart(2,'0')+'-'+String(di).padStart(2,'0');
+      var isStart=!!(focusStart&&focusStart===ymdStr);
       var arr=dayMap[di]||[];
       var chips=arr.slice(0,8).join('');
       if(arr.length>8) chips+='<div style="font-size:9px;color:var(--tx3)">+'+(arr.length-8)+' more</div>';
-      cells.push('<div class="cal-cell'+(isToday?' cal-today':'')+(wend&&!isToday?' cal-out':'')+'"><div class="cal-dn">'+di+'</div>'+chips+'</div>');
+      var ccls='cal-cell cal-cell--day'+(isToday?' cal-today':'')+(wend&&!isToday?' cal-out':'')+(isStart?' cal-cell--start':'');
+      cells.push('<div class="'+ccls+'" data-ymd="'+ymdStr+'" role="button" tabindex="0" onclick="calCellDayTap(\''+ymdStr+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();calCellDayTap(\''+ymdStr+'\');}">'
+        +'<div class="cal-dn">'+di+'</div>'+chips+'</div>');
     }
     while(cells.length%7!==0) cells.push('<div class="cal-cell cal-out"></div>');
     while(cells.length<42) cells.push('<div class="cal-cell cal-out"></div>');
@@ -7241,9 +7229,9 @@ function rCalendar(){
       +'<button type="button" class="btn bg sm" onclick="rCalNavNext()">Month →</button>'
       +'<button type="button" class="btn bp sm" onclick="rCalNavToday()">Today</button>'
       +'</div>'
-      +'<div class="cal-gantt"><div class="cal-gantt-h">Workload (this month) — drag a bar to shift start date</div>'+ganttRows+'</div>'
-      +'<div class="cal-grid-wrap"><div class="cal-grid-h">Trades by working day (matches timeline sequence)</div><div class="cal-grid">'+wh+cells.join('')+'</div>'
-      +'<p class="cal-legend">Dates follow <strong>working days</strong> from the Timeline (weekends skipped). Shifting a bar updates that project’s start date and syncs with Timeline &amp; quotes. Colors distinguish projects.</p>'
+      +pickRow
+      +'<div class="cal-grid-wrap"><div class="cal-grid-h">Month · tap a day to set or clear the selected project&rsquo;s start</div><div class="cal-grid">'+wh+cells.join('')+'</div>'
+      +'<p class="cal-legend">Coloured chips show which trades run on each <strong>working day</strong> (weekends skipped in the schedule). Tapping sets the <strong>project start date</strong> for the project chosen above, matching the Timeline. Colors distinguish projects.</p>'
       +'</div></div>';
     requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
   }).catch(function(){
