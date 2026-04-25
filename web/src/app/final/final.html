@@ -1242,13 +1242,14 @@ a.ni{color:inherit;text-decoration:none;}
 .ml-page{background:var(--bg);min-height:100%;}
 #p-shop .pt em{color:var(--ac);font-style:normal;font-weight:600;}
 .ml-ph{display:block;padding:16px 18px 14px;background:var(--sf2);border-bottom:1px solid #d9d9d9;}
-.ml-ph-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:10px 12px;flex-wrap:wrap;}
-.ml-ph-hero .proj-ph-title-row{display:flex;align-items:flex-start;gap:10px;flex:1 1 200px;min-width:0;}
+.ml-ph-hero{display:block;}
+.ml-ph-hero .proj-ph-title-row{display:flex;align-items:flex-start;gap:10px;min-width:0;}
 .ml-ph-hero .ml-ph-icon{flex-shrink:0;color:var(--ac);display:flex;align-items:center;margin-top:1px;}
 .ml-ph-hero .ml-ph-icon svg{width:24px;height:24px;display:block;}
-.ml-actions-col{display:flex;flex-direction:column;align-items:flex-end;align-self:flex-start;gap:6px;flex-shrink:0;}
-.ml-actions-col .btn{white-space:nowrap;}
-.ml-tog{display:flex;align-items:center;gap:8px;justify-content:flex-end;font-size:12px;color:var(--tx2);cursor:pointer;user-select:none;}
+.ml-actions-below{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;padding-left:34px;}
+.ml-actions-below .btn{white-space:nowrap;}
+.ml-tog-below{margin-top:6px;padding-left:34px;}
+.ml-tog{display:flex;align-items:center;gap:8px;justify-content:flex-start;font-size:12px;color:var(--tx2);cursor:pointer;user-select:none;}
 .ml-tog input{width:16px;height:16px;accent-color:var(--ac);}
 .ml-cat{margin-bottom:20px;}
 .ml-ch{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:2px solid var(--bd2);}
@@ -1269,8 +1270,8 @@ a.ni{color:inherit;text-decoration:none;}
 .ml-empty{text-align:center;padding:48px 20px;color:var(--tx3);}
 .ml-page-body{padding:16px 18px 24px;}
 @media print{
-  .sb,.mob-nav,.ml-actions-col .btn,.ml-tog,.ml-ph button{background:transparent!important;}
-  .ml-actions-col .btn{display:none!important;}
+  .sb,.mob-nav,.ml-actions-below .btn,.ml-tog,.ml-ph button{background:transparent!important;}
+  .ml-actions-below .btn{display:none!important;}
   #main{margin:0!important;padding:0!important;}
   .ml-page{background:#fff;}
   .ml-print-head{display:block!important;padding-bottom:8px!important;border-bottom:1px solid #ccc!important;}
@@ -1796,10 +1797,11 @@ a.ni{color:inherit;text-decoration:none;}
   #p-shop .ml-page > .ml-page-body {
     padding: 8px 20px 28px;
   }
-  #p-shop .ml-actions-col {
-    gap: 4px;
+  #p-shop .ml-actions-below,
+  #p-shop .ml-tog-below {
+    padding-left: 34px;
   }
-  #p-shop .ml-actions-col .btn.sm {
+  #p-shop .ml-actions-below .btn.sm {
     padding: 5px 10px;
     font-size: 12px;
   }
@@ -6996,9 +6998,11 @@ function rShop(){
     +'<div class="proj-ph-title-row">'
     +'<span class="ml-ph-icon" aria-hidden="true">'+matIconSvg+'</span>'
     +'<div><div class="pt">'+titleHtml+'</div><div class="ps">'+escMat(sub)+' · '+rows.length+' line'+(rows.length!==1?'s':'')+' · '+f(totC)+'</div></div></div>'
-    +'<div class="ml-actions-col">'
+    +'<div class="ml-actions-below">'
     +'<button type="button" class="btn bp sm" onclick="window.print()">Print</button>'
     +'<button type="button" class="btn bg sm" onclick="exportMaterialsCsv()">Export CSV</button>'
+    +'</div>'
+    +'<div class="ml-tog-below">'
     +'<label class="ml-tog"><input type="checkbox" '+(S.matHideZero!==false?'checked':'')+' onchange="setMatHideZero(this.checked)"/> Hide zero qty</label>'
     +'</div></div></div>'
     +'<div class="pc ml-page-body">'
