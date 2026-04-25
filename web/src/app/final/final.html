@@ -1981,6 +1981,7 @@ a.ni{color:inherit;text-decoration:none;}
 .mat-page{min-height:100%;background:var(--bg);}
 .mat-header{display:flex;align-items:center;gap:10px;padding:16px 20px;background:var(--topbar-bg);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:10;}
 .mat-list{padding:12px 16px;}
+.mat-list--embed{margin:0 -2px 0 0;max-width:100%;}
 .mat-row{display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border:1px solid var(--bd);border-radius:8px;margin-bottom:8px;transition:all .2s;}
 .mat-row.mat-bought{opacity:.5;}
 .mat-thumb{width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--bd2);flex-shrink:0;background:var(--sf2);}
@@ -6103,7 +6104,14 @@ function tradeSectionHtml(room, ti, idPx, isModal){
   var mergePlumbFoot=!!isMepModal;
   var footCl='sub trade-footer-total tc-footer-total'+(mergePlumbFoot?' tc-footer-total--merged':'');
   var noteHtml='<textarea class="note'+(mergePlumbFoot?' note--in-foot-merge':'')+'" placeholder="Notes for this trade..." oninput="sNote('+ti+',this.value)">'+(t.note||"")+'</textarea>';
+  var cachedSupplierPanel='<div class="sep"></div>'
+    +'<div class="tc-sec-h-mat">Supplier catalog</div>'
+    +'<p style="font-size:11px;color:var(--tx3);margin:0 0 8px 0">Live from the database. Estimate line items above use the built-in list.</p>'
+    +'<div class="mat-list mat-list--embed" id="'+px+'rfCachedMats'+ti+'" data-rf-cached-for="'+escAttr(t.id)+'" style="padding:0">'
+    +'<div style="color:var(--tx3);font-size:12px;padding:4px 0">Loading catalog…</div>'
+    +'</div>';
   var bodyInner='<div class="tb op'+(isMepModal?' pl-exp-tl-look':'')+'">'+labourBlock+bodyCore+tradeToolsBlock(room,ti,t,idPx)
+    +cachedSupplierPanel
     +'<div class="sep"></div>'
     +'<div class="'+footCl+'" style="margin:0 -14px -14px;padding:12px 14px;border-top:1px solid var(--bd);flex-wrap:wrap;gap:8px">'
     +'<div class="tc-foot-inner">'
@@ -6526,6 +6534,7 @@ function rRoom(){
         }
       }
       try{ mTcInitCarousel(); }catch(mtcE){}
+      try{ rfHydrateAllCachedProductPanels(); }catch(rfE){}
     });
   });
   syncShellTradeExp();
@@ -8248,24 +8257,124 @@ function matListRowsFromMats(mats) {
   return prodRows;
 }
 
-function setMatListFromRows(rowsHtml, errNote) {
+var __rfCachedProductsByTrade = Object.create(null);
+var __rfCachedProductsTtlMs = 120000;
+
+function buildTradeMatListHtml(tradeId, dbList, errNote) {
+  var custom = loadCustomMats()[tradeId] || [];
+  var dbMats = (dbList || []).map(function (p) {
+    return {
+      id: p.id,
+      name: p.title || "—",
+      brand: p.brand || "",
+      priceStr: p.price != null && p.price !== "" ? p.price : "—",
+      img: p.thumbnail || null,
+      ic: "📦",
+    };
+  });
+  var allMats = dbMats.concat(custom);
+  var prefix = errNote
+    ? ('<div style="font-size:12px;color:var(--ac);padding:0 0 8px 0">' + escMat(errNote) + "</div>")
+    : "";
+  if (allMats.length === 0) {
+    return (
+      prefix +
+      '<div style="color:var(--tx3);font-size:13px;padding:4px 0 12px 0">No catalog products for this trade yet.</div>'
+    );
+  }
+  return prefix + matListRowsFromMats(allMats);
+}
+
+function setMatListFromRows(tradeId, errNote, dbList) {
   var inner = document.getElementById("mat-list-inner");
   if (!inner) return;
-  var prefix = errNote
-    ? ('<div style="font-size:12px;color:var(--ac);padding:0 0 8px 0">'+escMat(errNote)+"</div>")
-    : "";
-  if (!rowsHtml) {
-    inner.innerHTML = prefix
-      + '<div style="color:var(--tx3);font-size:13px;padding:4px 0 12px 0">No catalog products for this trade yet.</div>';
+  inner.innerHTML = buildTradeMatListHtml(tradeId, dbList, errNote);
+}
+
+function rfMemGetProducts(tradeName) {
+  if (!tradeName) return null;
+  var e = __rfCachedProductsByTrade[tradeName];
+  if (!e) return null;
+  if (Date.now() - e.t > __rfCachedProductsTtlMs) {
+    delete __rfCachedProductsByTrade[tradeName];
+    return null;
+  }
+  return e.list;
+}
+
+function rfMemSetProducts(tradeName, list) {
+  if (!tradeName) return;
+  __rfCachedProductsByTrade[tradeName] = { t: Date.now(), list: list || [] };
+}
+
+function rfLoadCachedProductsIntoPanel(tradeId, panelEl) {
+  if (!panelEl) return;
+  var tradeName = TN[tradeId] || "";
+  var base = typeof window !== "undefined" && window.location && window.location.origin ? window.location.origin : "";
+  var url = "/api/cached-products?trade=" + encodeURIComponent(tradeName);
+
+  var cached = rfMemGetProducts(tradeName);
+  if (cached) {
+    console.log("[RenoFlow] /api/cached-products (memory cache)", {
+      trade: tradeName,
+      tradeId: tradeId,
+      count: cached.length,
+      sample: cached[0] || null,
+    });
+    panelEl.innerHTML = buildTradeMatListHtml(tradeId, cached, null);
     return;
   }
-  inner.innerHTML = prefix + rowsHtml;
+
+  console.log("[RenoFlow] /api/cached-products request", { trade: tradeName, tradeId: tradeId, url: url, page: base + url });
+  panelEl.innerHTML =
+    '<div style="color:var(--tx3);font-size:12px;padding:4px 0">Loading catalog…</div>';
+
+  fetch(url, { credentials: "include" })
+    .then(function (r) {
+      return r.json().then(function (j) {
+        return { ok: r.ok, status: r.status, j: j };
+      });
+    })
+    .then(function (x) {
+      console.log("[RenoFlow] /api/cached-products response", {
+        trade: tradeName,
+        ok: x.ok,
+        status: x.status,
+        error: x.j && x.j.error,
+        count: x.j && x.j.products ? x.j.products.length : 0,
+        sample: x.j && x.j.products && x.j.products[0] ? x.j.products[0] : null,
+      });
+      if (!x.ok) {
+        panelEl.innerHTML = buildTradeMatListHtml(
+          tradeId,
+          [],
+          (x.j && x.j.error) || "Could not load catalog (" + x.status + ").",
+        );
+        return;
+      }
+      var products = x.j.products || [];
+      rfMemSetProducts(tradeName, products);
+      panelEl.innerHTML = buildTradeMatListHtml(tradeId, products, null);
+    })
+    .catch(function (err) {
+      console.log("[RenoFlow] /api/cached-products fetch failed", { trade: tradeName, err: String(err) });
+      panelEl.innerHTML = buildTradeMatListHtml(tradeId, [], "Could not load catalog.");
+    });
+}
+
+function rfHydrateAllCachedProductPanels() {
+  var list = document.querySelectorAll && document.querySelectorAll("[data-rf-cached-for].mat-list--embed");
+  if (!list || !list.length) return;
+  for (var i = 0; i < list.length; i++) {
+    var el = list[i];
+    var tid = el.getAttribute("data-rf-cached-for");
+    if (tid) rfLoadCachedProductsIntoPanel(tid, el);
+  }
 }
 
 function openMats(tradeId) {
   curMatTrade = tradeId;
   var tradeLabel = TN[tradeId] || "";
-  var custom = loadCustomMats()[tradeId] || [];
 
   var listShell = '<div class="mat-list" id="mat-list-inner">'
     + '<div style="color:var(--tx3);font-size:13px;padding:8px 0">Loading products…</div>'
@@ -8293,46 +8402,53 @@ function openMats(tradeId) {
 
   document.getElementById("p-room").innerHTML = html;
 
-  function mergeAndRender(dbList, errNote) {
-    var dbMats = (dbList || []).map(function (p) {
-      return {
-        id: p.id,
-        name: p.title || "—",
-        brand: p.brand || "",
-        priceStr: p.price != null && p.price !== "" ? p.price : "—",
-        img: p.thumbnail || null,
-        ic: "📦",
-      };
-    });
-    var allMats = dbMats.concat(custom);
-    if (allMats.length === 0) {
-      setMatListFromRows("", errNote);
-    } else {
-      setMatListFromRows(matListRowsFromMats(allMats), errNote);
-    }
-  }
-
   if (!tradeLabel) {
-    mergeAndRender([], "Unknown trade.");
+    setMatListFromRows(tradeId, "Unknown trade.", []);
     return;
   }
 
-  fetch("/api/cached-products?trade=" + encodeURIComponent(tradeLabel), { credentials: "include" })
+  var mem = rfMemGetProducts(tradeLabel);
+  if (mem) {
+    console.log("[RenoFlow] /api/cached-products (memory cache) openMats", {
+      trade: tradeLabel,
+      count: mem.length,
+      sample: mem[0] || null,
+    });
+    setMatListFromRows(tradeId, null, mem);
+    return;
+  }
+
+  var urlM = "/api/cached-products?trade=" + encodeURIComponent(tradeLabel);
+  console.log("[RenoFlow] /api/cached-products request (openMats)", { trade: tradeLabel, url: urlM });
+
+  fetch(urlM, { credentials: "include" })
     .then(function (r) {
-      return r.json().then(function (j) { return { ok: r.ok, r: r, j: j }; });
+      return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; });
     })
     .then(function (x) {
+      console.log("[RenoFlow] /api/cached-products response (openMats)", {
+        trade: tradeLabel,
+        ok: x.ok,
+        status: x.status,
+        count: x.j && x.j.products ? x.j.products.length : 0,
+        sample: x.j && x.j.products && x.j.products[0] ? x.j.products[0] : null,
+        error: x.j && x.j.error,
+      });
       if (!x.ok) {
-        mergeAndRender(
+        setMatListFromRows(
+          tradeId,
+          (x.j && x.j.error) || "Could not load catalog (" + x.status + ").",
           [],
-          (x.j && x.j.error) || "Could not load catalog (" + (x.r && x.r.status) + ").",
         );
         return;
       }
-      mergeAndRender(x.j.products || [], null);
+      var products = x.j.products || [];
+      rfMemSetProducts(tradeLabel, products);
+      setMatListFromRows(tradeId, null, products);
     })
-    .catch(function () {
-      mergeAndRender([], "Could not load catalog.");
+    .catch(function (e) {
+      console.log("[RenoFlow] /api/cached-products fetch failed (openMats)", e);
+      setMatListFromRows(tradeId, "Could not load catalog.", []);
     });
 }
 
