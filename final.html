@@ -1321,25 +1321,20 @@ a.ni{color:inherit;text-decoration:none;}
 .tl-rb{padding:14px 16px;display:none;}
 .tl-rb.op{display:block;}
 
-.tl-day{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed var(--bd);font-size:13px;}
+.tl-day{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px dashed var(--bd);font-size:13px;}
 .tl-day:last-child{border-bottom:none;}
 .tl-day-num{width:58px;font-family:'Inter',system-ui,sans-serif;font-size:11px;color:var(--tx3);flex-shrink:0;}
 .tl-day-date{width:100px;font-family:'Inter',system-ui,sans-serif;font-size:11px;color:var(--tx2);flex-shrink:0;}
-.tl-day-trades{flex:1;display:flex;flex-wrap:wrap;gap:6px;min-width:0;}
-.tl-day-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;align-items:flex-start;}
-.tl-day-client{font-size:12px;color:var(--ac);line-height:1.35;padding:4px 8px;background:rgba(90,154,90,.1);border-radius:6px;max-width:100%;word-break:break-word;}
-.tl-daynotes{margin:12px 0 0;padding:10px 12px;border:1px solid var(--bd);border-radius:var(--r);background:rgba(0,0,0,.02);}
-.tl-daynotes-h{font-family:'Inter',system-ui,sans-serif;font-size:12px;font-weight:600;color:var(--tx);}
-.tl-daynotes-s{font-size:11px;color:var(--tx3);margin:4px 0 8px;}
-.tl-dn-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:4px 0;border-bottom:1px dashed var(--bd);}
-.tl-dn-row:last-child{border-bottom:none;}
-.tl-dn-l{flex:0 0 140px;min-width:100px;font-size:11px;color:var(--tx2);font-family:'Inter',system-ui,sans-serif;}
-.tl-dn-l span{color:var(--tx3);display:block;}
-.tl-dn-inp{flex:1;min-width:160px;padding:5px 8px;font-size:12px;border:1px solid var(--bd2);border-radius:6px;background:#fff;color:var(--tx);font-family:'Inter',system-ui,sans-serif;}
+.tl-day-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;align-items:stretch;}
+.tl-day-sche{font-size:11px;line-height:1.4;color:var(--tx2);word-break:break-word;}
+.tl-day-sche-nm{font-weight:500;}
+.tl-day-sche-sub{color:var(--tx3);font-weight:400;}
+.tl-day-sche-sep{color:var(--bd2);padding:0 2px;}
+.tl-dn-inp{flex:1;min-width:0;padding:6px 9px;font-size:12px;border:1px solid var(--bd2);border-radius:8px;background:#fff;color:var(--tx);font-family:'Inter',system-ui,sans-serif;box-sizing:border-box;}
 .tl-dn-inp:focus{outline:none;border-color:var(--ac);}
+.tl-day-note-inp{width:100%;}
 .tl-week-client{border-top:1px dashed var(--bd);margin-top:6px;padding-top:6px;}
 .tl-wk-dnote{font-size:11px;color:var(--tx2);line-height:1.45;margin:4px 0 0;word-break:break-word;}
-.tl-trade-chip{padding:3px 9px;border-radius:12px;font-size:11px;font-family:'Inter',system-ui,sans-serif;font-weight:500;}
 
 .tl-empty{text-align:center;padding:50px 20px;color:var(--tx3);}
 .tl-empty-i{font-size:34px;margin-bottom:10px;opacity:.4;}
@@ -6973,20 +6968,6 @@ function rTimeline(){
     +'</div>';
 
   pruneTimelineDayNotes(ps.totalDays);
-  var dayNoteRows=[];
-  for(var di=1; di<=ps.totalDays; di++){
-    var dDt0=getWorkingDate(startStr, di);
-    var val0=getTimelineDayNote(di);
-    dayNoteRows.push('<div class="tl-dn-row">'
-      +'<div class="tl-dn-l">Day '+di+(dDt0?'<span>'+fmtDateFull(dDt0)+'</span>':'<span>—</span>')+'</div>'
-      +'<input type="text" class="tl-dn-inp" maxlength="200" placeholder="e.g. Rough-in walkthrough" value="'+escHtml(val0)+'" oninput="timelineDayNoteInput('+di+',this.value)"/>'
-      +'</div>');
-  }
-  var dayNotesBlock='<div class="tl-daynotes">'
-    +'<div class="tl-daynotes-h">Client-facing day notes</div>'
-    +'<div class="tl-daynotes-s">One short line per working day. Shown on the quote, print, and PDF for your client.</div>'
-    +dayNoteRows.join("")
-    +'</div>';
 
   var rooms = ps.roomSchedules.map(function(rs,ri){
     var r=rs.room;
@@ -6997,19 +6978,19 @@ function rTimeline(){
 
     var dayRows = rs.schedule.map(function(day){
       var dDate = getWorkingDate(startStr, day.dayNum);
-      var chips = day.trades.map(function(tr){
+      var col0=day.trades.length?(TC[day.trades[0].id]||"#888"):"#b8b8b8";
+      var sche=day.trades.map(function(tr){
         var col=TC[tr.id]||"#888";
-        return '<span class="tl-trade-chip" style="background:'+col+'22;color:'+col+';border:1px solid '+col+'55">'
-          +TIC[tr.id]+' '+tr.name+' (Day '+tr.dayInTrade+'/'+tr.total+')</span>';
-      }).join('');
-      var cNote=getTimelineDayNote(day.dayNum);
-      var cNoteH=cNote&&String(cNote).trim() ? '<div class="tl-day-client">'+escHtml(String(cNote).trim())+'</div>' : '';
+        return '<span class="tl-day-sche-it" style="color:'+col+'">'+TIC[tr.id]+' <span class="tl-day-sche-nm">'+escHtml(tr.name)+'</span> <span class="tl-day-sche-sub" style="color:'+col+';opacity:.85">(Day '+tr.dayInTrade+'/'+tr.total+')</span></span>';
+      }).join('<span class="tl-day-sche-sep" aria-hidden="true">·</span>');
+      if(!day.trades.length) sche='<span class="tl-day-sche-sub">—</span>';
+      var nVal=getTimelineDayNote(day.dayNum);
       return '<div class="tl-day">'
         +'<div class="tl-day-num">Day '+day.dayNum+'</div>'
         +'<div class="tl-day-date">'+(dDate?fmtDateFull(dDate):'')+'</div>'
-        +'<div class="tl-day-main">'
-        +'<div class="tl-day-trades">'+chips+'</div>'
-        +cNoteH
+        +'<div class="tl-day-main" style="border-left:2px solid '+col0+';padding-left:8px;margin-left:-2px">'
+        +'<div class="tl-day-sche">'+sche+'</div>'
+        +'<input type="text" class="tl-dn-inp tl-day-note-inp" maxlength="200" placeholder="Add a short note for the client (optional)" value="'+escHtml(nVal)+'" oninput="timelineDayNoteInput('+day.dayNum+',this.value)" aria-label="Client note for day '+day.dayNum+'"/>'
         +'</div>'
         +'</div>';
     }).join('');
@@ -7030,7 +7011,7 @@ function rTimeline(){
 
   el.innerHTML=rfMobTabPhBuild(RF_SVG_TL_IC,'Project <em>Timeline</em>','Auto-generated from your rooms &amp; trades',
     '<button type="button" class="btn bp sm" onclick="gP(\'quote\')">View Quote</button>','')
-    +settings+summary+dayNotesBlock+rooms+clientPreview+'</div></div>';
+    +settings+summary+rooms+clientPreview+'</div></div>';
   requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
 }
 
