@@ -1369,6 +1369,8 @@ a.ni{color:inherit;text-decoration:none;}
 .cal-bar:active{cursor:grabbing;}
 .cal-bar-hint{font-size:9px;opacity:.85;margin-left:6px;font-weight:500;}
 .cal-grid-wrap{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:12px;overflow-x:auto;overflow-y:visible;box-shadow:0 1px 4px rgba(0,0,0,.04);-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;}
+.cal-day-note{flex-shrink:0;font-size:6px;line-height:1.25;color:var(--tx2);background:rgba(139,180,139,.1);border-left:2px solid var(--ac);padding:2px 4px 2px 5px;margin:0 0 3px;max-height:2.5em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word;}
+@supports not (-webkit-line-clamp:2){.cal-day-note{white-space:nowrap;text-overflow:ellipsis;}}
 .cal-grid-h{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;margin-bottom:10px;}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--bd2);border:1px solid var(--bd2);border-radius:8px;overflow:hidden;min-width:560px;align-content:start;}
 .cal-dh{background:var(--sf2);padding:6px 4px;text-align:center;font-size:10px;font-weight:600;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
@@ -2513,7 +2515,7 @@ var SEQ=['demo','framing','concrete','roofing','ROUGHIN','insulation','drywall',
 var ROUGHIN=['electrical','plumbing','hvac','lowvolt','security'];
 
 function DS(){return{
-  proj:{name:"My Renovation",client:"",clientId:"",addr:"",qnum:"Q-001",notes:"All prices include labour and materials. HST extra. 50% deposit required.",startDate:"",deadlineDate:"",parallelRooms:false,includeTimeline:true,dbProjectId:"",cover:"",timelineDayNotes:{}},
+  proj:{name:"My Renovation",client:"",clientId:"",addr:"",qnum:"Q-001",notes:"All prices include labour and materials. HST extra. 50% deposit required.",startDate:"",deadlineDate:"",parallelRooms:false,includeTimeline:true,dbProjectId:"",cover:"",timelineDayNotes:{},scheduledYmds:[]},
   co:{name:"Your Company",phone:"",email:"",lic:"",addr:"",logo:""},
   mk:{mat:20,tax:13},
   rooms:[],ck:{},clients:[],invoices:[],quotes:[],invNum:1,matHideZero:true
@@ -2546,6 +2548,7 @@ function migrate(d){
   if(d.co&&d.co.logo===undefined)d.co.logo="";
   if(d.proj.cover===undefined)d.proj.cover="";
   if(!d.proj.timelineDayNotes||typeof d.proj.timelineDayNotes!=="object")d.proj.timelineDayNotes={};
+  if(!Array.isArray(d.proj.scheduledYmds))d.proj.scheduledYmds=[];
   try{ applyGlobalCoProfileToData(d); }catch(e){}
   (d.rooms||[]).forEach(function(r){
     if(r.thumb===undefined)r.thumb="";
@@ -3699,6 +3702,100 @@ function getWorkingDate(startDateStr, workingDay){
 function ymdFromDateObj(d){
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
+function ymdStringToDate(ymd){
+  var p=(ymd||"").split("-");
+  if(p.length!==3) return null;
+  var d=new Date(parseInt(p[0],10),parseInt(p[1],10)-1,parseInt(p[2],10));
+  return isNaN(d.getTime())?null:d;
+}
+function hasExplicitSchedule(snap){
+  return !!(snap&&snap.proj&&Array.isArray(snap.proj.scheduledYmds)&&snap.proj.scheduledYmds.length>0);
+}
+function getWorkDayCalendarDate(snap, dayNum){
+  if(!snap||!snap.proj||dayNum<1) return null;
+  var a=snap.proj.scheduledYmds;
+  if(Array.isArray(a)&&a.length>0){
+    if(dayNum>a.length) return null;
+    return ymdStringToDate(a[dayNum-1]);
+  }
+  return getWorkingDate(snap.proj.startDate||"", dayNum);
+}
+function materializeScheduledYmdsForSnap(snap){
+  if(!snap||!snap.proj||!snap.rooms) return;
+  var ps=projectScheduleForState(snap.rooms,!!snap.proj.parallelRooms);
+  var t=ps?ps.totalDays:0;
+  var sStr=snap.proj.startDate||"";
+  if(t<1||!sStr) return;
+  var a=[];
+  for(var d=1;d<=t;d++){
+    var dt=getWorkingDate(sStr,d);
+    if(dt) a.push(ymdFromDateObj(dt));
+  }
+  snap.proj.scheduledYmds=a;
+}
+function sortUniqueYmds(arr){
+  var o={};
+  (arr||[]).forEach(function(x){ if(x&&/^\d{4}-\d{2}-\d{2}$/.test(String(x))) o[String(x)]=1; });
+  return Object.keys(o).sort();
+}
+function applyCalendarYmdMutation(snap, ymd, isRemove){
+  if(!snap||!snap.proj) return false;
+  var ps=projectScheduleForState(snap.rooms||[],!!snap.proj.parallelRooms);
+  var maxD=ps&&ps.totalDays?ps.totalDays:0;
+  if(!hasExplicitSchedule(snap)&&maxD>0&&(snap.proj.startDate||"")) materializeScheduledYmdsForSnap(snap);
+  var a=sortUniqueYmds(snap.proj.scheduledYmds||[]);
+  if(isRemove){
+    if(a.indexOf(ymd)<0) return false;
+    a=a.filter(function(x){ return x!==ymd; });
+  }else{
+    if(a.indexOf(ymd)>=0) return false;
+    if(maxD>0&&a.length>=maxD) return false;
+    a.push(ymd);
+    a=sortUniqueYmds(a);
+  }
+  snap.proj.scheduledYmds=a;
+  snap.proj.startDate=a[0]||"";
+  return true;
+}
+function persistProjectCalendarYmd(projectId, ymd, isRemove){
+  if(!ymd||!/^\d{4}-\d{2}-\d{2}$/.test(ymd)) return;
+  var cur=S.proj&&S.proj.dbProjectId;
+  if(String(cur)===String(projectId)){
+    if(!applyCalendarYmdMutation(S, ymd, isRemove)) return;
+    ss();
+    patchProjectMeta({start_date:S.proj.startDate||null});
+    if(curPg==="tl") rTimeline();
+    if(curPg==="cal") rCalendar();
+    if(curPg==="quote") rQuote();
+    return;
+  }
+  var snap=readWorkspaceSnapshotForProject(projectId);
+  if(snap&&snap.proj){
+    if(!applyCalendarYmdMutation(snap, ymd, isRemove)) return;
+    try{ localStorage.setItem("rf7_ws_"+projectId, JSON.stringify(snap)); }catch(e){}
+  }
+  fetch("/api/projects/"+encodeURIComponent(projectId),{
+    method:"PATCH", credentials:"include",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({start_date:(snap&&snap.proj&&snap.proj.startDate)||null})
+  }).catch(function(){});
+  if(curPg==="cal") rCalendar();
+  if(curPg==="quote"&&String(S.proj&&S.proj.dbProjectId)===String(projectId)) rQuote();
+}
+function isYmdAProjectWorkDay(snap, ymdStr){
+  var ps=projectScheduleForState(snap.rooms||[],!!(snap.proj&&snap.proj.parallelRooms));
+  if(!ps||!ps.totalDays) return false;
+  for(var n=1;n<=ps.totalDays;n++){
+    var dt=getWorkDayCalendarDate(snap, n);
+    if(!dt) continue;
+    if(ymdFromDateObj(dt)===ymdStr) return true;
+  }
+  return false;
+}
+function getTimelineDayNoteFromSnapshot(snap, d){
+  if(!snap||!snap.proj||!snap.proj.timelineDayNotes) return "";
+  return String(snap.proj.timelineDayNotes[String(d)]||"");
+}
 function addCalendarDaysYmd(ymd, delta){
   if(!ymd||delta===0)return ymd||'';
   var p=ymd.split('-');
@@ -3732,6 +3829,7 @@ function snapshotFromWorkspacePayload(payload){
     if(p.includeTimeline!==undefined)snap.proj.includeTimeline=p.includeTimeline;
     if(p.clientId!==undefined)snap.proj.clientId=p.clientId;
     if(p.timelineDayNotes!==undefined&&typeof p.timelineDayNotes==="object")snap.proj.timelineDayNotes=p.timelineDayNotes;
+    if(p.scheduledYmds!==undefined&&Array.isArray(p.scheduledYmds))snap.proj.scheduledYmds=p.scheduledYmds;
   }
   if(payload.rooms)snap.rooms=payload.rooms;
   return migrate(snap);
@@ -3753,15 +3851,18 @@ function calColorForPid(pid){
 function persistProjectStartDate(projectId, ymd){
   var cur=S.proj&&S.proj.dbProjectId;
   if(String(cur)===String(projectId)){
+    S.proj.scheduledYmds=[];
     S.proj.startDate=ymd;
     ss();
     patchProjectMeta({start_date:ymd||null});
     if(curPg==='tl')rTimeline();
     if(curPg==='cal')rCalendar();
+    if(curPg==='quote')rQuote();
     return;
   }
   var snap=readWorkspaceSnapshotForProject(projectId);
   if(snap&&snap.proj){
+    snap.proj.scheduledYmds=[];
     snap.proj.startDate=ymd;
     try{localStorage.setItem("rf7_ws_"+projectId, JSON.stringify(snap));}catch(e){}
   }
@@ -3771,6 +3872,7 @@ function persistProjectStartDate(projectId, ymd){
     body:JSON.stringify({start_date:ymd||null})
   }).catch(function(){});
   if(curPg==='cal')rCalendar();
+  if(curPg==='quote')rQuote();
 }
 function fmtDate(d){return d?d.toLocaleDateString('en-CA',{month:'short',day:'numeric'}):'—';}
 function fmtDateFull(d){return d?d.toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'}):'—';}
@@ -6928,6 +7030,8 @@ function timelineDayNoteInput(d, v){
   if(v==null||!String(v).trim()){ delete S.proj.timelineDayNotes[k]; }
   else{ S.proj.timelineDayNotes[k]=String(v); }
   ss();
+  if(typeof curPg==="string"&&curPg==="cal"){ try{ rCalendar(); }catch(e){} }
+  if(typeof curPg==="string"&&curPg==="quote"){ try{ rQuote(); }catch(e){} }
 }
 function pruneTimelineDayNotes(maxDay){
   if(!S.proj||!S.proj.timelineDayNotes) return;
@@ -6942,8 +7046,8 @@ function rTimeline(){
   var ps=projectSchedule();
   var hasData = ps.totalDays>0;
   var startStr = S.proj.startDate || '';
-  var startDate = getWorkingDate(startStr, 1);
-  var endDate   = hasData ? getWorkingDate(startStr, ps.totalDays) : null;
+  var startDate = getWorkDayCalendarDate(S, 1);
+  var endDate   = hasData ? getWorkDayCalendarDate(S, ps.totalDays) : null;
 
   var settings = '<div class="tl-settings">'
     +'<div class="tl-grid">'
@@ -6978,13 +7082,13 @@ function rTimeline(){
 
   var rooms = ps.roomSchedules.map(function(rs,ri){
     var r=rs.room;
-    var rStart=getWorkingDate(startStr, rs.startDay);
-    var rEnd=getWorkingDate(startStr, rs.endDay);
+    var rStart=getWorkDayCalendarDate(S, rs.startDay);
+    var rEnd=getWorkDayCalendarDate(S, rs.endDay);
     var dateRange = rStart?fmtDate(rStart)+' → '+fmtDate(rEnd):'';
     var open = r._tlOpen;
 
     var dayRows = rs.schedule.map(function(day){
-      var dDate = getWorkingDate(startStr, day.dayNum);
+      var dDate = getWorkDayCalendarDate(S, day.dayNum);
       var col0=day.trades.length?(TC[day.trades[0].id]||"#888"):"#b8b8b8";
       var sche=day.trades.map(function(tr){
         var col=TC[tr.id]||"#888";
@@ -7014,7 +7118,7 @@ function rTimeline(){
       +'</div>';
   }).join('');
 
-  var clientPreview = buildClientPreview(ps, startStr);
+  var clientPreview = buildClientPreview(ps);
 
   el.innerHTML=rfMobTabPhBuild(RF_SVG_TL_IC,'Project <em>Timeline</em>','Auto-generated from your rooms &amp; trades',
     '<button type="button" class="btn bp sm" onclick="gP(\'quote\')">View Quote</button>','')
@@ -7028,11 +7132,12 @@ function togTlRoom(ri){
   r._tlOpen=!r._tlOpen;
   rTimeline();
 }
-function sStartDate(v){S.proj.startDate=v;ss();rTimeline();if(curPg==='cal')rCalendar();}
+function sStartDate(v){S.proj.scheduledYmds=[];S.proj.startDate=v;ss();rTimeline();if(curPg==='cal')rCalendar();if(curPg==='quote')rQuote();}
 function togParallel(){S.proj.parallelRooms=!S.proj.parallelRooms;ss();rTimeline();if(curPg==='cal')rCalendar();}
 /** From Timeline: jump to Schedule (calendar) on the month of the project start (or today). */
 function pushTimelineToCalendar(){
   var s=S.proj&&S.proj.startDate;
+  if(S.proj&&S.proj.scheduledYmds&&S.proj.scheduledYmds[0]) s=S.proj.scheduledYmds[0];
   if(s&&/^\d{4}-\d{2}-\d{2}$/.test(s)){
     var p=s.split('-');
     window.__rfCalMonth=p[0]+'-'+p[1];
@@ -7043,15 +7148,15 @@ function pushTimelineToCalendar(){
   gP('cal');
 }
 
-function buildClientPreview(ps, startStr){
+function buildClientPreview(ps){
   if(ps.totalDays===0) return '';
-  var startDate = getWorkingDate(startStr, 1);
+  var startDate = getWorkDayCalendarDate(S, 1);
 
   var weeks={};
   if(startDate){
     ps.roomSchedules.forEach(function(rs){
       rs.schedule.forEach(function(day){
-        var dDate=getWorkingDate(startStr, day.dayNum);
+        var dDate=getWorkDayCalendarDate(S, day.dayNum);
         if(!dDate) return;
         var diff=Math.floor((dDate-startDate)/(86400000*7));
         if(!weeks[diff]) weeks[diff]={trades:{},startDate:null,endDate:null};
@@ -7085,7 +7190,7 @@ function buildClientPreview(ps, startStr){
   for(var dix=1; dix<=ps.totalDays; dix++){
     var nt=String(getTimelineDayNote(dix)||'').trim();
     if(!nt) continue;
-    var dDx=getWorkingDate(startStr, dix);
+    var dDx=getWorkDayCalendarDate(S, dix);
     dayClientBits.push('<div class="tl-wk-dnote"><strong>Day '+dix+'</strong>'+(dDx?' ('+fmtDate(dDx)+')':'')+': '+escHtml(nt)+'</div>');
   }
   var dayClientBlock=dayClientBits.length
@@ -7148,8 +7253,9 @@ function calPtrDown(e){
     if(__cLP.up) window.removeEventListener("pointerup", __cLP.up, true);
     if(__cLP.up) window.removeEventListener("pointercancel", __cLP.up, true);
     __cLP.move=null; __cLP.up=null;
-    calCellDayClear();
+    var hy=__cLP.ymd;
     __cLP.ymd=null; __cLP.scrapped=false;
+    if(hy) calCellRemoveYmd(hy);
   },520);
   __cLP.move=function(ev){
     if(Math.abs(ev.clientX-__cLP.sx)>12||Math.abs(ev.clientY-__cLP.sy)>12){
@@ -7178,12 +7284,13 @@ function calCellDaySet(ymd){
   var pid=window.__rfCalFocusPid;
   if(!pid){ try{ alert("Choose a project above first."); }catch(x){} return; }
   if(!ymd||!/^\d{4}-\d{2}-\d{2}$/.test(ymd)) return;
-  persistProjectStartDate(pid, ymd);
+  persistProjectCalendarYmd(pid, ymd, false);
 }
-function calCellDayClear(){
+function calCellRemoveYmd(ymd){
   var pid=window.__rfCalFocusPid;
   if(!pid){ try{ alert("Choose a project above first."); }catch(x){} return; }
-  persistProjectStartDate(pid, "");
+  if(!ymd||!/^\d{4}-\d{2}-\d{2}$/.test(ymd)) return;
+  persistProjectCalendarYmd(pid, ymd, true);
 }
 var CAL_PH_SVG_S='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>';
 function calPageHeaderHtml(psLine){
@@ -7224,7 +7331,6 @@ function rCalendar(){
     }
     if(focusPid) window.__rfCalFocusPid=focusPid;
     var focusB=bundles.find(function(b){return String(b.id)===focusPid;});
-    var focusStart=focusB&&focusB.snapshot&&focusB.snapshot.proj?String(focusB.snapshot.proj.startDate||""):"";
     var pickRow="";
     if(bundles.length){
       pickRow='<div class="cal-pick-row"><label for="cal-focus-pid">Project</label><select id="cal-focus-pid" onchange="calFocusProjectChange(this.value)">'
@@ -7232,15 +7338,14 @@ function rCalendar(){
             return '<option value="'+escAttr(String(b.id))+'"'+(String(b.id)===focusPid?' selected':'')+'>'
               +escHtml(b.name.length>48?b.name.slice(0,46)+'…':b.name)+'</option>';
           }).join("")
-        +'</select><p class="cal-pick-hint">Select a project, then <strong>tap a day</strong> to set the <strong>project start date</strong> (same field as the Timeline). <strong>Press and hold</strong> a day to <strong>clear</strong> the start date.</p></div>';
+        +'</select><p class="cal-pick-hint">Select a project, then <strong>tap</strong> days to add to the <strong>schedule</strong> (non-consecutive is OK). <strong>Press and hold</strong> a day to <strong>remove</strong> it. Matches Timeline work-day order. Same client notes as the Timeline appear in each day&rsquo;s cell.</p></div>';
     }
     var tlSum="";
     if(focusB&&focusB.snapshot){
       var fs=focusB.snapshot;
       var fps=fs.rooms?projectScheduleForState(fs.rooms,!!(fs.proj&&fs.proj.parallelRooms)):null;
-      var fStartStr=fs.proj&&fs.proj.startDate?String(fs.proj.startDate):"";
-      var sD=fps&&fps.totalDays>0&&fStartStr?getWorkingDate(fStartStr,1):null;
-      var eD=fps&&fps.totalDays>0&&fStartStr?getWorkingDate(fStartStr,fps.totalDays):null;
+      var sD=fps&&fps.totalDays>0?getWorkDayCalendarDate(fs,1):null;
+      var eD=fps&&fps.totalDays>0?getWorkDayCalendarDate(fs,fps.totalDays):null;
       if(!fps||!fps.totalDays){
         tlSum='<div class="cal-tl-summary"><p class="cal-tl-empty">Add rooms with dimensions and quantities to see a timeline, same as the Timeline view.</p></div>';
       }else{
@@ -7259,13 +7364,12 @@ function rCalendar(){
       var snap=b.snapshot;
       if(!snap||!snap.rooms)return;
       var ps=projectScheduleForState(snap.rooms, !!snap.proj.parallelRooms);
-      var startStr=snap.proj.startDate||'';
-      if(!startStr||ps.totalDays===0)return;
+      if(!ps||ps.totalDays===0) return;
       var col=calColorForPid(b.id);
       var projShort=b.name.length>18?b.name.slice(0,16)+'…':b.name;
       ps.roomSchedules.forEach(function(rs){
         rs.schedule.forEach(function(day){
-          var dDate=getWorkingDate(startStr, day.dayNum);
+          var dDate=getWorkDayCalendarDate(snap, day.dayNum);
           if(!dDate)return;
           if(dDate.getFullYear()!==y||dDate.getMonth()!==mo-1)return;
           var dom=dDate.getDate();
@@ -7279,21 +7383,38 @@ function rCalendar(){
         });
       });
     });
+    var noteByDomForFocus={};
+    if(focusB&&focusB.snapshot&&focusB.snapshot.rooms){
+      var fsn=focusB.snapshot;
+      var fpn=projectScheduleForState(fsn.rooms,!!(fsn.proj&&fsn.proj.parallelRooms));
+      if(fpn&&fpn.totalDays){
+        for(var nd=1;nd<=fpn.totalDays;nd++){
+          var ddd=getWorkDayCalendarDate(fsn,nd);
+          if(!ddd||ddd.getFullYear()!==y||ddd.getMonth()!==mo-1) continue;
+          var domN=ddd.getDate();
+          var ntx=String(getTimelineDayNoteFromSnapshot(fsn,nd)||"").trim();
+          if(ntx) noteByDomForFocus[domN]=ntx;
+        }
+      }
+    }
     var d0=new Date(y,mo-1,1).getDay();
     var cells=[];
     for(di=0;di<d0;di++) cells.push('<div class="cal-cell cal-out"></div>');
     var today=new Date();
+    var fSnap=focusB&&focusB.snapshot?focusB.snapshot:null;
     for(di=1;di<=monthDays;di++){
       var cellD=new Date(y,mo-1,di);
       var isToday=today.getFullYear()===y&&today.getMonth()===mo-1&&today.getDate()===di;
       var wend=cellD.getDay()===0||cellD.getDay()===6;
       var ymdStr=y+'-'+String(mo).padStart(2,'0')+'-'+String(di).padStart(2,'0');
-      var isStart=!!(focusStart&&focusStart===ymdStr);
+      var isWork=fSnap?isYmdAProjectWorkDay(fSnap,ymdStr):false;
+      var noteF=noteByDomForFocus[di]||"";
+      var nShort=noteF.length>28?noteF.slice(0,26)+"\u2026":noteF;
       var arr=dayMap[di]||[];
-      var vis=4;
-      var chips=arr.slice(0,vis).join("");
+      var vis=noteF?3:4;
+      var chips=(noteF?('<div class="cal-day-note" title="'+escAttr(noteF)+'">'+escHtml(nShort)+"</div>"):"")+arr.slice(0,vis).join("");
       if(arr.length>vis) chips+='<div class="cal-chip-more" aria-hidden="true">+'+(arr.length-vis)+" more</div>";
-      var ccls="cal-cell cal-cell--day"+(isToday?" cal-today":"")+(wend&&!isToday?" cal-out":"")+(isStart?" cal-cell--start":"");
+      var ccls="cal-cell cal-cell--day"+(isToday?" cal-today":"")+(wend&&!isToday?" cal-out":"")+(isWork?" cal-cell--start":"");
       cells.push('<div class="'+ccls+'" data-ymd="'+ymdStr+'" role="button" tabindex="0" onpointerdown="calPtrDown(event)" onkeydown="calCellKey(event)">'
         +'<div class="cal-dn">'+di+'</div><div class="cal-chips">'+chips+"</div></div>");
     }
@@ -7312,8 +7433,8 @@ function rCalendar(){
       +'<button type="button" class="btn bp sm" onclick="rCalNavToday()">Today</button>'
       +'</div>'
       +pickRow+tlSum
-      +'<div class="cal-grid-wrap"><div class="cal-grid-h">Calendar · same working-day rules as the Timeline</div><div class="cal-grid">'+wh+cells.join('')+'</div>'
-      +'<p class="cal-legend">The summary above matches the Timeline (start, working-day duration, rooms). In the grid, chips show which trades run on each <strong>working day</strong> (weekends off). Colours = projects. Tap a day to set start; <strong>press and hold</strong> to clear.</p>'
+      +'<div class="cal-grid-wrap"><div class="cal-grid-h">Calendar · work days + notes from Timeline</div><div class="cal-grid">'+wh+cells.join('')+'</div>'
+      +'<p class="cal-legend">The summary matches the Timeline. Each <strong>tap</strong> adds a <strong>work day</strong> to the list (in date order, gaps allowed). <strong>Press and hold</strong> removes a day. <strong>Client notes</strong> from the Timeline (Day 1, 2&hellip;) show at the top of the matching cell. Trades: coloured chips. Max days = your timeline length.</p>'
       +'</div></div>';
     requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
   }).catch(function(){
@@ -7459,9 +7580,8 @@ function buildQuoteTimeline(){
   if(!S.proj.includeTimeline) return '';
   var ps=projectSchedule();
   if(ps.totalDays===0) return '';
-  var startStr=S.proj.startDate||'';
-  var startDate=getWorkingDate(startStr,1);
-  var endDate=getWorkingDate(startStr,ps.totalDays);
+  var startDate=getWorkDayCalendarDate(S,1);
+  var endDate=getWorkDayCalendarDate(S,ps.totalDays);
 
   var datesLine = startDate
     ? 'Estimated Start: <strong>'+fmtDateLong(startDate)+'</strong> &nbsp;·&nbsp; Estimated Completion: <strong>'+fmtDateLong(endDate)+'</strong>'
@@ -7471,7 +7591,7 @@ function buildQuoteTimeline(){
   if(startDate){
     ps.roomSchedules.forEach(function(rs){
       rs.schedule.forEach(function(day){
-        var dDate=getWorkingDate(startStr, day.dayNum);
+        var dDate=getWorkDayCalendarDate(S, day.dayNum);
         if(!dDate) return;
         var diff=Math.floor((dDate-startDate)/(86400000*7));
         if(!weeks[diff]) weeks[diff]={trades:{},startDate:null,endDate:null};
@@ -7505,7 +7625,7 @@ function buildQuoteTimeline(){
   for(var ddx=1; ddx<=ps.totalDays; ddx++){
     var tn=String(getTimelineDayNote(ddx)||'').trim();
     if(!tn) continue;
-    var dDt0=getWorkingDate(startStr, ddx);
+    var dDt0=getWorkDayCalendarDate(S, ddx);
     var dt0=dDt0?fmtDate(dDt0):'';
     dayNoteLines.push('<div class="q-tl-dayline">'
       +'<div class="q-tl-dl-num">D'+ddx+'</div>'
