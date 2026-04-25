@@ -1995,6 +1995,22 @@ a.ni{color:inherit;text-decoration:none;}
 .mat-ck.on{background:var(--ac);border-color:var(--ac);color:#fff;}
 .mat-add-section{margin:8px 16px 24px;padding:16px;background:#fff;border:1px solid var(--bd);border-radius:8px;}
 .mat-add-grid{display:flex;gap:8px;}
+.rf-cat-grid{display:flex;flex-direction:column;gap:8px;}
+.rf-cat-row{display:flex;align-items:stretch;gap:10px;padding:10px;background:#fff;border:1px solid var(--bd);border-radius:8px;}
+.rf-cat-row .rf-cat-thumb{width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--bd2);cursor:zoom-in;flex-shrink:0;background:var(--sf2);}
+.rf-cat-thumb--empty{cursor:default;background:repeating-linear-gradient(-45deg,var(--sf2),var(--sf2) 4px,var(--bd2) 4px,var(--bd2) 5px);opacity:0.7;}
+.rf-cat-mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+.rf-cat-mkrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:12px;margin-top:2px;}
+.rf-cat-mkrow .rf-sup{color:var(--tx3);font-size:11px;}
+.rf-cat-mkrow .rf-cat-mkin{width:48px;padding:3px 6px;border:1px solid var(--bd2);border-radius:6px;font-size:12px;}
+.rf-cat-mkrow .rf-client-u{font-weight:700;font-size:13px;color:var(--tx);}
+.rf-cat-mkrow .rf-line-tot{font-size:11px;color:var(--tx2);}
+.rf-cat-step{display:flex;align-items:center;gap:2px;flex-shrink:0;align-self:center;}
+.rf-cat-step .tc-cqb{min-width:28px;}
+.rf-cat-step .rf-cat-q{width:36px;text-align:center;border:1px solid var(--bd2);border-radius:6px;padding:4px;font-size:13px;}
+.rf-lightbox{position:fixed;inset:0;z-index:20050;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;padding:16px;cursor:zoom-out;}
+.rf-lightbox.rf-lb-on{display:flex;}
+.rf-lightbox-img{max-width:96vw;max-height:92vh;object-fit:contain;border-radius:4px;cursor:default;}
 
 /* ── CLIENT DB ── */
 .cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
@@ -2305,6 +2321,9 @@ a.ni{color:inherit;text-decoration:none;}
     <button class="pdf-cancel" onclick="closePdf()">Cancel</button>
   </div>
 </div>
+<div id="rf-lightbox" class="rf-lightbox" onclick="rfCloseLightbox(event)" role="dialog" aria-modal="true" aria-label="Image preview">
+  <img id="rf-lightbox-img" class="rf-lightbox-img" alt="" onclick="event.stopPropagation()"/>
+</div>
 
 <script>
 "use strict";
@@ -2312,113 +2331,13 @@ a.ni{color:inherit;text-decoration:none;}
 var TC={demo:"#e85547",framing:"#e87747",concrete:"#78909c",roofing:"#5c7a8a",electrical:"#e8c547",plumbing:"#47a0e8",hvac:"#8847e8",lowvolt:"#5c6bc0",security:"#455a64",comdoor:"#6d4c41",insulation:"#47e8c5",drywall:"#e847a0",tile:"#a0e847",flooring:"#e8a047",painting:"#47e8a0",trim:"#e88847",cabinets:"#7047e8",closets:"#8b7355",finishing:"#5d9c8a"};
 var TN={demo:"Demolition",framing:"Framing",concrete:"Concrete",roofing:"Roofing",electrical:"Electrical",plumbing:"Plumbing",hvac:"HVAC",lowvolt:"Low voltage",security:"Security",comdoor:"Commercial door hardware",insulation:"Insulation",drywall:"Drywall",tile:"Tile",flooring:"Flooring",painting:"Painting",trim:"Trim & Millwork",cabinets:"Cabinets & tops",closets:"Closets",finishing:"Finishing"};
 var TIC={demo:"🔨",framing:"🪵",concrete:"🪨",roofing:"🏠",electrical:"⚡",plumbing:"💧",hvac:"🌀",lowvolt:"🔌",security:"🛡",comdoor:"🚪",insulation:"🧱",drywall:"⬜",tile:"🔲",flooring:"🪵",painting:"🎨",trim:"📏",cabinets:"🗄",closets:"👔",finishing:"✨"};
-var TB={
-  demo:[{id:"d2",l:"🗑 Disposal bin",u:"load",p:350},{id:"d3",l:"☣ Hazmat disposal",u:"load",p:450},{id:"dm1",l:"🧤 Plastic sheeting",u:"roll",p:18},{id:"dm2",l:"🗃 Demo bags",u:"box",p:24},{id:"dm3",l:"😷 Respirators",u:"ea",p:32}],
-  framing:[{id:"fhl",l:"👷 Framing labour",u:"hrs",p:75},{id:"frl1",l:"🪵 Studs 2x4",u:"ea",p:4.50},{id:"frl2",l:"🪵 Studs 2x6",u:"ea",p:6.50},{id:"frl3",l:"📏 Plates 2x4",u:"ea",p:5},{id:"frl4",l:"📏 Plates 2x6",u:"ea",p:6},{id:"frl5",l:"🪵 LVL beam",u:"ft",p:12},{id:"frl6",l:"🪵 Header material",u:"ft",p:8},{id:"frl7",l:"🧱 Blocking",u:"ea",p:3},{id:"frh1",l:"🪝 Joist hangers",u:"ea",p:4.5},{id:"frh2",l:"🌀 Hurricane ties",u:"ea",p:3.2},{id:"frh3",l:"🪛 Structural screws",u:"box",p:45},{id:"frh4",l:"🪵 Nail gun nails",u:"box",p:38},{id:"frh5",l:"🧪 Construction adhesive",u:"tube",p:8}],
-  concrete:[{id:"cf1",l:"🚛 Ready-mix (ordered)",u:"cy",p:185},{id:"cf2",l:"📦 60lb premix bags",u:"bag",p:6.5},{id:"cf3",l:"📦 80lb premix bags",u:"bag",p:8.5},{id:"cf4",l:"🔩 Rebar / mesh",u:"sqft",p:1.2},{id:"cf5",l:"👷 Concrete labour",u:"hrs",p:95}],
-  roofing:[{id:"rf1",l:"🔲 Architectural shingles",u:"sq",p:125},{id:"rf2",l:"📄 Synthetic underlayment",u:"roll",p:95},{id:"rf3",l:"📐 Drip edge",u:"lf",p:4.2},{id:"rf4",l:"👑 Ridge cap",u:"bundle",p:48},{id:"rf5",l:"🔩 Roofing nails",u:"lb",p:5.5},{id:"rf6",l:"👷 Roofing labour",u:"hrs",p:88}],
-  electrical:[
-    {id:"el1",l:"👷 Electrician Labour",u:"hrs",p:110},
-    {id:"er1",l:"🔌 Wiring 14/2",u:"roll",p:85},
-    {id:"er2",l:"🔌 Wiring 14/3",u:"roll",p:88},
-    {id:"er3",l:"🔌 Wiring 12/2",u:"roll",p:92},
-    {id:"er4",l:"🔌 Wiring 12/3",u:"roll",p:95},
-    {id:"er5",l:"🔌 Wiring 10/2",u:"roll",p:110},
-    {id:"er6",l:"🔌 Wiring 10/3",u:"roll",p:120},
-    {id:"er7",l:"🔌 Wiring 8/3",u:"roll",p:145},
-    {id:"er8",l:"🔌 Wiring 6/3",u:"roll",p:185},
-    {id:"er9",l:"🔩 Wiring 4/0 aluminum",u:"roll",p:220},
-    {id:"er10",l:"📡 Low voltage 18/2",u:"roll",p:45},
-    {id:"er11",l:"📡 Low voltage 22/4",u:"roll",p:55},
-    {id:"er12",l:"⬛ Conduit EMT",u:"ft",p:1.2},
-    {id:"er13",l:"⬜ Conduit PVC",u:"ft",p:0.85},
-    {id:"er14",l:"📦 Junction Boxes",u:"ea",p:8},
-    {id:"er15",l:"🧰 Wire Connectors / Marettes",u:"bag",p:18},
-    {id:"er16",l:"⏻ Breakers single pole",u:"ea",p:8},
-    {id:"er17",l:"⏻ Breakers double pole",u:"ea",p:18},
-    {id:"er18",l:"⏹ AFCI Breaker",u:"ea",p:55},
-    {id:"er19",l:"⏹ GFCI Breaker",u:"ea",p:65}
-  ],
-  plumbing:[
-    {id:"pl2",l:"🔧 Supply Lines",u:"ea",p:18},
-    {id:"pl4",l:"🛠 Tools",u:"ea",p:0}
-  ],
-  hvac:[{id:"hv3",l:"👷 HVAC labour",u:"hrs",p:95},{id:"hvr1",l:"🔧 Refrigerant line set",u:"ft",p:8.5},{id:"hvr2",l:"⚡ Electrical disconnect",u:"ea",p:85},{id:"hvr3",l:"🔌 Thermostat wire",u:"roll",p:65},{id:"hvr4",l:"💧 Condensate line",u:"ft",p:4.2},{id:"hvr5",l:"📦 Duct tape / mastic",u:"ea",p:12},{id:"hve1",l:"🔥 Furnace",u:"ea",p:2200},{id:"hve2",l:"❄ AC unit",u:"ea",p:2800},{id:"hve3",l:"♨ Heat pump",u:"ea",p:3200},{id:"hve4",l:"🌀 Air handler",u:"ea",p:1400},{id:"hve5",l:"🌬 HRV unit",u:"ea",p:1100},{id:"hve6",l:"💧 Humidifier",u:"ea",p:650},{id:"hvd1",l:"➡ Supply duct",u:"ft",p:4.2},{id:"hvd2",l:"⬅ Return duct",u:"ft",p:3.8},{id:"hvd3",l:"〰 Flex duct",u:"ft",p:2.2},{id:"hvd4",l:"🪧 Registers",u:"ea",p:45},{id:"hvd5",l:"⬛ Return grilles",u:"ea",p:38},{id:"hvd6",l:"⬛ Plenum box",u:"ea",p:120}],
-  insulation:[{id:"in3",l:"👷 Insulation labour",u:"hrs",p:55},{id:"inb1",l:"🧱 R-14 batt",u:"bag",p:38},{id:"inb2",l:"🧱 R-20 batt",u:"bag",p:44},{id:"inb3",l:"🧱 R-22 batt",u:"bag",p:48},{id:"inb4",l:"🧱 R-28 batt",u:"bag",p:56},{id:"isf1",l:"💨 Open cell spray",u:"sqft",p:1.2},{id:"isf2",l:"🧱 Closed cell spray",u:"sqft",p:2.8},{id:"ird1",l:"⬛ 1 inch rigid",u:"sheet",p:32},{id:"ird2",l:"⬛ 2 inch rigid",u:"sheet",p:48}],
-  drywall:[{id:"dwr1",l:"⬜ Drywall 1/2 inch",u:"sheet",p:18},{id:"dwr2",l:"⬜ Drywall 5/8 inch",u:"sheet",p:22},{id:"dwr3",l:"🟦 Moisture resistant",u:"sheet",p:28},{id:"dwr4",l:"🔥 Fire rated",u:"sheet",p:32},{id:"dwr5",l:"📐 Corner bead",u:"ft",p:2.1},{id:"dwr6",l:"🪛 Drywall screws",u:"box",p:28},{id:"dwr7",l:"🪣 Joint compound",u:"pail",p:32},{id:"dwr8",l:"🎞 Mesh tape",u:"roll",p:14},{id:"dwr9",l:"🎞 Paper tape",u:"roll",p:12},{id:"dwf1",l:"🫙 Primer",u:"gallon",p:32},{id:"dwf2",l:"🪵 Sandpaper",u:"pack",p:8}],
-  tile:[{id:"tih",l:"👷 Tile labour",u:"sqft",p:12},{id:"tif1",l:"🔲 Floor tile",u:"sqft",p:6},{id:"tif2",l:"🟫 Wall tile",u:"sqft",p:8},{id:"tif3",l:"🧩 Mosaic tile",u:"sqft",p:14},{id:"tif4",l:"🚇 Subway tile",u:"sqft",p:9},{id:"tif5",l:"⬜ Large format tile",u:"sqft",p:11},{id:"tis1",l:"🪣 Thinset",u:"bag",p:28},{id:"tis2",l:"🪣 Grout",u:"bag",p:32},{id:"tis3",l:"⬛ Tile spacers",u:"bag",p:12},{id:"tis4",l:"⬛ Backer board",u:"sheet",p:14},{id:"tis5",l:"🛡 Waterproofing membrane",u:"sqft",p:4.5},{id:"tit1",l:"📏 Tile edging",u:"ft",p:6},{id:"tit2",l:"📐 Schluter strip",u:"ft",p:8.5},{id:"tit3",l:"🧪 Caulking",u:"tube",p:6}],
-  flooring:[{id:"fll",l:"👷 Flooring labour",u:"sqft",p:4},{id:"flm1",l:"🪵 Hardwood",u:"sqft",p:8},{id:"flm2",l:"🪵 Engineered hardwood",u:"sqft",p:7},{id:"flm3",l:"🪵 Laminate",u:"sqft",p:3.5},{id:"flm4",l:"⬛ LVP",u:"sqft",p:4.2},{id:"flm5",l:"🔲 Tile",u:"sqft",p:5.5},{id:"flm6",l:"🧶 Carpet",u:"sqft",p:3},{id:"flu1",l:"🧽 Foam underlay",u:"sqft",p:0.6},{id:"flu2",l:"🧻 Moisture barrier",u:"sqft",p:0.4},{id:"flu3",l:"🪵 Cork underlay",u:"sqft",p:1.1},{id:"fli1",l:"🪛 Flooring nails",u:"box",p:38},{id:"fli2",l:"🧪 Adhesive",u:"gallon",p:45},{id:"fli3",l:"➖ Transition strips",u:"ea",p:18},{id:"fli4",l:"📏 Baseboards",u:"ft",p:3.2},{id:"fli5",l:"〰 Quarter round",u:"ft",p:2.4}],
-  painting:[{id:"pah",l:"👷 Paint labour",u:"hrs",p:55},{id:"pnt1",l:"🪣 Interior paint",u:"gallon",p:58},{id:"pnt2",l:"🪣 Exterior paint",u:"gallon",p:64},{id:"pnt3",l:"🫙 Primer",u:"gallon",p:42},{id:"pnt4",l:"🪣 Ceiling paint",u:"gallon",p:48},{id:"pnt5",l:"🪣 Trim paint",u:"gallon",p:52},{id:"sup1",l:"🎨 Roller covers",u:"ea",p:6},{id:"sup2",l:"🖌 Paint brushes",u:"ea",p:12},{id:"sup3",l:"🧻 Painter tape",u:"roll",p:8.5},{id:"sup4",l:"🗂 Drop sheets",u:"ea",p:14},{id:"sup5",l:"🪵 Sandpaper",u:"pack",p:8},{id:"sup6",l:"🧪 Caulking",u:"tube",p:5.5}],
-  trim:[{id:"trl",l:"👷 Trim & millwork labour",u:"hrs",p:65},{id:"trb1",l:"📏 Baseboard",u:"ft",p:2.5},{id:"trb2",l:"🚪 Door casing",u:"ft",p:2.8},{id:"trb3",l:"🪟 Window casing",u:"ft",p:2.7},{id:"trb4",l:"👑 Crown moulding",u:"ft",p:4.5},{id:"trb5",l:"➖ Chair rail",u:"ft",p:3.2},{id:"trb6",l:"⬛ Wainscoting",u:"sqft",p:6.5},{id:"trd1",l:"🚪 Interior door",u:"ea",p:380},{id:"trd2",l:"🚪 Exterior door",u:"ea",p:1200},{id:"trd3",l:"🚪 Pocket door",u:"ea",p:450},{id:"trd4",l:"🚪 Barn door",u:"ea",p:650},{id:"trh1",l:"🪝 Door hinges",u:"set",p:28},{id:"trh2",l:"🚪 Door handles",u:"ea",p:45},{id:"trh3",l:"⏹ Door stops",u:"ea",p:5},{id:"trh4",l:"⏱ Closers",u:"ea",p:85}],
-  cabinets:[{id:"cah",l:"👷 Cabinet install labour",u:"hrs",p:75},{id:"cb1",l:"🗄 Upper cabinets",u:"ln ft",p:280},{id:"cb2",l:"🗄 Lower cabinets",u:"ln ft",p:320},{id:"cb3",l:"🗄 Tall cabinets",u:"ea",p:1200},{id:"cb4",l:"🗄 Island cabinets",u:"ln ft",p:300},{id:"cx1",l:"⬜ Quartz",u:"sqft",p:75},{id:"cx2",l:"⬜ Granite",u:"sqft",p:65},{id:"cx3",l:"⬜ Laminate",u:"sqft",p:32},{id:"cx4",l:"🪵 Butcher block",u:"sqft",p:45},{id:"ch1",l:"🪝 Cabinet handles",u:"ea",p:8.5},{id:"ch2",l:"🪝 Cabinet hinges",u:"ea",p:6.5},{id:"ch3",l:"🗃 Drawer slides",u:"ea",p:24},{id:"ch4",l:"⏹ Soft close hinges",u:"ea",p:9}],
-  lowvolt:[{id:"lhl",l:"👷 Low-voltage labour",u:"hrs",p:95},{id:"lvc1",l:"🌐 Cat6 outdoor",u:"ft",p:3.8},{id:"lvc2",l:"🔥 Cat6 plenum",u:"ft",p:3.2},{id:"lvc3",l:"📡 Cat6 non-plenum",u:"ft",p:2.6},{id:"lvc4",l:"📡 Coax RG6",u:"ft",p:1.8},{id:"lvc5",l:"🖥 HDMI cable",u:"ft",p:4.5},{id:"lvc6",l:"🔊 Speaker wire",u:"ft",p:2.1},{id:"lve1",l:"🔌 Patch panel",u:"ea",p:95},{id:"lve2",l:"🌐 Network switch",u:"ea",p:180},{id:"lve3",l:"🛜 Wireless AP",u:"ea",p:220},{id:"lve4",l:"🔀 HDMI to RJ45 adapter",u:"ea",p:65},{id:"lve5",l:"🖥 Monitor",u:"ea",p:280},{id:"lvp1",l:"🧱 PVC conduit",u:"ft",p:2.2},{id:"lvp2",l:"🪝 PVC connectors",u:"ea",p:4.5},{id:"lvp3",l:"⬛ PVC boxes",u:"ea",p:12},{id:"lvp4",l:"📷 Camera back box",u:"ea",p:28}],
-  closets:[{id:"cl1",l:"👷 Closet install labour",u:"hrs",p:72},{id:"cl2",l:"📐 Wire / melamine",u:"ln ft",p:42},{id:"cl3",l:"🚪 Bifold / bypass doors",u:"ea",p:240}],
-  finishing:[{id:"fn1",l:"👷 Punch / detail labour",u:"hrs",p:62},{id:"fn2",l:"🔧 Hardware / accessories",u:"ea",p:28},{id:"fn3",l:"✨ Final touch-ups",u:"hrs",p:58}],
-  security:[{id:"shl",l:"👷 Security labour",u:"hrs",p:95},{id:"sca1",l:"🎥 Interior camera",u:"ea",p:180},{id:"sca2",l:"🎥 Exterior camera",u:"ea",p:220},{id:"sca3",l:"🎥 PTZ camera",u:"ea",p:1200},{id:"sca4",l:"🚪 Doorbell camera",u:"ea",p:150},{id:"ses1",l:"📼 NVR unit",u:"ea",p:450},{id:"ses2",l:"🔌 PoE switch",u:"ea",p:320},{id:"ses3",l:"💾 Hard drive",u:"ea",p:120},{id:"ses4",l:"🖥 Monitor",u:"ea",p:280},{id:"sea1",l:"🧲 Mag lock",u:"ea",p:180},{id:"sea2",l:"💳 Card reader",u:"ea",p:145},{id:"sea3",l:"⏹ Exit button",u:"ea",p:45},{id:"sea4",l:"🎛 Access controller",u:"ea",p:890},{id:"sea5",l:"🗝 Key fobs",u:"ea",p:8}],
-  comdoor:[{id:"cd1",l:"🚪 Door closers",u:"ea",p:85},{id:"cd2",l:"🚪 Exit devices",u:"ea",p:420},{id:"cd3",l:"📎 Hinges",u:"ea",p:28},{id:"cd4",l:"🔐 Locksets",u:"ea",p:180},{id:"cd5",l:"🛑 Door stops",u:"ea",p:12},{id:"cd6",l:"👷 Hardware labour",u:"hrs",p:95}]
-};
+/* Legacy line-item seed empty — materials use supplier catalog (cached_products). */
+var TB={};
 var RICH_MEP_TRADES={demo:1,framing:1,hvac:1,insulation:1,drywall:1,tile:1,flooring:1,painting:1,trim:1,cabinets:1,lowvolt:1,security:1};
 var RICH_LABOUR_DUP={
   hvac:{hv3:1},insulation:{in3:1},tile:{tih:1},flooring:{fll:1},painting:{pah:1},trim:{trl:1},cabinets:{cah:1},lowvolt:{lhl:1},security:{shl:1},framing:{fhl:1}
 };
-var TRADE_SECTIONS={
-  demo:[
-    {k:"l1",t:"Labour & disposal",h:"r",ids:["d2","d3"]},
-    {k:"l2",t:"Materials",h:"m",ids:["dm1","dm2","dm3"]}
-  ],
-  framing:[
-    {k:"lumber",t:"Lumber",h:"r",ids:["frl1","frl2","frl3","frl4","frl5","frl6","frl7"]},
-    {k:"hw",t:"Hardware",h:"f",ids:["frh1","frh2","frh3","frh4","frh5"]}
-  ],
-  hvac:[
-    {k:"rough",t:"Rough-in material",h:"r",ids:["hvr1","hvr2","hvr3","hvr4","hvr5"]},
-    {k:"equip",t:"Equipment",h:"f",ids:["hve1","hve2","hve3","hve4","hve5","hve6"]},
-    {k:"duct",t:"Ductwork",h:"f",ids:["hvd1","hvd2","hvd3","hvd4","hvd5","hvd6"]}
-  ],
-  insulation:[
-    {k:"batt",t:"Batt insulation",h:"r",ids:["inb1","inb2","inb3","inb4"]},
-    {k:"sf",t:"Spray foam",h:"f",ids:["isf1","isf2"]},
-    {k:"rigid",t:"Rigid board",h:"f",ids:["ird1","ird2"]}
-  ],
-  drywall:[
-    {k:"roughin",t:"Rough-in material",h:"r",ids:["dwr1","dwr2","dwr3","dwr4","dwr5","dwr6","dwr7","dwr8","dwr9"]},
-    {k:"fin",t:"Finishing",h:"f",ids:["dwf1","dwf2"]}
-  ],
-  tile:[
-    {k:"til",t:"Tile material",h:"r",ids:["tif1","tif2","tif3","tif4","tif5"]},
-    {k:"set",t:"Setting material",h:"f",ids:["tis1","tis2","tis3","tis4","tis5"]},
-    {k:"trm",t:"Trim",h:"f",ids:["tit1","tit2","tit3"]}
-  ],
-  painting:[
-    {k:"paint",t:"Paint",h:"r",ids:["pnt1","pnt2","pnt3","pnt4","pnt5"]},
-    {k:"sup",t:"Supplies",h:"f",ids:["sup1","sup2","sup3","sup4","sup5","sup6"]}
-  ],
-  flooring:[
-    {k:"mat",t:"Material",h:"r",ids:["flm1","flm2","flm3","flm4","flm5","flm6"]},
-    {k:"und",t:"Underlayment",h:"f",ids:["flu1","flu2","flu3"]},
-    {k:"inst",t:"Installation",h:"f",ids:["fli1","fli2","fli3","fli4","fli5"]}
-  ],
-  trim:[
-    {k:"tr",t:"Trim",h:"r",ids:["trb1","trb2","trb3","trb4","trb5","trb6"]},
-    {k:"dr",t:"Doors",h:"f",ids:["trd1","trd2","trd3","trd4"]},
-    {k:"hdw",t:"Hardware",h:"f",ids:["trh1","trh2","trh3","trh4"]}
-  ],
-  cabinets:[
-    {k:"cb",t:"Cabinets",h:"r",ids:["cb1","cb2","cb3","cb4"]},
-    {k:"ct",t:"Countertops",h:"f",ids:["cx1","cx2","cx3","cx4"]},
-    {k:"hd",t:"Hardware",h:"f",ids:["ch1","ch2","ch3","ch4"]}
-  ],
-  lowvolt:[
-    {k:"cab",t:"Cable",h:"r",ids:["lvc1","lvc2","lvc3","lvc4","lvc5","lvc6"]},
-    {k:"eq",t:"Equipment",h:"f",ids:["lve1","lve2","lve3","lve4","lve5"]},
-    {k:"cnd",t:"Conduit",h:"f",ids:["lvp1","lvp2","lvp3","lvp4"]}
-  ],
-  security:[
-    {k:"cam",t:"Cameras",h:"r",ids:["sca1","sca2","sca3","sca4"]},
-    {k:"sys",t:"Systems",h:"f",ids:["ses1","ses2","ses3","ses4"]},
-    {k:"acc",t:"Access control",h:"f",ids:["sea1","sea2","sea3","sea4","sea5"]}
-  ]
-};
+var TRADE_SECTIONS={};
 function isRichMepId(id){ return !!(id && RICH_MEP_TRADES[id]); }
 function hideRichLabourDuplicate(t,it){
   if(!t||!it||!t.id) return false;
@@ -2439,28 +2358,8 @@ function lineItemsSubtotalForIds(t, ids){
 }
 function ensureRichTradeItems(t){
   if(!t || !RICH_MEP_TRADES[t.id]) return;
-  var base=TB[t.id];
-  if(!base) return;
-  var byId={};
-  (t.items||[]).forEach(function(it){ if(it&&it.id) byId[it.id]=it; });
-  t.items=base.map(function(b){
-    var ex=byId[b.id];
-    if(ex) return {id:ex.id,l:ex.l||b.l,u:ex.u||b.u,p:ex.p!==undefined?ex.p:b.p,qty:ex.qty||0,wasAuto:ex.wasAuto,autoSet:ex.autoSet};
-    return {id:b.id,l:b.l,u:b.u,p:b.p,qty:0};
-  });
-  if(t.id==='cabinets' && t.fx && t.fx.cabinets && !t._cabsFxMig){
-    var fxa=t.fx.cabinets;
-    fxa.forEach(function(fx){
-      if(!fx) return;
-      var m={upper:"cb1",lower:"cb2",counter:"cx1",island:"cb4",pantry:"cb3"};
-      var k=m[fx.id];
-      if(!k) return;
-      t.items.forEach(function(it){
-        if(it.id===k) it.qty=Math.max(it.qty||0,fx.qty||0);
-      });
-    });
-    t._cabsFxMig=1;
-  }
+  ensureCatPick(t);
+  if(!t.items) t.items=[];
 }
 function richTradeSectionHeaderClass(h){
   if(h==='f') return "tc-sec-h-fixfin";
@@ -3258,6 +3157,35 @@ function saveRoomToSupabase(room, roomIndex){
 
 function f(n){return "$"+Math.round(n).toLocaleString();}
 function ic(it){return(it.p||0)*(it.qty||0)*(1+S.mk.mat/100);}
+function ensureCatPick(t){
+  if(!t||typeof t!=="object") return;
+  if(!t.catPick||typeof t.catPick!=="object") t.catPick={};
+}
+function rfParseSupplierUnit(priceText){
+  if(!priceText||priceText==="—") return 0;
+  var m=String(priceText).match(/(\d+(?:\.\d+)?)/);
+  if(!m) return 0;
+  return parseFloat(m[1])||0;
+}
+function catalogLineClientTotal(sup,qty,mupPct,globalMkPct){
+  var gmk=(globalMkPct!=null?globalMkPct:(S.mk&&S.mk.mat)||0)/100;
+  var m=mupPct!=null&&!isNaN(mupPct)?Number(mupPct):20;
+  var line=Math.max(0,sup)*Math.max(0,qty)*(1+m/100);
+  return line*(1+gmk);
+}
+function catalogClientTotal(t,globalMkOverride){
+  ensureCatPick(t);
+  if(!t.catPick) return 0;
+  var g=globalMkOverride!=null?globalMkOverride:(S.mk&&S.mk.mat)||0;
+  var s=0;
+  Object.keys(t.catPick).forEach(function(pid){
+    var o=t.catPick[pid];
+    if(!o||!(o.q>0)) return;
+    var sup=o.sup!=null?o.sup:0;
+    s+=catalogLineClientTotal(sup,o.q,o.m,g);
+  });
+  return s;
+}
 /* Plumbing TB used to include pl1 “Plumber Labour”; main Labour block is source of truth — hide/ignore pl1. */
 function hidePlumberLabourItem(t,it){ return t&&t.id==='plumbing'&&it&&it.id==='pl1'; }
 function hideElectricalLabourItem(t,it){ return t&&t.id==='electrical'&&it&&it.id==='el1'; }
@@ -3272,13 +3200,8 @@ function itemContributesToClientTotal(t,it){
 function ensurePlumbingTradeItems(t){
   if(!t||t.id!=='plumbing') return;
   if(t.toolsQuoteToClient===undefined) t.toolsQuoteToClient=true;
-  var base=TB.plumbing, byId={};
-  (t.items||[]).forEach(function(it){ if(it&&it.id) byId[it.id]=it; });
-  t.items=base.map(function(b){
-    var ex=byId[b.id];
-    if(ex) return {id:ex.id,l:ex.l||b.l,u:ex.u||b.u,p:ex.p!==undefined?ex.p:b.p,qty:ex.qty||0,wasAuto:ex.wasAuto,autoSet:ex.autoSet};
-    return {id:b.id,l:b.l,u:b.u,p:b.p,qty:0};
-  });
+  ensureCatPick(t);
+  if(!t.items) t.items=[];
 }
 function sPlumbToolsQuote(ti, clientQuote){
   var t=S.rooms[curR]&&S.rooms[curR].trades[ti];
@@ -3296,49 +3219,9 @@ function elecFixSubtotal(t){
 }
 function ensureElectricalTradeItems(t){
   if(!t||t.id!=='electrical') return;
-  var base=TB.electrical, byId={};
-  (t.items||[]).forEach(function(it){ if(it&&it.id) byId[it.id]=it; });
-  t.items=base.map(function(b){
-    var ex=byId[b.id];
-    if(ex) return {id:ex.id,l:ex.l||b.l,u:ex.u||b.u,p:ex.p!==undefined?ex.p:b.p,qty:ex.qty||0,wasAuto:ex.wasAuto,autoSet:ex.autoSet};
-    return {id:b.id,l:b.l,u:b.u,p:b.p,qty:0};
-  });
+  ensureCatPick(t);
+  if(!t.items) t.items=[];
   if(!t.fx) t.fx={};
-  if(t.fx.electrical===undefined) t.fx.electrical=[];
-  if(t.fx.electricalFix===undefined) t.fx.electricalFix=[];
-  var legacyFlag={outlet:1,switch:1,potlight:1,gfci:1,exhaust:1,panel:1,fixture:1};
-  var leg=(t.fx.electrical||[]).filter(function(x){ return x && legacyFlag[x.id]; });
-  if(leg.length && !t._elecSplitDone){
-    var toDev={outlet:'ed_out',switch:'ed_sw',gfci:'ed_gfci'}, toFix={potlight:'ef_pot',exhaust:'ef_exh',panel:'ef_panel',fixture:'ef_lfix'};
-    var nDev=[], nFix=([].concat(t.fx.electricalFix||[]));
-    t.fx.electrical.forEach(function(x){
-      if(!x) return;
-      if(toDev[x.id]){
-        var d=ELEC_FX_DEV.find(function(e){ return e.id===toDev[x.id]; });
-        if(d) nDev.push({id:d.id,l:d.l,p:(x.p!==undefined?x.p:d.p),u:d.u,qty:x.qty||0});
-      } else if(toFix[x.id]){
-        var f=ELEC_FX_FIX.find(function(e){ return e.id===toFix[x.id]; });
-        if(f) nFix.push({id:f.id,l:f.l,p:(x.p!==undefined?x.p:f.p),u:f.u,qty:x.qty||0});
-      }
-    });
-    t.fx.electrical=nDev;
-    t.fx.electricalFix=nFix;
-    t._elecSplitDone=1;
-  } else t._elecSplitDone=t._elecSplitDone||1;
-  byId={};
-  (t.fx.electrical||[]).forEach(function(x){ if(x&&x.id) byId[x.id]=x; });
-  t.fx.electrical=ELEC_FX_DEV.map(function(b){
-    var ex=byId[b.id];
-    if(ex) return {id:ex.id,l:ex.l||b.l,p:ex.p!==undefined?ex.p:b.p,u:ex.u||b.u,qty:ex.qty||0};
-    return {id:b.id,l:b.l,p:b.p,u:b.u,qty:0};
-  });
-  byId={};
-  (t.fx.electricalFix||[]).forEach(function(x){ if(x&&x.id) byId[x.id]=x; });
-  t.fx.electricalFix=ELEC_FX_FIX.map(function(b){
-    var ex=byId[b.id];
-    if(ex) return {id:ex.id,l:ex.l||b.l,p:ex.p!==undefined?ex.p:b.p,u:ex.u||b.u,qty:ex.qty||0};
-    return {id:b.id,l:b.l,p:b.p,u:b.u,qty:0};
-  });
 }
 function fxCost(fx){return(fx.p||0)*(fx.qty||0)*(1+S.mk.mat/100);}
 function ensureTradeLabour(t){
@@ -3351,14 +3234,7 @@ function labourLineAmount(t){
   return Math.max(0,(parseFloat(L.rate)||0))*Math.max(0,(parseFloat(L.qty)||0))*mk;
 }
 function tradeCost(t){
-  var c=t.items.reduce(function(s,it){ return s+(itemContributesToClientTotal(t,it)?ic(it):0); },0);
-  c+=labourLineAmount(t);
-  Object.keys(t.fx||{}).forEach(function(k){
-    var a=t.fx[k];
-    if(!Array.isArray(a)) return;
-    a.forEach(function(fx){c+=fxCost(fx);});
-  });
-  return c;
+  return catalogClientTotal(t)+labourLineAmount(t);
 }
 function syncTradeMoneyDom(ti, tc){
   var tot=f(tc), head=tc>0?tot:'';
@@ -3370,26 +3246,8 @@ function syncTradeMoneyDom(ti, tc){
   var cM=document.getElementById('ms'+ti+'-tt'+ti);if(cM) cM.textContent=head;
   if(S.rooms&&typeof curR==='number'&&S.rooms[curR]&&S.rooms[curR].trades&&S.rooms[curR].trades[ti]){
     var tPl=S.rooms[curR].trades[ti];
-    if(tPl.id==='plumbing'){
-      var roughSub=f(plumbRoughingLineTotal(tPl));
-      document.querySelectorAll("#p-room [data-pl-rough-sub=\""+ti+"\"]").forEach(function(el){el.textContent=roughSub;});
-      var toolsSub=f(plumbToolsLineTotal(tPl));
-      document.querySelectorAll("#p-room [data-tools-sub=\""+ti+"\"]").forEach(function(el){el.textContent=toolsSub;});
-      var fxSub=f(fxSubtotalForTrade(tPl));
-      document.querySelectorAll("#p-room [data-fxsub=\""+ti+"\"]").forEach(function(el){el.textContent=fxSub;});
-    }
-    if(tPl.id==='electrical'){
-      var msub=f(lineItemsMaterialsSubtotal(tPl));
-      document.querySelectorAll("#p-room [data-matsub=\""+ti+"\"]").forEach(function(el){el.textContent=msub;});
-      document.querySelectorAll("#p-room [data-fxdevsub=\""+ti+"\"]").forEach(function(el){el.textContent=f(elecDevSubtotal(tPl));});
-      document.querySelectorAll("#p-room [data-fxfixsub=\""+ti+"\"]").forEach(function(el){el.textContent=f(elecFixSubtotal(tPl));});
-    }
-    if(RICH_MEP_TRADES[tPl.id] && TRADE_SECTIONS[tPl.id]){
-      TRADE_SECTIONS[tPl.id].forEach(function(sec){
-        var st=f(lineItemsSubtotalForIds(tPl, sec.ids));
-        document.querySelectorAll("#p-room [data-richsub=\""+ti+"-"+sec.k+"\"]").forEach(function(el){ el.textContent=st; });
-      });
-    }
+    var csub=f(catalogClientTotal(tPl));
+    document.querySelectorAll("#p-room [data-rf-cat-tot=\""+ti+"\"]").forEach(function(el){ el.textContent=csub; });
   }
   var ovA=document.querySelector("#m-ov .m-ov-amt[data-ov-ti=\""+ti+"\"]");
   if(ovA) ovA.textContent=tc>0?f(tc):'';
@@ -3591,7 +3449,7 @@ function applyAuto(room){
   var durs=calcDurations(room);
   if(autoOn&&c){
     room.trades.forEach(function(t){
-      t.items.forEach(function(it){
+      (t.items||[]).forEach(function(it){
         var k=AM[it.id];
         if(k&&c[k]!==undefined&&it.autoSet!==false&&it.wasAuto!==false){it.qty=c[k];it.wasAuto=true;}
       });
@@ -4133,7 +3991,8 @@ function appendRoomFromIntake(rtIndex,tradeIds){
   var name=ex>0?type.n+" "+(ex+1):type.n;
   var trades=tradeIds.filter(function(tid){ return TN[tid]; }).map(function(tid){
     return {id:tid,n:TN[tid],open:false,note:"",fx:{},days:0,daysCustom:false,
-      items:(TB[tid]||[]).map(function(it){return {id:it.id,l:it.l,u:it.u,p:it.p,qty:0};})};
+      items:[],catPick:{}
+    };
   });
   var newRoom={n:name,ic:type.ic,trades:trades,d:{},thumb:""};
   applyAuto(newRoom);
@@ -6003,84 +5862,25 @@ function tradeSectionHtml(room, ti, idPx, isModal){
     +'<strong data-labbar="'+ti+'">'+labStr+'</strong>'
     +'</div>';
 
-  var hasMatLine, matHead, itemsH, plRough='', plToolsS='';
-  if(t.id==='plumbing'){
-    hasMatLine=true;
-    matHead='';
-    plRough=plumbingRoughingHtml(t,ti,px,c);
-    plToolsS=plumbingToolsSectionHtml(t,ti,px,c);
-    itemsH='';
-  } else if(isElecModal){
-    hasMatLine=t.items.some(function(it){ return !hidePlumberLabourItem(t,it)&&!hideElectricalLabourItem(t,it)&&!hideRichLabourDuplicate(t,it); });
-    if(hasMatLine){
-      matHead='';
-      itemsH='<div class="ts-plumb-section-bubble ts-plumb-roughing-bubble">'
-        +'<div class="tc-sec-h-rough">Rough-in Material</div>'
-        +'<div class="tc-item-grid">'+t.items.map(function(it,ii){
-          return materialLineCardHtml(t,ti,it,ii,px,c);
-        }).join('')+'</div>'
-        +'<div class="tc-subbar-lab"><span>Rough-in subtotal</span><strong data-matsub="'+ti+'">'+f(lineItemsMaterialsSubtotal(t))+'</strong></div>'
-        +'</div>';
-    } else {
-      matHead='';
-      itemsH='';
-    }
-  } else if(isRichMep){
-    ensureRichTradeItems(t);
-    hasMatLine=true;
-    matHead='';
-    itemsH=richTradeMaterialSectionsHtml(t,ti,px,c);
-  } else {
-    hasMatLine=t.items.some(function(it){ return it && itemContributesToClientTotal(t,it); });
-    matHead=hasMatLine?'<div class="tc-sec-h-mat">Materials</div>':'';
-    itemsH=hasMatLine?('<div class="tc-item-grid">'+t.items.map(function(it,ii){
-      return materialLineCardHtml(t,ti,it,ii,px,c);
-    }).join('')+'</div>'):'';
-  }
-  var fxH="";
-  if(t.id==='electrical' && isElecModal){
-    fxH=electricalDevFixSectionsHtml(t,ti,px);
-  } else if(FX[t.id] && !(isModal && isRichMep && t.id==='cabinets')){
-    var fxHtitle=t.id==='plumbing'?'Fixture Finishing Material':'Fixtures';
-    var fxHcls=(t.id==='plumbing')?'tc-sec-h-fixfin':'tc-sec-h-fx';
-    if(t.id==='plumbing'){
-      fxH='<div class="ts-plumb-section-bubble ts-plumb-fixture-bubble">'
-        +'<div class="'+fxHcls+'">'+fxHtitle+'</div>'
-        +'<div class="tc-item-grid">';
-    } else {
-      fxH='<div class="sep"></div>'
-        +'<div class="'+fxHcls+'">'+fxHtitle+'</div>'
-        +'<div class="tc-item-grid">';
-    }
-    FX[t.id].forEach(function(fx,fi){
-      var list=(t.fx&&t.fx[t.id])||[];
-      var ex=list.find(function(x){return x.id===fx.id;});
-      var qty=ex?ex.qty:0;
-      fxH+='<div class="tc-card fx'+(qty>0?' on':'')+'" id="'+px+'fx-'+t.id+'-'+fi+'">'
-        +'<div class="tc-card-ic">'+fx.ic+'</div>'
-        +'<div class="tc-card-n">'+_escTrade(fx.l)+'</div>'
-        +'<div class="tc-card-u">per '+_escTrade(fx.u)+'</div>'
-        +'<div class="tc-card-fx-p">'+f(fx.p)+'</div>'
-        +'<div class="tc-card-q">'
-        +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjFx('+ti+',\''+t.id+'\','+fi+',-1)">−</button>'
-        +'<div class="tc-cqc" id="'+px+'fxc-'+t.id+'-'+fi+'">'+qty+'</div>'
-        +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjFx('+ti+',\''+t.id+'\','+fi+',1)">+</button>'
-        +'</div></div>';
-    });
-    fxH+='</div>';
-    if(t.id==='plumbing'){
-      fxH+='<div class="tc-subbar-lab">'
-        +'<span>Fixtures subtotal</span>'
-        +'<strong data-fxsub="'+ti+'">'+f(fxSubtotalForTrade(t))+'</strong>'
-        +'</div>'
-        +'</div>';
-    }
-  }
+  if(t.id==='plumbing') ensurePlumbingTradeItems(t);
+  if(t.id==='electrical') ensureElectricalTradeItems(t);
+  if(RICH_MEP_TRADES[t.id]) ensureRichTradeItems(t);
+  ensureCatPick(t);
+  var matSub=f(catalogClientTotal(t));
+  var bodyCore=
+    '<div class="tc-sec-h-mat">Materials (supplier catalog)</div>'
+    +'<p style="font-size:11px;color:var(--tx3);margin:0 0 8px 0">From cached_products, grouped by subsection. Line-level markup and project material markup in settings both apply.</p>'
+    +'<div class="tc-subbar-lab" style="margin:0 0 12px 0">'
+    +'<span>Materials subtotal (this trade)</span>'
+    +'<strong data-rf-cat-tot="'+ti+'">'+matSub+'</strong>'
+    +'</div>'
+    +'<div class="rf-catalog-shell" id="'+px+'rfCatalog'+ti+'" data-ti="'+ti+'" data-tid="'+escAttr(t.id)+'">'
+    +'<div style="color:var(--tx3);font-size:13px;padding:8px 0">Loading catalog…</div>'
+    +'</div>';
   var expBtn='';
   var tools='<div class="th-act">'+expBtn
     +'<button type="button" class="th-ico th-ico-del" title="Remove trade" aria-label="Remove trade" onclick="event.stopPropagation();delTrade('+ti+')">✕</button>'
     +'</div>';
-  var bodyCore=t.id==='plumbing'?(plRough+fxH+plToolsS):(matHead+itemsH+fxH);
   var labourBlock=labourH;
   if(isPlumbModal){
     labourBlock='<div class="ts-plumb-dim-labour-stack">'
@@ -6104,21 +5904,13 @@ function tradeSectionHtml(room, ti, idPx, isModal){
   var mergePlumbFoot=!!isMepModal;
   var footCl='sub trade-footer-total tc-footer-total'+(mergePlumbFoot?' tc-footer-total--merged':'');
   var noteHtml='<textarea class="note'+(mergePlumbFoot?' note--in-foot-merge':'')+'" placeholder="Notes for this trade..." oninput="sNote('+ti+',this.value)">'+(t.note||"")+'</textarea>';
-  var cachedSupplierPanel='<div class="sep"></div>'
-    +'<div class="tc-sec-h-mat">Supplier catalog</div>'
-    +'<p style="font-size:11px;color:var(--tx3);margin:0 0 8px 0">Live from the database. Estimate line items above use the built-in list.</p>'
-    +'<div class="mat-list mat-list--embed" id="'+px+'rfCachedMats'+ti+'" data-rf-cached-for="'+escAttr(t.id)+'" style="padding:0">'
-    +'<div style="color:var(--tx3);font-size:12px;padding:4px 0">Loading catalog…</div>'
-    +'</div>';
   var bodyInner='<div class="tb op'+(isMepModal?' pl-exp-tl-look':'')+'">'+labourBlock+bodyCore+tradeToolsBlock(room,ti,t,idPx)
-    +cachedSupplierPanel
     +'<div class="sep"></div>'
     +'<div class="'+footCl+'" style="margin:0 -14px -14px;padding:12px 14px;border-top:1px solid var(--bd);flex-wrap:wrap;gap:8px">'
     +'<div class="tc-foot-inner">'
     +'<span class="tc-foot-l">'+_escTrade(String(TN[t.id]||t.n).toUpperCase())+' Total</span>'
     +'<span class="th-tot-big" id="'+px+'ts'+ti+'">'+f(tt)+'</span>'
     +'</div>'
-    +'<button type="button" onclick="openMats(\''+t.id+'\')" style="width:100%;margin-top:8px;padding:8px;background:transparent;border:1px solid var(--ac);color:var(--ac);border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:1px">📦 VIEW MATERIALS</button>'
     +(mergePlumbFoot?noteHtml:'')
     +'</div>'
     +(mergePlumbFoot?'':noteHtml)
@@ -6570,7 +6362,7 @@ function tradeObjectFromTid(tid, opt){
     days:0,
     daysCustom:false,
     labour:{mode:"hourly",rate:55,qty:0,jobPrice:0},
-    items:(TB[tid]||[]).map(function(it){ return {id:it.id,l:it.l,u:it.u,p:it.p,qty:0}; })
+    items:[],catPick:{}
   };
 }
 function addTradeMo(){
@@ -7729,11 +7521,25 @@ function genPdf(){
   setTimeout(function(){window.print();},300);
 }
 function buildPrintQuote(fmt,mkPct){
-  function icM(it){return(it.p||0)*(it.qty||0)*(1+mkPct/100);}
-  function fxM(fx){return(fx.p||0)*(fx.qty||0)*(1+mkPct/100);}
-  function tLbr(t){return t.items.filter(function(it){if(hidePlumberLabourItem(t,it)) return false; return it.l.toLowerCase().indexOf("labour")>=0||it.u==="hrs";}).reduce(function(s,it){return s+icM(it);},0);}
-  function tMat(t){var m=t.items.filter(function(it){if(!itemContributesToClientTotal(t,it)) return false; return it.l.toLowerCase().indexOf("labour")<0&&it.u!=="hrs";}).reduce(function(s,it){return s+icM(it);},0);Object.keys(t.fx||{}).forEach(function(k){var a=t.fx[k];if(!Array.isArray(a)) return;a.forEach(function(fx){m+=fxM(fx);});});return m;}
-  function tTot(t){var c=t.items.reduce(function(s,it){return s+(itemContributesToClientTotal(t,it)?icM(it):0);},0);Object.keys(t.fx||{}).forEach(function(k){var a=t.fx[k];if(!Array.isArray(a)) return;a.forEach(function(fx){c+=fxM(fx);});});return c;}
+  function tLbr(t){
+    ensureTradeLabour(t);
+    var L=t.labour,mk=1+mkPct/100;
+    if(!L) return 0;
+    if(L.mode==='job') return Math.max(0,parseFloat(L.jobPrice)||0)*mk;
+    return Math.max(0,parseFloat(L.rate)||0)*Math.max(0,parseFloat(L.qty)||0)*mk;
+  }
+  function tMat(t){
+    ensureCatPick(t);
+    var m=0;
+    Object.keys(t.catPick||{}).forEach(function(pid){
+      var o=t.catPick[pid];
+      if(!o||!(o.q>0)) return;
+      var sup=o.sup!=null?o.sup:0;
+      m+=catalogLineClientTotal(sup,o.q,o.m,mkPct);
+    });
+    return m;
+  }
+  function tTot(t){ return tLbr(t)+tMat(t); }
 
   var sub=0,rows="";
   S.rooms.forEach(function(r){
@@ -7864,7 +7670,8 @@ async function addRoom(ti){
   var name=ex>0?type.n+" "+(ex+1):type.n;
   var trades=type.trades.map(function(tid){
     return {id:tid,n:TN[tid],open:false,note:"",fx:{},days:0,daysCustom:false,
-      items:(TB[tid]||[]).map(function(it){return {id:it.id,l:it.l,u:it.u,p:it.p,qty:0};})};
+      items:[],catPick:{}
+    };
   });
   var newRoom={n:name,ic:type.ic,trades:trades,d:{},thumb:""};
   applyAuto(newRoom);
@@ -7956,179 +7763,8 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-var MATDB = {
-  demo:[
-    {id:"d_m1", ic:"🗑", name:"Debris Bag 42in Heavy Duty", unit:"ea",  price:4.50},
-    {id:"d_m2", ic:"🧤", name:"Work Gloves Leather Palm",   unit:"pair",price:12.00},
-    {id:"d_m3", ic:"😷", name:"N95 Dust Mask 10pk",         unit:"box", price:18.00}
-  ],
-  framing:[
-    {id:"fr_m1",ic:"🪵", name:"SPF Stud 2x4x92 5/8in",      unit:"ea",  price:4.50},
-    {id:"fr_m2",ic:"🪵", name:"SPF Stud 2x6x92 5/8in",      unit:"ea",  price:6.50},
-    {id:"fr_m3",ic:"🔩", name:"Framing Nails 3in 5lb Box",   unit:"box", price:22.00}
-  ],
-  concrete:[
-    {id:"cf_m1",ic:"🧱", name:"Ready-Mix Concrete 32 MPa", unit:"cy", price:185.00},
-    {id:"cf_m2",ic:"📦", name:"Sakrete 60lb Concrete Mix", unit:"bag", price:6.50},
-    {id:"cf_m3",ic:"📦", name:"Quikrete 80lb Concrete Mix", unit:"bag", price:8.50}
-  ],
-  roofing:[
-    {id:"rf_m1",ic:"🔲", name:"Architectural Shingles (bundle)", unit:"bundle", price:42.00},
-    {id:"rf_m2",ic:"📄", name:"Synthetic Underlayment 1000 sqft", unit:"roll", price:95.00},
-    {id:"rf_m3",ic:"📐", name:"Aluminum Drip Edge 10ft", unit:"ea", price:12.00}
-  ],
-  electrical:[
-    {id:"el_m1",ic:"🔌", name:"Romex 14/2 NMD90 75m Roll",  unit:"roll",price:85.00},
-    {id:"el_m2",ic:"📦", name:"Single Gang PVC Box",         unit:"ea",  price:1.80},
-    {id:"el_m3",ic:"🔌", name:"Duplex Outlet 15A White",     unit:"ea",  price:3.50}
-  ],
-  plumbing:[
-    {id:"pl_m1",ic:"🔧", name:"PEX Tubing 1/2in 100ft Roll", unit:"roll",price:65.00},
-    {id:"pl_m2",ic:"🔧", name:"SharkBite 1/2in Coupling",    unit:"ea",  price:8.50},
-    {id:"pl_m3",ic:"🪣", name:"Plumber Putty 14oz",          unit:"ea",  price:7.00}
-  ],
-  hvac:[
-    {id:"hv_m1",ic:"🌀", name:"Round Duct 6in x 60in",       unit:"ea",  price:18.00},
-    {id:"hv_m2",ic:"🔲", name:"Floor Register 4x10 White",   unit:"ea",  price:8.50},
-    {id:"hv_m3",ic:"🌀", name:"Flexible Duct 6in x 25ft",    unit:"ea",  price:32.00}
-  ],
-  insulation:[
-    {id:"in_m1",ic:"🧱", name:"R20 Batt Insulation 15x47in 8pk",unit:"bag",price:42.00},
-    {id:"in_m2",ic:"🧱", name:"R12 Batt Insulation 15x47in 10pk",unit:"bag",price:32.00},
-    {id:"in_m3",ic:"💨", name:"Great Stuff Spray Foam 340g", unit:"can", price:12.00}
-  ],
-  drywall:[
-    {id:"dw_m1",ic:"⬜", name:"CGC Sheetrock 1/2in Drywall 4x8",   unit:"sheet",price:18.00},
-    {id:"dw_m2",ic:"🟦", name:"CGC Moisture Board 4x8",            unit:"sheet",price:28.00},
-    {id:"dw_m3",ic:"🪣", name:"CGC All Purpose Compound 4.5L",     unit:"pail", price:28.00}
-  ],
-  tile:[
-    {id:"ti_m1",ic:"🔲", name:"Ceramic Floor Tile 12x12",   unit:"sqft",price:3.50},
-    {id:"ti_m2",ic:"🟫", name:"Subway Wall Tile 3x6 White", unit:"sqft",price:4.50},
-    {id:"ti_m3",ic:"🪣", name:"Mapei Flexcolor Grout 10lb", unit:"bag", price:28.00}
-  ],
-  flooring:[
-    {id:"fl_m1",ic:"🪵", name:"LVP Flooring 6in Plank Click Lock",unit:"sqft",price:4.50},
-    {id:"fl_m2",ic:"🪵", name:"Engineered Hardwood 5in Oak",      unit:"sqft",price:8.00},
-    {id:"fl_m3",ic:"📄", name:"Roberts 100 Sq Ft Underlayment",   unit:"roll",price:28.00}
-  ],
-  painting:[
-    {id:"pa_m1",ic:"🪣", name:"Benjamin Moore Regal 3.78L",unit:"can",price:72.00},
-    {id:"pa_m2",ic:"🪣", name:"Ceiling White Flat 3.78L",  unit:"can",price:55.00},
-    {id:"pa_m3",ic:"🫙", name:"Dulux PVA Primer 3.78L",    unit:"can",price:45.00}
-  ],
-  trim:[
-    {id:"tr_m1",ic:"📏", name:"MDF Baseboard 3.5in x 16ft",unit:"ea",  price:18.00},
-    {id:"tr_m2",ic:"📏", name:"MDF Door Casing 2.5in x 7ft",unit:"ea", price:8.50},
-    {id:"tr_m3",ic:"🔩", name:"Finish Nails 2in 1lb Box",   unit:"box", price:8.00}
-  ],
-  cabinets:[
-    {id:"ca_m1",ic:"🗄", name:"Upper Cabinet 12x30in White", unit:"ea",price:120.00},
-    {id:"ca_m2",ic:"🗄", name:"Base Cabinet 24x34.5in White",unit:"ea",price:180.00},
-    {id:"ca_m3",ic:"⬜", name:"Laminate Countertop 25x96in",    unit:"ea",price:85.00}
-  ],
-  lowvolt:[
-    {id:"lv_m1",ic:"📡", name:"Cat6 Plenum Cable 1000ft", unit:"box",price:180.00},
-    {id:"lv_m2",ic:"📦", name:"Low-Volt Bracket 1-Gang", unit:"ea",price:2.50},
-    {id:"lv_m3",ic:"🔊", name:"Speaker Wire 16/2 100ft", unit:"roll",price:42.00},
-    {id:"lv_m4",ic:"🌐", name:"Cat 6 outdoor cable", unit:"ft",price:3.80},
-    {id:"lv_m5",ic:"🔥", name:"Cat 6 plenum (fire rated)", unit:"ft",price:3.20},
-    {id:"lv_m6",ic:"📡", name:"Cat 6 non-plenum", unit:"ft",price:2.60},
-    {id:"lv_m7",ic:"🔌", name:"Patch panel", unit:"ea",price:95.00},
-    {id:"lv_m8",ic:"📷", name:"Camera exterior back box", unit:"ea",price:28.00},
-    {id:"lv_m9",ic:"🧱", name:"PVC pipe", unit:"ft",price:2.20},
-    {id:"lv_m10",ic:"🔩", name:"PVC connectors", unit:"ea",price:4.50},
-    {id:"lv_m11",ic:"📦", name:"PVC boxes", unit:"ea",price:12.00},
-    {id:"lv_m12",ic:"🔀", name:"HDMI to RJ45 adapter", unit:"ea",price:65.00},
-    {id:"lv_m13",ic:"🖥", name:"Monitor", unit:"ea",price:280.00}
-  ],
-  closets:[
-    {id:"cl_m1",ic:"📐", name:"Wire Shelf Kit 12x48 White", unit:"ea",price:28.00},
-    {id:"cl_m2",ic:"🚪", name:"Bifold Door 24x80 Primed", unit:"ea",price:85.00},
-    {id:"cl_m3",ic:"🔩", name:"Closet Rod & Bracket Set", unit:"ea",price:32.00}
-  ],
-  finishing:[
-    {id:"fn_m1",ic:"🔧", name:"Cabinet Hardware Pull Pack", unit:"ea",price:24.00},
-    {id:"fn_m2",ic:"✨", name:"Touch-Up Paint Pen Set", unit:"ea",price:18.00},
-    {id:"fn_m3",ic:"🧽", name:"Microfiber Detail Kit", unit:"ea",price:12.00}
-  ],
-  security:[
-    {id:"se_m1",ic:"📼", name:"4-Channel NVR 4K", unit:"ea",price:420.00},
-    {id:"se_m2",ic:"🔌", name:"8-Port PoE+ Switch", unit:"ea",price:280.00},
-    {id:"se_m3",ic:"🚪", name:"Access Control Panel", unit:"ea",price:1200.00},
-    {id:"se_m4",ic:"🧲", name:"Magnetic Lock 600lb", unit:"ea",price:165.00},
-    {id:"se_m5",ic:"💳", name:"Proximity Card Reader", unit:"ea",price:120.00}
-  ],
-  comdoor:[
-    {id:"cd_m1",ic:"🚪", name:"Surface Door Closer Grade 1", unit:"ea",price:95.00},
-    {id:"cd_m2",ic:"🚪", name:"Rim Exit Device", unit:"ea",price:380.00},
-    {id:"cd_m3",ic:"📎", name:"Ball Bearing Hinge 4.5in", unit:"ea",price:32.00},
-    {id:"cd_m4",ic:"🔐", name:"Mortise Lockset", unit:"ea",price:220.00},
-    {id:"cd_m5",ic:"🛑", name:"Wall / Floor Door Stop", unit:"ea",price:8.00}
-  ]
-};
-(function patchMatDbImages(){
-  var POOL=[
-    'https://images.pexels.com/photos/221540/pexels-photo-221540.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
-    'https://images.pexels.com/photos/534220/pexels-photo-534220.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
-    'https://images.pexels.com/photos/1267338/pexels-photo-1267338.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
-    'https://images.pexels.com/photos/8961144/pexels-photo-8961144.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
-    'https://images.pexels.com/photos/159358/construction-site-build-construction-work-159358.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
-    'https://images.pexels.com/photos/162553/keys-workshop-mechanic-tools-162553.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
-    'https://images.pexels.com/photos/5691641/pexels-photo-5691641.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
-    'https://images.pexels.com/photos/5691622/pexels-photo-5691622.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
-    'https://images.pexels.com/photos/5691546/pexels-photo-5691546.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
-    'https://images.pexels.com/photos/5691584/pexels-photo-5691584.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
-    'https://images.pexels.com/photos/1080705/pexels-photo-1080705.jpeg?auto=compress&cs=tinysrgb&w=120&h=120',
-    'https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg?auto=compress&cs=tinysrgb&w=120&h=120'
-  ];
-  function h(s){var x=0;for(var i=0;i<s.length;i++)x=(x*31+s.charCodeAt(i))>>>0;return x;}
-  for(var tid in MATDB){
-    MATDB[tid].forEach(function(m){
-      if(!m.img) m.img=POOL[h(m.id)%POOL.length];
-    });
-  }
-})();
-var ITEM_MAT_MAP={
-  d1:'d_m1',d2:'d_m2',d3:'d_m3',dm1:'d_m1',dm2:'d_m2',dm3:'d_m3',
-  fhl:'d_m1',frl1:'fr_m1',frl2:'fr_m2',frl3:'fr_m3',frl4:'fr_m3',frl5:'fr_m1',frl6:'fr_m1',frl7:'fr_m2',frh1:'fr_m3',frh2:'fr_m3',frh3:'fr_m3',frh4:'fr_m3',frh5:'fr_m3',
-  cf1:'cf_m1',cf2:'cf_m2',cf3:'cf_m3',cf4:'cf_m2',cf5:'d_m1',
-  rf1:'rf_m1',rf2:'rf_m2',rf3:'rf_m3',rf4:'rf_m1',rf5:'rf_m3',rf6:'d_m1',
-  el1:'d_m1',
-  er1:'el_m1',er2:'el_m1',er3:'el_m1',er4:'el_m1',er5:'el_m1',er6:'el_m1',er7:'el_m1',er8:'el_m1',er9:'el_m1',
-  er10:'el_m1',er11:'el_m1',er12:'el_m1',er13:'el_m1',er14:'el_m2',er15:'el_m1',er16:'el_m1',er17:'el_m1',er18:'el_m1',er19:'el_m1',
-  pl1:'d_m1',pl2:'pl_m1',pl4:'pl_m1',
-  hv3:'d_m1',hvr1:'hv_m1',hvr2:'hv_m1',hvr3:'hv_m1',hvr4:'hv_m1',hvr5:'hv_m1',hve1:'hv_m2',hve2:'hv_m2',hve3:'hv_m2',hve4:'hv_m2',hve5:'hv_m2',hve6:'hv_m2',hvd1:'hv_m1',hvd2:'hv_m1',hvd3:'hv_m3',hvd4:'hv_m2',hvd5:'hv_m2',hvd6:'hv_m1',
-  in3:'d_m1',inb1:'in_m1',inb2:'in_m1',inb3:'in_m1',inb4:'in_m1',isf1:'in_m3',isf2:'in_m3',ird1:'in_m1',ird2:'in_m1',
-  dwr1:'dw_m1',dwr2:'dw_m1',dwr3:'dw_m2',dwr4:'dw_m2',dwr5:'dw_m3',dwr6:'dw_m3',dwr7:'dw_m3',dwr8:'dw_m3',dwr9:'dw_m3',dwf1:'pa_m3',dwf2:'fn_m3',
-  tih:'d_m1',tif1:'ti_m1',tif2:'ti_m2',tif3:'ti_m1',tif4:'ti_m2',tif5:'ti_m1',tis1:'ti_m3',tis2:'ti_m3',tis3:'ti_m3',tis4:'ti_m1',tis5:'ti_m3',tit1:'ti_m3',tit2:'ti_m3',tit3:'ti_m3',
-  fll:'d_m1',flm1:'fl_m1',flm2:'fl_m2',flm3:'fl_m1',flm4:'fl_m1',flm5:'ti_m1',flm6:'fl_m1',flu1:'fl_m3',flu2:'fl_m3',flu3:'fl_m3',fli1:'fr_m3',fli2:'pa_m3',fli3:'tr_m3',fli4:'tr_m1',fli5:'tr_m1',
-  pah:'d_m1',pnt1:'pa_m1',pnt2:'pa_m1',pnt3:'pa_m3',pnt4:'pa_m2',pnt5:'pa_m1',sup1:'pa_m1',sup2:'pa_m1',sup3:'pa_m1',sup4:'pa_m1',sup5:'fn_m3',sup6:'ti_m3',
-  trl:'d_m1',trb1:'tr_m1',trb2:'tr_m2',trb3:'tr_m2',trb4:'tr_m1',trb5:'tr_m1',trb6:'tr_m1',trd1:'tr_m2',trd2:'tr_m2',trd3:'tr_m2',trd4:'tr_m2',trh1:'tr_m3',trh2:'tr_m3',trh3:'tr_m3',trh4:'cd_m1',
-  cah:'d_m1',cb1:'ca_m1',cb2:'ca_m2',cb3:'ca_m1',cb4:'ca_m2',cx1:'ca_m3',cx2:'ca_m3',cx3:'ca_m3',cx4:'ca_m3',ch1:'fn_m1',ch2:'fn_m1',ch3:'fn_m1',ch4:'fn_m1',
-  lhl:'d_m1',lvc1:'lv_m4',lvc2:'lv_m5',lvc3:'lv_m6',lvc4:'lv_m1',lvc5:'lv_m1',lvc6:'lv_m3',lve1:'lv_m7',lve2:'lv_m1',lve3:'lv_m1',lve4:'lv_m12',lve5:'lv_m13',lvp1:'lv_m9',lvp2:'lv_m10',lvp3:'lv_m11',lvp4:'lv_m8',
-  cl1:'d_m1',cl2:'cl_m1',cl3:'cl_m2',
-  fn1:'d_m1',fn2:'fn_m2',fn3:'d_m1',
-  shl:'d_m1',sca1:'se_m3',sca2:'se_m3',sca3:'se_m3',sca4:'se_m3',ses1:'se_m1',ses2:'se_m2',ses3:'se_m3',ses4:'se_m3',sea1:'se_m4',sea2:'se_m5',sea3:'se_m5',sea4:'se_m3',sea5:'se_m5',
-  cd1:'cd_m1',cd2:'cd_m2',cd3:'cd_m3',cd4:'cd_m4',cd5:'cd_m5',cd6:'d_m1'
-};
-var FX_MAT_MAP={
-  ed_out:'el_m3',ed_sw:'el_m3',ed_dim:'el_m3',ed_gfci:'el_m3',ed_usb:'el_m3',ed_3w:'el_m3',
-  ef_pot:'el_m1',ef_lfix:'el_m1',ef_exh:'hv_m1',ef_panel:'el_m1',ef_ev:'el_m1',ef_cfan:'el_m1',
-  toilet:'pl_m1',vanity:'pl_m1',shower:'pl_m1',tub:'pl_m1',kitchen:'pl_m1',dishwash:'pl_m1',roughin:'pl_m1',
-  upper:'ca_m1',lower:'ca_m1',counter:'ca_m3',island:'ca_m2',pantry:'ca_m1'
-};
+var MATDB={};
 function matFindRowByMid(mid){
-  if(!mid)return null;
-  for(var tid in MATDB){
-    var arr=MATDB[tid];
-    for(var i=0;i<arr.length;i++) if(arr[i].id===mid) return arr[i];
-  }
-  var cm=loadCustomMats();
-  for(var ct in cm){
-    var a=cm[ct]||[];
-    for(var j=0;j<a.length;j++) if(a[j].id===mid) return a[j];
-  }
   return null;
 }
 function stripLineLabel(s){
@@ -8154,40 +7790,30 @@ function collectMaterialsRows(opts){
   var hideZero=S.matHideZero!==false;
   var rooms=S.rooms||[];
   var list=[];
-  function pushRow(rname,ri,tid,t,it,fx){
-    var qty=fx?(fx.qty||0):(it.qty||0);
-    if(hideZero&&!(qty>0))return;
-    var up=matUnitPrice(fx||it);
-    var tot=fx?fxCost(fx):(t&&it&&!itemContributesToClientTotal(t,it)?0:ic(it));
-    var mid=fx?(FX_MAT_MAP[fx.id]||'el_m1'):ITEM_MAT_MAP[it.id];
-    var pname=fx?matProductName(tid,{l:fx.l,u:fx.u,p:fx.p},mid):matProductName(tid,it,mid);
-    var imgMid=mid||'d_m1';
-    list.push({
-      tradeId:tid,tradeLabel:TN[tid]||tid,
-      room:rname,roomIdx:ri,
-      key:fx?('fx:'+tid+':'+fx.id):('li:'+tid+':'+it.id),
-      product:pname,
-      qty:qty,unit:(fx?fx.u:it.u),
-      unitPrice:up,total:tot,
-      img:matImgForMid(imgMid)
-    });
-  }
   function walkRoom(room,ri){
     var rname=room.n||('Room '+(ri+1));
     (room.trades||[]).forEach(function(t){
       if(t.id==='plumbing') ensurePlumbingTradeItems(t);
       if(t.id==='electrical') ensureElectricalTradeItems(t);
       var tid=t.id;
-      (t.items||[]).forEach(function(it){
-        if(hidePlumberLabourItem(t,it)) return;
-        if(hideElectricalLabourItem(t,it)) return;
-        pushRow(rname,ri,tid,t,it,null);
-      });
-      Object.keys(t.fx||{}).forEach(function(fk){
-        var fa=t.fx[fk];
-        if(!Array.isArray(fa)) return;
-        fa.forEach(function(fx){
-          pushRow(rname,ri,tid,t,null,fx);
+      ensureCatPick(t);
+      Object.keys(t.catPick||{}).forEach(function(pid){
+        var o=t.catPick[pid];
+        if(!o||!(o.q>0)) return;
+        if(hideZero&&o.q<=0) return;
+        var sup=o.sup!=null?o.sup:0;
+        var tot=catalogLineClientTotal(sup,o.q,o.m);
+        var title=o.title||"Product";
+        var uqty=o.q;
+        var up=uqty>0?tot/uqty:0;
+        list.push({
+          tradeId:tid,tradeLabel:TN[tid]||tid,
+          room:rname,roomIdx:ri,
+          key:"cat:"+tid+":"+pid,
+          product:title,
+          qty:uqty,unit:"ea",
+          unitPrice:up,total:tot,
+          img:o.thumb||"https://placehold.co/96x96/e8e4dc/2d4a3a?text=RF"
         });
       });
     });
@@ -8223,73 +7849,8 @@ function saveCustomMats(cm) {
   try { localStorage.setItem("rf7_mats", JSON.stringify(cm)); } catch(e){}
 }
 
-var curMatTrade = null;
-
-function matRowHtml(m) {
-  var isCustom = typeof m.price === "number" && m.unit != null;
-  var priceLine = isCustom
-    ? ("$" + m.price.toFixed(2) + " / " + m.unit)
-    : (m.priceStr != null && m.priceStr !== "" ? m.priceStr : "—");
-  var brandBlock = m.brand && !isCustom ? ('<div class="mat-brand">'+escMat(m.brand)+"</div>") : "";
-  var thumb = m.img
-    ? ('<img class="mat-thumb" src="'+escMat(m.img)+'" alt="" loading="lazy"/>')
-    : ('<div class="mat-ic">'+(m.ic || "📦")+"</div>");
-  var ck = S.ck["mat_"+m.id];
-  var boughtCls = ck ? " mat-bought" : "";
-  var ckCls = ck ? " on" : "";
-  var ckMark = ck ? "&#10003;" : "";
-  return '<div class="mat-row'+boughtCls+'" id="matr-'+m.id+'">'
-    + thumb
-    + '<div class="mat-info">'
-    + brandBlock
-    + '<div class="mat-name">'+escMat(m.name)+"</div>"
-    + '<div class="mat-price">'+escMat(priceLine)+"</div>"
-    + "</div>"
-    + '<div class="mat-right">'
-    + '<div class="mat-ck'+ckCls+'" id="ck-'+m.id+'" onclick="togMatCk(this)">'+ckMark+"</div>"
-    + "</div>"
-    + "</div>";
-}
-
-function matListRowsFromMats(mats) {
-  var prodRows = "";
-  for (var i = 0; i < mats.length; i++) prodRows += matRowHtml(mats[i]);
-  return prodRows;
-}
-
 var __rfCachedProductsByTrade = Object.create(null);
 var __rfCachedProductsTtlMs = 120000;
-
-function buildTradeMatListHtml(tradeId, dbList, errNote) {
-  var custom = loadCustomMats()[tradeId] || [];
-  var dbMats = (dbList || []).map(function (p) {
-    return {
-      id: p.id,
-      name: p.title || "—",
-      brand: p.brand || "",
-      priceStr: p.price != null && p.price !== "" ? p.price : "—",
-      img: p.thumbnail || null,
-      ic: "📦",
-    };
-  });
-  var allMats = dbMats.concat(custom);
-  var prefix = errNote
-    ? ('<div style="font-size:12px;color:var(--ac);padding:0 0 8px 0">' + escMat(errNote) + "</div>")
-    : "";
-  if (allMats.length === 0) {
-    return (
-      prefix +
-      '<div style="color:var(--tx3);font-size:13px;padding:4px 0 12px 0">No catalog products for this trade yet.</div>'
-    );
-  }
-  return prefix + matListRowsFromMats(allMats);
-}
-
-function setMatListFromRows(tradeId, errNote, dbList) {
-  var inner = document.getElementById("mat-list-inner");
-  if (!inner) return;
-  inner.innerHTML = buildTradeMatListHtml(tradeId, dbList, errNote);
-}
 
 function rfMemGetProducts(tradeName) {
   if (!tradeName) return null;
@@ -8307,28 +7868,295 @@ function rfMemSetProducts(tradeName, list) {
   __rfCachedProductsByTrade[tradeName] = { t: Date.now(), list: list || [] };
 }
 
-function rfLoadCachedProductsIntoPanel(tradeId, panelEl) {
-  if (!panelEl) return;
-  var tradeName = TN[tradeId] || "";
-  var base = typeof window !== "undefined" && window.location && window.location.origin ? window.location.origin : "";
-  var url = "/api/cached-products?trade=" + encodeURIComponent(tradeName);
+function rfGroupProductsBySubsection(products) {
+  var order = [];
+  var map = Object.create(null);
+  (products || []).forEach(function (p) {
+    var k =
+      p.subsection && String(p.subsection).trim()
+        ? String(p.subsection).trim()
+        : "(Uncategorized)";
+    if (!map[k]) {
+      order.push(k);
+      map[k] = [];
+    }
+    map[k].push(p);
+  });
+  return { order: order, map: map };
+}
 
-  var cached = rfMemGetProducts(tradeName);
-  if (cached) {
-    console.log("[RenoFlow] /api/cached-products (memory cache)", {
-      trade: tradeName,
-      tradeId: tradeId,
-      count: cached.length,
-      sample: cached[0] || null,
+function rfEnsureCatLine(t, p) {
+  var id = String(p.id);
+  if (!t.catPick[id]) {
+    t.catPick[id] = {
+      q: 0,
+      m: 20,
+      sup: rfParseSupplierUnit(p.price),
+      title: p.title || "—",
+      brand: p.brand || "",
+      priceLabel: p.price != null && p.price !== "" ? String(p.price) : "—",
+      thumb: p.thumbnail || "",
+    };
+  } else {
+    var o = t.catPick[id];
+    if (o.sup == null || o.sup === 0) o.sup = rfParseSupplierUnit(p.price);
+    if (!o.title) o.title = p.title || "—";
+    if (o.m == null || isNaN(o.m)) o.m = 20;
+  }
+}
+
+function rfClientUnitDisplay(sup, m) {
+  return catalogLineClientTotal(sup, 1, m);
+}
+
+function rfCatRowHtml(ti, tradeIdStr, p) {
+  var room = S.rooms[curR];
+  if (!room || !room.trades[ti]) return "";
+  var t = room.trades[ti];
+  ensureCatPick(t);
+  rfEnsureCatLine(t, p);
+  var id = String(p.id);
+  var o = t.catPick[id];
+  var q = o.q || 0;
+  var m = o.m != null && !isNaN(o.m) ? o.m : 20;
+  var sup = o.sup != null ? o.sup : 0;
+  var cup = rfClientUnitDisplay(sup, m);
+  var lineTot = q > 0 ? catalogLineClientTotal(sup, q, m) : 0;
+  var supDisp = sup > 0 ? f(sup) + " supplier" : escMat(o.priceLabel || "—");
+  var thumb = p.thumbnail
+    ? '<img class="rf-cat-thumb" src="' +
+      escAttr(p.thumbnail) +
+      '" data-full="' +
+      escAttr(p.thumbnail) +
+      '" alt="" loading="lazy" onclick="rfOpenLightboxFromThumb(this)"/>'
+    : '<div class="rf-cat-thumb rf-cat-thumb--empty" aria-hidden="true"></div>';
+  var lineExtra =
+    q > 0
+      ? '<span class="rf-line-tot">Line ' + f(lineTot) + "</span>"
+      : "";
+  var brandTop = o.brand
+    ? '<div class="mat-brand">' + escMat(o.brand) + "</div>"
+    : p.brand
+      ? '<div class="mat-brand">' + escMat(String(p.brand)) + "</div>"
+      : "";
+  return (
+    '<div class="rf-cat-row" data-ti="' +
+    ti +
+    '" data-pid="' +
+    escAttr(id) +
+    '">' +
+    thumb +
+    '<div class="rf-cat-mid">' +
+    brandTop +
+    '<div class="mat-name">' +
+    escMat(o.title || p.title || "—") +
+    "</div>" +
+    '<div class="mat-price" style="font-size:11px;color:var(--tx3)">' +
+    escMat(o.priceLabel || p.price || "—") +
+    "</div>" +
+    '<div class="rf-cat-mkrow">' +
+    '<span class="rf-sup">' +
+    supDisp +
+    "</span>" +
+    '<input type="number" class="rf-cat-mkin" min="0" max="500" step="0.1" value="' +
+    m +
+    '" oninput="rfCatMarkupFromInput(this)"/>' +
+    "<span>%</span>" +
+    '<span class="rf-client-u">' +
+    f(cup) +
+    " / unit" +
+    "</span>" +
+    lineExtra +
+    "</div></div>" +
+    '<div class="rf-cat-step">' +
+    '<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="rfCatQtyFromBtn(this,-1)">−</button>' +
+    '<input class="rf-cat-q" type="number" min="0" step="1" value="' +
+    q +
+    '" oninput="rfCatQtyInputFrom(this)"/>' +
+    '<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="rfCatQtyFromBtn(this,1)">+</button>' +
+    "</div></div>"
+  );
+}
+
+function rfRenderCatalogHtml(ti, tradeIdStr, products, err) {
+  if (err) {
+    return (
+      '<div style="color:var(--ac);font-size:13px">' + escMat(err) + "</div>"
+    );
+  }
+  if (!products || !products.length) {
+    return '<div style="color:var(--tx3);font-size:13px">No catalog products for this trade yet. Seed <code>cached_products</code> in Supabase.</div>';
+  }
+  var g = rfGroupProductsBySubsection(products);
+  var h = "";
+  for (var si = 0; si < g.order.length; si++) {
+    var sub = g.order[si];
+    var hdr = si % 2 === 0 ? "tc-sec-h-rough" : "tc-sec-h-fixfin";
+    h +=
+      '<div class="ts-plumb-section-bubble">' +
+      '<div class="' +
+      hdr +
+      '">' +
+      _escTrade(sub) +
+      "</div>" +
+      '<div class="tc-item-grid rf-cat-grid">';
+    for (var k = 0; k < g.map[sub].length; k++) {
+      h += rfCatRowHtml(ti, tradeIdStr, g.map[sub][k]);
+    }
+    h += "</div></div>";
+  }
+  return h;
+}
+
+function rfRefreshShell(ti, tid) {
+  var tradeName = TN[tid] || "";
+  var prods = rfMemGetProducts(tradeName);
+  var el = document.querySelector(
+    '.rf-catalog-shell[data-ti="' + ti + '"][data-tid="' + escAttr(tid) + '"]',
+  );
+  if (el && prods) {
+    el.innerHTML = rfRenderCatalogHtml(ti, tid, prods, null);
+  }
+}
+
+function rfCatOnChange(ti) {
+  var room = S.rooms[curR];
+  if (!room || !room.trades[ti]) return;
+  var t = room.trades[ti];
+  ss();
+  var tc = tradeCost(t);
+  syncTradeMoneyDom(ti, tc);
+  uSide();
+  rNav();
+  var csub = f(catalogClientTotal(t));
+  document
+    .querySelectorAll('#p-room [data-rf-cat-tot="' + ti + '"]')
+    .forEach(function (el) {
+      el.textContent = csub;
     });
-    panelEl.innerHTML = buildTradeMatListHtml(tradeId, cached, null);
+  var th = f(tradeCost(t));
+  document
+    .querySelectorAll(
+      '#p-room [id="exp-tt' + ti + '"],#p-room [id="exp-ts' + ti + '"]',
+    )
+    .forEach(function (el) {
+      el.textContent = tc > 0 ? th : "";
+    });
+}
+
+function rfCatQtyFromBtn(btn, d) {
+  var row = btn.closest(".rf-cat-row");
+  if (!row) return;
+  var ti = parseInt(row.getAttribute("data-ti"), 10);
+  var pid = row.getAttribute("data-pid");
+  if (!pid) return;
+  rfCatQty(ti, pid, d);
+}
+
+function rfCatQtyInputFrom(el) {
+  var row = el.closest(".rf-cat-row");
+  if (!row) return;
+  var ti = parseInt(row.getAttribute("data-ti"), 10);
+  var pid = row.getAttribute("data-pid");
+  rfCatQtyInput(ti, pid, el);
+}
+
+function rfCatMarkupFromInput(el) {
+  var row = el.closest(".rf-cat-row");
+  if (!row) return;
+  var ti = parseInt(row.getAttribute("data-ti"), 10);
+  var pid = row.getAttribute("data-pid");
+  rfCatMarkupInput(ti, pid, el);
+}
+
+function rfCatQty(ti, pid, d) {
+  var room = S.rooms[curR];
+  if (!room || !room.trades[ti]) return;
+  var t = room.trades[ti];
+  ensureCatPick(t);
+  if (!t.catPick[pid]) return;
+  var o = t.catPick[pid];
+  o.q = Math.max(0, (o.q || 0) + d);
+  rfCatOnChange(ti);
+  var tid = t.id;
+  rfRefreshShell(ti, tid);
+}
+
+function rfCatQtyInput(ti, pid, el) {
+  var v = parseInt(el.value, 10);
+  if (isNaN(v) || v < 0) v = 0;
+  var room = S.rooms[curR];
+  if (!room || !room.trades[ti]) return;
+  var t = room.trades[ti];
+  ensureCatPick(t);
+  if (!t.catPick[pid]) return;
+  t.catPick[pid].q = v;
+  rfCatOnChange(ti);
+  var tid = t.id;
+  rfRefreshShell(ti, tid);
+}
+
+function rfCatMarkupInput(ti, pid, el) {
+  var v = parseFloat(el.value);
+  if (isNaN(v)) v = 20;
+  var room = S.rooms[curR];
+  if (!room || !room.trades[ti]) return;
+  var t = room.trades[ti];
+  ensureCatPick(t);
+  if (!t.catPick[pid]) return;
+  t.catPick[pid].m = v;
+  rfCatOnChange(ti);
+  var tid = t.id;
+  rfRefreshShell(ti, tid);
+}
+
+function rfOpenLightboxFromThumb(el) {
+  if (!el) return;
+  var url = el.getAttribute("data-full") || el.getAttribute("src") || "";
+  rfOpenLightbox(url);
+}
+
+function rfOpenLightbox(url) {
+  if (!url) return;
+  var lb = document.getElementById("rf-lightbox");
+  var im = document.getElementById("rf-lightbox-img");
+  if (!lb || !im) return;
+  im.src = url;
+  lb.classList.add("rf-lb-on");
+  document.addEventListener("keydown", rfLightboxKey);
+}
+
+function rfLightboxKey(e) {
+  if (e.key === "Escape") rfCloseLightbox();
+}
+
+function rfCloseLightbox() {
+  var lb = document.getElementById("rf-lightbox");
+  if (lb) {
+    lb.classList.remove("rf-lb-on");
+  }
+  var im = document.getElementById("rf-lightbox-img");
+  if (im) im.removeAttribute("src");
+  document.removeEventListener("keydown", rfLightboxKey);
+}
+
+function rfLoadAndRenderCatalogShell(tid, shellEl) {
+  if (!shellEl) return;
+  var ti = parseInt(shellEl.getAttribute("data-ti"), 10);
+  if (isNaN(ti)) return;
+  var tradeName = TN[tid] || "";
+  if (!tradeName) {
+    shellEl.innerHTML = '<div style="color:var(--ac)">Unknown trade</div>';
     return;
   }
-
-  console.log("[RenoFlow] /api/cached-products request", { trade: tradeName, tradeId: tradeId, url: url, page: base + url });
-  panelEl.innerHTML =
-    '<div style="color:var(--tx3);font-size:12px;padding:4px 0">Loading catalog…</div>';
-
+  var cached = rfMemGetProducts(tradeName);
+  if (cached) {
+    shellEl.innerHTML = rfRenderCatalogHtml(ti, tid, cached, null);
+    return;
+  }
+  var url = "/api/cached-products?trade=" + encodeURIComponent(tradeName);
+  shellEl.innerHTML =
+    '<div style="color:var(--tx3)">Loading catalog…</div>';
   fetch(url, { credentials: "include" })
     .then(function (r) {
       return r.json().then(function (j) {
@@ -8336,147 +8164,44 @@ function rfLoadCachedProductsIntoPanel(tradeId, panelEl) {
       });
     })
     .then(function (x) {
-      console.log("[RenoFlow] /api/cached-products response", {
-        trade: tradeName,
-        ok: x.ok,
-        status: x.status,
-        error: x.j && x.j.error,
-        count: x.j && x.j.products ? x.j.products.length : 0,
-        sample: x.j && x.j.products && x.j.products[0] ? x.j.products[0] : null,
-      });
       if (!x.ok) {
-        panelEl.innerHTML = buildTradeMatListHtml(
-          tradeId,
+        shellEl.innerHTML = rfRenderCatalogHtml(
+          ti,
+          tid,
           [],
-          (x.j && x.j.error) || "Could not load catalog (" + x.status + ").",
+          (x.j && x.j.error) || "HTTP " + x.status,
         );
         return;
       }
-      var products = x.j.products || [];
+      var products = (x.j && x.j.products) || [];
       rfMemSetProducts(tradeName, products);
-      panelEl.innerHTML = buildTradeMatListHtml(tradeId, products, null);
+      shellEl.innerHTML = rfRenderCatalogHtml(ti, tid, products, null);
     })
-    .catch(function (err) {
-      console.log("[RenoFlow] /api/cached-products fetch failed", { trade: tradeName, err: String(err) });
-      panelEl.innerHTML = buildTradeMatListHtml(tradeId, [], "Could not load catalog.");
+    .catch(function () {
+      shellEl.innerHTML = rfRenderCatalogHtml(
+        ti,
+        tid,
+        [],
+        "Network error",
+      );
     });
+}
+
+function rfInitAllCatalogShells() {
+  var list =
+    (document.querySelectorAll &&
+      document.querySelectorAll(".rf-catalog-shell")) ||
+    [];
+  for (var i = 0; i < list.length; i++) {
+    var el = list[i];
+    var tid = el.getAttribute("data-tid");
+    if (tid) rfLoadAndRenderCatalogShell(tid, el);
+  }
 }
 
 function rfHydrateAllCachedProductPanels() {
-  var list = document.querySelectorAll && document.querySelectorAll("[data-rf-cached-for].mat-list--embed");
-  if (!list || !list.length) return;
-  for (var i = 0; i < list.length; i++) {
-    var el = list[i];
-    var tid = el.getAttribute("data-rf-cached-for");
-    if (tid) rfLoadCachedProductsIntoPanel(tid, el);
-  }
+  rfInitAllCatalogShells();
 }
-
-function openMats(tradeId) {
-  curMatTrade = tradeId;
-  var tradeLabel = TN[tradeId] || "";
-
-  var listShell = '<div class="mat-list" id="mat-list-inner">'
-    + '<div style="color:var(--tx3);font-size:13px;padding:8px 0">Loading products…</div>'
-    + "</div>";
-  var html = '<div class="mat-page">'
-    +'<div class="mat-header">'
-    +'<button onclick="closeMats()" style="font-size:20px;background:transparent;border:none;cursor:pointer;color:var(--tx2);padding:4px 8px 4px 0">←</button>'
-    +'<div><div style="font-size:18px;font-weight:700">'+TIC[tradeId]+" "+TN[tradeId]+"</div>"
-    +'<div style="font-size:11px;color:var(--tx3)">Tap checkbox when purchased</div></div>'
-    +"</div>"
-    + listShell
-    +'<div class="mat-add-section">'
-    +'<div style="font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">+ Add Custom Product</div>'
-    +'<div class="mat-add-grid">'
-    +'<input id="mat-ic-in" type="text" placeholder="emoji" style="width:60px;text-align:center;background:#fff;border:1px solid var(--bd2);border-radius:7px;padding:9px;font-size:18px;outline:none"/>'
-    +'<input id="mat-nm-in" type="text" placeholder="Product name" style="flex:1;background:#fff;border:1px solid var(--bd2);border-radius:7px;padding:9px;font-size:14px;outline:none"/>'
-    +'</div>'
-    +'<div class="mat-add-grid" style="margin-top:8px">'
-    +'<input id="mat-pr-in" type="number" placeholder="Price" min="0" step="0.01" style="flex:1;background:#fff;border:1px solid var(--bd2);border-radius:7px;padding:9px;font-size:16px;outline:none"/>'
-    +'<input id="mat-un-in" type="text" placeholder="unit (ea, sqft...)" style="flex:1;background:#fff;border:1px solid var(--bd2);border-radius:7px;padding:9px;font-size:14px;outline:none"/>'
-    +'</div>'
-    +'<button onclick="addCustomMat()" style="width:100%;margin-top:10px;padding:12px;background:var(--ac);color:#fff;border:none;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer">Add Product</button>'
-    +'</div>'
-    +'</div>';
-
-  document.getElementById("p-room").innerHTML = html;
-
-  if (!tradeLabel) {
-    setMatListFromRows(tradeId, "Unknown trade.", []);
-    return;
-  }
-
-  var mem = rfMemGetProducts(tradeLabel);
-  if (mem) {
-    console.log("[RenoFlow] /api/cached-products (memory cache) openMats", {
-      trade: tradeLabel,
-      count: mem.length,
-      sample: mem[0] || null,
-    });
-    setMatListFromRows(tradeId, null, mem);
-    return;
-  }
-
-  var urlM = "/api/cached-products?trade=" + encodeURIComponent(tradeLabel);
-  console.log("[RenoFlow] /api/cached-products request (openMats)", { trade: tradeLabel, url: urlM });
-
-  fetch(urlM, { credentials: "include" })
-    .then(function (r) {
-      return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; });
-    })
-    .then(function (x) {
-      console.log("[RenoFlow] /api/cached-products response (openMats)", {
-        trade: tradeLabel,
-        ok: x.ok,
-        status: x.status,
-        count: x.j && x.j.products ? x.j.products.length : 0,
-        sample: x.j && x.j.products && x.j.products[0] ? x.j.products[0] : null,
-        error: x.j && x.j.error,
-      });
-      if (!x.ok) {
-        setMatListFromRows(
-          tradeId,
-          (x.j && x.j.error) || "Could not load catalog (" + x.status + ").",
-          [],
-        );
-        return;
-      }
-      var products = x.j.products || [];
-      rfMemSetProducts(tradeLabel, products);
-      setMatListFromRows(tradeId, null, products);
-    })
-    .catch(function (e) {
-      console.log("[RenoFlow] /api/cached-products fetch failed (openMats)", e);
-      setMatListFromRows(tradeId, "Could not load catalog.", []);
-    });
-}
-
-function closeMats() {curMatTrade = null;rRoom();}
-
-function togMatCk(el) {
-  var matId = el.id.replace("ck-","");
-  S.ck["mat_"+matId] = !S.ck["mat_"+matId];
-  ss();
-  el.classList.toggle("on");
-  el.innerHTML = S.ck["mat_"+matId] ? "&#10003;" : "";
-  var row = document.getElementById("matr-"+matId);
-  if(row) row.classList.toggle("mat-bought", !!S.ck["mat_"+matId]);
-}
-
-function addCustomMat() {
-  var ic = document.getElementById("mat-ic-in").value.trim() || "📦";
-  var nm = document.getElementById("mat-nm-in").value.trim();
-  var pr = parseFloat(document.getElementById("mat-pr-in").value)||0;
-  var un = document.getElementById("mat-un-in").value.trim() || "ea";
-  if(!nm) { alert("Please enter a product name"); return; }
-  var cm = loadCustomMats();
-  if(!cm[curMatTrade]) cm[curMatTrade] = [];
-  cm[curMatTrade].push({id:"c_"+Date.now(), ic:ic, name:nm, price:pr, unit:un});
-  saveCustomMats(cm);
-  openMats(curMatTrade);
-}
-
 // ── INVOICE SYSTEM ───────────────────────────────────────────
 var curInvId = null;
 var TERMS_DAYS = {receipt:0, net7:7, net30:30, net60:60, net90:90};

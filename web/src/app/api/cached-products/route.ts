@@ -28,8 +28,9 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await supabase
     .from("cached_products")
-    .select("id,thumbnail,brand,title,price,trade")
+    .select("id,thumbnail,brand,title,price,trade,subsection")
     .eq("trade", trade)
+    .order("subsection", { ascending: true, nullsFirst: true })
     .order("title", { ascending: true, nullsFirst: false });
 
   if (error) {
