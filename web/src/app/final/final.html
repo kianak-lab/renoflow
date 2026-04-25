@@ -1240,9 +1240,14 @@ a.ni{color:inherit;text-decoration:none;}
 .sh-p{font-size:12px;font-family:'Inter',system-ui,sans-serif;color:var(--tx2);width:70px;text-align:right;}
 
 .ml-page{background:var(--bg);min-height:100%;}
-.ml-ph{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 18px;background:var(--sf2);border-bottom:1px solid var(--bd);}
+.ml-ph{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 18px;padding-bottom:14px;background:var(--sf2);border-bottom:1px solid #d9d9d9;}
 .ml-ph-left{display:flex;align-items:center;gap:10px;flex:1;min-width:200px;}
+.ml-ph-titles{flex:1;min-width:0;}
+.ml-title-row{display:flex;align-items:flex-start;gap:10px;}
+.ml-ph-icon{flex-shrink:0;color:var(--ac);display:flex;align-items:center;margin-top:1px;}
+.ml-ph-icon svg{width:24px;height:24px;display:block;}
 .ml-title{font-family:'Inter',system-ui,sans-serif;font-size:22px;color:var(--tx);}
+.ml-title em{color:var(--ac);font-style:normal;font-weight:600;}
 .ml-sub{font-size:12px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;margin-top:4px;}
 .ml-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
 .ml-tog{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--tx2);cursor:pointer;user-select:none;}
@@ -6951,7 +6956,8 @@ function rShop(){
       +'<span class="ml-cn">'+escMat(TIC[tid]+' '+TN[tid])+'</span><span class="ml-ct">'+f(tsum)+'</span></div>'
       +'<table class="ml-table"><thead><tr><th>Product</th><th>Qty</th><th>Unit</th><th>Unit $</th><th>Total</th></tr></thead><tbody>'+tb+'</tbody></table></div>';
   });
-  var title=isRoom&&S.rooms[matListRoomIdx]?(S.rooms[matListRoomIdx].ic+' '+S.rooms[matListRoomIdx].n):'Project materials';
+  var matIconSvg='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 7.5h15v9a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 16.5v-9Z"/><path d="M8.5 7.5V5.25A1.25 1.25 0 0 1 9.75 4h4.5A1.25 1.25 0 0 1 15.5 5.25V7.5"/><line x1="4.5" y1="12" x2="19.5" y2="12"/></svg>';
+  var titleHtml=(isRoom&&S.rooms[matListRoomIdx])?escMat(S.rooms[matListRoomIdx].ic+' '+S.rooms[matListRoomIdx].n):'<em>Materials</em>';
   var rc=(S.rooms||[]).length;
   var sub=isRoom?'This room only':'All rooms · '+rc+' room'+(rc!==1?'s':'');
   var empty=!rows.length;
@@ -6961,7 +6967,7 @@ function rShop(){
     +'<div class="ml-ph no-print">'
     +'<div class="ml-ph-left">'
     +'<button type="button" class="btn bg sm" onclick="materialsListBack()" style="padding:6px 12px">← Back</button>'
-    +'<div><div class="ml-title">'+escMat(title)+'</div><div class="ml-sub">'+escMat(sub)+' · '+rows.length+' line'+(rows.length!==1?'s':'')+' · '+f(totC)+'</div></div></div>'
+    +'<div class="ml-ph-titles"><div class="ml-title-row"><span class="ml-ph-icon" aria-hidden="true">'+matIconSvg+'</span><div class="ml-title">'+titleHtml+'</div></div><div class="ml-sub">'+escMat(sub)+' · '+rows.length+' line'+(rows.length!==1?'s':'')+' · '+f(totC)+'</div></div></div>'
     +'<div class="ml-toolbar">'
     +'<label class="ml-tog"><input type="checkbox" '+(S.matHideZero!==false?'checked':'')+' onchange="setMatHideZero(this.checked)"/> Hide zero qty</label>'
     +'<button type="button" class="btn bp sm" onclick="window.print()">Print</button>'
