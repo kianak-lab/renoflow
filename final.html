@@ -1987,6 +1987,7 @@ a.ni{color:inherit;text-decoration:none;}
 .mat-ic{font-size:28px;width:40px;text-align:center;flex-shrink:0;}
 .mat-info{flex:1;}
 .mat-name{font-size:13px;font-weight:500;color:var(--tx);margin-bottom:2px;}
+.mat-brand{font-size:11px;color:var(--tx3);margin-bottom:2px;}
 .mat-price{font-size:12px;color:var(--ac);font-family:'Inter',system-ui,sans-serif;font-weight:600;}
 .mat-right{flex-shrink:0;}
 .mat-ck{width:24px;height:24px;border:2px solid var(--bd2);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;transition:all .15s;}
@@ -8215,37 +8216,67 @@ function saveCustomMats(cm) {
 
 var curMatTrade = null;
 
+function matRowHtml(m) {
+  var isCustom = typeof m.price === "number" && m.unit != null;
+  var priceLine = isCustom
+    ? ("$" + m.price.toFixed(2) + " / " + m.unit)
+    : (m.priceStr != null && m.priceStr !== "" ? m.priceStr : "—");
+  var brandBlock = m.brand && !isCustom ? ('<div class="mat-brand">'+escMat(m.brand)+"</div>") : "";
+  var thumb = m.img
+    ? ('<img class="mat-thumb" src="'+escMat(m.img)+'" alt="" loading="lazy"/>')
+    : ('<div class="mat-ic">'+(m.ic || "📦")+"</div>");
+  var ck = S.ck["mat_"+m.id];
+  var boughtCls = ck ? " mat-bought" : "";
+  var ckCls = ck ? " on" : "";
+  var ckMark = ck ? "&#10003;" : "";
+  return '<div class="mat-row'+boughtCls+'" id="matr-'+m.id+'">'
+    + thumb
+    + '<div class="mat-info">'
+    + brandBlock
+    + '<div class="mat-name">'+escMat(m.name)+"</div>"
+    + '<div class="mat-price">'+escMat(priceLine)+"</div>"
+    + "</div>"
+    + '<div class="mat-right">'
+    + '<div class="mat-ck'+ckCls+'" id="ck-'+m.id+'" onclick="togMatCk(this)">'+ckMark+"</div>"
+    + "</div>"
+    + "</div>";
+}
+
+function matListRowsFromMats(mats) {
+  var prodRows = "";
+  for (var i = 0; i < mats.length; i++) prodRows += matRowHtml(mats[i]);
+  return prodRows;
+}
+
+function setMatListFromRows(rowsHtml, errNote) {
+  var inner = document.getElementById("mat-list-inner");
+  if (!inner) return;
+  var prefix = errNote
+    ? ('<div style="font-size:12px;color:var(--ac);padding:0 0 8px 0">'+escMat(errNote)+"</div>")
+    : "";
+  if (!rowsHtml) {
+    inner.innerHTML = prefix
+      + '<div style="color:var(--tx3);font-size:13px;padding:4px 0 12px 0">No catalog products for this trade yet.</div>';
+    return;
+  }
+  inner.innerHTML = prefix + rowsHtml;
+}
+
 function openMats(tradeId) {
   curMatTrade = tradeId;
-  var db = MATDB[tradeId] || [];
+  var tradeLabel = TN[tradeId] || "";
   var custom = loadCustomMats()[tradeId] || [];
-  var allMats = db.concat(custom);
 
-  var prodRows = "";
-  allMats.forEach(function(m) {
-    var ck = S.ck["mat_"+m.id];
-    var boughtCls = ck ? " mat-bought" : "";
-    var ckCls = ck ? " on" : "";
-    var ckMark = ck ? "&#10003;" : "";
-    prodRows += '<div class="mat-row'+boughtCls+'" id="matr-'+m.id+'">';
-    prodRows += m.img?'<img class="mat-thumb" src="'+escMat(m.img)+'" alt="" loading="lazy"/>':'<div class="mat-ic">'+m.ic+'</div>';
-    prodRows += '<div class="mat-info">';
-    prodRows += '<div class="mat-name">'+m.name+'</div>';
-    prodRows += '<div class="mat-price">$'+m.price.toFixed(2)+' / '+m.unit+'</div>';
-    prodRows += '</div>';
-    prodRows += '<div class="mat-right">';
-    prodRows += '<div class="mat-ck'+ckCls+'" id="ck-'+m.id+'" onclick="togMatCk(this)">'+ckMark+'</div>';
-    prodRows += '</div>';
-    prodRows += '</div>';
-  });
-
+  var listShell = '<div class="mat-list" id="mat-list-inner">'
+    + '<div style="color:var(--tx3);font-size:13px;padding:8px 0">Loading products…</div>'
+    + "</div>";
   var html = '<div class="mat-page">'
     +'<div class="mat-header">'
     +'<button onclick="closeMats()" style="font-size:20px;background:transparent;border:none;cursor:pointer;color:var(--tx2);padding:4px 8px 4px 0">←</button>'
-    +'<div><div style="font-size:18px;font-weight:700">'+TIC[tradeId]+' '+TN[tradeId]+'</div>'
+    +'<div><div style="font-size:18px;font-weight:700">'+TIC[tradeId]+" "+TN[tradeId]+"</div>"
     +'<div style="font-size:11px;color:var(--tx3)">Tap checkbox when purchased</div></div>'
-    +'</div>'
-    +'<div class="mat-list">'+prodRows+'</div>'
+    +"</div>"
+    + listShell
     +'<div class="mat-add-section">'
     +'<div style="font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">+ Add Custom Product</div>'
     +'<div class="mat-add-grid">'
@@ -8261,6 +8292,48 @@ function openMats(tradeId) {
     +'</div>';
 
   document.getElementById("p-room").innerHTML = html;
+
+  function mergeAndRender(dbList, errNote) {
+    var dbMats = (dbList || []).map(function (p) {
+      return {
+        id: p.id,
+        name: p.title || "—",
+        brand: p.brand || "",
+        priceStr: p.price != null && p.price !== "" ? p.price : "—",
+        img: p.thumbnail || null,
+        ic: "📦",
+      };
+    });
+    var allMats = dbMats.concat(custom);
+    if (allMats.length === 0) {
+      setMatListFromRows("", errNote);
+    } else {
+      setMatListFromRows(matListRowsFromMats(allMats), errNote);
+    }
+  }
+
+  if (!tradeLabel) {
+    mergeAndRender([], "Unknown trade.");
+    return;
+  }
+
+  fetch("/api/cached-products?trade=" + encodeURIComponent(tradeLabel), { credentials: "include" })
+    .then(function (r) {
+      return r.json().then(function (j) { return { ok: r.ok, r: r, j: j }; });
+    })
+    .then(function (x) {
+      if (!x.ok) {
+        mergeAndRender(
+          [],
+          (x.j && x.j.error) || "Could not load catalog (" + (x.r && x.r.status) + ").",
+        );
+        return;
+      }
+      mergeAndRender(x.j.products || [], null);
+    })
+    .catch(function () {
+      mergeAndRender([], "Could not load catalog.");
+    });
 }
 
 function closeMats() {curMatTrade = null;rRoom();}

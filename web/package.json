@@ -12,7 +12,9 @@
     "build": "node ./scripts/sync-final-html.cjs && node ./scripts/render-og-image.cjs && node ./scripts/bundle-rf-material-search.cjs && next build",
     "dev": "node ./scripts/bundle-rf-material-search.cjs && next dev",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed:products": "npx tsx ./scripts/seedProducts.ts",
+    "db:migrate:cached-products": "npx tsx ./scripts/apply-cached-products-migration.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
@@ -32,6 +34,9 @@
     "sharp": "^0.34.5",
     "tailwindcss": "^3.4.1",
     "typescript": "^5",
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.25.0",
+    "tsx": "^4.19.2",
+    "pg": "^8.16.0",
+    "@types/pg": "^8.11.0"
   }
 }
