@@ -1289,14 +1289,17 @@ a.ni{color:inherit;text-decoration:none;}
 .tl-field{display:flex;flex-direction:column;gap:5px;}
 .tl-fl{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;}
 .tl-fv input{background:#fff;border:1px solid var(--bd2);border-radius:6px;padding:7px 10px;font-family:'Inter',system-ui,sans-serif;font-size:14px;outline:none;width:100%;}
+#p-tl .tl-grid > .tl-field:first-child .tl-fv{max-width:12rem;align-self:flex-start;}
+#p-tl .tl-grid > .tl-field:first-child .tl-fv input[type=date]{width:100%;max-width:100%;min-width:0;box-sizing:border-box;}
 .tl-fv input:focus{border-color:var(--ac);}
 .tl-toggle-row{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--sf2);border:1px solid var(--bd);border-radius:6px;cursor:pointer;}
 .tl-toggle-lbl{font-size:13px;font-weight:500;}
 .tl-toggle-sub{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
 
 .tl-summary{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:18px;margin-bottom:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.tl-summary > div{min-width:0;}
 .tl-sl{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;}
-.tl-sv{font-family:'Inter',system-ui,sans-serif;font-size:22px;color:var(--tx);margin-top:3px;line-height:1.15;}
+.tl-sv{font-family:'Inter',system-ui,sans-serif;font-size:22px;color:var(--tx);margin-top:3px;line-height:1.15;word-break:break-word;overflow-wrap:break-word;}
 .tl-ss{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
 
 .tl-room{background:#fff;border:1px solid var(--bd);border-radius:var(--r);margin-bottom:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04);}
@@ -3013,6 +3016,8 @@ function activateProjectId(id,list,opts){
     })
     .then(function(){
       ss();
+      if(curPg==="tl"){ try{ rTimeline(); }catch(e){} }
+      if(curPg==="cal"){ try{ rCalendar(); }catch(e){} }
     });
   }
   if(opts.skipPersist)return loadNewProject();
