@@ -59,7 +59,7 @@ export default function MaterialSearch() {
   }, [query]);
 
   return (
-    <div className="dim-bar" style={{ maxWidth: 480 }}>
+    <div style={{ maxWidth: 480, padding: 24 }}>
       <div className="dim-t">Material search</div>
       <div className="field" style={{ marginBottom: 12 }}>
         <label htmlFor="material-search-q">Search Home Depot (Canada)</label>
