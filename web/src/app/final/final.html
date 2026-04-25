@@ -233,6 +233,11 @@ a.ni{color:inherit;text-decoration:none;}
 .tot-a{font-family:'Inter',system-ui,sans-serif;font-size:26px;color:var(--ac);margin-top:3px;}
 .tot-b{font-size:11px;color:var(--tx2);font-family:'Inter',system-ui,sans-serif;}
 #main{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;}
+/* Full-width pages (not in mob-tab strip): Schedule, settings, etc. must scroll inside #main */
+#main > #p-cal,
+#main > #p-sett,
+#main > #p-inv,
+#main > #p-push{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;}
 .mob-tab-pager{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;}
 @media (min-width:768px){
   .mob-tab-strip{position:relative;flex:1;min-height:0;overflow:hidden;}
@@ -1347,6 +1352,12 @@ a.ni{color:inherit;text-decoration:none;}
 .tl-preview-t{font-size:14px;font-weight:600;}
 .tl-preview-s{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
 .cal-wrap{padding:0 0 8px;}
+.cal-tl-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 14px;margin-bottom:14px;padding:14px;background:#fff;border:1px solid var(--bd);border-radius:var(--r);box-shadow:0 1px 4px rgba(0,0,0,.04);}
+@media (min-width:520px){.cal-tl-summary{grid-template-columns:repeat(4,1fr);}}
+.cal-tl-sum-l{font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.2px;font-family:'Inter',system-ui,sans-serif;display:block;}
+.cal-tl-sum-v{font-size:16px;font-weight:600;font-family:'Inter',system-ui,sans-serif;color:var(--tx);margin-top:3px;line-height:1.15;word-break:break-word;}
+.cal-tl-sum-s{font-size:10px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;margin-top:3px;display:block;}
+.cal-tl-empty{font-size:11px;color:var(--tx2);line-height:1.45;margin:0;grid-column:1/-1;}
 .cal-nav{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
 .cal-nav h2{margin:0;font-family:'Inter',system-ui,sans-serif;font-size:20px;color:var(--tx);flex:1;min-width:120px;}
 .cal-gantt{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:16px;overflow-x:auto;box-shadow:0 1px 4px rgba(0,0,0,.04);}
@@ -1357,22 +1368,27 @@ a.ni{color:inherit;text-decoration:none;}
 .cal-bar{position:absolute;top:2px;height:22px;border-radius:5px;cursor:grab;display:flex;align-items:center;padding:0 8px;font-size:10px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 1px 3px rgba(0,0,0,.12);touch-action:none;user-select:none;}
 .cal-bar:active{cursor:grabbing;}
 .cal-bar-hint{font-size:9px;opacity:.85;margin-left:6px;font-weight:500;}
-.cal-grid-wrap{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:12px;overflow-x:auto;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.cal-grid-wrap{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:12px;overflow-x:auto;overflow-y:visible;box-shadow:0 1px 4px rgba(0,0,0,.04);-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;}
 .cal-grid-h{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;margin-bottom:10px;}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--bd2);border:1px solid var(--bd2);border-radius:8px;overflow:hidden;min-width:560px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--bd2);border:1px solid var(--bd2);border-radius:8px;overflow:hidden;min-width:560px;align-content:start;}
 .cal-dh{background:var(--sf2);padding:6px 4px;text-align:center;font-size:10px;font-weight:600;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
-.cal-cell{background:#fff;min-height:92px;padding:6px 5px 8px;vertical-align:top;font-size:11px;}
+.cal-cell{background:#fff;padding:4px 3px 5px;vertical-align:top;font-size:10px;box-sizing:border-box;min-height:0;}
+.cal-grid .cal-cell.cal-cell--day{min-height:88px;max-height:88px;height:88px;display:flex;flex-direction:column;align-items:stretch;}
+.cal-chips{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:2px;align-content:flex-start;pointer-events:none;}
+.cal-grid .cal-cell.cal-out{min-height:24px;max-height:none;height:auto;opacity:1;}
 .cal-cell.cal-out{background:var(--sf2);opacity:.55;}
 .cal-cell.cal-today{outline:2px solid var(--ac);outline-offset:-2px;}
-.cal-cell.cal-cell--day{cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;transition:background .12s,box-shadow .12s;}
+.cal-cell.cal-cell--day{cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;transition:background .12s,box-shadow .12s;touch-action:manipulation;}
 .cal-cell.cal-cell--day:active{background:rgba(139,180,139,.12);}
 .cal-cell.cal-cell--start{box-shadow:inset 0 0 0 2px var(--ac);background:rgba(139,180,139,.1);}
 .cal-pick-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;margin-bottom:14px;padding:10px 12px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);font-size:12px;}
 .cal-pick-row label{color:var(--tx3);font-family:'Inter',system-ui,sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:10px;flex-shrink:0;}
 .cal-pick-row select{flex:1;min-width:200px;max-width:min(100%,420px);padding:8px 10px;border:1px solid var(--bd2);border-radius:6px;font-size:14px;font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--tx);}
 .cal-pick-hint{flex:1 1 100%;font-size:11px;color:var(--tx2);line-height:1.4;margin:0;}
-.cal-dn{font-size:11px;font-weight:700;color:var(--tx2);margin-bottom:4px;font-family:'Inter',system-ui,sans-serif;}
-.cal-chip{display:block;font-size:9px;padding:2px 4px;margin-bottom:3px;border-radius:4px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cal-dn{font-size:10px;font-weight:700;color:var(--tx2);margin:0 0 3px;font-family:'Inter',system-ui,sans-serif;line-height:1.1;flex-shrink:0;}
+.cal-chip{display:block;font-size:7px;padding:1px 3px;border-radius:3px;line-height:1.2;max-height:2.4em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word;hyphens:auto;}
+@supports not (-webkit-line-clamp:2){.cal-chip{white-space:nowrap;text-overflow:ellipsis;}}
+.cal-chip-more{flex-shrink:0;font-size:6px;color:var(--tx3);line-height:1;margin-top:1px;pointer-events:none;}
 .cal-legend{font-size:11px;color:var(--tx3);margin-top:12px;line-height:1.5;}
 .tl-week{display:flex;gap:12px;padding:8px 0;border-bottom:1px dashed var(--bd);}
 .tl-week:last-child{border-bottom:none;}
@@ -7116,14 +7132,58 @@ function calFocusProjectChange(v){
   window.__rfCalFocusPid=String(v||"");
   if(typeof rCalendar==="function") rCalendar();
 }
-function calCellDayTap(ymd){
+var __cLP={t:null,scrapped:false,ymd:null,sx:0,sy:0,move:null,up:null};
+function calPtrDown(e){
+  if(e.button!=null&&e.button!==0) return;
+  if(e.isPrimary===false) return;
+  var el=e.currentTarget;
+  var ymd=el.getAttribute("data-ymd");
+  if(!ymd) return;
+  __cLP.ymd=ymd; __cLP.scrapped=false;
+  __cLP.sx=e.clientX; __cLP.sy=e.clientY;
+  clearTimeout(__cLP.t);
+  __cLP.t=setTimeout(function(){
+    __cLP.t=null;
+    if(__cLP.move) window.removeEventListener("pointermove", __cLP.move, true);
+    if(__cLP.up) window.removeEventListener("pointerup", __cLP.up, true);
+    if(__cLP.up) window.removeEventListener("pointercancel", __cLP.up, true);
+    __cLP.move=null; __cLP.up=null;
+    calCellDayClear();
+    __cLP.ymd=null; __cLP.scrapped=false;
+  },520);
+  __cLP.move=function(ev){
+    if(Math.abs(ev.clientX-__cLP.sx)>12||Math.abs(ev.clientY-__cLP.sy)>12){
+      clearTimeout(__cLP.t); __cLP.t=null; __cLP.scrapped=true;
+    }
+  };
+  __cLP.up=function(){
+    clearTimeout(__cLP.t); __cLP.t=null;
+    window.removeEventListener("pointermove", __cLP.move, true);
+    window.removeEventListener("pointerup", __cLP.up, true);
+    window.removeEventListener("pointercancel", __cLP.up, true);
+    if(!__cLP.scrapped) calCellDaySet(__cLP.ymd);
+    __cLP.ymd=null; __cLP.scrapped=false; __cLP.move=null; __cLP.up=null;
+  };
+  window.addEventListener("pointermove", __cLP.move, true);
+  window.addEventListener("pointerup", __cLP.up, true);
+  window.addEventListener("pointercancel", __cLP.up, true);
+}
+function calCellKey(ev){
+  if(ev.key!=="Enter"&&ev.key!==" ") return;
+  ev.preventDefault();
+  var y=ev.currentTarget.getAttribute("data-ymd");
+  if(y) calCellDaySet(y);
+}
+function calCellDaySet(ymd){
   var pid=window.__rfCalFocusPid;
   if(!pid){ try{ alert("Choose a project above first."); }catch(x){} return; }
   if(!ymd||!/^\d{4}-\d{2}-\d{2}$/.test(ymd)) return;
-  var snap=readWorkspaceSnapshotForProject(pid);
-  var cur=(snap&&snap.proj&&snap.proj.startDate)?String(snap.proj.startDate):"";
-  if(cur&&cur===ymd) persistProjectStartDate(pid,"");
-  else persistProjectStartDate(pid,ymd);
+  persistProjectStartDate(pid, ymd);
+}
+function calCellDayClear(){
+  var pid=window.__rfCalFocusPid;
+  if(!pid){ try{ alert("Choose a project above first."); }catch(x){} return; }
+  persistProjectStartDate(pid, "");
 }
 var CAL_PH_SVG_S='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>';
 function calPageHeaderHtml(psLine){
@@ -7172,7 +7232,25 @@ function rCalendar(){
             return '<option value="'+escAttr(String(b.id))+'"'+(String(b.id)===focusPid?' selected':'')+'>'
               +escHtml(b.name.length>48?b.name.slice(0,46)+'…':b.name)+'</option>';
           }).join("")
-        +'</select><p class="cal-pick-hint">Select a project, then <strong>tap a day</strong> to set that job&rsquo;s <strong>start date</strong> (same field as the Timeline). Tap the <strong>same day again</strong> to <strong>clear</strong> the start date.</p></div>';
+        +'</select><p class="cal-pick-hint">Select a project, then <strong>tap a day</strong> to set the <strong>project start date</strong> (same field as the Timeline). <strong>Press and hold</strong> a day to <strong>clear</strong> the start date.</p></div>';
+    }
+    var tlSum="";
+    if(focusB&&focusB.snapshot){
+      var fs=focusB.snapshot;
+      var fps=fs.rooms?projectScheduleForState(fs.rooms,!!(fs.proj&&fs.proj.parallelRooms)):null;
+      var fStartStr=fs.proj&&fs.proj.startDate?String(fs.proj.startDate):"";
+      var sD=fps&&fps.totalDays>0&&fStartStr?getWorkingDate(fStartStr,1):null;
+      var eD=fps&&fps.totalDays>0&&fStartStr?getWorkingDate(fStartStr,fps.totalDays):null;
+      if(!fps||!fps.totalDays){
+        tlSum='<div class="cal-tl-summary"><p class="cal-tl-empty">Add rooms with dimensions and quantities to see a timeline, same as the Timeline view.</p></div>';
+      }else{
+        tlSum='<div class="cal-tl-summary">'
+          +'<div><span class="cal-tl-sum-l">Start</span><span class="cal-tl-sum-v">'+(sD?escHtml(fmtDateLong(sD)):escHtml("Set date"))+'</span><span class="cal-tl-sum-s">'+(sD?"Day 1":"no start date")+'</span></div>'
+          +'<div><span class="cal-tl-sum-l">Completion</span><span class="cal-tl-sum-v">'+(eD?escHtml(fmtDateLong(eD)):escHtml("—"))+'</span><span class="cal-tl-sum-s">estimated</span></div>'
+          +'<div><span class="cal-tl-sum-l">Duration</span><span class="cal-tl-sum-v">'+String(fps.totalDays)+' days</span><span class="cal-tl-sum-s">working days</span></div>'
+          +'<div><span class="cal-tl-sum-l">Rooms</span><span class="cal-tl-sum-v">'+String(fps.roomSchedules.length)+'</span><span class="cal-tl-sum-s">'+(fs.proj&&fs.proj.parallelRooms?"in parallel":"sequential")+'</span></div>'
+          +'</div>';
+      }
     }
     var dayMap={};
     var di;
@@ -7192,8 +7270,11 @@ function rCalendar(){
           if(dDate.getFullYear()!==y||dDate.getMonth()!==mo-1)return;
           var dom=dDate.getDate();
           day.trades.forEach(function(tr){
-            var t=escMat(projShort+': '+TIC[tr.id]+' '+tr.name);
-            dayMap[dom].push('<span class="cal-chip" style="background:'+col+'22;color:'+col+';border:1px solid '+col+'44" title="'+escMat(b.name)+'">'+t+'</span>');
+            var tnm=String(tr.name||"");
+            if(tnm.length>10) tnm=tnm.slice(0,8)+"\u2026";
+            var t=escMat((TIC[tr.id]||"?")+" "+tnm);
+            var tit=escMat(b.name+": "+(tr.name||""));
+            dayMap[dom].push('<span class="cal-chip" style="background:'+col+"22;color:"+col+";border:1px solid "+col+"44"+'" title="'+tit+'">'+t+"</span>");
           });
         });
       });
@@ -7209,18 +7290,19 @@ function rCalendar(){
       var ymdStr=y+'-'+String(mo).padStart(2,'0')+'-'+String(di).padStart(2,'0');
       var isStart=!!(focusStart&&focusStart===ymdStr);
       var arr=dayMap[di]||[];
-      var chips=arr.slice(0,8).join('');
-      if(arr.length>8) chips+='<div style="font-size:9px;color:var(--tx3)">+'+(arr.length-8)+' more</div>';
-      var ccls='cal-cell cal-cell--day'+(isToday?' cal-today':'')+(wend&&!isToday?' cal-out':'')+(isStart?' cal-cell--start':'');
-      cells.push('<div class="'+ccls+'" data-ymd="'+ymdStr+'" role="button" tabindex="0" onclick="calCellDayTap(\''+ymdStr+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();calCellDayTap(\''+ymdStr+'\');}">'
-        +'<div class="cal-dn">'+di+'</div>'+chips+'</div>');
+      var vis=4;
+      var chips=arr.slice(0,vis).join("");
+      if(arr.length>vis) chips+='<div class="cal-chip-more" aria-hidden="true">+'+(arr.length-vis)+" more</div>";
+      var ccls="cal-cell cal-cell--day"+(isToday?" cal-today":"")+(wend&&!isToday?" cal-out":"")+(isStart?" cal-cell--start":"");
+      cells.push('<div class="'+ccls+'" data-ymd="'+ymdStr+'" role="button" tabindex="0" onpointerdown="calPtrDown(event)" onkeydown="calCellKey(event)">'
+        +'<div class="cal-dn">'+di+'</div><div class="cal-chips">'+chips+"</div></div>");
     }
     while(cells.length%7!==0) cells.push('<div class="cal-cell cal-out"></div>');
     while(cells.length<42) cells.push('<div class="cal-cell cal-out"></div>');
     var wk=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     var wh=wk.map(function(w){return '<div class="cal-dh">'+w+'</div>';}).join('');
-    var calSub=String(bundles.length)+" project"+(bundles.length!==1?"s":"")+" · "+monthName;
-    el.innerHTML=calPageHeaderHtml(calSub)
+    var headerSub="Auto-generated from your rooms & trades · "+String(bundles.length)+" project"+(bundles.length!==1?"s":"")+" · "+monthName;
+    el.innerHTML=calPageHeaderHtml(headerSub)
       +'<div class="pc pc--proj cal-wrap">'
       +'<div class="cal-nav">'
       +'<button type="button" class="btn bp sm" onclick="gP(\'tl\')">Timeline</button>'
@@ -7229,9 +7311,9 @@ function rCalendar(){
       +'<button type="button" class="btn bg sm" onclick="rCalNavNext()">Month →</button>'
       +'<button type="button" class="btn bp sm" onclick="rCalNavToday()">Today</button>'
       +'</div>'
-      +pickRow
-      +'<div class="cal-grid-wrap"><div class="cal-grid-h">Month · tap a day to set or clear the selected project&rsquo;s start</div><div class="cal-grid">'+wh+cells.join('')+'</div>'
-      +'<p class="cal-legend">Coloured chips show which trades run on each <strong>working day</strong> (weekends skipped in the schedule). Tapping sets the <strong>project start date</strong> for the project chosen above, matching the Timeline. Colors distinguish projects.</p>'
+      +pickRow+tlSum
+      +'<div class="cal-grid-wrap"><div class="cal-grid-h">Calendar · same working-day rules as the Timeline</div><div class="cal-grid">'+wh+cells.join('')+'</div>'
+      +'<p class="cal-legend">The summary above matches the Timeline (start, working-day duration, rooms). In the grid, chips show which trades run on each <strong>working day</strong> (weekends off). Colours = projects. Tap a day to set start; <strong>press and hold</strong> to clear.</p>'
       +'</div></div>';
     requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
   }).catch(function(){
