@@ -83,7 +83,7 @@ export default async function MaterialsPage() {
           </a>
         </div>
 
-        <div className="pc">
+        <div className="pc" style={{ minHeight: "min(60vh, 480px)" }}>
           <MaterialSearch />
         </div>
       </div>

@@ -37,7 +37,11 @@ export async function middleware(request: NextRequest) {
   }
 
   const needsAppGate =
-    pathname === "/" || pathname.startsWith("/final") || pathname.startsWith("/projects") || pathname.startsWith("/onboarding");
+    pathname === "/" ||
+    pathname.startsWith("/final") ||
+    pathname.startsWith("/projects") ||
+    pathname.startsWith("/materials") ||
+    pathname.startsWith("/onboarding");
   if (needsAppGate) {
     if (!(await hasSession(request))) {
       const login = new URL("/login", getRequestOrigin(request));
