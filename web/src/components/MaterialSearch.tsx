@@ -28,6 +28,25 @@ function getProductPrice(p: Record<string, unknown>) {
   return "—";
 }
 
+function getProductImage(p: Record<string, unknown>): string | null {
+  const t = p.thumbnail;
+  if (typeof t === "string" && t.trim()) return t;
+  if (t && typeof t === "object") {
+    const o = t as Record<string, unknown>;
+    if (typeof o.link === "string" && o.link.trim()) return o.link;
+  }
+  const th = p.thumbnails;
+  if (Array.isArray(th) && th[0] != null) {
+    const first = th[0] as unknown;
+    if (typeof first === "string" && first.trim()) return first;
+    if (first && typeof first === "object") {
+      const o = first as Record<string, unknown>;
+      if (typeof o.link === "string" && o.link.trim()) return o.link;
+    }
+  }
+  return null;
+}
+
 export default function MaterialSearch() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Record<string, unknown>[]>([]);
@@ -100,27 +119,52 @@ export default function MaterialSearch() {
             marginTop: 4,
           }}
         >
-          {results.map((p, i) => (
+          {results.map((p, i) => {
+            const imgUrl = getProductImage(p);
+            return (
             <li
               key={i}
               className="sc"
-              style={{ padding: "12px 14px" }}
+              style={{
+                padding: "12px 14px",
+                display: "flex",
+                gap: 12,
+                alignItems: "flex-start",
+              }}
             >
-              <div style={{ fontSize: 13, fontWeight: 600, color: "var(--tx)" }}>
-                {getProductTitle(p)}
-              </div>
-              <div
-                style={{
-                  fontSize: 12,
-                  color: "var(--ac2)",
-                  marginTop: 4,
-                  fontFamily: "var(--font-inter), system-ui, sans-serif",
-                }}
-              >
-                {getProductPrice(p)}
+              {imgUrl ? (
+                <img
+                  src={imgUrl}
+                  alt=""
+                  width={80}
+                  height={80}
+                  style={{
+                    width: 80,
+                    height: 80,
+                    objectFit: "cover",
+                    borderRadius: 6,
+                    flexShrink: 0,
+                  }}
+                />
+              ) : null}
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--tx)" }}>
+                  {getProductTitle(p)}
+                </div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "var(--ac2)",
+                    marginTop: 4,
+                    fontFamily: "var(--font-inter), system-ui, sans-serif",
+                  }}
+                >
+                  {getProductPrice(p)}
+                </div>
               </div>
             </li>
-          ))}
+            );
+          })}
         </ul>
       ) : didSearch && !loading && !error ? (
         <p style={{ fontSize: 13, color: "var(--tx3)" }}>No results.</p>

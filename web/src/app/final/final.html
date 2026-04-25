@@ -7499,6 +7499,7 @@ function rShop(){
     matListScope='project'; matListRoomIdx=null;
   }
   var el=document.getElementById("p-shop");
+  try{ if(typeof window.rfUnmountMaterialSearch==="function") window.rfUnmountMaterialSearch(); }catch(e0){}
   var isRoom=matListScope==='room'&&matListRoomIdx!=null;
   var rows=collectMaterialsRows({roomIdx:isRoom?matListRoomIdx:null,aggregate:!isRoom});
   var byTrade={};
@@ -7567,12 +7568,18 @@ function rShop(){
     +'<label class="ml-tog"><input type="checkbox" '+(S.matHideZero!==false?'checked':'')+' onchange="setMatHideZero(this.checked)"/> Hide zero qty</label>'
     +'</div></div></div>'
     +'<div class="pc ml-page-body">'
+    +'<div id="material-search-react-root" class="no-print" style="margin-bottom:16px"></div>'
     +(empty?'<div class="ml-empty"><div style="font-size:40px;margin-bottom:12px;opacity:.5">📦</div><div>No materials to show. Turn off “Hide zero qty” or enter quantities in trade line items.</div></div>'
       :catsHtml
       +'<div class="ml-foot no-print"><span>Grand total</span><strong>'+f(totC)+'</strong></div>')
     +'</div></div>';
   requestAnimationFrame(function(){
     requestAnimationFrame(rfRecordMaterialsHeaderH);
+  });
+  requestAnimationFrame(function(){
+    import("/rf-material-search.js").then(function(m){
+      if(m && typeof m.rfMountMaterialSearch==="function") m.rfMountMaterialSearch();
+    }).catch(function(e){ console.warn("[RenoFlow] material search", e); });
   });
 }
 

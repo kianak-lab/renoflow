@@ -40,7 +40,6 @@ export async function middleware(request: NextRequest) {
     pathname === "/" ||
     pathname.startsWith("/final") ||
     pathname.startsWith("/projects") ||
-    pathname.startsWith("/materials") ||
     pathname.startsWith("/onboarding");
   if (needsAppGate) {
     if (!(await hasSession(request))) {

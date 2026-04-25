@@ -222,15 +222,6 @@ export default function ProjectsManager() {
             <span className="ni-l">Active projects</span>
             <span className="ni-b">{projects.length}</span>
           </div>
-          <Link href="/materials" className="ni" prefetch={false}>
-            <span className="ni-i">
-              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <path d="M3.5 6.5 8.5 3l5 3.5v6.5a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1V6.5Z" />
-                <path d="M6.5 14.5V10h4v4.5" />
-              </svg>
-            </span>
-            <span className="ni-l">Materials</span>
-          </Link>
         </nav>
 
         <div className="sb-tot">
