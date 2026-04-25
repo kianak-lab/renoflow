@@ -1242,6 +1242,9 @@ a.ni{color:inherit;text-decoration:none;}
 .ml-page{background:var(--bg);min-height:100%;}
 #p-shop .pt em{color:var(--ac);font-style:normal;font-weight:600;}
 .ml-ph{display:block;padding:16px 18px 14px;background:var(--sf2);border-bottom:1px solid #d9d9d9;}
+.ml-ph-breadcrumb{margin:0 0 6px 0;padding:0;}
+.ml-ph-breadcrumb-btn{display:inline-block;background:none;border:none;padding:0;font-family:'Inter',system-ui,sans-serif;font-size:12px;font-weight:600;color:var(--ac2);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.ml-ph-breadcrumb-btn:hover,.ml-ph-breadcrumb-btn:focus-visible{color:var(--ac);text-decoration:underline;outline:none;}
 .ml-ph-hero{display:flex;align-items:stretch;justify-content:space-between;gap:10px 12px;flex-wrap:wrap;}
 .ml-ph-left{flex:1 1 200px;min-width:0;}
 .ml-ph-hero .proj-ph-title-row{display:flex;align-items:flex-start;gap:10px;min-width:0;}
@@ -1791,6 +1794,9 @@ a.ni{color:inherit;text-decoration:none;}
   }
   #p-shop .ml-page {
     background: transparent;
+  }
+  #p-shop .ml-ph-breadcrumb-btn {
+    font-size: 14px;
   }
   #p-shop .ml-ph {
     padding: max(10px, env(safe-area-inset-top, 0px)) 20px 14px;
@@ -7021,6 +7027,7 @@ function rShop(){
   el.innerHTML='<div class="ml-page">'
     +'<div class="ml-print-head" style="display:none;padding:16px 18px 0;font-family:DM Serif Display,serif;font-size:20px;font-weight:700">'+pname+'</div>'
     +'<div class="ml-ph no-print">'
+    +'<div class="ml-ph-breadcrumb"><button type="button" class="ml-ph-breadcrumb-btn" onclick="gP(\'proj\')">Projects</button></div>'
     +'<div class="ml-ph-hero">'
     +'<div class="ml-ph-left">'
     +'<div class="proj-ph-title-row">'
