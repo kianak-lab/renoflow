@@ -1780,12 +1780,14 @@ a.ni{color:inherit;text-decoration:none;}
   #p-shop .ml-ph-hero .pt {
     font-size: 22px;
   }
-  /* Match materials tab: extra space below .ps = ml-actions-below (mt 8px + sm btn row ~30px) */
+  /* min-height = measured #p-shop .ml-ph (see rfRecordMaterialsHeaderH) for same Y as separator */
   #p-proj .ph.ph--proj,
   #p-proj .ph--proj {
     border-bottom: 1px solid #d9d9d9 !important;
-    padding-bottom: calc(14px + 38px);
     margin: 0;
+    box-sizing: border-box;
+    padding: max(10px, env(safe-area-inset-top, 0px)) 20px 14px !important;
+    min-height: var(--rf-mob-hdr-h, auto);
   }
   #p-shop .ml-page {
     background: transparent;
@@ -6935,6 +6937,30 @@ function exportMaterialsCsv(){
   a.click();
   setTimeout(function(){ URL.revokeObjectURL(a.href); },1500);
 }
+function rfRecordMaterialsHeaderH(){
+  try{
+    if(typeof window.innerWidth!=="number"||window.innerWidth>767)return;
+    var m=document.querySelector("#p-shop .ml-ph");
+    if(!m)return;
+    var h=Math.round(m.getBoundingClientRect().height);
+    if(h>0) document.documentElement.style.setProperty("--rf-mob-hdr-h",h+"px");
+  }catch(e){}
+}
+if(typeof window!=="undefined"&&!window.__rfMobHdrBound){
+  window.__rfMobHdrBound=1;
+  var __rfMobHdrT;
+  window.addEventListener("resize",function(){
+    clearTimeout(__rfMobHdrT);
+    __rfMobHdrT=setTimeout(function(){
+      try{
+        if(typeof window.innerWidth!=="number")return;
+        if(window.innerWidth>767){
+          if(document.documentElement.style.removeProperty) document.documentElement.style.removeProperty("--rf-mob-hdr-h");
+        }else if(typeof curPg==="string"&&curPg==="shop") rfRecordMaterialsHeaderH();
+      }catch(e){}
+    },120);
+  });
+}
 function rShop(){
   if(matListScope==='room'&&(matListRoomIdx==null||!S.rooms[matListRoomIdx])){
     matListScope='project'; matListRoomIdx=null;
@@ -7012,6 +7038,9 @@ function rShop(){
       :catsHtml
       +'<div class="ml-foot no-print"><span>Grand total</span><strong>'+f(totC)+'</strong></div>')
     +'</div></div>';
+  requestAnimationFrame(function(){
+    requestAnimationFrame(rfRecordMaterialsHeaderH);
+  });
 }
 
 function buildQuoteTimeline(){
