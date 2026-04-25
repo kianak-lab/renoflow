@@ -215,6 +215,15 @@ a.ni{color:inherit;text-decoration:none;}
   display:flex;align-items:center;justify-content:center;border:2px solid #fff;
   box-shadow:0 1px 3px rgba(0,0,0,.15)
 }
+.pl-initial.pl-initial--photo{
+  background:var(--bd2);
+  padding:0;
+  overflow:hidden;
+}
+.pl-initial.pl-initial--photo img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  display:block;
+}
 .dproj-reintake{margin-top:10px;padding-top:10px;border-top:1px solid var(--bd)}
 .brief-quick{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
 .brief-quick-t{font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;margin-bottom:10px;}
@@ -1939,8 +1948,21 @@ a.ni{color:inherit;text-decoration:none;}
 .cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
 .cl-card{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.04);cursor:pointer;transition:all .2s;position:relative;}
 .cl-card:hover{border-color:var(--bd2);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.08);}
-.cl-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
-.cl-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Inter',system-ui,sans-serif;font-size:18px;flex-shrink:0;}
+.cl-card-top{display:flex;align-items:flex-start;justify-content:space-between;flex-direction:row;gap:12px;margin-bottom:10px;}
+.cl-card-text{flex:1;min-width:0;}
+.cl-avatar{
+  width:calc(40px * 4 / 3);height:calc(40px * 4 / 3);
+  border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));
+  display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Inter',system-ui,sans-serif;
+  font-size:calc(18px * 4 / 3);flex-shrink:0;position:relative;overflow:hidden;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;border:none;padding:0;
+  box-shadow:0 1px 4px rgba(0,0,0,.1);
+}
+.cl-avatar:focus-visible{outline:2px solid var(--ac);outline-offset:2px;}
+.cl-avatar--photo{background:#e8e8e8;}
+.cl-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cl-avatar .cl-avatar-tx{position:relative;z-index:0;line-height:1;}
+.cl-photo-input{position:absolute;width:0;height:0;opacity:0;pointer-events:none;left:0;top:0;}
 .cl-name{font-size:15px;font-weight:600;color:var(--tx);margin-bottom:2px;}
 .cl-meta{font-size:12px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
 .cl-detail{font-size:12px;color:var(--tx2);margin-top:6px;line-height:1.6;}
@@ -2559,8 +2581,12 @@ function refreshClientsFromServer(){
       });
     })
     .then(function(rows){
+      var prevById={};
+      (S.clients||[]).forEach(function(c){
+        if(c&&c.id!=null) prevById[String(c.id)]=c;
+      });
       S.clients=(rows||[]).map(function(c){
-        return {
+        var o={
           id:c.id,
           name:c.full_name,
           phone:c.phone||"",
@@ -2569,6 +2595,9 @@ function refreshClientsFromServer(){
           notes:c.notes||"",
           createdAt:Date.now()
         };
+        var prev=prevById[String(c.id)];
+        if(prev&&prev.photo) o.photo=prev.photo;
+        return o;
       });
     });
 }
@@ -4225,10 +4254,14 @@ function rProj(){
     else if(qn) line3=escHtml(qn);
     else line3=escHtml("No address on file");
     var tletter=nm?nm.charAt(0).toUpperCase():"?";
+    var cPh=clientPhotoDataUrlByProjectRow(p);
+    var plInitInner=cPh
+      ?'<img src="'+safeDataUrlForAttr(cPh)+'" alt=""/>'
+      :escHtml(initialsFromName(cn));
     return '<div class="pl-row'+(isOn?" pl-row--on":"")+'" role="button" tabindex="0" data-pid="'+escAttr(p.id)+'">'
       +'<div class="pl-avatar-wrap">'
       +htmlProjectThumbInner(p.id,tletter)
-      +'<div class="pl-initial">'+escHtml(initialsFromName(cn))+'</div>'
+      +'<div class="pl-initial'+(cPh?" pl-initial--photo":"")+'">'+plInitInner+'</div>'
       +'</div>'
       +'<div class="pl-txt">'
       +'<div class="pl-line1"><span class="pl-name">'+cnH+'</span><span class="pl-date">'+escHtml(fmtListDate(p.updated_at))+'</span></div>'
@@ -4465,6 +4498,15 @@ function readImageFileToDataUrl(inp, maxBytes, okFn){
   };
   reader.onerror=function(){ try{ alert("Could not read that file."); }catch(e){} };
   reader.readAsDataURL(f);
+}
+function handleClientPhotoFile(i,inp){
+  if(i<0||!S.clients||!S.clients[i]) return;
+  readImageFileToDataUrl(inp, 400*1024, function(data){
+    S.clients[i].photo=data;
+    ss();
+    uSide();
+    rClients();
+  });
 }
 function handlePendingProjectCover(inp){
   readImageFileToDataUrl(inp,800*1024,function(data){
@@ -4746,10 +4788,13 @@ function rDash(){
     else if(dr===0) dueLine='<div><strong>Due today</strong></div>';
     else dueLine='<div><strong>'+dr+'</strong> day'+(dr!==1?'s':'')+' until deadline</div>';
     var cthumb=getLocalProjectCover(p.id);
+    var cClientPh=clientPhotoDataUrlByProjectRow(p);
     var tInit=String(nm).trim().charAt(0).toUpperCase()||"?";
     var dThumb=cthumb
       ?'<div class="dproj-thumb dproj-thumb--photo" aria-hidden="true"><img src="'+safeDataUrlForAttr(cthumb)+'" alt=""/></div>'
-      :'<div class="dproj-thumb" aria-hidden="true">'+escHtml(tInit)+"</div>";
+      :(cClientPh
+        ?'<div class="dproj-thumb dproj-thumb--photo" aria-hidden="true"><img src="'+safeDataUrlForAttr(cClientPh)+'" alt=""/></div>'
+        :'<div class="dproj-thumb" aria-hidden="true">'+escHtml(tInit)+"</div>");
     return '<div class="rc dash-proj'+(active?' on':'')+'" data-pid="'+escAttr(p.id)+'" role="button" tabindex="0">'
       +'<div class="dproj-acts" onclick="event.stopPropagation();">'
       +'<button type="button" class="dproj-fab dproj-fab--arch" title="Archive" aria-label="Archive project" onclick="event.stopPropagation();dashProjectArchive(\''+escAttr(p.id)+'\')">📦</button>'
@@ -8314,7 +8359,20 @@ function clInitials(name){
   if(parts.length>=2) return (parts[0][0]+parts[parts.length-1][0]).toUpperCase();
   return (name[0]||"?").toUpperCase();
 }
-
+function clientPhotoDataUrlByProjectRow(p){
+  if(!p||!S.clients||!S.clients.length) return "";
+  var cid=p.client_id!=null?String(p.client_id):(p.client&&p.client.id?String(p.client.id):"");
+  if(!cid) return "";
+  for(var i=0;i<S.clients.length;i++){
+    if(String(S.clients[i].id)===cid&&S.clients[i].photo) return String(S.clients[i].photo);
+  }
+  return "";
+}
+function clAvatarClick(ev,i){
+  if(ev){ ev.stopPropagation(); ev.preventDefault(); }
+  var inp=document.getElementById("cl-photo-f-"+i);
+  if(inp) inp.click();
+}
 function rClients(){
   var el=document.getElementById("p-clients");
   var clients=S.clients||[];
@@ -8327,19 +8385,24 @@ function rClients(){
       +'</div>';
   } else {
     cards='<div class="cl-grid">'+clients.map(function(cl,i){
+      var hasPh=!!(cl.photo&&String(cl.photo).trim());
       return '<div class="cl-card">'
         +'<div class="cl-card-top">'
-        +'<div style="display:flex;align-items:center;gap:10px;flex:1">'
-        +'<div class="cl-avatar">'+clInitials(cl.name)+'</div>'
-        +'<div><div class="cl-name">'+cl.name+'</div>'
-        +'<div class="cl-meta">'+(cl.phone||cl.email||'No contact info')+'</div></div>'
+        +'<div class="cl-card-text">'
+        +'<div class="cl-name">'+escHtml(cl.name)+'</div>'
         +'</div>'
+        +'<button type="button" class="cl-avatar'+(hasPh?" cl-avatar--photo":"")+'" title="Add or change photo" aria-label="Add or change client photo" onclick="clAvatarClick(event,'+i+')">'
+        +(hasPh
+          ?'<img src="'+safeDataUrlForAttr(String(cl.photo))+'" alt=""/>'
+          :'<span class="cl-avatar-tx">'+escHtml(clInitials(cl.name))+'</span>')
+        +'</button>'
+        +'<input type="file" class="cl-photo-input" id="cl-photo-f-'+i+'" accept="image/*" tabindex="-1" aria-hidden="true" onchange="handleClientPhotoFile('+i+',this)"/>'
         +'</div>'
         +'<div class="cl-detail">'
-        +(cl.email?'<span>✉️ '+cl.email+'</span>':'')
-        +(cl.phone?'<span>📞 '+cl.phone+'</span>':'')
-        +(cl.address?'<span>📍 '+cl.address+'</span>':'')
-        +(cl.notes?'<span style="color:var(--tx3);font-style:italic">'+cl.notes+'</span>':'')
+        +(cl.email?'<span>✉️ '+escHtml(cl.email)+'</span>':'')
+        +(cl.phone?'<span>📞 '+escHtml(cl.phone)+'</span>':'')
+        +(cl.address?'<span>📍 '+escHtml(cl.address)+'</span>':'')
+        +(cl.notes?'<span style="color:var(--tx3);font-style:italic">'+escHtml(cl.notes)+'</span>':'')
         +'</div>'
         +'<div class="cl-actions">'
         +'<button class="btn bp sm" onclick="editClient('+i+')">Edit</button>'
@@ -8653,6 +8716,7 @@ function saveNewClient(){
       email:d.email||"",
       address:d.address||"",
       notes:d.notes||"",
+      photo:"",
       createdAt:Date.now()
     });
     try{
