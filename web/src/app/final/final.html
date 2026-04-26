@@ -5713,7 +5713,11 @@ function tradeSectionHtml(room, ti, idPx, isModal){
   var catStr=TRADE_CAT[t.id]||'';
 
   if(!isModal){
-    var gTools='<div class="th-act">'
+    var roomQ=encodeURIComponent(room.n||"");
+    var tileGridLink=(t.id==='tile'
+      ? ('<a href="/tile-calculator'+(roomQ?'?room='+roomQ:'')+'" class="btn bp sm" style="margin-right:8px;text-decoration:none;display:inline-flex;align-items:center" onclick="event.stopPropagation();" title="Open tile calculator">Tile calculator</a>')
+      : '');
+    var gTools='<div class="th-act">'+tileGridLink
       +'<button type="button" class="th-ico th-ico-del" title="Remove trade" aria-label="Remove trade" onclick="event.stopPropagation();delTrade('+ti+')">✕</button>'
       +'</div>';
     return '<div class="ts ts-'+t.id+' ts-grid-only" data-trade-ti="'+ti+'">'
