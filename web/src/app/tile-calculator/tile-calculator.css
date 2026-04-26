@@ -1,18 +1,17 @@
-/* Tile Calculator — matches TileCalculator.html reference */
+/* Tile calculator — light theme: #fff page, #f5f5f5 cards, #e8e8e8 borders */
 .tile-calc {
-  --bg: #0e0e0e;
-  --surface: #151515;
-  --surface2: #1a1a1a;
-  --border: #222;
-  --border2: #2a2a2a;
-  --text: #e8e8e8;
-  --muted: #666;
-  --faint: #333;
-  --accent: #fff;
-  --green: #34c759;
-  --orange: #ff9500;
-  --red: #ff3b30;
-  --blue: #0a84ff;
+  --page: #ffffff;
+  --ink: #111111;
+  --muted: #666666;
+  --faint: #999999;
+  --surface: #f5f5f5;
+  --border: #e8e8e8;
+  --border2: #dedede;
+  --accent: #111111;
+  --green: #166534;
+  --orange: #b45309;
+  --tab-active: #111111;
+  --toggle-on: #111111;
   --mono: var(--font-plex-mono, "IBM Plex Mono", monospace);
   --sans: var(--font-plex-sans, "IBM Plex Sans", sans-serif);
 }
@@ -24,15 +23,14 @@
 }
 .tile-calc {
   min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--page);
+  color: var(--ink);
   font-family: var(--sans);
   overflow-x: hidden;
 }
 
-/* TOP BAR */
 .tile-calc .topbar {
-  background: #fff;
+  background: #ffffff;
   padding: 14px 20px;
   position: sticky;
   top: 0;
@@ -40,6 +38,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  border-bottom: 1px solid var(--border);
 }
 .tile-calc .back {
   background: none;
@@ -58,14 +57,13 @@
 }
 .tile-calc .topbar-sub {
   font-size: 11px;
-  color: #999;
+  color: var(--muted);
   margin-top: 1px;
 }
 
-/* TABS */
 .tile-calc .tabs {
   display: flex;
-  background: var(--surface);
+  background: #ffffff;
   border-bottom: 1px solid var(--border);
   overflow-x: auto;
   scrollbar-width: none;
@@ -92,11 +90,10 @@
   white-space: nowrap;
 }
 .tile-calc .tab.active {
-  color: var(--text);
-  border-bottom-color: #fff;
+  color: var(--tab-active);
+  border-bottom-color: #111;
 }
 
-/* CONTENT */
 .tile-calc .content {
   padding: 20px 16px 120px;
   max-width: 600px;
@@ -109,7 +106,6 @@
   display: block;
 }
 
-/* SECTION */
 .tile-calc .section {
   margin-bottom: 16px;
 }
@@ -122,8 +118,9 @@
   padding: 0 2px;
 }
 
-/* CARD */
-.tile-calc .card {
+.tile-calc .card,
+.tile-calc .wall-block,
+.tile-calc .mat-list {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -142,7 +139,7 @@
 }
 .tile-calc .card-label {
   font-size: 13px;
-  color: #aaa;
+  color: #444;
   font-family: var(--sans);
   flex: 1;
 }
@@ -152,12 +149,11 @@
   flex-shrink: 0;
 }
 
-/* NUMBER INPUT */
 .tile-calc .num-input {
-  background: var(--surface2);
+  background: #fff;
   border: 1px solid var(--border2);
   border-radius: 6px;
-  color: var(--text);
+  color: var(--ink);
   font-family: var(--mono);
   font-size: 15px;
   padding: 6px 10px;
@@ -167,16 +163,16 @@
   transition: border-color 0.15s;
 }
 .tile-calc .num-input:focus {
-  border-color: #fff;
+  border-color: #111;
 }
 
-/* SEGMENTED */
 .tile-calc .seg {
   display: flex;
-  background: var(--surface2);
+  background: #f0f0f0;
   border-radius: 7px;
   padding: 2px;
   gap: 2px;
+  border: 1px solid var(--border);
 }
 .tile-calc .seg-btn {
   flex: 1;
@@ -193,25 +189,26 @@
   letter-spacing: 0.03em;
 }
 .tile-calc .seg-btn.active {
-  background: var(--surface);
-  color: var(--text);
+  background: #fff;
+  color: #111;
   border: 1px solid var(--border2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
-/* TOGGLE ROW */
 .tile-calc .toggle-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 13px 16px;
   border-bottom: 1px solid var(--border);
+  background: var(--surface);
 }
 .tile-calc .toggle-row:last-child {
   border-bottom: none;
 }
 .tile-calc .toggle-label {
   font-size: 13px;
-  color: #aaa;
+  color: #333;
 }
 .tile-calc .toggle-sub {
   font-size: 11px;
@@ -231,12 +228,12 @@
 .tile-calc .toggle-track {
   position: absolute;
   inset: 0;
-  background: #333;
+  background: #d4d4d4;
   border-radius: 12px;
   transition: background 0.2s;
 }
 .tile-calc .toggle input:checked + .toggle-track {
-  background: var(--green);
+  background: #111;
 }
 .tile-calc .toggle-thumb {
   position: absolute;
@@ -247,14 +244,15 @@
   background: #fff;
   border-radius: 50%;
   transition: transform 0.2s;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   pointer-events: none;
+  border: 1px solid var(--border2);
 }
 .tile-calc .toggle input:checked ~ .toggle-thumb {
   transform: translateX(20px);
+  border-color: #fff;
 }
 
-/* STATUS */
 .tile-calc .status-band {
   margin-bottom: 10px;
   border-radius: 8px;
@@ -264,16 +262,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-}
-.tile-calc .status-ok {
-  background: rgba(52, 199, 89, 0.1);
-  border: 1px solid rgba(52, 199, 89, 0.2);
-  color: var(--green);
+  border: 1px solid var(--border);
 }
 .tile-calc .status-warn {
-  background: rgba(255, 149, 0, 0.1);
-  border: 1px solid rgba(255, 149, 0, 0.2);
+  background: #fff7ed;
   color: var(--orange);
+  border-color: #fed7aa;
 }
 .tile-calc .status-dot {
   width: 6px;
@@ -283,13 +277,13 @@
   flex-shrink: 0;
 }
 
-/* RESULT ROW */
 .tile-calc .result-row {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
+  background: #fafafa;
 }
 .tile-calc .result-row:last-child {
   border-bottom: none;
@@ -303,7 +297,10 @@
   font-size: 20px;
   font-weight: 600;
   font-family: var(--mono);
-  color: var(--text);
+  color: #111;
+}
+.tile-calc .result-val--accent {
+  color: var(--green);
 }
 .tile-calc .result-unit {
   font-size: 11px;
@@ -311,17 +308,12 @@
   margin-left: 3px;
 }
 
-/* WALL BLOCK */
 .tile-calc .wall-block {
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  margin-bottom: 10px;
-  overflow: hidden;
 }
 .tile-calc .wall-header {
   padding: 12px 16px;
-  background: var(--surface2);
+  background: #efefef;
   border-bottom: 1px solid var(--border);
   font-size: 11px;
   color: var(--muted);
@@ -334,22 +326,16 @@
 .tile-calc .wall-header-val {
   font-family: var(--mono);
   font-size: 13px;
-  color: var(--text);
+  color: #111;
 }
 
-/* MATERIAL LIST */
-.tile-calc .mat-list {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-}
 .tile-calc .mat-item {
   display: flex;
   align-items: center;
   padding: 12px 16px;
   gap: 12px;
   border-bottom: 1px solid var(--border);
+  background: var(--surface);
 }
 .tile-calc .mat-item:last-child {
   border-bottom: none;
@@ -366,7 +352,7 @@
 }
 .tile-calc .mat-name {
   font-size: 13px;
-  color: var(--text);
+  color: #111;
   font-family: var(--sans);
 }
 .tile-calc .mat-desc {
@@ -378,7 +364,7 @@
   font-family: var(--mono);
   font-size: 14px;
   font-weight: 600;
-  color: var(--text);
+  color: #111;
   flex-shrink: 0;
   text-align: right;
 }
@@ -387,13 +373,12 @@
   color: var(--muted);
 }
 
-/* BOTTOM BAR */
 .tile-calc .bottom-bar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--surface);
+  background: #ffffff;
   border-top: 1px solid var(--border);
   padding: 12px 16px;
   z-index: 150;
@@ -407,8 +392,8 @@
 }
 .tile-calc .push-btn {
   flex: 1;
-  background: #fff;
-  color: #111;
+  background: #111;
+  color: #fff;
   border: none;
   border-radius: 8px;
   padding: 13px;
@@ -419,7 +404,7 @@
   transition: background 0.15s;
 }
 .tile-calc .push-btn:hover {
-  background: #e8e8e8;
+  background: #333;
 }
 .tile-calc .total-wrap {
   flex-shrink: 0;
@@ -435,7 +420,7 @@
   font-family: var(--mono);
   font-size: 18px;
   font-weight: 600;
-  color: var(--text);
+  color: #111;
 }
 
 .tile-calc .gap {
@@ -448,41 +433,20 @@
   margin-bottom: 12px;
 }
 .tile-calc .chip {
-  background: var(--surface2);
+  background: #fff;
   border: 1px solid var(--border2);
   border-radius: 20px;
   padding: 4px 12px;
   font-size: 11px;
-  color: var(--muted);
+  color: #555;
   cursor: pointer;
   transition: all 0.15s;
 }
 .tile-calc .chip.active {
-  border-color: #fff;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.tile-calc .subsection {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted);
-  padding: 14px 0 8px;
-  border-top: 1px solid var(--border);
-  margin-top: 6px;
-}
-.tile-calc .subsection:first-child {
-  border-top: none;
-  margin-top: 0;
-  padding-top: 0;
-}
-
-.tile-calc .indent {
-  padding-left: 12px;
-  border-left: 2px solid var(--border2);
-  margin-left: 4px;
-  margin-bottom: 10px;
+  border-color: #111;
+  color: #111;
+  background: #f0f0f0;
+  font-weight: 600;
 }
 
 .tile-calc .heatRowFlex {
@@ -490,3 +454,4 @@
   align-items: baseline;
   justify-content: space-between;
 }
+

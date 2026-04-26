@@ -27,7 +27,7 @@ export default function TileCalculatorLayout({ children }: { children: ReactNode
   return (
     <div
       className={`${plexSans.variable} ${plexMono.variable} min-h-full`}
-      style={{ background: "#0e0e0e" }}
+      style={{ background: "#ffffff" }}
     >
       {children}
     </div>
