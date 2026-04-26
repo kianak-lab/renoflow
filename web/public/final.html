@@ -5183,7 +5183,9 @@ function tradeToolsBlock(room,ti,t,idPx){
     return html;
   }
   if(tid==='tile'){
-    var html='<div class="rf-tool"><div class="rf-tool-h">🔲 Tile area + 10% waste</div>';
+    var tileRoomQ=(room&&room.n)?encodeURIComponent(room.n):'';
+    var tileCalcLink='<div style="margin:0 0 12px 0"><a class="btn bg sm" href="/tile-calculator'+(tileRoomQ?'?room='+tileRoomQ:'')+'" style="text-decoration:none;display:inline-block;font-weight:600">Full tile calculator →</a></div>';
+    var html=tileCalcLink+'<div class="rf-tool"><div class="rf-tool-h">🔲 Tile area + 10% waste</div>';
     html+='<div class="rf-tool-row"><label>Length (ft)</label><input type="number" id="'+px+'tl-l" step="0.5" value="12"/></div>';
     html+='<div class="rf-tool-row"><label>Width (ft)</label><input type="number" id="'+px+'tl-w" step="0.5" value="10"/></div>';
     html+='<div class="rf-tool-row"><label>Waste (decimal)</label><input type="number" id="'+px+'tl-wf" step="0.05" value="0.1"/></div>';
