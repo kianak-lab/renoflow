@@ -1,9 +1,18 @@
 "use client";
 
-import { Suspense, useCallback, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import {
+  buildResolvedMaterialRows,
+  type CalcSnapshot,
+  type CachedProduct,
+  type ResolvedMaterialRow,
+} from "./tile-materials";
+import type { FloorSub } from "./tile-types";
 
 type SubstrateId = "mrd" | "denseshield" | "kerdiboard" | "kerdisheating";
+
+const API_TILE_TRADE = "Tile";
 
 // ── Data (from TileCalculator.html) ─────────────────────────────
 const substrateData = {
@@ -64,7 +73,6 @@ const doorInstall: Record<string, string> = {
 };
 
 type TabId = "walls" | "floor" | "ceiling" | "substrate" | "door" | "list";
-type FloorSub = "scratch" | "ditra" | "slab";
 type DoorType = "frameless" | "semi" | "framed";
 type DoorConfig = "swing" | "sliding" | "bifold";
 
@@ -111,8 +119,6 @@ const JOINTS: { v: number; label: string }[] = [
   { v: 0.25, label: '1/4"' },
 ];
 
-type MatLine = { icon: string; name: string; desc: string; qty: string };
-
 function TileCalculatorView() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -150,6 +156,42 @@ function TileCalculatorView() {
   const [clL, setClL] = useState(36);
   const [doorW, setDoorW] = useState(36);
   const [doorH, setDoorH] = useState(78);
+
+  const [cachedTileLoading, setCachedTileLoading] = useState(true);
+  const [cachedTileProducts, setCachedTileProducts] = useState<CachedProduct[]>([]);
+  const [cachedTileErr, setCachedTileErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setCachedTileLoading(true);
+      setCachedTileErr(null);
+      try {
+        const r = await fetch(
+          "/api/cached-products?trade=" + encodeURIComponent(API_TILE_TRADE),
+          { credentials: "include" }
+        );
+        const j = (await r.json()) as { products?: CachedProduct[]; error?: string };
+        if (cancelled) return;
+        if (!r.ok) {
+          setCachedTileErr((j && j.error) || `HTTP ${r.status}`);
+          setCachedTileProducts([]);
+          return;
+        }
+        setCachedTileProducts(j.products || []);
+      } catch {
+        if (!cancelled) {
+          setCachedTileErr("Network error");
+          setCachedTileProducts([]);
+        }
+      } finally {
+        if (!cancelled) setCachedTileLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const setTileSize = useCallback((w: number, h: number) => {
     setTileW(w);
@@ -231,53 +273,29 @@ function TileCalculatorView() {
     hasSteam, floorSub,
   ]);
 
-  const matListItems: MatLine[] = useMemo(() => {
-    const d = calc;
-    const items: MatLine[] = [
-      { icon: "🔲", name: "Wall tile", qty: `${d.wallTilesWaste} tiles`, desc: `${d.wallSqFt.toFixed(0)} sq ft + 10% waste` },
-      { icon: "🔲", name: "Floor tile", qty: `${d.flTiles} tiles`, desc: `${d.flSqFt.toFixed(0)} sq ft + 10% waste` },
-    ];
-    if (d.hasCeil) {
-      items.push({
-        icon: "🔲",
-        name: "Ceiling tile",
-        qty: `${d.ceilTiles} tiles`,
-        desc: `${d.ceilSqFt.toFixed(0)} sq ft + 10% waste`,
-      });
-    }
-    items.push(
-      { icon: "🪣", name: "Thinset bags", qty: `${d.thinsetBags} bags`, desc: "50 lb — walls, floor, ceiling" },
-      { icon: "🪣", name: "Grout bags", qty: `${d.groutBags} bags`, desc: "10 lb — all joints" },
-      { icon: "📏", name: "Schluter strip", qty: `${d.schluterFt} ft`, desc: "All exposed tile edges" },
-      { icon: "🛡", name: "Waterproofing", qty: `${Math.ceil(d.wallSqFt + d.flSqFt)} sq ft`, desc: "RedGard or KERDI coverage" }
-    );
-    if (d.floorSub === "ditra") {
-      items.push({ icon: "🟧", name: "Schluter Ditra mat", qty: `${Math.ceil(d.flSqFt)} sq ft`, desc: "Floor uncoupling membrane" });
-    }
-    if (d.floorSub === "scratch") {
-      items.push({ icon: "🪣", name: "Portland / sand mix", qty: `${Math.ceil(d.flSqFt / 15)} bags`, desc: "Scratch coat — 50 lb bags" });
-    }
-    if (d.hasHeat) {
-      items.push(
-        { icon: "🔥", name: "Electric heat mat", qty: `${Math.ceil(d.flSqFt)} sq ft`, desc: "Under tile — match floor sq ft" },
-        { icon: "🌡", name: "Thermostat", qty: "1 unit", desc: "In-floor heat controller" },
-        { icon: "🧪", name: "Self-leveler", qty: `${Math.ceil(d.flSqFt / 40)} bags`, desc: "Over heat mat before tile" }
-      );
-    }
-    if (d.hasSteam) {
-      items.push(
-        { icon: "💨", name: "Steam generator", qty: "1 unit", desc: "2–7 kW depending on shower size" },
-        { icon: "💨", name: "Steam head", qty: "1 unit", desc: "Low on wall, away from door" },
-        { icon: "🎛", name: "Steam control", qty: "1 unit", desc: "Digital controller" },
-        { icon: "🪵", name: "Blocking lumber 2x6", qty: "as needed", desc: "For steam generator mounting" }
-      );
-    }
-    items.push(
-      { icon: "🧪", name: "Silicone caulk", qty: "3 tubes", desc: "All corners and transitions" },
-      { icon: "🧪", name: "Grout sealer", qty: "1 bottle", desc: "After grout cures — 72h" }
-    );
-    return items;
-  }, [calc]);
+  const calcSnapshot: CalcSnapshot = useMemo(
+    () => ({
+      wallTilesWaste: calc.wallTilesWaste,
+      wallSqFt: calc.wallSqFt,
+      flTiles: calc.flTiles,
+      flSqFt: calc.flSqFt,
+      ceilTiles: calc.ceilTiles,
+      ceilSqFt: calc.ceilSqFt,
+      hasCeil: calc.hasCeil,
+      thinsetBags: calc.thinsetBags,
+      groutBags: calc.groutBags,
+      schluterFt: calc.schluterFt,
+      floorSub: calc.floorSub,
+      hasHeat: calc.hasHeat,
+      hasSteam: calc.hasSteam,
+    }),
+    [calc]
+  );
+
+  const resolvedMaterialRows: ResolvedMaterialRow[] = useMemo(() => {
+    if (cachedTileLoading) return [];
+    return buildResolvedMaterialRows(calcSnapshot, cachedTileProducts);
+  }, [calcSnapshot, cachedTileLoading, cachedTileProducts]);
 
   const doorCalc = useMemo(() => {
     const sqFt = (doorW * doorH) / 144;
@@ -917,26 +935,52 @@ function TileCalculatorView() {
         </div>
 
         <div className={"panel" + (tab === "list" ? " active" : "")} id="panel-list" role="tabpanel">
-          <div className="section-title">Complete Material List</div>
+          <div className="section-title">Complete material list</div>
+          <p style={{ fontSize: 12, color: "#666", marginBottom: 12, lineHeight: 1.45 }}>
+            Products load from <strong>Supabase</strong> <code>cached_products</code> where <code>trade = Tile</code>. Rows
+            match by subsection and title keywords; calculated quantities are your job-estimate.
+          </p>
+          {cachedTileErr && (
+            <div className="status-band status-warn" style={{ marginBottom: 12 }}>
+              <div className="status-dot" />
+              Could not load catalog: {cachedTileErr}. Showing calculated quantities with default labels.
+            </div>
+          )}
+          {cachedTileLoading && (
+            <p style={{ fontSize: 14, color: "#666" }}>Loading Home Depot & Tile catalog from Supabase…</p>
+          )}
           <div className="mat-list" id="fullMatList">
-            {matListItems.map((i) => {
-              const qParts = i.qty.split(" ");
-              const n = qParts[0];
-              const u = qParts.slice(1).join(" ");
-              return (
-                <div className="mat-item" key={i.name + i.qty}>
-                  <div className="mat-icon">{i.icon}</div>
+            {!cachedTileLoading &&
+              resolvedMaterialRows.map((row) => (
+                <div className="mat-item" key={row.key + row.qty}>
+                  {row.matched && row.product?.thumbnail ? (
+                    <img
+                      className="mat-thumb"
+                      src={row.product.thumbnail}
+                      alt=""
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="mat-icon" aria-hidden>
+                      {row.icon}
+                    </div>
+                  )}
                   <div className="mat-info">
-                    <div className="mat-name">{i.name}</div>
-                    <div className="mat-desc">{i.desc}</div>
+                    <div className="mat-name">{row.displayName}</div>
+                    {row.matched && row.displayBrand ? (
+                      <div className="mat-brand">{row.displayBrand}</div>
+                    ) : null}
+                    {row.matched ? (
+                      <div className="mat-price-pill">{row.displayPrice}</div>
+                    ) : null}
+                    <div className="mat-desc">Plan: {row.displayDesc}</div>
                   </div>
                   <div className="mat-qty">
-                    {n}
-                    <div className="mat-qty-unit">{u}</div>
+                    <span className="mat-qty-main">{row.qty}</span>
+                    <div className="mat-qty-unit">Calculated</div>
                   </div>
                 </div>
-              );
-            })}
+              ))}
           </div>
         </div>
       </div>
