@@ -4,7 +4,7 @@
  * takes the top 2 results, and inserts rows (requires SUPABASE_SERVICE_ROLE_KEY).
  *
  * Run from repo `web/`:  npm run seed:products
- * Prerequisites:  next dev (or start) on SEED_BASE_URL, SERPAPI_KEY on the server, migration applied.
+ * Prerequisites:  next dev (or start) on SEED_BASE_URL, SERPAPI_KEY, HOMEDEPOT_INTERNAL_KEY, migration applied.
  */
 
 import { createServiceClient } from "../src/lib/supabase-service";

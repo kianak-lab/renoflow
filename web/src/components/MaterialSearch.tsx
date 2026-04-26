@@ -4,10 +4,18 @@ import { useCallback, useState } from "react";
 
 type Material = { name: string };
 
-async function searchHomeDepot(material: Material) {
-  const res = await fetch(`/api/homedepot?q=${encodeURIComponent(material.name)}`);
-  const products = await res.json();
-  return products.slice(0, 2);
+/** Reads Supabase cached_products only — no SerpAPI. */
+async function searchCachedCatalog(material: Material) {
+  const res = await fetch(
+    `/api/cached-products/global-search?q=${encodeURIComponent(material.name)}`,
+    { credentials: "include" },
+  );
+  const data = (await res.json()) as { products?: unknown; error?: string };
+  if (!res.ok) {
+    throw new Error(data.error || `HTTP ${res.status}`);
+  }
+  const products = Array.isArray(data.products) ? data.products : [];
+  return products.slice(0, 40) as Record<string, unknown>[];
 }
 
 function getProductTitle(p: Record<string, unknown>) {
@@ -50,6 +58,7 @@ function getModelSkuLine(p: Record<string, unknown>): string {
 }
 
 function getPriceDisplay(p: Record<string, unknown>): string {
+  if (typeof p.price === "string" && p.price.trim()) return p.price.trim();
   const unit =
     typeof p.unit === "string" && p.unit.trim() ? p.unit.trim() : "each";
   const pr = p.price;
@@ -117,7 +126,7 @@ export default function MaterialSearch() {
     setLoading(true);
     setError(null);
     try {
-      const items = await searchHomeDepot({ name });
+      const items = await searchCachedCatalog({ name });
       const list = Array.isArray(items) ? items : [];
       setResults(list as Record<string, unknown>[]);
     } catch {
@@ -132,7 +141,7 @@ export default function MaterialSearch() {
     <div style={{ maxWidth: 480, padding: 24 }}>
       <div className="dim-t">Material search</div>
       <div className="field" style={{ marginBottom: 12 }}>
-        <label htmlFor="material-search-q">Search Home Depot (Canada)</label>
+        <label htmlFor="material-search-q">Search cached catalog (Supabase)</label>
         <div style={{ display: "flex", gap: 8, alignItems: "stretch" }}>
           <input
             id="material-search-q"

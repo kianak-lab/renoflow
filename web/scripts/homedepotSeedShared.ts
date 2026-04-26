@@ -114,9 +114,17 @@ export function sleep(ms: number) {
 }
 
 export async function fetchTopTwo(q: string): Promise<ApiProduct[]> {
+  const key = process.env.HOMEDEPOT_INTERNAL_KEY?.trim();
+  if (!key) {
+    throw new Error(
+      "HOMEDEPOT_INTERNAL_KEY is missing — add it to web/.env.local for seed scripts to call /api/homedepot.",
+    );
+  }
   const url = new URL("/api/homedepot", SEED_BASE_URL);
   url.searchParams.set("q", q);
-  const res = await fetch(url.toString());
+  const res = await fetch(url.toString(), {
+    headers: { Authorization: `Bearer ${key}` },
+  });
   if (!res.ok) {
     throw new Error(`HTTP ${res.status} ${res.statusText}`);
   }

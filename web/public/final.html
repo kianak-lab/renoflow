@@ -5880,6 +5880,10 @@ function tradeSectionHtml(room, ti, idPx, isModal){
     +'<span>Materials subtotal (this trade)</span>'
     +'<strong data-rf-cat-tot="'+ti+'">'+matSub+'</strong>'
     +'</div>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 10px 0">'
+    +'<button type="button" class="btn bd-btn sm" onclick="event.stopPropagation();rfCheckPricesForTrade('+ti+')">Check prices</button>'
+    +'<span style="font-size:11px;color:var(--tx3);max-width:440px;line-height:1.35">Re-fetch supplier pricing via SerpAPI (manual; uses quota). Opening this trade only loads data from the database.</span>'
+    +'</div>'
     +'<div class="rf-catalog-shell" id="'+px+'rfCatalog'+ti+'" data-ti="'+ti+'" data-tid="'+escAttr(t.id)+'">'
     +'<div style="color:var(--tx3);font-size:13px;padding:8px 0">Loading catalog…</div>'
     +'</div>';
@@ -8144,6 +8148,40 @@ function rfCloseLightbox() {
   var im = document.getElementById("rf-lightbox-img");
   if (im) im.removeAttribute("src");
   document.removeEventListener("keydown", rfLightboxKey);
+}
+
+/** Manual SerpAPI refresh for this trade’s cached rows (explicit contractor action). */
+function rfCheckPricesForTrade(ti){
+  var room=S.rooms[curR];
+  if(!room||!room.trades[ti])return;
+  var t=room.trades[ti];
+  var tradeName=TN[t.id]||"";
+  if(!tradeName){ try{alert("Unknown trade");}catch(e){} return; }
+  var shell=document.querySelector('.rf-catalog-shell[data-ti="'+ti+'"][data-tid="'+escAttr(t.id)+'"]');
+  var prev=shell?shell.innerHTML:"";
+  if(shell){
+    shell.innerHTML='<div style="color:var(--tx3);font-size:13px;padding:8px 0">Refreshing supplier prices… (may take a minute)</div>';
+  }
+  fetch("/api/cached-products/refresh-from-supplier",{
+    method:"POST",
+    credentials:"include",
+    headers:{"Content-Type":"application/json","Accept":"application/json"},
+    body:JSON.stringify({ trade: tradeName })
+  }).then(function(r){
+    return r.json().then(function(j){ return { ok:r.ok, status:r.status, j:j }; });
+  }).then(function(x){
+    if(!x.ok){
+      if(shell) shell.innerHTML=prev;
+      var msg=(x.j&&x.j.error)||("HTTP "+x.status);
+      try{alert(msg);}catch(e){}
+      return;
+    }
+    try{ delete __rfCachedProductsByTrade[tradeName]; }catch(e){}
+    if(shell) rfLoadAndRenderCatalogShell(t.id, shell);
+  }).catch(function(){
+    if(shell) shell.innerHTML=prev;
+    try{alert("Network error");}catch(e){}
+  });
 }
 
 function rfLoadAndRenderCatalogShell(tid, shellEl) {

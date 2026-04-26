@@ -3,7 +3,7 @@
  * Skips when any row already exists with the same search_term.
  *
  * Run from web/:  npm run seed:products:pass2
- * Requires: next dev on SEED_BASE_URL, SERPAPI_KEY, SUPABASE_SERVICE_ROLE_KEY.
+ * Requires: next dev on SEED_BASE_URL, SERPAPI_KEY, HOMEDEPOT_INTERNAL_KEY, SUPABASE_SERVICE_ROLE_KEY.
  */
 
 import { createServiceClient } from "../src/lib/supabase-service";
