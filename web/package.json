@@ -14,6 +14,7 @@
     "start": "next start",
     "lint": "next lint",
     "seed:products": "npx tsx ./scripts/seedProducts.ts",
+    "seed:products:pass2": "npx tsx ./scripts/seedProductsPass2.ts",
     "db:migrate:cached-products": "npx tsx ./scripts/apply-cached-products-migration.ts"
   },
   "dependencies": {
