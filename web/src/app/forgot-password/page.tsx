@@ -1,25 +1,19 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import LoginForm from "./login-form";
 import AuthShell from "@/components/auth/auth-shell";
+import ForgotPasswordForm from "./forgot-form";
 import { COOKIE_NAME, verifySessionCookieValue } from "@/lib/simple-auth";
 
 export const dynamic = "force-dynamic";
 
-type Props = {
-  searchParams: Promise<{ error?: string; msg?: string }>;
-};
-
-export default async function LoginPage({ searchParams }: Props) {
+export default async function ForgotPasswordPage() {
   const jar = await cookies();
   const token = jar.get(COOKIE_NAME)?.value;
   if (await verifySessionCookieValue(token)) redirect("/");
 
-  const params = await searchParams;
-
   return (
     <AuthShell>
-      <LoginForm error={params.error} errorMessage={params.msg} />
+      <ForgotPasswordForm />
     </AuthShell>
   );
 }

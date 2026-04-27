@@ -16,8 +16,11 @@ async function hasSession(request: NextRequest): Promise<boolean> {
 
 function isPublicPath(pathname: string) {
   if (pathname.startsWith("/login")) return true;
+  if (pathname.startsWith("/signup")) return true;
+  if (pathname.startsWith("/forgot-password")) return true;
   if (pathname.startsWith("/api/auth/login")) return true;
   if (pathname.startsWith("/api/auth/logout")) return true;
+  if (pathname.startsWith("/api/auth/sync-session")) return true;
   if (pathname.startsWith("/auth/callback")) return true;
   if (pathname.startsWith("/client-intake")) return true;
   return false;
@@ -28,7 +31,11 @@ export async function middleware(request: NextRequest) {
   const next = NextResponse.next();
 
   if (isPublicPath(pathname)) {
-    if (pathname.startsWith("/login")) {
+    if (
+      pathname.startsWith("/login") ||
+      pathname.startsWith("/signup") ||
+      pathname.startsWith("/forgot-password")
+    ) {
       if (await hasSession(request)) {
         return NextResponse.redirect(new URL("/", getRequestOrigin(request)));
       }

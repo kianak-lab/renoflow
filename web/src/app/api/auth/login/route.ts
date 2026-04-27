@@ -1,7 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import {
-  COOKIE_NAME,
+  attachRenoflowSessionToResponse,
   createSessionToken,
   getAuthSecret,
   getExpectedPassword,
@@ -56,12 +56,6 @@ export async function POST(request: Request) {
   const uid = getRenoflowSupabaseUserId();
   const token = await createSessionToken(secret, uid);
   const res = NextResponse.json({ ok: true });
-  res.cookies.set(COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-  });
+  attachRenoflowSessionToResponse(res, token);
   return res;
 }
