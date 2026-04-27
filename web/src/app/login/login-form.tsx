@@ -14,6 +14,10 @@ import {
   authLabelClass,
   authPrimaryBtnClass,
 } from "@/components/auth/auth-form-styles";
+import {
+  buildOAuthRedirectTo,
+  logOAuthRedirectTo,
+} from "@/lib/auth-public-origin";
 
 type Props = {
   error?: string;
@@ -76,14 +80,13 @@ export default function LoginForm({ error, errorMessage }: Props) {
     setLoading(true);
     try {
       const supabase = createClient();
-      const origin = window.location.origin;
       const params = new URLSearchParams(window.location.search);
       const next = safeNextPath(params.get("next"));
+      const redirectTo = buildOAuthRedirectTo(next);
+      logOAuthRedirectTo(redirectTo, "login Google");
       const { error: oErr } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: {
-          redirectTo: `${origin}/api/auth/callback?next=${encodeURIComponent(next)}`,
-        },
+        options: { redirectTo },
       });
       if (oErr) throw new Error(oErr.message);
     } catch (err: unknown) {

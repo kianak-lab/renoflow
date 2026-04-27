@@ -597,3 +597,18 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--fon
   .proj-table-wrap{display:none;}
   .proj-mobile-list{display:block;}
 }
+
+/* Auth shell: avoid gray --bg leaking past edges on mobile; keep header square */
+html:has(#renoflow-auth-root) body {
+  background: #ffffff;
+}
+#renoflow-auth-root.renoflow-auth-root {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.renoflow-auth-header {
+  border-radius: 0 !important;
+}

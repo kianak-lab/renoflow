@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import {
+  buildOAuthRedirectTo,
+  logOAuthRedirectTo,
+} from "@/lib/auth-public-origin";
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
@@ -17,9 +21,10 @@ export default function ForgotPasswordForm() {
     setLoading(true);
     try {
       const supabase = createClient();
-      const origin = window.location.origin;
+      const redirectTo = buildOAuthRedirectTo("/");
+      logOAuthRedirectTo(redirectTo, "forgot password");
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: `${origin}/api/auth/callback?next=${encodeURIComponent("/")}`,
+        redirectTo,
       });
       if (error) throw new Error(error.message);
       setMessage("If an account exists for that email, we sent a reset link.");

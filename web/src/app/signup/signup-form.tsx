@@ -13,6 +13,10 @@ import {
   authLabelClass,
   authPrimaryBtnClass,
 } from "@/components/auth/auth-form-styles";
+import {
+  buildOAuthRedirectTo,
+  logOAuthRedirectTo,
+} from "@/lib/auth-public-origin";
 
 async function syncRenoflowSession(): Promise<void> {
   const res = await fetch("/api/auth/sync-session", {
@@ -44,13 +48,12 @@ export default function SignupForm() {
     setLoading(true);
     try {
       const supabase = createClient();
-      const origin = window.location.origin;
+      const emailRedirectTo = buildOAuthRedirectTo("/");
+      logOAuthRedirectTo(emailRedirectTo, "signup email confirm");
       const { data, error: signErr } = await supabase.auth.signUp({
         email: email.trim(),
         password,
-        options: {
-          emailRedirectTo: `${origin}/api/auth/callback?next=${encodeURIComponent("/")}`,
-        },
+        options: { emailRedirectTo },
       });
       if (signErr) throw new Error(signErr.message);
       if (data.session) {
@@ -74,14 +77,13 @@ export default function SignupForm() {
     setLoading(true);
     try {
       const supabase = createClient();
-      const origin = window.location.origin;
       const params = new URLSearchParams(window.location.search);
       const next = safeNextPath(params.get("next"));
+      const redirectTo = buildOAuthRedirectTo(next);
+      logOAuthRedirectTo(redirectTo, "signup Google");
       const { error: oErr } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: {
-          redirectTo: `${origin}/api/auth/callback?next=${encodeURIComponent(next)}`,
-        },
+        options: { redirectTo },
       });
       if (oErr) throw new Error(oErr.message);
     } catch (err: unknown) {
