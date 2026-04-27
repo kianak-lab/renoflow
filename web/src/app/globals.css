@@ -1,3 +1,5 @@
+@tailwind utilities;
+
 :root{
   --bg:#fafafa;--sf:#ffffff;--sf2:#f7f7f7;--bd:#ebebeb;--bd2:#dddddd;
   --tx:#222222;--tx2:#717171;--tx3:#b0b0b0;
