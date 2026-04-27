@@ -1,14 +1,25 @@
 import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { requireSupabaseUidFromSession } from "@/lib/api-session";
+import { getConfiguredPublicSiteUrl } from "@/lib/public-site-url";
 import { createServiceClient } from "@/lib/supabase-service";
 import { isSupabaseSchemaMismatch } from "@/lib/supabase-helpers";
 
 export const dynamic = "force-dynamic";
 
 function publicBaseUrl(request: Request): string {
-  const env = process.env.NEXT_PUBLIC_APP_URL?.trim();
-  if (env) return env.replace(/\/$/, "");
+  const env = getConfiguredPublicSiteUrl();
+  if (env) {
+    const trimmed = env.replace(/\/$/, "");
+    try {
+      const u = new URL(trimmed.includes("://") ? trimmed : `https://${trimmed}`);
+      if (!u.hostname.endsWith(".vercel.app")) {
+        return u.origin;
+      }
+    } catch {
+      /* fall through to request host */
+    }
+  }
   const host =
     request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "localhost:3000";
   const proto = request.headers.get("x-forwarded-proto") ?? "http";

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { getConfiguredPublicSiteUrl } from "@/lib/public-site-url";
 import "./globals.css";
 
 const inter = Inter({
@@ -14,20 +15,28 @@ const ogDescription =
 
 function metadataBase(): URL {
   const fallback = () => new URL("http://localhost:3000");
+  const canonicalProd = () => new URL("https://www.renoflowapp.com");
   try {
-    const fromEnv = process.env.NEXT_PUBLIC_APP_URL?.trim();
+    const fromEnv = getConfiguredPublicSiteUrl();
     if (fromEnv) {
       const normalized = fromEnv.includes("://") ? fromEnv : `https://${fromEnv}`;
-      return new URL(normalized);
+      const u = new URL(normalized);
+      if (!u.hostname.endsWith(".vercel.app")) {
+        return u;
+      }
     }
-    if (process.env.VERCEL_URL) {
-      return new URL(`https://${process.env.VERCEL_URL}`);
+    const vercel = process.env.VERCEL_URL?.trim();
+    if (vercel && !vercel.endsWith(".vercel.app")) {
+      return new URL(`https://${vercel}`);
+    }
+    if (process.env.NODE_ENV === "production") {
+      return canonicalProd();
     }
     return fallback();
   } catch {
-    if (process.env.VERCEL_URL) {
+    if (process.env.NODE_ENV === "production") {
       try {
-        return new URL(`https://${process.env.VERCEL_URL}`);
+        return canonicalProd();
       } catch {
         /* fall through */
       }

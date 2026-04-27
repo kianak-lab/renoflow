@@ -11,6 +11,7 @@ loadEnvConfig(path.join(__dirname, ".."));
 export const SEED_BASE_URL = (
   process.env.SEED_BASE_URL ||
   process.env.NEXT_PUBLIC_APP_URL ||
+  process.env.NEXT_PUBLIC_SITE_URL ||
   "http://127.0.0.1:3000"
 ).replace(/\/$/, "");
 
