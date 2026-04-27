@@ -4,6 +4,15 @@ import Link from "next/link";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import GoogleIcon from "@/components/auth/google-icon";
+import {
+  authDividerLineClass,
+  authFooterLinkClass,
+  authFooterMutedClass,
+  authGoogleBtnClass,
+  authInputClass,
+  authLabelClass,
+  authPrimaryBtnClass,
+} from "@/components/auth/auth-form-styles";
 
 async function syncRenoflowSession(): Promise<void> {
   const res = await fetch("/api/auth/sync-session", {
@@ -82,23 +91,20 @@ export default function SignupForm() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       {formError && (
-        <p className="rounded-sm bg-red-50 px-3 py-2 text-sm text-red-800 whitespace-pre-wrap">
+        <p className="rounded-none bg-red-50 px-3 py-2 text-sm text-red-800 whitespace-pre-wrap">
           {formError}
         </p>
       )}
       {success && (
-        <p className="rounded-sm bg-emerald-50 px-3 py-2 text-sm text-emerald-900">{success}</p>
+        <p className="rounded-none bg-emerald-50 px-3 py-2 text-sm text-emerald-900">{success}</p>
       )}
 
       <form onSubmit={onSubmit} className="flex flex-col gap-5">
         <div>
-          <label
-            htmlFor="signup-email"
-            className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[#222]"
-          >
-            Email
+          <label htmlFor="signup-email" className={authLabelClass}>
+            EMAIL
           </label>
           <input
             id="signup-email"
@@ -108,17 +114,14 @@ export default function SignupForm() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-sm border border-[#d4d4d4] bg-white px-3 py-2.5 text-[#222] outline-none focus:border-[#0f2318] focus:ring-1 focus:ring-[#0f2318]"
+            className={authInputClass}
             placeholder="you@company.com"
             disabled={loading}
           />
         </div>
         <div>
-          <label
-            htmlFor="signup-password"
-            className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[#222]"
-          >
-            Password
+          <label htmlFor="signup-password" className={authLabelClass}>
+            PASSWORD
           </label>
           <input
             id="signup-password"
@@ -129,39 +132,35 @@ export default function SignupForm() {
             minLength={8}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-sm border border-[#d4d4d4] bg-white px-3 py-2.5 text-[#222] outline-none focus:border-[#0f2318] focus:ring-1 focus:ring-[#0f2318]"
+            className={authInputClass}
             placeholder="At least 8 characters"
             disabled={loading}
           />
         </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-sm bg-[#0f2318] py-3 text-sm font-semibold text-white transition hover:bg-[#162e20] disabled:opacity-60"
-        >
+        <button type="submit" disabled={loading} className={authPrimaryBtnClass}>
           {loading ? "Creating account…" : "Create account"}
         </button>
       </form>
 
       <div className="flex items-center gap-4">
-        <div className="h-px flex-1 bg-[#e5e5e5]" />
-        <span className="text-xs font-medium text-[#717171]">Or</span>
-        <div className="h-px flex-1 bg-[#e5e5e5]" />
+        <div className={authDividerLineClass} />
+        <span className="shrink-0 text-xs font-medium text-[#717171]">Or</span>
+        <div className={authDividerLineClass} />
       </div>
 
       <button
         type="button"
         disabled={loading}
         onClick={() => void onGoogle()}
-        className="flex w-full items-center justify-center gap-3 rounded-sm border border-[#dadce0] bg-white py-3 text-sm font-semibold text-[#3c4043] shadow-sm transition hover:bg-[#f8f9fa] disabled:opacity-60"
+        className={authGoogleBtnClass}
       >
         <GoogleIcon />
         Continue with Google
       </button>
 
-      <p className="text-center text-sm text-[#444]">
+      <p className={authFooterMutedClass}>
         Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-[#4a9a6a] hover:underline">
+        <Link href="/login" className={authFooterLinkClass}>
           Sign in
         </Link>
       </p>
