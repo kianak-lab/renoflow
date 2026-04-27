@@ -84,6 +84,12 @@ export default function LoginForm({ error, errorMessage }: Props) {
       const next = safeNextPath(params.get("next"));
       const redirectTo = buildOAuthRedirectTo(next);
       logOAuthRedirectTo(redirectTo, "login Google");
+      console.log("[RenoFlow auth:login Google] pre signInWithOAuth", {
+        redirectTo,
+        windowOrigin: window.location.origin,
+        NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL ?? "(undefined)",
+        NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL ?? "(undefined)",
+      });
       const { error: oErr } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: { redirectTo },
