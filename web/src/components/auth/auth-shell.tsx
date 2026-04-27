@@ -23,7 +23,7 @@ export default function AuthShell({ children }: Props) {
       className="renoflow-auth-root flex min-h-[100dvh] w-full max-w-none flex-col bg-white"
     >
       <header
-        className="renoflow-auth-header w-full max-w-none shrink-0 bg-[#0f2318] px-4 pb-14 pt-16 [padding-top:max(4rem,env(safe-area-inset-top))]"
+        className="renoflow-auth-header w-full max-w-none shrink-0 bg-[#0f2318] px-4 pb-14 [padding-top:calc(env(safe-area-inset-top,0px)+4rem)]"
         style={{ borderRadius: 0 }}
       >
         <div className="mx-auto flex w-full max-w-lg flex-col items-center px-1 text-center">
