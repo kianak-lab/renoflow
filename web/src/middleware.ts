@@ -21,6 +21,7 @@ function isPublicPath(pathname: string) {
   if (pathname.startsWith("/api/auth/login")) return true;
   if (pathname.startsWith("/api/auth/logout")) return true;
   if (pathname.startsWith("/api/auth/sync-session")) return true;
+  if (pathname.startsWith("/api/auth/callback")) return true;
   if (pathname.startsWith("/auth/callback")) return true;
   if (pathname.startsWith("/client-intake")) return true;
   return false;

@@ -3,7 +3,7 @@ import { runOAuthCallback } from "@/lib/auth/oauth-callback";
 
 export const dynamic = "force-dynamic";
 
-/** OAuth PKCE callback — also mirrored at `/api/auth/callback` for Supabase redirect URL flexibility. */
+/** Same handler as `/auth/callback` — use either URL in Supabase Auth redirect allow list. */
 export async function GET(request: NextRequest) {
   return runOAuthCallback(request);
 }

@@ -19,7 +19,7 @@ export default function ForgotPasswordForm() {
       const supabase = createClient();
       const origin = window.location.origin;
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: `${origin}/auth/callback?next=${encodeURIComponent("/")}`,
+        redirectTo: `${origin}/api/auth/callback?next=${encodeURIComponent("/")}`,
       });
       if (error) throw new Error(error.message);
       setMessage("If an account exists for that email, we sent a reset link.");

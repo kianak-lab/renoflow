@@ -72,7 +72,7 @@ export default function LoginForm({ error, errorMessage }: Props) {
       const { error: oErr } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
+          redirectTo: `${origin}/api/auth/callback?next=${encodeURIComponent(next)}`,
         },
       });
       if (oErr) throw new Error(oErr.message);

@@ -40,7 +40,7 @@ export default function SignupForm() {
         email: email.trim(),
         password,
         options: {
-          emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent("/")}`,
+          emailRedirectTo: `${origin}/api/auth/callback?next=${encodeURIComponent("/")}`,
         },
       });
       if (signErr) throw new Error(signErr.message);
@@ -71,7 +71,7 @@ export default function SignupForm() {
       const { error: oErr } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
+          redirectTo: `${origin}/api/auth/callback?next=${encodeURIComponent(next)}`,
         },
       });
       if (oErr) throw new Error(oErr.message);
