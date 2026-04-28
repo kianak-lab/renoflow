@@ -75,7 +75,8 @@ export async function middleware(request: NextRequest) {
         const j = (await gr.json()) as { toOnboarding?: boolean };
         if (j.toOnboarding) {
           const onb = new URL("/onboarding", getRequestOrigin(request));
-          onb.searchParams.set("next", "/final");
+          const returnTo = `${pathname}${request.nextUrl.search}`;
+          onb.searchParams.set("next", returnTo || "/final");
           return NextResponse.redirect(onb);
         }
       }

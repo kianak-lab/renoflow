@@ -6159,6 +6159,11 @@ function mOvSetEdit(on){
 function mOverviewIcTap(ti){
   var o=document.getElementById("m-ov");
   if(o&&o.classList.contains("m-ov--edit")) return;
+  var room=typeof curR==="number"&&S.rooms?S.rooms[curR]:null;
+  if(room&&room.trades&&room.trades[ti]&&room.trades[ti].id==="demo"){
+    expandTrade(ti);
+    return;
+  }
   mTcGotoIndex(ti, true);
 }
 function mOverviewIcDel(e, ti){
@@ -6273,8 +6278,10 @@ function buildMTradeOverviewHtml(room){
 function buildMobileTradeCarouselHtml(room){
   var n=room.trades.length, slides=[], di;
   for(var ti=0;ti<n;ti++){
-    var h=tradeSectionHtml(room, ti, "ms"+ti+"-", true);
-    h=h.split('onclick="closeExpTrade()"').join('onclick="mTcGotoOverview()"');
+    var tr=room.trades[ti];
+    var isDemo=tr&&tr.id==="demo";
+    var h=tradeSectionHtml(room, ti, "ms"+ti+"-", !isDemo);
+    if(!isDemo) h=h.split('onclick="closeExpTrade()"').join('onclick="mTcGotoOverview()"');
     slides.push('<div class="m-tc-slide" data-m-ti="'+ti+'">'+h+"</div>");
   }
   slides.push('<div class="m-tc-slide m-tc-slide--overview" data-m-overview="1">'+buildMTradeOverviewHtml(room)+"</div>");
@@ -6441,13 +6448,19 @@ function expandTrade(ti){
   if(!room||!room.trades[ti])return;
   var tr=room.trades[ti];
   if(tr&&tr.id==="demo"){
+    try{ console.log("[RenoFlow] expandTrade: demolition (demo) — navigating to /trades/demolition", { ti: ti, curR: curR, innerWidth: typeof window!=="undefined"?window.innerWidth:null }); }catch(eLog){}
     try{ ss(); }catch(e){}
     var pid="";
     try{ pid=localStorage.getItem("rf7_active_project")||""; }catch(e2){}
     var q="ri="+encodeURIComponent(String(curR))+"&ti="+encodeURIComponent(String(ti));
     if(pid) q+="&pid="+encodeURIComponent(pid);
     if(room.dbRoomId) q+="&dbRoomId="+encodeURIComponent(String(room.dbRoomId));
-    window.location.href="/trades/demolition?"+q;
+    var dest="/trades/demolition?"+q;
+    try{
+      window.location.assign(dest);
+    }catch(e3){
+      window.location.href=dest;
+    }
     return;
   }
   tr.open=true;
