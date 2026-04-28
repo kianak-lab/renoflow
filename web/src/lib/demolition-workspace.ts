@@ -103,7 +103,8 @@ export const DEMOLITION_DEFAULT_STATE: DemolitionV3State = {
   v: 3,
   labourCostMode: "daily",
   myLabourPerJob: 0,
-  workerExpenseEnabled: false,
+  /** On so Daily/Hourly crew math works immediately; user can turn off to hide the grid. */
+  workerExpenseEnabled: true,
   workers: [DEFAULT_WORKER()],
   wasteDisposalEnabled: false,
   wasteDisposalAmount: 0,

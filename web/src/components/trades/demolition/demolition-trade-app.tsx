@@ -94,6 +94,8 @@ export default function DemolitionTradeApp() {
 
   const [tab, setTab] = useState<TabKey>("labour");
   const [scopeOpen, setScopeOpen] = useState(false);
+  const [totalsMyOpen, setTotalsMyOpen] = useState(false);
+  const [totalsProfitOpen, setTotalsProfitOpen] = useState(false);
   const [products, setProducts] = useState<CachedProductRow[]>([]);
   const [productsErr, setProductsErr] = useState<string | null>(null);
   const [d, setD] = useState<DemolitionV3State>(DEMOLITION_DEFAULT_STATE);
@@ -357,12 +359,30 @@ export default function DemolitionTradeApp() {
 
   function setWorkerHourly(id: string, hourly: number) {
     const h = Math.max(0, hourly);
-    patchWorker(id, { hourlyMyCost: h, myCostPerDay: dayCostFromHourly(h) });
+    const day = dayCostFromHourly(h);
+    update((prev) => ({
+      ...prev,
+      workers: prev.workers.map((w) =>
+        w.id === id ? { ...w, hourlyMyCost: h, myCostPerDay: day } : w,
+      ),
+    }));
   }
 
   function setWorkerDayCost(id: string, dayCost: number) {
     const dc = Math.max(0, dayCost);
-    patchWorker(id, { myCostPerDay: dc, hourlyMyCost: hourlyFromDayCost(dc) });
+    const hr = hourlyFromDayCost(dc);
+    update((prev) => ({
+      ...prev,
+      workers: prev.workers.map((w) =>
+        w.id === id ? { ...w, myCostPerDay: dc, hourlyMyCost: hr } : w,
+      ),
+    }));
+  }
+
+  function parseMoneyInput(raw: string): number {
+    if (raw === "" || raw === ".") return 0;
+    const n = parseFloat(raw);
+    return Number.isFinite(n) ? Math.max(0, n) : 0;
   }
 
   function setTimelineDays(n: number) {
@@ -393,17 +413,20 @@ export default function DemolitionTradeApp() {
     borderRadius: 8,
   } as const;
 
+  const cardPad = "px-[14px] py-[14px]";
+  const bubbleRounded = "rounded-[8px]";
+
   const monoNum = `${plexMono.className} text-[14px] font-medium tabular-nums`;
 
   return (
     <div
-      className={`${plexSans.className} fixed inset-0 z-[300] flex max-w-[100vw] flex-col overflow-x-hidden bg-white text-[13px] text-neutral-900 antialiased`}
+      className={`${plexSans.className} fixed inset-0 z-[500] flex max-w-[100vw] flex-col overflow-x-hidden bg-white text-[13px] text-neutral-900 antialiased`}
       style={{
         minHeight: "100dvh",
         fontSize: 13,
       }}
     >
-      <header className="shrink-0" style={{ background: SITE.yellow }}>
+      <header className="shrink-0 rounded-none" style={{ background: SITE.yellow }}>
         <div className="flex items-start gap-2 px-3 pb-3 pt-[max(0.5rem,env(safe-area-inset-top))]">
           <button
             type="button"
@@ -415,7 +438,7 @@ export default function DemolitionTradeApp() {
             ←
           </button>
           <div className="min-w-0 flex-1">
-            <h1 className="text-[15px] font-bold leading-tight" style={{ color: SITE.ink }}>
+            <h1 className="text-[15px] font-medium leading-tight" style={{ color: SITE.ink }}>
               Demolition
             </h1>
             <p className="mt-0.5 text-[13px] leading-snug text-[#888]">
@@ -427,10 +450,13 @@ export default function DemolitionTradeApp() {
       </header>
 
       <div
-        className="shrink-0 border-b bg-white px-2 py-2"
+        className="shrink-0 border-b bg-white py-2 pl-3 pr-2"
         style={{ borderColor: SITE.border }}
       >
-        <div className="flex w-full gap-2">
+        <div
+          className="flex gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          style={{ gap: 6 }}
+        >
           {(
             [
               ["labour", "Labour"],
@@ -445,7 +471,7 @@ export default function DemolitionTradeApp() {
                 key={k}
                 type="button"
                 onClick={() => setTab(k)}
-                className="min-h-[44px] flex-1 px-1 text-center text-[13px] font-semibold transition-colors"
+                className="min-h-[44px] shrink-0 px-5 text-center text-[13px] font-semibold transition-colors"
                 style={{
                   borderRadius: 100,
                   background: on ? SITE.yellow : SITE.subtleBg,
@@ -471,9 +497,12 @@ export default function DemolitionTradeApp() {
 
         {tab === "labour" && (
           <div className="flex min-w-0 flex-col gap-4">
-            <div style={cardStyle} className="px-3 py-3">
+            <div style={cardStyle} className={cardPad}>
               <div className={sectionLabelCls}>My cost</div>
-              <div className="mt-2 flex w-full gap-2">
+              <div
+                className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                style={{ gap: 6 }}
+              >
                 {(["job", "daily", "hourly"] as LabourCostMode[]).map((m) => {
                   const on = d.labourCostMode === m;
                   const label = m === "job" ? "Per job" : m === "daily" ? "Daily" : "Hourly";
@@ -482,7 +511,7 @@ export default function DemolitionTradeApp() {
                       key={m}
                       type="button"
                       onClick={() => update({ labourCostMode: m })}
-                      className="min-h-[44px] flex-1 text-[13px] font-semibold"
+                      className="min-h-[44px] shrink-0 px-5 text-[13px] font-semibold"
                       style={{
                         borderRadius: 100,
                         background: on ? SITE.yellow : SITE.subtleBg,
@@ -498,15 +527,19 @@ export default function DemolitionTradeApp() {
               {d.labourCostMode === "job" ? (
                 <label className="mt-3 block">
                   <span className="text-[13px] text-neutral-800">My labour cost (job)</span>
-                  <div className="mt-1 flex min-h-[44px] items-center gap-2 rounded-lg border bg-white px-3" style={{ borderColor: SITE.border }}>
+                  <div
+                    className={`mt-1 flex min-h-[44px] items-center gap-2 border bg-white px-3 ${bubbleRounded}`}
+                    style={{ border: `0.5px solid ${SITE.border}` }}
+                  >
                     <span className="text-[#888]">$</span>
                     <input
                       type="number"
+                      inputMode="decimal"
                       min={0}
                       className={`min-h-[44px] w-full flex-1 bg-transparent text-[13px] outline-none ${plexMono.className}`}
-                      value={d.myLabourPerJob || ""}
+                      value={d.myLabourPerJob}
                       onChange={(e) =>
-                        update({ myLabourPerJob: Math.max(0, Number(e.target.value) || 0) })
+                        update({ myLabourPerJob: parseMoneyInput(e.target.value) })
                       }
                     />
                   </div>
@@ -520,26 +553,21 @@ export default function DemolitionTradeApp() {
             </div>
 
             <div style={cardStyle} className="overflow-hidden">
-              <div className="flex min-h-[44px] w-full items-center justify-between gap-3 px-3">
-                <button
-                  type="button"
-                  className="min-w-0 flex-1 py-2 text-left"
-                  onClick={() =>
-                    update({ workerExpenseEnabled: !d.workerExpenseEnabled })
-                  }
-                >
+              <div className={`flex min-h-[44px] w-full items-center justify-between gap-3 ${cardPad}`}>
+                <div className="min-w-0 flex-1 pr-2">
                   <div className="text-[13px] font-semibold text-neutral-900">Worker expense</div>
                   <div className="text-[12px] text-[#888]">Crew days, rates — private</div>
-                </button>
-                <span className="shrink-0" onClick={(e) => e.stopPropagation()}>
-                  <SiteSwitch
-                    on={d.workerExpenseEnabled}
-                    onChange={(workerExpenseEnabled) => update({ workerExpenseEnabled })}
-                  />
-                </span>
+                </div>
+                <SiteSwitch
+                  on={d.workerExpenseEnabled}
+                  onChange={(workerExpenseEnabled) => update({ workerExpenseEnabled })}
+                />
               </div>
               {d.workerExpenseEnabled && d.labourCostMode !== "job" ? (
-                <div className="space-y-3 border-t px-3 pb-3 pt-2" style={{ borderColor: SITE.border }}>
+                <div
+                  className={`space-y-3 border-t px-[14px] pb-[14px] pt-2`}
+                  style={{ borderColor: SITE.border }}
+                >
                   {d.workers.map((w, idx) => {
                     const colOrder =
                       d.labourCostMode === "hourly"
@@ -558,18 +586,19 @@ export default function DemolitionTradeApp() {
                       <div key="hourly" className="min-w-0">
                         <div className={sectionLabelCls}>Hourly</div>
                         <div
-                          className="mt-1 flex min-h-[44px] items-center gap-1 rounded-lg border bg-white px-2"
-                          style={{ borderColor: SITE.border }}
+                          className={`mt-1 flex min-h-[44px] items-center gap-1 border bg-white px-2 ${bubbleRounded}`}
+                          style={{ border: `0.5px solid ${SITE.border}` }}
                         >
                           <span className="text-[#888]">$</span>
                           <input
                             type="number"
+                            inputMode="decimal"
                             min={0}
                             step={0.01}
                             className={`min-h-[44px] w-full bg-transparent text-[13px] outline-none ${plexMono.className}`}
-                            value={w.hourlyMyCost || ""}
+                            value={w.hourlyMyCost}
                             onChange={(e) =>
-                              setWorkerHourly(w.id, Number(e.target.value) || 0)
+                              setWorkerHourly(w.id, parseMoneyInput(e.target.value))
                             }
                           />
                         </div>
@@ -579,18 +608,19 @@ export default function DemolitionTradeApp() {
                       <div key="day" className="min-w-0">
                         <div className={sectionLabelCls}>Day cost</div>
                         <div
-                          className="mt-1 flex min-h-[44px] items-center gap-1 rounded-lg border bg-white px-2"
-                          style={{ borderColor: SITE.border }}
+                          className={`mt-1 flex min-h-[44px] items-center gap-1 border bg-white px-2 ${bubbleRounded}`}
+                          style={{ border: `0.5px solid ${SITE.border}` }}
                         >
                           <span className="text-[#888]">$</span>
                           <input
                             type="number"
+                            inputMode="decimal"
                             min={0}
                             step={0.01}
                             className={`min-h-[44px] w-full bg-transparent text-[13px] outline-none ${plexMono.className}`}
-                            value={w.myCostPerDay || ""}
+                            value={w.myCostPerDay}
                             onChange={(e) =>
-                              setWorkerDayCost(w.id, Number(e.target.value) || 0)
+                              setWorkerDayCost(w.id, parseMoneyInput(e.target.value))
                             }
                           />
                         </div>
@@ -598,18 +628,23 @@ export default function DemolitionTradeApp() {
                     );
                     const byKey = { days: daysCol, hourly: hourlyCol, day: dayCol };
                     return (
-                      <div key={w.id} style={cardStyle} className="bg-white px-2 py-3">
+                      <div
+                        key={w.id}
+                        className={`border bg-white px-3 py-3 ${bubbleRounded}`}
+                        style={{ border: `0.5px solid ${SITE.border}` }}
+                      >
                         <div className="mb-2 flex items-center gap-2">
                           <input
-                            className="min-h-[44px] min-w-0 flex-1 rounded-lg border border-[#e0e0e0] px-2 text-[13px] outline-none"
+                            className={`min-h-[44px] min-w-0 flex-1 border px-2 text-[13px] outline-none ${bubbleRounded}`}
+                            style={{ border: `0.5px solid ${SITE.border}` }}
                             placeholder={workerSlotLabel(w, idx)}
                             value={w.name}
                             onChange={(e) => patchWorker(w.id, { name: e.target.value })}
                           />
                           <button
                             type="button"
-                            className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-lg border text-lg"
-                            style={{ borderColor: SITE.border }}
+                            className={`flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center border text-lg ${bubbleRounded}`}
+                            style={{ border: `0.5px solid ${SITE.border}` }}
                             onClick={() => removeWorker(w.id)}
                             aria-label="Remove worker"
                           >
@@ -631,7 +666,7 @@ export default function DemolitionTradeApp() {
                   <button
                     type="button"
                     onClick={addWorker}
-                    className="flex min-h-[44px] w-full items-center justify-center rounded-lg border-2 border-dashed text-[13px] font-semibold"
+                    className={`flex min-h-[44px] w-full items-center justify-center border-2 border-dashed text-[13px] font-semibold ${bubbleRounded}`}
                     style={{ borderColor: SITE.border, color: SITE.ink }}
                   >
                     + Add worker
@@ -641,41 +676,36 @@ export default function DemolitionTradeApp() {
             </div>
 
             <div style={cardStyle} className="overflow-hidden">
-              <div className="flex min-h-[44px] w-full items-center justify-between gap-3 px-3">
-                <button
-                  type="button"
-                  className="min-w-0 flex-1 py-2 text-left"
-                  onClick={() => update({ wasteDisposalEnabled: !d.wasteDisposalEnabled })}
-                >
+              <div className={`flex min-h-[44px] w-full items-center justify-between gap-3 ${cardPad}`}>
+                <div className="min-w-0 flex-1 pr-2">
                   <div className="text-[13px] font-semibold text-neutral-900">Waste / disposal</div>
                   <div className="text-[12px] text-[#888]">
                     Dumpster, bags, hazmat — pass to client
                   </div>
-                </button>
-                <span className="shrink-0" onClick={(e) => e.stopPropagation()}>
-                  <SiteSwitch
-                    on={d.wasteDisposalEnabled}
-                    onChange={(wasteDisposalEnabled) => update({ wasteDisposalEnabled })}
-                  />
-                </span>
+                </div>
+                <SiteSwitch
+                  on={d.wasteDisposalEnabled}
+                  onChange={(wasteDisposalEnabled) => update({ wasteDisposalEnabled })}
+                />
               </div>
               {d.wasteDisposalEnabled ? (
-                <div className="border-t px-3 py-3" style={{ borderColor: SITE.border }}>
+                <div className={`border-t ${cardPad}`} style={{ borderColor: SITE.border }}>
                   <label className="block">
                     <span className={sectionLabelCls}>Disposal amount (your cost)</span>
                     <div
-                      className="mt-1 flex min-h-[44px] items-center gap-2 rounded-lg border bg-white px-3"
-                      style={{ borderColor: SITE.border }}
+                      className={`mt-1 flex min-h-[44px] items-center gap-2 border bg-white px-3 ${bubbleRounded}`}
+                      style={{ border: `0.5px solid ${SITE.border}` }}
                     >
                       <span className="text-[#888]">$</span>
                       <input
                         type="number"
+                        inputMode="decimal"
                         min={0}
                         className={`min-h-[44px] w-full flex-1 bg-transparent text-[13px] outline-none ${plexMono.className}`}
-                        value={d.wasteDisposalAmount || ""}
+                        value={d.wasteDisposalAmount}
                         onChange={(e) =>
                           update({
-                            wasteDisposalAmount: Math.max(0, Number(e.target.value) || 0),
+                            wasteDisposalAmount: parseMoneyInput(e.target.value),
                           })
                         }
                       />
@@ -688,7 +718,7 @@ export default function DemolitionTradeApp() {
             <div style={cardStyle} className="overflow-hidden">
               <button
                 type="button"
-                className="flex min-h-[44px] w-full items-center justify-between px-3 text-left"
+                className={`flex min-h-[44px] w-full items-center justify-between text-left ${cardPad}`}
                 onClick={() => setScopeOpen((o) => !o)}
               >
                 <span className="text-[13px] font-semibold text-neutral-900">
@@ -697,7 +727,7 @@ export default function DemolitionTradeApp() {
                 <span className="text-[#888]">{scopeOpen ? "▾" : "▸"}</span>
               </button>
               {scopeOpen ? (
-                <div className="space-y-4 border-t px-3 py-3" style={{ borderColor: SITE.border }}>
+                <div className={`space-y-4 border-t ${cardPad}`} style={{ borderColor: SITE.border }}>
                   <div>
                     <div className={sectionLabelCls}>From room</div>
                     <div className="mt-1 text-[13px] font-medium">{dimsLine}</div>
@@ -719,12 +749,11 @@ export default function DemolitionTradeApp() {
                             key={s}
                             type="button"
                             onClick={() => update({ scope: s })}
-                            className="min-h-[44px] w-full rounded-lg px-3 text-left text-[13px] font-semibold"
+                            className={`min-h-[44px] w-full px-3 text-left text-[13px] font-semibold ${bubbleRounded}`}
                             style={{
                               border: `0.5px solid ${SITE.border}`,
                               background: on ? SITE.ink : SITE.white,
                               color: on ? SITE.white : SITE.muted,
-                              borderRadius: 8,
                             }}
                           >
                             {s === "full" ? "Full gut" : "Selective"}
@@ -736,8 +765,8 @@ export default function DemolitionTradeApp() {
                   <div>
                     <div className="text-[13px] font-semibold">What&apos;s coming out</div>
                     <ul
-                      className="mt-2 overflow-hidden rounded-lg border bg-white"
-                      style={{ borderColor: SITE.border }}
+                      className={`mt-2 overflow-hidden border bg-white ${bubbleRounded}`}
+                      style={{ border: `0.5px solid ${SITE.border}` }}
                     >
                       {DEMOLITION_CHECKLIST.map(({ key, label }) => {
                         const on = !!d.checklist[key];
@@ -752,7 +781,7 @@ export default function DemolitionTradeApp() {
                               type="button"
                               aria-pressed={on}
                               onClick={() => toggleChecklist(key)}
-                              className="min-h-[44px] min-w-[44px] rounded-lg text-[15px] font-bold"
+                              className={`min-h-[44px] min-w-[44px] text-[15px] font-bold ${bubbleRounded}`}
                               style={{
                                 border: `0.5px solid ${SITE.border}`,
                                 background: on ? SITE.yellow : SITE.white,
@@ -767,11 +796,11 @@ export default function DemolitionTradeApp() {
                     </ul>
                   </div>
                   <div
-                    className="rounded-lg border px-3 py-2"
-                    style={{ borderColor: SITE.border, background: SITE.white }}
+                    className={`border px-3 py-2 ${bubbleRounded}`}
+                    style={{ border: `0.5px solid ${SITE.border}`, background: SITE.white }}
                   >
                     <div className="flex min-h-[44px] items-center justify-between gap-3">
-                      <div>
+                      <div className="min-w-0 pr-2">
                         <div className="text-[13px] font-semibold">Hazmat present</div>
                         <div className="text-[12px] text-[#888]">Asbestos, lead, mold</div>
                       </div>
@@ -779,11 +808,11 @@ export default function DemolitionTradeApp() {
                     </div>
                   </div>
                   <div
-                    className="rounded-lg border px-3 py-2"
-                    style={{ borderColor: SITE.border, background: SITE.white }}
+                    className={`border px-3 py-2 ${bubbleRounded}`}
+                    style={{ border: `0.5px solid ${SITE.border}`, background: SITE.white }}
                   >
                     <div className="flex min-h-[44px] items-center justify-between gap-3">
-                      <div>
+                      <div className="min-w-0 pr-2">
                         <div className="text-[13px] font-semibold">Dumpster needed</div>
                         <div className="text-[12px] text-[#888]">Site logistics flag</div>
                       </div>
@@ -805,7 +834,7 @@ export default function DemolitionTradeApp() {
               grouped.order.map((sub) => (
                 <section key={sub} className="mb-6">
                   <h3 className={`mb-2 ${sectionLabelCls}`}>{sub}</h3>
-                  <ul style={cardStyle} className="bg-white px-2 py-1">
+                  <ul style={cardStyle} className={`bg-white ${cardPad}`}>
                     {grouped.map.get(sub)!.map((p, pi) => (
                       <li
                         key={p.id}
@@ -859,62 +888,7 @@ export default function DemolitionTradeApp() {
         {tab === "totals" && (
           <div className="flex min-w-0 flex-col gap-5 text-[13px]">
             <section
-              className="px-3 py-3"
-              style={{
-                border: `0.5px solid ${SITE.myCostsBorder}`,
-                borderRadius: 8,
-                background: SITE.cardBg,
-              }}
-            >
-              <div className={`mb-2 flex items-center gap-2 ${sectionLabelCls}`}>
-                <span className="h-2 w-2 shrink-0 rounded-full bg-black" aria-hidden />
-                MY COSTS — PRIVATE
-              </div>
-              {d.labourCostMode === "job" ? (
-                <div className="flex justify-between gap-2 py-1 text-neutral-800">
-                  <span>Labour (per job)</span>
-                  <span className={`shrink-0 ${monoNum}`}>{formatMoney(d.myLabourPerJob)}</span>
-                </div>
-              ) : d.workerExpenseEnabled ? (
-                d.workers.map((w, idx) => (
-                  <div key={w.id} className="flex justify-between gap-2 py-1 text-neutral-800">
-                    <span>
-                      {workerSlotLabel(w, idx)} — {w.days} days × {formatMoney(w.myCostPerDay)}
-                    </span>
-                    <span className={`shrink-0 ${monoNum}`}>
-                      {formatMoney(w.days * w.myCostPerDay)}
-                    </span>
-                  </div>
-                ))
-              ) : (
-                <div className="flex justify-between gap-2 py-1 text-neutral-800">
-                  <span>Labour</span>
-                  <span className={`shrink-0 ${monoNum}`}>{formatMoney(0)}</span>
-                </div>
-              )}
-              <div className="flex justify-between gap-2 py-1 text-neutral-800">
-                <span>Materials</span>
-                <span className={`shrink-0 ${monoNum}`}>{formatMoney(materialMyCost)}</span>
-              </div>
-              {d.wasteDisposalEnabled ? (
-                <div className="flex justify-between gap-2 py-1 text-neutral-800">
-                  <span>Waste / disposal</span>
-                  <span className={`shrink-0 ${monoNum}`}>{formatMoney(d.wasteDisposalAmount)}</span>
-                </div>
-              ) : null}
-              <div
-                className="mt-2 flex justify-between gap-2 rounded-lg px-2 py-3 font-bold text-neutral-900"
-                style={{ background: SITE.myCostsTotalBg }}
-              >
-                <span>Total my cost</span>
-                <span className={`${plexMono.className} text-[18px] font-semibold tabular-nums`}>
-                  {formatMoney(myCostsTotal)}
-                </span>
-              </div>
-            </section>
-
-            <section
-              className="px-3 py-3"
+              className={cardPad}
               style={{
                 border: `0.5px solid ${SITE.green}`,
                 borderRadius: 8,
@@ -928,17 +902,18 @@ export default function DemolitionTradeApp() {
               <label className="block">
                 <span className="text-[13px] text-[#888]">Labour charge to client</span>
                 <div
-                  className="mt-1 flex min-h-[44px] items-center gap-2 rounded-lg border px-3"
-                  style={{ borderColor: SITE.border }}
+                  className={`mt-1 flex min-h-[44px] items-center gap-2 border bg-white px-3 ${bubbleRounded}`}
+                  style={{ border: `0.5px solid ${SITE.border}` }}
                 >
                   <span className="text-[#888]">$</span>
                   <input
                     type="number"
+                    inputMode="decimal"
                     min={0}
                     className={`min-h-[44px] w-full flex-1 bg-transparent text-[13px] outline-none ${plexMono.className}`}
-                    value={d.clientLabourCharge || ""}
+                    value={d.clientLabourCharge}
                     onChange={(e) =>
-                      update({ clientLabourCharge: Math.max(0, Number(e.target.value) || 0) })
+                      update({ clientLabourCharge: parseMoneyInput(e.target.value) })
                     }
                   />
                 </div>
@@ -949,8 +924,8 @@ export default function DemolitionTradeApp() {
                   type="number"
                   min={0}
                   max={200}
-                  className={`min-h-[44px] w-16 rounded-lg border px-2 text-center text-[13px] outline-none ${plexMono.className}`}
-                  style={{ borderColor: SITE.border }}
+                  className={`min-h-[44px] w-16 border px-2 text-center text-[13px] outline-none ${plexMono.className} ${bubbleRounded}`}
+                  style={{ border: `0.5px solid ${SITE.border}` }}
                   value={d.clientMaterialsMarkupPct}
                   onChange={(e) =>
                     update({
@@ -975,10 +950,10 @@ export default function DemolitionTradeApp() {
                 </div>
               ) : null}
               <div
-                className="mt-3 flex justify-between gap-2 rounded-lg px-2 py-4 font-bold"
+                className={`mt-3 flex justify-between gap-2 px-3 py-4 font-bold ${bubbleRounded} overflow-hidden`}
                 style={{ background: SITE.greenTint, color: SITE.green }}
               >
-                <span className="text-[13px] uppercase tracking-wide">Total quote</span>
+                <span className="text-[13px] uppercase tracking-[0.12em]">Total quote</span>
                 <span className={`${plexMono.className} text-[22px] font-semibold tabular-nums`}>
                   {formatMoney(clientTotal)}
                 </span>
@@ -986,61 +961,134 @@ export default function DemolitionTradeApp() {
             </section>
 
             <section
-              className="px-3 py-3"
+              className="overflow-hidden"
+              style={{
+                border: `0.5px solid ${SITE.myCostsBorder}`,
+                borderRadius: 8,
+                background: SITE.cardBg,
+              }}
+            >
+              <button
+                type="button"
+                className="flex min-h-[44px] w-full items-center gap-2 px-[14px] py-3 text-left touch-manipulation"
+                onClick={() => setTotalsMyOpen((o) => !o)}
+              >
+                <span className="h-2 w-2 shrink-0 rounded-full bg-black" aria-hidden />
+                <span className={`min-w-0 flex-1 ${sectionLabelCls}`}>MY COSTS — PRIVATE</span>
+                <span className={`shrink-0 ${monoNum} text-neutral-900`}>{formatMoney(myCostsTotal)}</span>
+                <span className="shrink-0 text-[#888]" aria-hidden>
+                  {totalsMyOpen ? "▾" : "▸"}
+                </span>
+              </button>
+              {totalsMyOpen ? (
+                <div className={`border-t px-[14px] pb-[14px] pt-2`} style={{ borderColor: SITE.border }}>
+                  {d.labourCostMode === "job" ? (
+                    <div className="flex justify-between gap-2 py-1 text-neutral-800">
+                      <span>Labour (per job)</span>
+                      <span className={`shrink-0 ${monoNum}`}>{formatMoney(d.myLabourPerJob)}</span>
+                    </div>
+                  ) : d.workerExpenseEnabled ? (
+                    d.workers.map((w, idx) => (
+                      <div key={w.id} className="flex justify-between gap-2 py-1 text-neutral-800">
+                        <span>
+                          {workerSlotLabel(w, idx)} — {w.days} days × {formatMoney(w.myCostPerDay)}
+                        </span>
+                        <span className={`shrink-0 ${monoNum}`}>
+                          {formatMoney(w.days * w.myCostPerDay)}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="flex justify-between gap-2 py-1 text-neutral-800">
+                      <span>Labour</span>
+                      <span className={`shrink-0 ${monoNum}`}>{formatMoney(0)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between gap-2 py-1 text-neutral-800">
+                    <span>Materials</span>
+                    <span className={`shrink-0 ${monoNum}`}>{formatMoney(materialMyCost)}</span>
+                  </div>
+                  {d.wasteDisposalEnabled ? (
+                    <div className="flex justify-between gap-2 py-1 text-neutral-800">
+                      <span>Waste / disposal</span>
+                      <span className={`shrink-0 ${monoNum}`}>{formatMoney(d.wasteDisposalAmount)}</span>
+                    </div>
+                  ) : null}
+                  <div
+                    className={`mt-2 flex justify-between gap-2 px-3 py-3 font-bold text-neutral-900 ${bubbleRounded} overflow-hidden`}
+                    style={{ background: SITE.myCostsTotalBg }}
+                  >
+                    <span>Total my cost</span>
+                    <span className={`${plexMono.className} text-[18px] font-semibold tabular-nums`}>
+                      {formatMoney(myCostsTotal)}
+                    </span>
+                  </div>
+                </div>
+              ) : null}
+            </section>
+
+            <section
+              className="overflow-hidden"
               style={{
                 border: `0.5px solid ${SITE.yellow}`,
                 borderRadius: 8,
                 background: SITE.profitBg,
               }}
             >
-              <div
-                className={`mb-2 flex items-center gap-2 font-semibold ${sectionLabelCls}`}
-                style={{ color: SITE.profitLabel }}
+              <button
+                type="button"
+                className="flex min-h-[44px] w-full items-center gap-2 px-[14px] py-3 text-left touch-manipulation"
+                onClick={() => setTotalsProfitOpen((o) => !o)}
               >
                 <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: SITE.yellow }} aria-hidden />
-                MY PROFIT
-              </div>
-              <div className="flex justify-between gap-2 py-1" style={{ color: "#422006" }}>
-                <span>Profit</span>
-                <span className={`font-semibold ${monoNum}`}>{formatMoney(profit)}</span>
-              </div>
-              <div className="flex justify-between gap-2 py-1" style={{ color: "#422006" }}>
-                <span>Profit / sq ft</span>
-                <span className={`font-semibold ${monoNum}`}>{formatMoney(profitPerSq)}</span>
-              </div>
-              <div className="flex justify-between gap-2 py-1" style={{ color: "#422006" }}>
-                <span>Profit / hr (crew hours)</span>
-                <span className={`font-semibold ${monoNum}`}>{formatMoney(profitPerHr)}</span>
-              </div>
-              <div className="flex justify-between gap-2 py-1" style={{ color: "#422006" }}>
-                <span>Margin</span>
-                <span className={`font-semibold ${monoNum}`}>{marginPct}%</span>
-              </div>
-              <p className="mt-2 text-[13px] leading-snug" style={{ color: "#422006" }}>
-                Interior demo typically $2–$7/sq ft. Your rate: {formatMoney(clientRatePerSq)}/sq ft
-              </p>
+                <span
+                  className={`min-w-0 flex-1 font-semibold ${sectionLabelCls}`}
+                  style={{ color: SITE.profitLabel }}
+                >
+                  MY PROFIT
+                </span>
+                <span className={`shrink-0 font-semibold ${monoNum}`} style={{ color: "#422006" }}>
+                  {formatMoney(profit)}
+                </span>
+                <span className="shrink-0 text-[#888]" aria-hidden>
+                  {totalsProfitOpen ? "▾" : "▸"}
+                </span>
+              </button>
+              {totalsProfitOpen ? (
+                <div className={`border-t px-[14px] pb-[14px] pt-2`} style={{ borderColor: SITE.border }}>
+                  <div className="flex justify-between gap-2 py-1" style={{ color: "#422006" }}>
+                    <span>Profit / sq ft</span>
+                    <span className={`font-semibold ${monoNum}`}>{formatMoney(profitPerSq)}</span>
+                  </div>
+                  <div className="flex justify-between gap-2 py-1" style={{ color: "#422006" }}>
+                    <span>Profit / hr (crew hours)</span>
+                    <span className={`font-semibold ${monoNum}`}>{formatMoney(profitPerHr)}</span>
+                  </div>
+                  <div className="flex justify-between gap-2 py-1" style={{ color: "#422006" }}>
+                    <span>Margin</span>
+                    <span className={`font-semibold ${monoNum}`}>{marginPct}%</span>
+                  </div>
+                  <p className="mt-2 text-[13px] leading-snug" style={{ color: "#422006" }}>
+                    Interior demo typically $2–$7/sq ft. Your rate: {formatMoney(clientRatePerSq)}/sq ft
+                  </p>
+                </div>
+              ) : null}
             </section>
           </div>
         )}
 
         {tab === "timeline" && (
           <div className="flex min-w-0 flex-col gap-4">
-            <div style={cardStyle} className="px-3 py-3">
+            <div style={cardStyle} className={`overflow-hidden ${cardPad}`}>
               <div className="flex min-h-[44px] items-center justify-between gap-3">
-                <button
-                  type="button"
-                  className="min-w-0 flex-1 py-2 text-left"
-                  onClick={() => update({ scheduleTradeEnabled: !d.scheduleTradeEnabled })}
-                >
+                <div className="min-w-0 flex-1 pr-2">
                   <div className="text-[13px] font-semibold">Schedule this trade</div>
                   <div className="text-[12px] text-[#888]">Plan days on site</div>
-                </button>
-                <span className="shrink-0" onClick={(e) => e.stopPropagation()}>
-                  <SiteSwitch
-                    on={d.scheduleTradeEnabled}
-                    onChange={(scheduleTradeEnabled) => update({ scheduleTradeEnabled })}
-                  />
-                </span>
+                </div>
+                <SiteSwitch
+                  on={d.scheduleTradeEnabled}
+                  onChange={(scheduleTradeEnabled) => update({ scheduleTradeEnabled })}
+                />
               </div>
               {d.scheduleTradeEnabled ? (
                 <div className="mt-4 space-y-4 border-t pt-4" style={{ borderColor: SITE.border }}>
@@ -1075,7 +1123,7 @@ export default function DemolitionTradeApp() {
                   <button
                     type="button"
                     onClick={pushCalendar}
-                    className="min-h-[44px] w-full rounded-lg text-[13px] font-semibold text-white"
+                    className={`min-h-[44px] w-full text-[13px] font-semibold text-white ${bubbleRounded} touch-manipulation`}
                     style={{ background: SITE.ink }}
                   >
                     Push to Calendar
@@ -1100,13 +1148,18 @@ function SiteSwitch({ on, onChange }: { on: boolean; onChange: (v: boolean) => v
         e.stopPropagation();
         onChange(!on);
       }}
-      className="relative h-8 min-h-[44px] w-[52px] min-w-[52px] shrink-0 self-center rounded-full transition-colors"
-      style={{ background: on ? SITE.ink : "#cccccc" }}
+      className="flex h-11 w-11 shrink-0 touch-manipulation items-center justify-center p-0"
+      aria-label={on ? "On" : "Off"}
     >
       <span
-        className="absolute top-1/2 h-7 w-7 -translate-y-1/2 rounded-full bg-white shadow transition-transform"
-        style={{ left: on ? "calc(100% - 1.85rem)" : "0.2rem" }}
-      />
+        className="relative block h-8 w-[51px] shrink-0 rounded-full transition-colors duration-200"
+        style={{ background: on ? SITE.ink : "#cccccc" }}
+      >
+        <span
+          className="absolute top-1/2 h-[26px] w-[26px] -translate-y-1/2 rounded-full bg-white shadow-md transition-[left] duration-200"
+          style={{ left: on ? 23 : 3 }}
+        />
+      </span>
     </button>
   );
 }
