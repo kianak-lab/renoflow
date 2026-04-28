@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { PwaUpdateClient } from "@/components/pwa/pwa-update-client";
 import { getConfiguredPublicSiteUrl } from "@/lib/public-site-url";
 import "./globals.css";
 
@@ -96,7 +97,10 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <PwaUpdateClient />
+        {children}
+      </body>
     </html>
   );
 }

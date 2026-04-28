@@ -41,4 +41,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# generated per build (PWA update / service worker)
+/public/sw.js
+/public/build-version.json
+
 .vercel
