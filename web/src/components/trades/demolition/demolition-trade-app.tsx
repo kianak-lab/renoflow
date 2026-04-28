@@ -66,6 +66,9 @@ const SITE = {
 const sectionLabelCls =
   "text-[10px] font-semibold uppercase tracking-[0.12em] text-[#888]";
 
+/** Same height so worker-grid controls (days / hourly / day rate) line up when labels wrap. */
+const workerGridLabelSlotCls = "min-h-[2.75rem] flex items-end";
+
 /** Hide native number spinners (often render as dark blocks on mobile). */
 const noSpinner =
   "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
@@ -651,8 +654,10 @@ export default function DemolitionTradeApp() {
                   {d.workers.map((w, idx) => {
                     const colOrder = ["days", "day", "hourly"] as const;
                     const daysCol = (
-                      <div key="days" className="min-w-0">
-                        <div className={sectionLabelCls}>Days</div>
+                      <div key="days" className="flex min-w-0 flex-col">
+                        <div className={workerGridLabelSlotCls}>
+                          <div className={`${sectionLabelCls} leading-tight`}>Days</div>
+                        </div>
                         <DaysStepper
                           value={w.days}
                           onChange={(days) => patchWorker(w.id, { days })}
@@ -660,8 +665,12 @@ export default function DemolitionTradeApp() {
                       </div>
                     );
                     const hourlyCol = (
-                      <div key="hourly" className="min-w-0">
-                        <div className={sectionLabelCls}>Your hourly (USD)</div>
+                      <div key="hourly" className="flex min-w-0 flex-col">
+                        <div className={workerGridLabelSlotCls}>
+                          <div className={`${sectionLabelCls} leading-tight`}>
+                            Hourly rate (USD)
+                          </div>
+                        </div>
                         <div
                           className={`mt-1 border bg-white ${bubbleRounded}`}
                           style={{ border: `0.5px solid ${SITE.border}` }}
@@ -681,8 +690,12 @@ export default function DemolitionTradeApp() {
                       </div>
                     );
                     const dayCol = (
-                      <div key="day" className="min-w-0">
-                        <div className={sectionLabelCls}>Your day cost (USD)</div>
+                      <div key="day" className="flex min-w-0 flex-col">
+                        <div className={workerGridLabelSlotCls}>
+                          <div className={`${sectionLabelCls} leading-tight`}>
+                            Day rate (USD)
+                          </div>
+                        </div>
                         <div
                           className={`mt-1 border bg-white ${bubbleRounded}`}
                           style={{ border: `0.5px solid ${SITE.border}` }}
