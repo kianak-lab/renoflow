@@ -84,13 +84,31 @@ export async function GET() {
     }
   }
 
+  const projectIds = rows.map((r) => String((r as { id: unknown }).id ?? "")).filter(Boolean);
+  const invoiceCountByProject: Record<string, number> = {};
+  if (projectIds.length > 0) {
+    const { data: invRows, error: invErr } = await supabase
+      .from("invoices")
+      .select("project_id")
+      .in("project_id", projectIds)
+      .eq("void", false);
+    if (!invErr && invRows) {
+      for (const row of invRows as { project_id: string }[]) {
+        const pid = String(row.project_id);
+        invoiceCountByProject[pid] = (invoiceCountByProject[pid] ?? 0) + 1;
+      }
+    }
+  }
+
   const projects = rows.map((r) => {
     const cid = normalizeClientId(r.client_id);
+    const idStr = String((r as { id: unknown }).id ?? "");
     return {
       ...r,
       client_id: cid,
       notes: typeof r.notes === "string" || r.notes === null ? r.notes : null,
       client: cid && byId[cid] ? byId[cid] : null,
+      invoice_count: invoiceCountByProject[idStr] ?? 0,
     };
   });
 
