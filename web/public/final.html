@@ -3,14 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#8BB48B" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#3d5c3d" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0f2318" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f2318" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="RenoFlow">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="/manifest.json">
 <style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,500;0,600;1,500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 :root{
   --bg:#fafafa;--sf:#ffffff;--sf2:#f7f7f7;--bd:#ebebeb;--bd2:#dddddd;
@@ -90,7 +91,7 @@ a.ni{color:inherit;text-decoration:none;}
 .brief-date{font-size:11px;font-family:'Inter',system-ui,sans-serif;opacity:.8;text-transform:uppercase;letter-spacing:1.5px;}
 .brief-greeting{font-family:'Inter',system-ui,sans-serif;font-size:26px;margin-top:4px;line-height:1.2;}
 .brief-sub{font-size:13px;opacity:.85;margin-top:4px;}
-#p-dash .pc{padding-top:14px;}
+#p-dash .pc{padding-top:0;}
 #p-dash .brief-wrap{gap:10px;margin-bottom:14px;}
 #p-dash .brief-header{
   padding:16px 18px;
@@ -101,7 +102,6 @@ a.ni{color:inherit;text-decoration:none;}
   gap:12px;
 }
 #p-dash .brief-header__text{flex:1;min-width:0;}
-#p-dash .brief-header__logo .dash-circ-sett{width:35px;height:35px;min-width:35px;min-height:35px;}
 #p-dash .brief-date{font-size:10px;letter-spacing:1.2px;}
 #p-dash .brief-greeting{font-size:24px;margin-top:3px;}
 #p-dash .brief-sub{margin-top:3px;}
@@ -228,6 +228,65 @@ a.ni{color:inherit;text-decoration:none;}
 .brief-quick{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
 .brief-quick-t{font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;margin-bottom:10px;}
 .brief-quick-btns{display:flex;gap:8px;flex-wrap:wrap;}
+/* ========== Site Clean — RenoFlow dashboard (#p-dash) ========== */
+#p-dash,#p-dash .dash-proj-intake-btn,#p-dash .qa-pill,#p-dash .dash-rf-logo-btn{font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;}
+#p-dash .brief-stat-v,#p-dash .dash-proj-initial{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:500;font-size:18px;letter-spacing:-0.02em;}
+#p-dash .dash-header-bleed{margin-left:-32px;margin-right:-32px;padding-left:32px;padding-right:32px;padding-top:env(safe-area-inset-top,0px);background:#0f2318;box-sizing:border-box;}
+@media (max-width:767px){
+  #p-dash .dash-header-bleed{margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px;}
+}
+#p-dash .dash-header-bleed .brief-header{background:transparent;border:none;border-radius:0;box-shadow:none;padding:16px 0 18px;margin:0;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;}
+#p-dash .dash-header-bleed .brief-date{font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,.72);font-family:'IBM Plex Sans',system-ui,sans-serif;font-weight:500;opacity:1;}
+#p-dash .dash-header-bleed .brief-greeting{font-size:22px;font-weight:500;color:#fff;margin-top:6px;line-height:1.2;font-family:'IBM Plex Sans',system-ui,sans-serif;letter-spacing:-0.02em;}
+#p-dash .dash-header-bleed .brief-sub{font-size:13px;color:rgba(255,255,255,.45);margin-top:6px;line-height:1.35;opacity:1;}
+#p-dash .dash-rf-logo-btn{appearance:none;border:none;background:transparent;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;}
+#p-dash .dash-rf-logo-square{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:8px;background:#1a3d28;border:0.5px solid #2a5a3a;box-sizing:border-box;}
+#p-dash .dash-rf-logo-mark{font-family:'IBM Plex Serif','Times New Roman',serif;font-size:16px;font-weight:600;color:#4a9a6a;line-height:1;}
+#p-dash .brief-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+#p-dash .brief-stat{background:#fff;border:0.5px solid #e0e0e0;border-radius:8px;padding:12px;text-align:center;box-shadow:none;}
+#p-dash .brief-stat-l{font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:#aaa;margin-top:8px;font-family:'IBM Plex Sans',system-ui,sans-serif;font-weight:500;}
+#p-dash .brief-stat-v--proj,#p-dash .brief-stat-v--coll{color:#2d7a2d!important;}
+#p-dash .brief-stat-v--out{color:#c0392b!important;}
+#p-dash .brief-all-clear{background:#f0faf2;border:0.5px solid #d4edda;border-radius:8px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;box-shadow:none;}
+#p-dash .brief-clear-dot{width:8px;height:8px;border-radius:50%;background:#2d7a2d;flex-shrink:0;margin-top:5px;}
+#p-dash .brief-clear-t{font-size:12px;font-weight:500;color:#2d7a2d;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-dash .brief-clear-s{font-size:11px;color:#888;margin-top:4px;line-height:1.4;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-dash .dash-sec-label,#p-dash .brief-quick-t.dash-sec-label{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:#888;font-weight:600;margin-bottom:10px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-dash .dash-sec-label--spaced{margin:4px 0 10px;}
+#p-dash .rg.dash-rg{display:flex;flex-direction:row;flex-wrap:nowrap;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0 0 8px;margin:0 -4px;padding-left:4px;scrollbar-width:none;scroll-snap-type:x proximity;}
+#p-dash .rg.dash-rg::-webkit-scrollbar{display:none;height:0;}
+#p-dash .rg.dash-rg .rc.dash-proj--clean,#p-dash .rg.dash-rg .arc.dash-arc-new{flex:0 0 180px;width:180px;min-width:180px;max-width:180px;scroll-snap-align:start;box-shadow:none;border-radius:8px;border:0.5px solid #e0e0e0;}
+#p-dash .rg.dash-rg .rc.dash-proj--clean{padding:0;overflow:hidden;display:flex;flex-direction:column;align-items:stretch;max-height:none;}
+#p-dash .rg.dash-rg .rc.dash-proj--clean:hover{transform:none;}
+#p-dash .rg.dash-rg .rc.dash-proj--clean::before{display:none;}
+#p-dash .rg.dash-rg .rc.on.dash-proj--clean{background:#fff;border-color:#2d7a2d;}
+#p-dash .dash-proj-img{height:90px;min-height:90px;background:linear-gradient(180deg,#1a3d28 0%,#0f2318 100%);display:flex;align-items:center;justify-content:center;border-bottom:0.5px solid #e0e0e0;}
+#p-dash .dash-proj-img--photo{padding:0;}
+#p-dash .dash-proj-img--photo img{width:100%;height:100%;object-fit:cover;display:block;}
+#p-dash .dash-proj-initial{font-size:28px;font-weight:500;color:rgba(255,255,255,.72);}
+#p-dash .dash-proj-card-body{padding:10px 10px 8px;flex:1;min-width:0;}
+#p-dash .dash-proj-name{font-size:13px;font-weight:500;color:#222;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#p-dash .dash-proj-desc{font-size:11px;color:#888;margin-top:4px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+#p-dash .dash-proj-days{font-size:11px;font-weight:500;color:#2d7a2d;margin-top:8px;}
+#p-dash .dash-proj-due{font-size:10px;color:#aaa;margin-top:4px;line-height:1.2;}
+#p-dash .dash-proj-due--warn{color:#c0392b;font-weight:500;}
+#p-dash .dash-proj-due--soon{color:#2d7a2d;font-weight:500;}
+#p-dash .dash-proj-reintake{margin:0;padding:8px 10px 10px;border-top:0.5px solid #e0e0e0;}
+#p-dash .dash-proj-intake-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;padding:10px 12px;border:0.5px solid #e0e0e0;border-radius:100px;background:#fff;font-size:11px;color:#888;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+#p-dash .dash-proj-intake-btn:active{opacity:.85;}
+#p-dash .brief-quick{background:transparent;border:none;box-shadow:none;padding:0;border-radius:0;}
+#p-dash .qa-pill{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 18px;border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;border:none;-webkit-tap-highlight-color:transparent;}
+#p-dash .qa-pill--primary{background:#0f2318;color:#fff;}
+#p-dash .qa-pill--secondary{background:#fff;color:#555;border:0.5px solid #e0e0e0;}
+#p-dash .arc.dash-arc-new{min-height:200px;border:0.5px dashed #e0e0e0;border-radius:8px;background:#fff;color:#888;box-shadow:none;padding:16px 12px;}
+#p-dash .arc.dash-arc-new:hover{border-color:#2d7a2d;color:#2d7a2d;}
+#p-dash .dash-arc-icon{font-size:24px;line-height:1;margin-bottom:8px;font-weight:300;}
+#p-dash .dash-arc-label{font-size:12px;font-weight:500;}
+#p-dash .alert-card{box-shadow:none;border:0.5px solid #e0e0e0;border-radius:8px;}
+#p-dash .dproj-fab{box-shadow:none;border:0.5px solid #e0e0e0;}
+#p-dash .dash-jiggle-bar-row{border:0.5px solid #e0e0e0;box-shadow:none;}
+#p-dash .dash-empty-card{background:#fff;border:0.5px solid #e0e0e0;border-radius:8px;padding:20px 16px;box-shadow:none;}
+#p-dash .alert-btn{min-height:44px;padding:10px 14px;border-radius:100px;border:0.5px solid #e0e0e0;font-family:'IBM Plex Sans',system-ui,sans-serif;}
 .sb-tot{padding:14px 18px;border-top:1px solid var(--sb-bd);background:var(--sf2);}
 .tot-l{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;}
 .tot-a{font-family:'Inter',system-ui,sans-serif;font-size:26px;color:var(--ac);margin-top:3px;}
@@ -1552,12 +1611,12 @@ a.ni{color:inherit;text-decoration:none;}
     align-items:stretch;
     justify-content:space-between;
     gap:0;
-    background:rgba(255,255,255,.98);
-    -webkit-backdrop-filter:saturate(180%) blur(20px);
-    backdrop-filter:saturate(180%) blur(20px);
-    border-top:1px solid rgba(0,0,0,.08);
-    padding:4px 2px max(4px, env(safe-area-inset-bottom, 0px));
-    box-shadow:0 -1px 0 rgba(0,0,0,.04);
+    background:#ffffff;
+    border-top:0.5px solid #e0e0e0;
+    padding:6px 2px max(6px, env(safe-area-inset-bottom, 0px));
+    box-shadow:none;
+    -webkit-backdrop-filter:none;
+    backdrop-filter:none;
   }
   #mob-nav .mn{
     flex:1;
@@ -1571,8 +1630,8 @@ a.ni{color:inherit;text-decoration:none;}
     margin:0;
     border:none;
     background:transparent;
-    color:var(--tx2);
-    font-family:'Inter',system-ui,sans-serif;
+    color:#aaa;
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
     font-size:10px;
     font-weight:500;
     line-height:1.15;
@@ -1585,8 +1644,7 @@ a.ni{color:inherit;text-decoration:none;}
     text-align:center;
   }
   #mob-nav .mn:active{transform:scale(.97);}
-  #mob-nav .mn{color:#767676;}
-  #mob-nav .mn.on{color:#8BB48B;}
+  #mob-nav .mn.on{color:#0f2318;}
   #mob-nav .mn-i{
     display:flex;
     align-items:center;
@@ -1595,12 +1653,13 @@ a.ni{color:inherit;text-decoration:none;}
     height:28px;
     margin-bottom:0;
   }
-  #mob-nav .mn-i svg{display:block;width:26px;height:26px;stroke:currentColor;flex-shrink:0;}
+  #mob-nav .mn-i svg{display:block;width:22px;height:22px;stroke:currentColor;stroke-width:1.35;flex-shrink:0;}
   #mob-nav .mn.on .mn-i{transform:none;}
   #mob-nav .mn-l{
     font-size:9px;
     font-weight:500;
-    letter-spacing:-0.02em;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
     max-width:100%;
     overflow:hidden;
     text-overflow:ellipsis;
@@ -1608,7 +1667,7 @@ a.ni{color:inherit;text-decoration:none;}
     padding:0;
     margin-top:2px;
   }
-  #mob-nav .mn.on .mn-l{font-weight:600;color:#6d936d;}
+  #mob-nav .mn.on .mn-l{font-weight:600;color:#0f2318;}
 }
 
 /* ── Mobile: Airbnb-style surface (no search bar) ── */
@@ -1635,9 +1694,7 @@ a.ni{color:inherit;text-decoration:none;}
   html { -webkit-tap-highlight-color: transparent; }
   html, body {
     background: #ffffff;
-    background-image: linear-gradient(180deg, #f7f7f7 0%, #f7f7f5 8%, #ffffff 28%, #ffffff 100%);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-image: none;
     min-height: 100%;
     min-height: 100dvh;
   }
@@ -1669,111 +1726,10 @@ a.ni{color:inherit;text-decoration:none;}
     padding: 0 2px 2px 0;
   }
   .brief-wrap { gap: 16px; }
-  #p-dash .brief-header,
-  #main .brief-header {
-    background: #ffffff;
-    color: var(--tx);
-    border: 1px solid var(--bd);
-    border-radius: 16px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-    padding: 20px 18px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-  }
-  #p-dash .brief-header__text,
-  #main .brief-header__text {
-    flex: 1;
-    min-width: 0;
-  }
-  #p-dash .brief-header__logo,
-  #main .brief-header__logo {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    flex-shrink: 0;
-    align-self: center;
-  }
-  #p-dash .brief-header__logo .dash-circ-sett,
-  #main .brief-header__logo .dash-circ-sett {
-    width: 85px;
-    height: 85px;
-    min-width: 85px;
-    min-height: 85px;
-  }
-  #p-dash .brief-header__logo .dash-circ-sett__hint,
-  #main .brief-header__logo .dash-circ-sett__hint {
-    font-size: 8.5px;
-    padding: 8px 6px;
-  }
-  #p-dash .ph .dash-circ-sett {
-    display: none !important;
-  }
-  #p-dash .brief-header {
-    padding: 14px 14px;
-  }
-  #p-dash .brief-header__text .brief-greeting {
-    font-size: 24px;
-  }
-  #p-dash .brief-wrap { gap: 12px; margin-bottom: 10px; }
-  #p-dash .mobi-sec-h { margin: 2px 0 10px; }
-  #main .brief-date {
-    color: var(--tx2);
-    opacity: 1;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-  }
-  #main .brief-greeting {
-    color: var(--tx);
-    font-size: 26px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    margin-top: 6px;
-  }
-  #main .brief-sub {
-    color: var(--tx2);
-    opacity: 1;
-    font-size: 15px;
-    line-height: 1.4;
-    margin-top: 6px;
-  }
-  .brief-stat {
-    border-radius: 12px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-  }
-  .brief-quick {
-    border-radius: 12px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-  }
-  .brief-quick-t { color: var(--tx2); font-size: 12px; letter-spacing: 0.04em; }
-  .brief-all-clear { border-color: var(--bd); }
-  .brief-stat:nth-child(3) .brief-stat-v { color: #7a9e7a !important; }
+  #p-dash .brief-wrap { gap: 16px; margin-bottom: 12px; }
   .btn.bp { background: var(--ac); }
   .btn.bp:hover, .btn.bp:focus-visible { background: var(--ac2); }
   .btn.bp:focus-visible { box-shadow: 0 0 0 2px rgba(139, 180, 139, 0.45); }
-  #p-dash .rg {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 12px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
-    padding: 0 0 6px;
-    margin: 0 -4px;
-    padding-left: 4px;
-  }
-  #p-dash .rg::-webkit-scrollbar { height: 0; }
-  #p-dash .rg .rc.dash-proj,
-  #p-dash .rg .arc {
-    flex: 0 0 min(78vw, 300px);
-    min-width: min(78vw, 300px);
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    scroll-snap-align: start;
-  }
   .rc {
     border-radius: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -1783,7 +1739,6 @@ a.ni{color:inherit;text-decoration:none;}
     border-color: var(--ac);
   }
   .rc.on::before { background: var(--ac); }
-  .rc.dash-proj .dpc-meta strong { color: var(--ac); }
   .arc {
     border-radius: 16px;
     min-height: min(110px, calc(var(--rf-thumb-bubble) + 24px));
@@ -1792,10 +1747,6 @@ a.ni{color:inherit;text-decoration:none;}
   .alert-card {
     border-radius: 12px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-  }
-  #mob-nav {
-    background: #ffffff;
-    border-top: 1px solid var(--bd);
   }
   #p-proj,
   #p-proj .ph,
@@ -4861,10 +4812,8 @@ function htmlCoBlockFromInv(inv){
   var c=(inv.coAddr?escHtml(inv.coAddr)+"<br>":"")+(inv.coPhone?escHtml(inv.coPhone)+"<br>":"")+(inv.coEmail?escHtml(inv.coEmail)+"<br>":"")+(inv.coLic?"Lic: "+escHtml(inv.coLic):"");
   return '<div class="q-qt-left">'+logo+'<div><div class="qco">'+name+'</div><div class="qci">'+c+"</div></div></div>";
 }
-function dashHeaderSettingsCircle(){
-  var u=companyLogoDataUrl();
-  if(u) return '<button type="button" class="dash-circ-sett" onclick="gP(\'sett\')" title="Settings" aria-label="Open settings"><img class="dash-circ-sett__img" src="'+safeDataUrlForAttr(u)+'" alt=""/></button>';
-  return '<button type="button" class="dash-circ-sett" onclick="gP(\'sett\')" title="Logo and settings" aria-label="Open settings"><span class="dash-circ-sett__hint">Logo/Settings</span></button>';
+function dashHeaderRfLogo(){
+  return '<button type="button" class="dash-rf-logo-btn" onclick="gP(\'sett\')" title="Settings" aria-label="Open settings"><span class="dash-rf-logo-square" aria-hidden="true"><span class="dash-rf-logo-mark">R°</span></span></button>';
 }
 function handleCompanyLogoFile(inp){
   var f=inp&&inp.files&&inp.files[0];
@@ -4998,7 +4947,7 @@ function rDash(){
 
   // All clear state
   var allClear=alerts.length===0?'<div class="brief-all-clear">'
-    +'<div class="brief-clear-i">✅</div>'
+    +'<span class="brief-clear-dot" aria-hidden="true"></span>'
     +'<div><div class="brief-clear-t">You\'re all clear</div>'
     +'<div class="brief-clear-s">No overdue invoices · No pending deposits · All on track</div>'
     +'</div></div>':'';
@@ -5013,9 +4962,9 @@ function rDash(){
   });
 
   var stats='<div class="brief-stats">'
-    +'<div class="brief-stat"><div class="brief-stat-v" style="color:var(--ac)">'+f(tot+tax)+'</div><div class="brief-stat-l">Project Value</div></div>'
-    +'<div class="brief-stat"><div class="brief-stat-v" style="color:var(--red)">'+f(outstanding+overdueTot)+'</div><div class="brief-stat-l">Outstanding</div></div>'
-    +'<div class="brief-stat"><div class="brief-stat-v" style="color:var(--grn)">'+f(collected)+'</div><div class="brief-stat-l">Collected</div></div>'
+    +'<div class="brief-stat"><div class="brief-stat-v brief-stat-v--proj">'+f(tot+tax)+'</div><div class="brief-stat-l">Project Value</div></div>'
+    +'<div class="brief-stat"><div class="brief-stat-v brief-stat-v--out">'+f(outstanding+overdueTot)+'</div><div class="brief-stat-l">Outstanding</div></div>'
+    +'<div class="brief-stat"><div class="brief-stat-v brief-stat-v--coll">'+f(collected)+'</div><div class="brief-stat-l">Collected</div></div>'
     +'</div>';
 
   var plist=window.__rfProjectList||[];
@@ -5026,65 +4975,67 @@ function rDash(){
     var nm=p.name||"Untitled project";
     var da=projectDaysActive(p);
     var dr=projectDeadlineRemaining(p);
-    var activeLine=da!==null?'<div><strong>'+da+'</strong> day'+(da!==1?'s':'')+' active</div>':'<div>Days active: —</div>';
-    var dueLine;
-    if(dr===null) dueLine='<div>No deadline set</div>';
-    else if(dr<0) dueLine='<div class="dpc-warn">Past deadline by '+Math.abs(dr)+' day'+(Math.abs(dr)!==1?'s':'')+'</div>';
-    else if(dr===0) dueLine='<div><strong>Due today</strong></div>';
-    else dueLine='<div><strong>'+dr+'</strong> day'+(dr!==1?'s':'')+' until deadline</div>';
+    var descParts=[];
+    if(String(cn||'').trim()) descParts.push(String(cn).trim());
+    if(String(ad||'').trim()) descParts.push(String(ad).trim());
+    var descText=descParts.length?descParts.join(' · '):'—';
+    var activeHtml=da!==null?('<div class="dash-proj-days">'+da+' day'+(da!==1?'s':'')+' active</div>'):'';
+    var dueHtml;
+    if(dr===null) dueHtml='<div class="dash-proj-due">No deadline set</div>';
+    else if(dr<0) dueHtml='<div class="dash-proj-due dash-proj-due--warn">Past deadline by '+Math.abs(dr)+' day'+(Math.abs(dr)!==1?'s':'')+'</div>';
+    else if(dr===0) dueHtml='<div class="dash-proj-due dash-proj-due--soon">Due today</div>';
+    else dueHtml='<div class="dash-proj-due">'+dr+' day'+(dr!==1?'s':'')+' until deadline</div>';
     var cthumb=getLocalProjectCover(p.id);
     var cClientPh=clientPhotoDataUrlByProjectRow(p);
     var tInit=String(nm).trim().charAt(0).toUpperCase()||"?";
-    var dThumb=cthumb
-      ?'<div class="dproj-thumb dproj-thumb--photo" aria-hidden="true"><img src="'+safeDataUrlForAttr(cthumb)+'" alt=""/></div>'
-      :(cClientPh
-        ?'<div class="dproj-thumb dproj-thumb--photo" aria-hidden="true"><img src="'+safeDataUrlForAttr(cClientPh)+'" alt=""/></div>'
-        :'<div class="dproj-thumb" aria-hidden="true">'+escHtml(tInit)+"</div>");
-    return '<div class="rc dash-proj'+(active?' on':'')+'" data-pid="'+escAttr(p.id)+'" role="button" tabindex="0">'
+    var imgBlock=(cthumb||cClientPh)
+      ?('<div class="dash-proj-img dash-proj-img--photo" aria-hidden="true"><img src="'+safeDataUrlForAttr(cthumb||cClientPh)+'" alt=""/></div>')
+      :('<div class="dash-proj-img" aria-hidden="true"><span class="dash-proj-initial">'+escHtml(tInit)+'</span></div>');
+    return '<div class="rc dash-proj dash-proj--clean'+(active?' on':'')+'" data-pid="'+escAttr(p.id)+'" role="button" tabindex="0">'
       +'<div class="dproj-acts" onclick="event.stopPropagation();">'
       +'<button type="button" class="dproj-fab dproj-fab--arch" title="Archive" aria-label="Archive project" onclick="event.stopPropagation();dashProjectArchive(\''+escAttr(p.id)+'\')">📦</button>'
       +'<button type="button" class="dproj-fab dproj-fab--del" title="Delete" aria-label="Delete project" onclick="event.stopPropagation();dashProjectDelete(\''+escAttr(p.id)+'\')">×</button>'
       +'</div>'
-      +'<div class="dproj-top">'+dThumb
-      +'<div class="dproj-mid">'
-      +'<div class="dpc-client">'+escHtml(String(cn))+'</div>'
-      +'<div class="dpc-addr">'+escHtml(String(ad))+'</div>'
-      +'<div class="dpc-name">'+escHtml(String(nm))+'</div>'
-      +'<div class="dpc-meta">'+activeLine+dueLine+'</div>'
-      +'</div></div>'
-      +'<div class="dproj-reintake">'
-      +'<button type="button" class="btn bg sm" title="Re-run the room and trade intake for this project" onclick="event.stopPropagation();restartProjectIntake(\''+String(p.id).replace(/\\/g,"\\\\").replace(/'/g,"\\'")+'\')">Re-run intake</button>'
+      +imgBlock
+      +'<div class="dash-proj-card-body">'
+      +'<div class="dash-proj-name">'+escHtml(String(nm))+'</div>'
+      +'<div class="dash-proj-desc">'+escHtml(descText)+'</div>'
+      +activeHtml
+      +dueHtml
+      +'</div>'
+      +'<div class="dash-proj-reintake">'
+      +'<button type="button" class="dash-proj-intake-btn" title="Re-run the room and trade intake for this project" onclick="event.stopPropagation();restartProjectIntake(\''+String(p.id).replace(/\\/g,"\\\\").replace(/'/g,"\\'")+'\')">Re-run intake</button>'
       +'</div></div>';
   }).join('');
 
   // Quick actions
   var quick='<div class="brief-quick">'
-    +'<div class="brief-quick-t">Quick Actions</div>'
+    +'<div class="brief-quick-t dash-sec-label">Quick Actions</div>'
     +'<div class="brief-quick-btns">'
-    +'<button class="btn bp sm" onclick="startAddJobFromQuickActions()">+ Add Job</button>'
-    +'<button class="btn bg sm" onclick="gP(\'quote\')">View Quote</button>'
-    +'<button class="btn bg sm" onclick="gP(\'inv\')">Invoices</button>'
-    +'<button class="btn bg sm" onclick="gP(\'clients\')">Clients</button>'
+    +'<button type="button" class="qa-pill qa-pill--primary" onclick="startAddJobFromQuickActions()">+ Add Job</button>'
+    +'<button type="button" class="qa-pill qa-pill--secondary" onclick="gP(\'quote\')">View Quote</button>'
+    +'<button type="button" class="qa-pill qa-pill--secondary" onclick="gP(\'inv\')">Invoices</button>'
+    +'<button type="button" class="qa-pill qa-pill--secondary" onclick="gP(\'clients\')">Clients</button>'
     +'</div></div>';
 
   el.innerHTML='<div class="pc">'
     +'<div class="brief-wrap" id="dash-brief-wrap">'
     +'<div class="dash-jiggle-bar-row" id="dash-jiggle-bar"><span>Delete, archive, or</span><button type="button" class="btn bp sm" onclick="exitDashJiggle()">Done</button></div>'
-    +'<div class="brief-header">'
+    +'<div class="dash-header-bleed"><div class="brief-header">'
     +'<div class="brief-header__text">'
     +'<div class="brief-date">'+dateStr+'</div>'
     +'<div class="brief-greeting">'+greeting+'</div>'
     +'<div class="brief-sub">'+(alerts.length>0?alerts.length+' item'+(alerts.length!==1?'s':'')+' need your attention':'Everything looks good today')+'</div>'
     +'</div>'
-    +'<div class="brief-header__logo">'+dashHeaderSettingsCircle()+'</div>'
-    +'</div>'
+    +'<div class="brief-header__logo">'+dashHeaderRfLogo()+'</div>'
+    +'</div></div>'
     +allClear
     +alertHtml
     +stats
-    +(plist.length>0?'<div class="mobi-sec-h">Active projects</div>'
+    +(plist.length>0?'<div class="dash-sec-label dash-sec-label--spaced">Active projects</div>'
     +'<div class="rg dash-rg">'+projectCards
-    +'<div class="arc" onclick="newProjectMo()"><div style="font-size:22px;margin-bottom:5px">+</div><div style="font-size:13px">New Project</div></div>'
-    +'</div>':'<div class="brief-wrap" style="margin-top:12px;padding:20px;background:#fff;border:1px solid var(--bd);border-radius:var(--r);"><div style="font-size:14px;font-weight:600;margin-bottom:6px">No projects yet</div><div style="font-size:13px;color:var(--tx3);margin-bottom:14px">Create a job to see it here.</div><button class="btn bp sm" onclick="newProjectMo()">+ New Project</button></div>')
+    +'<div class="arc dash-arc-new" onclick="newProjectMo()" role="button" tabindex="0"><div class="dash-arc-icon" aria-hidden="true">+</div><div class="dash-arc-label">New project</div></div>'
+    +'</div>':'<div class="dash-empty-card" style="margin-top:12px"><div style="font-size:14px;font-weight:600;margin-bottom:6px;color:#222">No projects yet</div><div style="font-size:13px;color:#888;margin-bottom:14px">Create a job to see it here.</div><button type="button" class="qa-pill qa-pill--primary" onclick="newProjectMo()">+ New Project</button></div>')
     +quick
     +'</div>'
     +'</div>';
@@ -5093,7 +5044,7 @@ function rDash(){
     card.addEventListener('pointerdown', function(e){
       if(e.pointerType==="mouse"&&e.button!==0) return;
       if(__rfDashJiggleMode) return;
-      if(e.target&&e.target.closest&&(e.target.closest(".dproj-acts button")||e.target.closest(".dproj-reintake button"))) return;
+      if(e.target&&e.target.closest&&(e.target.closest(".dproj-acts button")||e.target.closest(".dash-proj-intake-btn"))) return;
       longFired=false;
       holdT=setTimeout(function(){
         holdT=null;
@@ -5108,7 +5059,7 @@ function rDash(){
       cancelHold();
       if(__rfDashJiggleMode) return;
       if(longFired) return;
-      if(e.target&&e.target.closest&&(e.target.closest(".dproj-acts button")||e.target.closest(".dproj-reintake button"))) return;
+      if(e.target&&e.target.closest&&(e.target.closest(".dproj-acts button")||e.target.closest(".dash-proj-intake-btn"))) return;
       var pid=card.getAttribute("data-pid");
       if(pid) switchProjectFromDash(pid);
     });
