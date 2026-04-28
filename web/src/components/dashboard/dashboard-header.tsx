@@ -6,7 +6,7 @@ type Props = {
 };
 
 /**
- * Site Clean dashboard strip: #0f2318 fills edge-to-edge; safe-area padding lets content sit below the status bar.
+ * Same pattern as /trades/demolition header row: viewport-fit=cover (root layout) + this padding.
  */
 export function DashboardHeader({ children, className }: Props) {
   return (
@@ -14,7 +14,7 @@ export function DashboardHeader({ children, className }: Props) {
       className={className}
       style={{
         background: "#0f2318",
-        paddingTop: "env(safe-area-inset-top)",
+        paddingTop: "max(0.5rem, env(safe-area-inset-top, 0px))",
       }}
     >
       {children}
