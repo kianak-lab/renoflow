@@ -57,6 +57,12 @@ export type DemolitionV3State = {
   labourCostMode: LabourCostMode;
   /** When labourCostMode is "job", total private labour cost. */
   myLabourPerJob: number;
+  /** Standalone “My cost” daily calc (not tied to worker grid). */
+  myCostDailyDays: number;
+  myCostDailyRate: number;
+  /** Standalone “My cost” hourly calc (not tied to worker grid). */
+  myCostHourlyHours: number;
+  myCostHourlyRate: number;
   workerExpenseEnabled: boolean;
   workers: DemoWorker[];
   wasteDisposalEnabled: boolean;
@@ -103,7 +109,11 @@ export const DEMOLITION_DEFAULT_STATE: DemolitionV3State = {
   v: 3,
   labourCostMode: "daily",
   myLabourPerJob: 0,
-  /** On so Daily/Hourly crew math works immediately; user can turn off to hide the grid. */
+  myCostDailyDays: 0,
+  myCostDailyRate: 200,
+  myCostHourlyHours: 0,
+  myCostHourlyRate: 25,
+  /** On so crew grid is available; totals are separate from “My cost” card. */
   workerExpenseEnabled: true,
   workers: [DEFAULT_WORKER()],
   wasteDisposalEnabled: false,
@@ -271,6 +281,20 @@ function normalizeDemolitionState(raw: Partial<DemolitionV3State>): DemolitionV3
     base.labourCostMode = raw.labourCostMode;
   }
   if (typeof raw.myLabourPerJob === "number") base.myLabourPerJob = Math.max(0, raw.myLabourPerJob);
+  if (typeof raw.myCostDailyDays === "number") base.myCostDailyDays = Math.max(0, raw.myCostDailyDays);
+  if (typeof raw.myCostDailyRate === "number") base.myCostDailyRate = Math.max(0, raw.myCostDailyRate);
+  if (typeof raw.myCostHourlyHours === "number")
+    base.myCostHourlyHours = Math.max(0, raw.myCostHourlyHours);
+  if (typeof raw.myCostHourlyRate === "number") base.myCostHourlyRate = Math.max(0, raw.myCostHourlyRate);
+  if (
+    raw.myCostDailyDays === undefined &&
+    raw.myCostDailyRate === undefined &&
+    raw.myCostHourlyHours === undefined &&
+    raw.myCostHourlyRate === undefined
+  ) {
+    base.myCostDailyDays = 0;
+    base.myCostHourlyHours = 0;
+  }
   if (typeof raw.workerExpenseEnabled === "boolean") {
     base.workerExpenseEnabled = raw.workerExpenseEnabled;
   } else {
@@ -374,10 +398,17 @@ function mergeCatPickIntoQty(state: DemolitionV3State, t: TradeShape): Demolitio
   return changed ? { ...state, materialQty: mq } : state;
 }
 
-export function myLabourCost(d: DemolitionV3State): number {
-  if (d.labourCostMode === "job") {
-    return round2(d.myLabourPerJob);
+/** Private labour from the “My cost” card only (per job / daily / hourly). */
+export function myPrimaryLabourCost(d: DemolitionV3State): number {
+  if (d.labourCostMode === "job") return round2(d.myLabourPerJob);
+  if (d.labourCostMode === "daily") {
+    return round2(Math.max(0, d.myCostDailyDays) * Math.max(0, d.myCostDailyRate));
   }
+  return round2(Math.max(0, d.myCostHourlyHours) * Math.max(0, d.myCostHourlyRate));
+}
+
+/** Private labour from the worker expense grid only. */
+export function workerLabourCost(d: DemolitionV3State): number {
   if (!d.workerExpenseEnabled) return 0;
   let s = 0;
   for (const w of d.workers) {
@@ -386,13 +417,18 @@ export function myLabourCost(d: DemolitionV3State): number {
   return round2(s);
 }
 
+/** Total private labour = my-cost card + worker grid (independent). */
+export function myLabourCost(d: DemolitionV3State): number {
+  return round2(myPrimaryLabourCost(d) + workerLabourCost(d));
+}
+
 export function myWasteCost(d: DemolitionV3State): number {
   if (!d.wasteDisposalEnabled) return 0;
   return round2(d.wasteDisposalAmount);
 }
 
 export function crewBillableHours(d: DemolitionV3State): number {
-  if (d.labourCostMode === "job" || !d.workerExpenseEnabled) return 0;
+  if (!d.workerExpenseEnabled) return 0;
   return totalLabourHours(d.workers);
 }
 
@@ -408,8 +444,7 @@ export function applyDemolitionToTrade(
   products: CachedProductRow[],
 ): void {
   t.rfDemolition = { ...d, v: 3 };
-  const wmax =
-    d.workerExpenseEnabled && d.labourCostMode !== "job" ? maxWorkerDays(d.workers) : 0;
+  const wmax = d.workerExpenseEnabled ? maxWorkerDays(d.workers) : 0;
   const tmax = d.scheduleTradeEnabled ? Math.max(0, d.timelineTotalDays) : 0;
   t.days = Math.max(wmax, tmax);
   t.daysCustom = !!d.daysCustom;
