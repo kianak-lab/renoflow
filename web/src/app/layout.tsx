@@ -50,9 +50,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   applicationName: "RenoFlow",
   appleWebApp: {
-    capable: true,
     title: "RenoFlow",
-    statusBarStyle: "default",
   },
   title: "RenoFlow",
   description: ogDescription,
@@ -84,10 +82,6 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   viewportFit: "cover",
-  themeColor: [
-    { color: "#8BB48B", media: "(prefers-color-scheme: light)" },
-    { color: "#3d5c3d", media: "(prefers-color-scheme: dark)" },
-  ],
 };
 
 export default function RootLayout({
@@ -97,6 +91,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
+      <head>
+        <meta name="theme-color" content="#0f2318" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   );

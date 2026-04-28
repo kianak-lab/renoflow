@@ -3,6 +3,7 @@
 import { FormEvent, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import SignOutButton from "@/components/sign-out-button";
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 
 type Project = {
   id: string;
@@ -574,7 +575,7 @@ export default function DashboardShell({
                 </div>
               ) : (
                 <div className="brief-wrap">
-                  <div className="brief-header">
+                  <DashboardHeader className="brief-header">
                     <div
                       style={{
                         fontFamily: "'DM Serif Display',serif",
@@ -592,7 +593,7 @@ export default function DashboardShell({
                         ? `${activeProjectRooms.length} room${activeProjectRooms.length === 1 ? "" : "s"} active`
                         : `Signed in as ${userEmail}`}
                     </div>
-                  </div>
+                  </DashboardHeader>
 
                   <div className="brief-stats">
                     <div className="brief-stat">

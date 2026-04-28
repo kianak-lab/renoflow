@@ -234,7 +234,7 @@ a.ni{color:inherit;text-decoration:none;}
 #p-dash .brief-stat-v,#p-dash .dash-proj-initial{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:500;font-size:18px;letter-spacing:-0.02em;}
 #p-dash .dash-header-bleed{margin-left:-32px;margin-right:-32px;padding-left:32px;padding-right:32px;padding-top:env(safe-area-inset-top,0px);background:#0f2318;box-sizing:border-box;}
 @media (max-width:767px){
-  #p-dash .dash-header-bleed{margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px;padding-top:12px;}
+  #p-dash .dash-header-bleed{margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px;padding-top:calc(env(safe-area-inset-top, 0px) + 12px);background:#0f2318;}
 }
 #p-dash .dash-header-bleed .brief-header{background:transparent;border:none;border-radius:0;box-shadow:none;padding:16px 0 18px;margin:0;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;}
 #p-dash .dash-header-bleed .brief-date{font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,.72);font-family:'IBM Plex Sans',system-ui,sans-serif;font-weight:500;opacity:1;}
