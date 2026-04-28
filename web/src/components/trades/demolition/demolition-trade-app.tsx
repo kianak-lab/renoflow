@@ -10,22 +10,27 @@ import {
   useState,
 } from "react";
 import {
-  autoLabourDays,
-  contractorBags,
-  dumpsterRecommendationSqFt,
+  ceilingFtFromDims,
+  floorSqFtFromDims,
+  formatDimsLine,
   formatMoney,
-  type DemoType,
+  parsePrice,
+  totalLabourHours,
 } from "@/lib/demolition-calculations";
 import {
   applyDemolitionToTrade,
+  DEMOLITION_CHECKLIST,
+  type CachedProductRow,
+  type DemoChecklistKey,
+  type DemoScope,
+  type DemoWorker,
+  type DemolitionV3State,
+  DEMOLITION_DEFAULT_STATE,
   getDemolitionStateFromTrade,
   loadWorkspace,
-  maybeSyncAutoLabourDays,
+  myLabourCost,
   readActiveProjectId,
   saveWorkspace,
-  type CachedProductRow,
-  type DemolitionV2State,
-  DEMOLITION_DEFAULT_STATE,
 } from "@/lib/demolition-workspace";
 
 const plex = IBM_Plex_Sans({
@@ -39,45 +44,19 @@ const PRICE_GREEN = "#1a5c2e";
 const MUTED = "#6b7280";
 const LINE = "rgba(0,0,0,0.14)";
 
-const DEMO_TYPES: { id: DemoType; label: string }[] = [
-  { id: "full", label: "Full Gut" },
-  { id: "drywall", label: "Drywall Only" },
-  { id: "flooring", label: "Flooring Only" },
-  { id: "ceiling", label: "Ceiling Only" },
-  { id: "selective", label: "Selective" },
-];
-
 type TabKey = "calculator" | "materials" | "labour" | "totals";
 
-function useDebouncedPersist(fn: (next: DemolitionV2State) => void, ms: number) {
+function useDebouncedFn<T>(fn: (arg: T) => void, ms: number): (arg: T) => void {
   const t = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const f = useRef(fn);
+  f.current = fn;
   return useCallback(
-    (next: DemolitionV2State) => {
+    (arg: T) => {
       if (t.current) clearTimeout(t.current);
-      t.current = setTimeout(() => fn(next), ms);
+      t.current = setTimeout(() => f.current(arg), ms);
     },
-    [fn, ms],
+    [ms],
   );
-}
-
-function parsePrice(p: string | number | null): number {
-  if (p == null) return 0;
-  if (typeof p === "number") return p;
-  const m = String(p).match(/(\d+(?:\.\d+)?)/);
-  return m ? parseFloat(m[1]!) : 0;
-}
-
-function materialSubtotalSupplier(
-  products: CachedProductRow[],
-  qty: Record<string, number>,
-): number {
-  let s = 0;
-  for (const p of products) {
-    const q = qty[String(p.id)] ?? 0;
-    if (q <= 0) continue;
-    s += parsePrice(p.price) * q;
-  }
-  return s;
 }
 
 export default function DemolitionTradeApp() {
@@ -86,15 +65,27 @@ export default function DemolitionTradeApp() {
   const ri = Number(sp.get("ri") ?? "0");
   const ti = Number(sp.get("ti") ?? "0");
   const pidParam = sp.get("pid");
+  const dbRoomIdParam = sp.get("dbRoomId") ?? "";
 
   const [tab, setTab] = useState<TabKey>("calculator");
   const [products, setProducts] = useState<CachedProductRow[]>([]);
   const [productsErr, setProductsErr] = useState<string | null>(null);
-  const [d, setD] = useState<DemolitionV2State>(DEMOLITION_DEFAULT_STATE);
+  const [d, setD] = useState<DemolitionV3State>(DEMOLITION_DEFAULT_STATE);
   const dRef = useRef(d);
   dRef.current = d;
 
   const projectId = pidParam || readActiveProjectId() || "";
+  const room = useMemo(() => {
+    if (!projectId) return null;
+    const ws = loadWorkspace(projectId);
+    return ws?.rooms?.[ri] ?? null;
+  }, [projectId, ri]);
+
+  const roomName = room?.n ?? "Room";
+  const dims = room?.d as Record<string, unknown> | undefined;
+  const sqFt = useMemo(() => floorSqFtFromDims(dims), [dims]);
+  const ceilingFt = useMemo(() => ceilingFtFromDims(dims), [dims]);
+  const dimsLine = useMemo(() => formatDimsLine(dims), [dims]);
 
   const loadFromStorage = useCallback(() => {
     if (!projectId) return;
@@ -113,9 +104,10 @@ export default function DemolitionTradeApp() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/api/cached-products?trade=" + encodeURIComponent("Demolition"), {
-          credentials: "include",
-        });
+        const res = await fetch(
+          "/api/cached-products?trade=" + encodeURIComponent("Demolition"),
+          { credentials: "include" },
+        );
         const j = (await res.json()) as { products?: CachedProductRow[]; error?: string };
         if (!res.ok) throw new Error(j.error || "Could not load materials");
         if (!cancelled) {
@@ -131,13 +123,12 @@ export default function DemolitionTradeApp() {
     };
   }, []);
 
-  const persist = useCallback(
-    (next: DemolitionV2State) => {
+  const persistLocal = useCallback(
+    (next: DemolitionV3State) => {
       if (!projectId) return;
       const ws = loadWorkspace(projectId);
       if (!ws || !ws.rooms?.[ri]?.trades?.[ti]) return;
-      const room = ws.rooms[ri]!;
-      const trades = room.trades!;
+      const trades = ws.rooms[ri]!.trades!;
       const t = trades[ti]!;
       if (t.id !== "demo") return;
       applyDemolitionToTrade(t, next, products);
@@ -146,52 +137,114 @@ export default function DemolitionTradeApp() {
     [projectId, ri, ti, products],
   );
 
-  const debouncedPersist = useDebouncedPersist(persist, 320);
+  const persistRemote = useCallback(
+    async (next: DemolitionV3State) => {
+      const dbRoomId = dbRoomIdParam || (room?.dbRoomId as string | undefined);
+      if (!dbRoomId) return;
+      const ws = loadWorkspace(projectId);
+      if (!ws || !ws.rooms?.[ri]?.trades) return;
+      const roomRow = ws.rooms[ri]!;
+      const tradesPayload = (roomRow.trades || []).map((raw, j) => {
+        const t = raw as Record<string, unknown> & {
+          id?: string;
+          note?: string;
+          open?: boolean;
+          days?: number;
+          daysCustom?: boolean;
+          items?: Array<{ id?: string; qty?: number; p?: number; wasAuto?: boolean }>;
+        };
+        if (t.id === "demo" && j === ti) {
+          const clone = { ...t } as Parameters<typeof applyDemolitionToTrade>[0];
+          applyDemolitionToTrade(clone, next, products);
+          const demoMat = (clone as { _demoMaterialLines?: unknown })._demoMaterialLines;
+          return {
+            id: "demo",
+            note: String((clone as { note?: string }).note ?? ""),
+            open: !!(clone as { open?: boolean }).open,
+            days: (clone as { days?: number }).days ?? 0,
+            daysCustom: !!(clone as { daysCustom?: boolean }).daysCustom,
+            items: [],
+            demoMaterialLines: Array.isArray(demoMat) ? demoMat : [],
+          };
+        }
+        return {
+          id: String(t.id ?? ""),
+          note: String(t.note ?? ""),
+          open: !!t.open,
+          days: t.days ?? 0,
+          daysCustom: !!t.daysCustom,
+          items: (t.items || []).map((it) => ({
+            id: it.id,
+            qty: it.qty ?? 0,
+            p: it.p,
+            wasAuto: !!it.wasAuto,
+          })),
+        };
+      });
+      await fetch("/api/rooms/" + encodeURIComponent(dbRoomId), {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: roomRow.n,
+          icon: roomRow.ic ?? null,
+          sort_order: ri,
+          dimensions: roomRow.d || {},
+          trades: tradesPayload,
+        }),
+      }).catch(() => {});
+    },
+    [dbRoomIdParam, room, projectId, ri, ti, products],
+  );
+
+  const debouncedLocal = useDebouncedFn(persistLocal, 280);
+  const debouncedRemote = useDebouncedFn(
+    useCallback((next: DemolitionV3State) => void persistRemote(next), [persistRemote]),
+    600,
+  );
 
   const update = useCallback(
-    (patch: Partial<DemolitionV2State> | ((prev: DemolitionV2State) => DemolitionV2State)) => {
+    (patch: Partial<DemolitionV3State> | ((prev: DemolitionV3State) => DemolitionV3State)) => {
       setD((prev) => {
         const base = typeof patch === "function" ? patch(prev) : { ...prev, ...patch };
-        let next = { ...base };
-        if (next.exteriorDumpster) {
-          const sqChanged = next.sqFt !== prev.sqFt;
-          const extTurnedOn = next.exteriorDumpster && !prev.exteriorDumpster;
-          if (extTurnedOn || sqChanged) {
-            next.dumpsterSize = dumpsterRecommendationSqFt(next.sqFt);
-          }
-        }
-        next = maybeSyncAutoLabourDays(prev, next);
-        debouncedPersist(next);
+        const next = { ...base, v: 3 as const };
+        debouncedLocal(next);
+        debouncedRemote(next);
         return next;
       });
     },
-    [debouncedPersist],
+    [debouncedLocal, debouncedRemote],
   );
 
-  const autoDays = useMemo(
-    () => autoLabourDays(d.sqFt, d.stairs, d.hazmat),
-    [d.sqFt, d.stairs, d.hazmat],
-  );
+  const materialMyCost = useMemo(() => {
+    let s = 0;
+    for (const p of products) {
+      const q = d.materialQty[String(p.id)] ?? 0;
+      if (q <= 0) continue;
+      s += parsePrice(p.price) * q;
+    }
+    return Math.round(s * 100) / 100;
+  }, [products, d.materialQty]);
 
-  const bags = useMemo(() => contractorBags(d.sqFt), [d.sqFt]);
-  const dumpsterRec = useMemo(() => dumpsterRecommendationSqFt(d.sqFt), [d.sqFt]);
-  const estLabourCost = useMemo(() => autoDays * 650, [autoDays]);
+  const labourMyCost = useMemo(() => myLabourCost(d.workers), [d.workers]);
 
-  const labourSub = useMemo(
-    () => Math.max(0, d.labourDays) * Math.max(0, d.labourRate) * Math.max(1, d.workers),
-    [d.labourDays, d.labourRate, d.workers],
-  );
+  const myCostsTotal = labourMyCost + materialMyCost;
 
-  const tradeSubPreMarkup = useMemo(() => {
-    const matBase = materialSubtotalSupplier(products, d.materialQty);
-    return matBase + labourSub;
-  }, [products, d.materialQty, labourSub]);
+  const clientMaterialsCharge = useMemo(() => {
+    const mk = 1 + Math.max(0, d.clientMaterialsMarkupPct) / 100;
+    return Math.round(materialMyCost * mk * 100) / 100;
+  }, [materialMyCost, d.clientMaterialsMarkupPct]);
 
-  const tradeGrand = useMemo(() => {
-    return tradeSubPreMarkup * (1 + d.markupPct / 100);
-  }, [tradeSubPreMarkup, d.markupPct]);
+  const clientTotal = useMemo(() => {
+    return Math.round((d.clientLabourCharge + clientMaterialsCharge) * 100) / 100;
+  }, [d.clientLabourCharge, clientMaterialsCharge]);
 
-  const headerDays = Math.max(1, d.labourDays || autoDays || 1);
+  const profit = Math.round((clientTotal - myCostsTotal) * 100) / 100;
+  const profitPerSq = sqFt > 0 ? Math.round((profit / sqFt) * 100) / 100 : 0;
+  const hrs = totalLabourHours(d.workers);
+  const profitPerHr = hrs > 0 ? Math.round((profit / hrs) * 100) / 100 : 0;
+  const marginPct = clientTotal > 0 ? Math.round((profit / clientTotal) * 1000) / 10 : 0;
+  const clientRatePerSq = sqFt > 0 ? Math.round((clientTotal / sqFt) * 100) / 100 : 0;
 
   const grouped = useMemo(() => {
     const order: string[] = [];
@@ -211,47 +264,103 @@ export default function DemolitionTradeApp() {
   }, [products]);
 
   function back() {
-    if (projectId) persist(dRef.current);
+    if (projectId) persistLocal(dRef.current);
     router.push("/final");
   }
+
+  function pushTimeline() {
+    if (projectId) persistLocal(dRef.current);
+    try {
+      sessionStorage.setItem(
+        "rf_after_demolition_nav",
+        JSON.stringify({ pg: "tl", ri, ts: Date.now() }),
+      );
+    } catch {
+      /* ignore */
+    }
+    void persistRemote(dRef.current);
+    router.push("/final");
+  }
+
+  function toggleChecklist(key: DemoChecklistKey) {
+    update((prev) => {
+      const checklist = { ...prev.checklist, [key]: !prev.checklist[key] };
+      return { ...prev, checklist };
+    });
+  }
+
+  function addWorker() {
+    update((prev) => ({
+      ...prev,
+      workers: [
+        ...prev.workers,
+        {
+          id: `w-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+          name: "",
+          days: 1,
+          rate: 450,
+        },
+      ],
+    }));
+  }
+
+  function removeWorker(id: string) {
+    update((prev) => {
+      const next = prev.workers.filter((w) => w.id !== id);
+      return {
+        ...prev,
+        workers: next.length ? next : prev.workers,
+      };
+    });
+  }
+
+  function patchWorker(id: string, patch: Partial<DemoWorker>) {
+    update((prev) => ({
+      ...prev,
+      workers: prev.workers.map((w) => (w.id === id ? { ...w, ...patch } : w)),
+    }));
+  }
+
+  const workerSlotLabel = (w: DemoWorker, idx: number) =>
+    w.name.trim() || `Worker ${idx + 1}`;
 
   return (
     <div
       className={`${plex.className} fixed inset-0 z-[200] flex flex-col bg-white text-neutral-900`}
-      style={{ fontFamily: "var(--font-ibm-plex), system-ui, sans-serif" }}
+      style={{
+        fontFamily: "var(--font-ibm-plex), system-ui, sans-serif",
+        fontSize: "min(15px, 16px)",
+        minHeight: "100dvh",
+      }}
     >
       <header
         className="shrink-0 rounded-b-none pt-[max(0.75rem,env(safe-area-inset-top))]"
         style={{ background: YELLOW }}
       >
-        <div className="flex items-start gap-3 px-3 pb-3 pt-1">
+        <div className="flex items-start gap-2 px-3 pb-3 pt-1">
           <button
             type="button"
             onClick={back}
-            className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center text-2xl font-semibold text-black"
+            className="flex h-11 min-h-[44px] w-11 min-w-[44px] shrink-0 items-center justify-center text-2xl font-semibold text-black"
             aria-label="Back"
           >
             ←
           </button>
           <div className="min-w-0 flex-1">
-            <h1 className="text-lg font-bold leading-tight text-black">Demolition</h1>
-            <p className="text-xs font-medium uppercase tracking-wider" style={{ color: MUTED }}>
-              Structure
+            <h1 className="text-[15px] font-bold leading-tight text-black">Demolition</h1>
+            <p className="mt-0.5 text-[13px] leading-snug" style={{ color: MUTED }}>
+              Structure · {roomName}
+              {sqFt > 0 ? ` · ${sqFt} sq ft` : ceilingFt > 0 ? ` · ${ceilingFt} ft ceiling` : ""}
             </p>
-          </div>
-          <div className="shrink-0 pt-1 text-right">
-            <span className="text-sm font-semibold text-black">
-              {headerDays} day{headerDays === 1 ? "" : "s"}
-            </span>
           </div>
         </div>
       </header>
 
       <div
-        className="shrink-0 overflow-x-auto border-b bg-white px-3 py-2"
-        style={{ borderColor: LINE }}
+        className="shrink-0 overflow-x-auto bg-white px-3 py-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        style={{ borderBottom: `0.5px solid ${LINE}` }}
       >
-        <div className="flex w-max min-w-full gap-2 pb-1">
+        <div className="flex w-max min-w-full gap-2 pb-0.5">
           {(
             [
               ["calculator", "Calculator"],
@@ -266,7 +375,7 @@ export default function DemolitionTradeApp() {
                 key={k}
                 type="button"
                 onClick={() => setTab(k)}
-                className="shrink-0 px-4 py-2.5 text-sm font-semibold transition-colors"
+                className="min-h-[44px] shrink-0 px-4 text-[13px] font-semibold transition-colors"
                 style={{
                   borderRadius: 100,
                   background: on ? YELLOW : "#e5e7eb",
@@ -280,177 +389,153 @@ export default function DemolitionTradeApp() {
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4">
         {!projectId ? (
-          <p className="text-sm" style={{ color: MUTED }}>
+          <p className="text-[13px]" style={{ color: MUTED }}>
             Open Demolition from a project room in RenoFlow so your work saves to the active job.
           </p>
         ) : null}
 
         {tab === "calculator" && (
-          <div className="flex flex-col gap-6">
-            <Field label="Demo type">
-              <div className="flex flex-wrap gap-2">
-                {DEMO_TYPES.map(({ id, label }) => {
-                  const on = d.demoType === id;
+          <div className="flex flex-col gap-5">
+            <div
+              className="rounded-xl px-4 py-4"
+              style={{ background: "#f3f4f6", border: `0.5px solid ${LINE}` }}
+            >
+              <div className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: MUTED }}>
+                From room
+              </div>
+              <div className="mt-1 text-[13px] font-medium text-neutral-800">{dimsLine}</div>
+              {sqFt > 0 ? (
+                <div className="mt-2 text-2xl font-bold tabular-nums text-black">{sqFt} sq ft</div>
+              ) : (
+                <div className="mt-2 text-[13px]" style={{ color: MUTED }}>
+                  Add room dimensions in the room editor for square footage.
+                </div>
+              )}
+            </div>
+
+            <div>
+              <div className="mb-2 text-[11px] font-bold uppercase tracking-wider text-neutral-500">
+                Scope
+              </div>
+              <div className="flex w-full flex-col gap-2">
+                {(["full", "selective"] as DemoScope[]).map((s) => {
+                  const on = d.scope === s;
                   return (
                     <button
-                      key={id}
+                      key={s}
                       type="button"
-                      onClick={() => update({ demoType: id })}
-                      className="min-h-[44px] px-3 text-sm font-medium"
+                      onClick={() => update({ scope: s })}
+                      className="min-h-[48px] w-full rounded-xl px-4 text-left text-[13px] font-semibold"
                       style={{
-                        borderRadius: 8,
-                        border: `0.5px solid ${LINE}`,
-                        background: on ? YELLOW : "#f3f4f6",
-                        color: on ? "#000" : MUTED,
+                        border: on ? "none" : `1px solid ${LINE}`,
+                        background: on ? "#000" : "#fff",
+                        color: on ? "#fff" : MUTED,
                       }}
                     >
-                      {label}
+                      {s === "full" ? "Full gut" : "Selective"}
                     </button>
                   );
                 })}
               </div>
-            </Field>
+            </div>
 
-            <Field label="Number of rooms">
-              <Stepper
-                value={d.roomCount}
-                min={1}
-                max={99}
-                onChange={(n) => update({ roomCount: n })}
-              />
-            </Field>
+            <div>
+              <div className="mb-2 text-[13px] font-semibold text-neutral-900">What&apos;s coming out</div>
+              <ul className="flex flex-col gap-0 rounded-xl border border-neutral-200 bg-white">
+                {DEMOLITION_CHECKLIST.map(({ key, label }) => {
+                  const on = !!d.checklist[key];
+                  return (
+                    <li
+                      key={key}
+                      className="flex min-h-[44px] items-center justify-between gap-3 border-t border-neutral-100 px-3 py-2 first:border-t-0"
+                    >
+                      <span className="text-[13px] text-neutral-900">{label}</span>
+                      <button
+                        type="button"
+                        aria-pressed={on}
+                        onClick={() => toggleChecklist(key)}
+                        className="flex h-9 min-w-[44px] items-center justify-center rounded-lg text-[15px] font-bold"
+                        style={{
+                          border: `1px solid ${on ? "#000" : LINE}`,
+                          background: on ? YELLOW : "#fff",
+                          color: "#000",
+                        }}
+                      >
+                        {on ? "✓" : ""}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
 
-            <Field label="Total sq ft">
-              <input
-                type="number"
-                inputMode="decimal"
-                min={0}
-                className="min-h-[52px] w-full rounded-lg border px-4 text-lg outline-none"
-                style={{ borderColor: LINE }}
-                value={d.sqFt || ""}
-                placeholder="0"
-                onChange={(e) => update({ sqFt: Math.max(0, Number(e.target.value) || 0) })}
-              />
-            </Field>
-
-            <Field label="Ceiling height (ft)">
-              <Stepper
-                value={d.ceilingFt}
-                min={6}
-                max={20}
-                onChange={(n) => update({ ceilingFt: n })}
-              />
-            </Field>
-
-            <Field label="Hazmat present">
-              <ToggleRow
-                on={d.hazmat}
-                onChange={(hazmat) => update({ hazmat })}
-              />
-              {d.hazmat ? (
-                <div
-                  className="mt-2 rounded-lg border px-3 py-2 text-sm font-medium text-red-800"
-                  style={{ borderColor: "#fecaca", background: "#fef2f2" }}
-                >
-                  Hazmat detected — specialized disposal required. Add remediation cost.
-                </div>
-              ) : null}
-            </Field>
-
-            <Field label="Exterior dumpster needed">
-              <ToggleRow
-                on={d.exteriorDumpster}
-                onChange={(exteriorDumpster) =>
-                  update((prev) => {
-                    const n = { ...prev, exteriorDumpster };
-                    if (exteriorDumpster) {
-                      n.dumpsterSize = dumpsterRecommendationSqFt(prev.sqFt);
-                    }
-                    return n;
-                  })
-                }
-              />
-              {d.exteriorDumpster ? (
-                <div className="mt-3">
-                  <span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-neutral-500">
-                    Dumpster size
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {(["10", "14", "20"] as const).map((yd) => {
-                      const on = d.dumpsterSize === yd;
-                      return (
-                        <button
-                          key={yd}
-                          type="button"
-                          onClick={() => update({ dumpsterSize: yd })}
-                          className="min-h-[44px] min-w-[4.5rem] px-3 text-sm font-semibold"
-                          style={{
-                            borderRadius: 8,
-                            border: `0.5px solid ${LINE}`,
-                            background: on ? YELLOW : "#f3f4f6",
-                            color: on ? "#000" : MUTED,
-                          }}
-                        >
-                          {yd} yd
-                        </button>
-                      );
-                    })}
+            <div className="rounded-xl border px-3 py-3" style={{ borderColor: LINE }}>
+              <div className="flex min-h-[44px] items-center justify-between gap-3">
+                <div>
+                  <div className="text-[13px] font-semibold">Hazmat present</div>
+                  <div className="text-[13px]" style={{ color: MUTED }}>
+                    Asbestos, lead, mold — client pays
                   </div>
                 </div>
+                <Switch on={d.hazmat} onChange={(hazmat) => update({ hazmat })} />
+              </div>
+              {d.hazmat ? (
+                <div
+                  className="mt-2 rounded-lg border px-3 py-2 text-[13px] font-medium text-red-800"
+                  style={{ borderColor: "#fecaca", background: "#fef2f2" }}
+                >
+                  Hazmat flagged — add remediation cost to client invoice
+                </div>
               ) : null}
-            </Field>
-
-            <Field label="Stairs involved">
-              <ToggleRow on={d.stairs} onChange={(stairs) => update({ stairs })} />
-            </Field>
-
-            <div
-              className="space-y-3 rounded-xl border px-4 py-4 text-sm"
-              style={{ borderColor: LINE }}
-            >
-              <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
-                Auto-calculated
-              </h2>
-              <RowStat label="Contractor bags (ceil sq ft ÷ 50)" value={String(bags)} />
-              <RowStat
-                label="Est. labour days (sq ft ÷ 400, +1 stairs, +1 hazmat)"
-                value={String(autoDays)}
-              />
-              <RowStat
-                label="Dumpster recommendation (by sq ft)"
-                value={
-                  d.exteriorDumpster ? `${dumpsterRec} yd` : `${dumpsterRec} yd (if dumpster on)`
-                }
-              />
-              <RowStat
-                label="Est. labour cost @ $650/day"
-                value={formatMoney(estLabourCost)}
-                valueGreen
-              />
             </div>
+
+            <div className="rounded-xl border px-3 py-3" style={{ borderColor: LINE }}>
+              <div className="flex min-h-[44px] items-center justify-between gap-3">
+                <div>
+                  <div className="text-[13px] font-semibold">Dumpster needed</div>
+                  <div className="text-[13px]" style={{ color: MUTED }}>
+                    Pass-through cost to client
+                  </div>
+                </div>
+                <Switch on={d.dumpster} onChange={(dumpster) => update({ dumpster })} />
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={pushTimeline}
+              className="min-h-[48px] w-full rounded-xl bg-black px-4 text-[13px] font-semibold text-white"
+            >
+              Push to Timeline →
+            </button>
           </div>
         )}
 
         {tab === "materials" && (
           <div>
-            {productsErr ? (
-              <p className="text-sm text-red-700">{productsErr}</p>
-            ) : products.length === 0 ? (
-              <p className="text-sm" style={{ color: MUTED }}>
-                No Demolition products in <code>cached_products</code> yet.
+            {productsErr ? <p className="text-[13px] text-red-700">{productsErr}</p> : null}
+            {!productsErr && products.length === 0 ? (
+              <p className="text-[13px]" style={{ color: MUTED }}>
+                No products found
               </p>
             ) : (
               grouped.order.map((sub) => (
                 <section key={sub} className="mb-6">
-                  <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-neutral-500">
+                  <h3 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-neutral-500">
                     {sub}
                   </h3>
-                  <ul className="divide-y" style={{ borderColor: LINE }}>
-                    {grouped.map.get(sub)!.map((p) => (
-                      <li key={p.id} className="flex gap-3 py-3">
-                        <div className="relative h-[120px] w-[120px] shrink-0 overflow-hidden rounded-lg bg-neutral-100">
+                  <ul>
+                    {grouped.map.get(sub)!.map((p, pi) => (
+                      <li
+                        key={p.id}
+                        className="flex gap-3 py-3"
+                        style={{
+                          borderTop: pi === 0 ? undefined : "0.5px solid rgba(0,0,0,0.12)",
+                        }}
+                      >
+                        <div className="relative h-[120px] w-[120px] shrink-0 overflow-hidden bg-neutral-100" style={{ borderRadius: 8 }}>
                           {p.thumbnail ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
@@ -465,14 +550,16 @@ export default function DemolitionTradeApp() {
                         </div>
                         <div className="min-w-0 flex-1">
                           {p.brand ? (
-                            <div className="text-xs font-medium text-neutral-500">{p.brand}</div>
+                            <div className="text-[10px] font-medium uppercase tracking-wide text-neutral-500">
+                              {p.brand}
+                            </div>
                           ) : null}
-                          <div className="font-medium leading-snug">{p.title ?? "—"}</div>
-                          <div className="text-sm font-semibold" style={{ color: PRICE_GREEN }}>
+                          <div className="text-[13px] font-medium leading-snug">{p.title ?? "—"}</div>
+                          <div className="text-[14px] font-medium" style={{ color: PRICE_GREEN }}>
                             {p.price != null ? String(p.price) : "—"}
                           </div>
                         </div>
-                        <QtyStepper
+                        <MatQtyStepper
                           value={d.materialQty[String(p.id)] ?? 0}
                           onChange={(q) =>
                             update({
@@ -490,87 +577,185 @@ export default function DemolitionTradeApp() {
         )}
 
         {tab === "labour" && (
-          <div className="flex flex-col gap-6">
-            <Field label="Days">
-              <Stepper
-                value={d.labourDays}
-                min={0}
-                max={365}
-                onChange={(labourDays) =>
-                  update({ labourDays, labourDaysTouched: true })
-                }
-              />
-              <button
-                type="button"
-                className="mt-2 text-sm font-semibold underline"
-                style={{ color: PRICE_GREEN }}
-                onClick={() =>
-                  update({
-                    labourDays: autoLabourDays(d.sqFt, d.stairs, d.hazmat),
-                    labourDaysTouched: false,
-                  })
-                }
-              >
-                Reset to auto ({autoDays} days)
-              </button>
-            </Field>
-            <Field label="Day rate ($)">
-              <input
-                type="number"
-                min={0}
-                className="min-h-[52px] w-full rounded-lg border px-4 text-lg outline-none"
+          <div className="flex flex-col gap-4">
+            <button
+              type="button"
+              onClick={addWorker}
+              className="min-h-[44px] w-full rounded-xl border border-neutral-300 bg-neutral-50 text-[13px] font-semibold text-neutral-900"
+            >
+              + Add Worker
+            </button>
+            {d.workers.map((w, idx) => (
+              <div
+                key={w.id}
+                className="rounded-xl border px-3 py-3"
                 style={{ borderColor: LINE }}
-                value={d.labourRate}
-                onChange={(e) =>
-                  update({ labourRate: Math.max(0, Number(e.target.value) || 0) })
-                }
-              />
-            </Field>
-            <Field label="Workers">
-              <Stepper
-                value={d.workers}
-                min={1}
-                max={50}
-                onChange={(workers) => update({ workers })}
-              />
-            </Field>
+              >
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <input
+                    className="min-h-[44px] flex-1 rounded-lg border border-neutral-200 px-3 text-[13px] outline-none"
+                    placeholder={workerSlotLabel(w, idx)}
+                    value={w.name}
+                    onChange={(e) => patchWorker(w.id, { name: e.target.value })}
+                  />
+                  <button
+                    type="button"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-neutral-200 text-lg text-neutral-600"
+                    onClick={() => removeWorker(w.id)}
+                    aria-label="Remove worker"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-[13px]" style={{ color: MUTED }}>
+                    Days
+                  </span>
+                  <DaysStepper
+                    value={w.days}
+                    onChange={(days) => patchWorker(w.id, { days })}
+                  />
+                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <span className="text-[13px]" style={{ color: MUTED }}>
+                    Daily rate
+                  </span>
+                  <span className="text-[13px]">$</span>
+                  <input
+                    type="number"
+                    min={0}
+                    className="min-h-[44px] w-full min-w-[8rem] flex-1 rounded-lg border border-neutral-200 px-3 text-[13px] outline-none"
+                    value={w.rate || ""}
+                    onChange={(e) =>
+                      patchWorker(w.id, { rate: Math.max(0, Number(e.target.value) || 0) })
+                    }
+                  />
+                </div>
+                <div className="mt-2 text-[13px] font-semibold" style={{ color: PRICE_GREEN }}>
+                  Subtotal {formatMoney(Math.max(0, w.days) * Math.max(0, w.rate))}
+                </div>
+              </div>
+            ))}
             <div
-              className="rounded-xl border px-4 py-4 text-base font-semibold"
+              className="rounded-xl border px-3 py-3 text-[13px] font-semibold"
               style={{ borderColor: LINE, color: PRICE_GREEN }}
             >
-              Labour total: {formatMoney(labourSub)}
+              Workers total: {formatMoney(labourMyCost)}
             </div>
           </div>
         )}
 
         {tab === "totals" && (
-          <div className="flex flex-col gap-5">
-            <LineRow
-              label="Material subtotal"
-              value={formatMoney(materialSubtotalSupplier(products, d.materialQty))}
-            />
-            <LineRow label="Labour total" value={formatMoney(labourSub)} />
-            <div>
-              <div className="mb-2 flex justify-between text-sm font-semibold">
-                <span>Markup %</span>
-                <span style={{ color: PRICE_GREEN }}>{d.markupPct}%</span>
+          <div className="flex flex-col gap-5 text-[13px]">
+            <section
+              className="rounded-xl border-2 border-neutral-800 bg-neutral-100 px-3 py-3"
+              style={{ borderColor: "#111" }}
+            >
+              <div className="mb-2 flex items-center gap-2 font-bold text-neutral-900">
+                <span className="inline-block h-2 w-2 rounded-full bg-black" aria-hidden />
+                MY COSTS — PRIVATE
               </div>
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={d.markupPct}
-                onChange={(e) => update({ markupPct: Number(e.target.value) })}
-                className="h-11 w-full"
-              />
-            </div>
-            <div className="h-px w-full" style={{ background: LINE }} />
-            <LineRow label="Subtotal (materials + labour)" value={formatMoney(tradeSubPreMarkup)} />
-            <LineRow label="Trade total" value={formatMoney(tradeGrand)} strong />
-            <p className="text-xs" style={{ color: MUTED }}>
-              Saved to your project automatically. Main quote also applies catalog line markup and
-              project material markup where configured.
-            </p>
+              {d.workers.map((w, idx) => (
+                <div key={w.id} className="flex justify-between gap-2 py-1 text-neutral-800">
+                  <span>
+                    {workerSlotLabel(w, idx)} — {w.days} days × {formatMoney(w.rate)}
+                  </span>
+                  <span className="shrink-0 font-medium">{formatMoney(w.days * w.rate)}</span>
+                </div>
+              ))}
+              <div className="flex justify-between gap-2 py-1 text-neutral-800">
+                <span>Materials</span>
+                <span className="font-medium">{formatMoney(materialMyCost)}</span>
+              </div>
+              <div
+                className="mt-2 flex justify-between gap-2 rounded-lg px-2 py-2 text-[15px] font-bold"
+                style={{ background: "rgba(0,0,0,0.08)" }}
+              >
+                <span>Total my cost</span>
+                <span>{formatMoney(myCostsTotal)}</span>
+              </div>
+            </section>
+
+            <section className="rounded-xl border-2 border-green-700 bg-white px-3 py-3" style={{ borderColor: "#166534" }}>
+              <div className="mb-2 flex items-center gap-2 font-bold" style={{ color: "#166534" }}>
+                <span className="inline-block h-2 w-2 rounded-full bg-green-600" aria-hidden />
+                CLIENT INVOICE — VISIBLE ON QUOTE
+              </div>
+              <label className="block">
+                <span className="text-[13px]" style={{ color: MUTED }}>
+                  Labour charge to client
+                </span>
+                <input
+                  type="number"
+                  min={0}
+                  step={1}
+                  className="mt-1 min-h-[44px] w-full rounded-lg border border-green-200 px-3 text-[13px] outline-none"
+                  value={d.clientLabourCharge || ""}
+                  placeholder="0"
+                  onChange={(e) =>
+                    update({ clientLabourCharge: Math.max(0, Number(e.target.value) || 0) })
+                  }
+                />
+              </label>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span style={{ color: MUTED }}>Materials + markup</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={200}
+                  className="min-h-[44px] w-20 rounded-lg border border-green-200 px-2 text-center text-[13px] outline-none"
+                  value={d.clientMaterialsMarkupPct}
+                  onChange={(e) =>
+                    update({
+                      clientMaterialsMarkupPct: Math.max(0, Number(e.target.value) || 0),
+                    })
+                  }
+                />
+                <span>%</span>
+              </div>
+              <div className="mt-1 flex justify-between gap-2 text-neutral-800">
+                <span>Materials to client</span>
+                <span className="font-medium" style={{ color: PRICE_GREEN }}>
+                  {formatMoney(clientMaterialsCharge)}
+                </span>
+              </div>
+              <div
+                className="mt-3 flex justify-between gap-2 rounded-lg px-2 py-3 text-[16px] font-bold"
+                style={{ background: "#dcfce7", color: "#166534" }}
+              >
+                <span>Total quote</span>
+                <span>{formatMoney(clientTotal)}</span>
+              </div>
+            </section>
+
+            <section
+              className="rounded-xl border-2 px-3 py-3"
+              style={{ borderColor: "#ca8a04", background: "#fffbe6" }}
+            >
+              <div className="mb-2 flex items-center gap-2 font-bold text-yellow-900">
+                <span className="inline-block h-2 w-2 rounded-full bg-yellow-500" aria-hidden />
+                MY PROFIT
+              </div>
+              <div className="flex justify-between gap-2 py-1 text-yellow-950">
+                <span>Profit</span>
+                <span className="font-semibold">{formatMoney(profit)}</span>
+              </div>
+              <div className="flex justify-between gap-2 py-1 text-yellow-950">
+                <span>Profit / sq ft</span>
+                <span className="font-semibold">{formatMoney(profitPerSq)}</span>
+              </div>
+              <div className="flex justify-between gap-2 py-1 text-yellow-950">
+                <span>Profit / hr (crew hours)</span>
+                <span className="font-semibold">{formatMoney(profitPerHr)}</span>
+              </div>
+              <div className="flex justify-between gap-2 py-1 text-yellow-950">
+                <span>Margin</span>
+                <span className="font-semibold">{marginPct}%</span>
+              </div>
+              <p className="mt-2 text-[13px] leading-snug text-yellow-950">
+                Interior demo typically $2–$7/sq ft. Your rate: {formatMoney(clientRatePerSq)}/sq ft
+              </p>
+            </section>
           </div>
         )}
       </div>
@@ -578,86 +763,50 @@ export default function DemolitionTradeApp() {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Switch({ on, onChange }: { on: boolean; onChange: (v: boolean) => void }) {
   return (
-    <div>
-      <div className="mb-2 text-xs font-bold uppercase tracking-wider text-neutral-500">{label}</div>
-      {children}
-    </div>
-  );
-}
-
-function RowStat({
-  label,
-  value,
-  valueGreen,
-}: {
-  label: string;
-  value: string;
-  valueGreen?: boolean;
-}) {
-  return (
-    <div className="flex justify-between gap-3 border-t pt-2 first:border-t-0 first:pt-0" style={{ borderColor: LINE }}>
-      <span className="text-neutral-600">{label}</span>
-      <span className="font-semibold" style={{ color: valueGreen ? PRICE_GREEN : "#000" }}>
-        {value}
-      </span>
-    </div>
-  );
-}
-
-function LineRow({
-  label,
-  value,
-  muted,
-  strong,
-}: {
-  label: string;
-  value: string;
-  muted?: boolean;
-  strong?: boolean;
-}) {
-  return (
-    <div className="flex justify-between gap-3 text-sm">
-      <span style={{ color: muted ? MUTED : "#000", fontWeight: strong ? 600 : 400 }}>{label}</span>
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      onClick={() => onChange(!on)}
+      className="relative h-8 w-14 shrink-0 rounded-full transition-colors"
+      style={{ background: on ? YELLOW : "#d1d5db" }}
+    >
       <span
-        className="font-semibold"
-        style={{ color: strong ? PRICE_GREEN : muted ? MUTED : PRICE_GREEN }}
-      >
-        {value}
-      </span>
-    </div>
+        className="absolute top-1 h-6 w-6 rounded-full bg-white shadow transition-transform"
+        style={{ left: on ? "calc(100% - 1.75rem)" : "0.25rem" }}
+      />
+    </button>
   );
 }
 
-function Stepper({
+function DaysStepper({
   value,
-  min,
-  max,
   onChange,
 }: {
   value: number;
-  min: number;
-  max: number;
   onChange: (n: number) => void;
 }) {
   return (
     <div
-      className="flex h-11 max-w-[220px] items-stretch overflow-hidden rounded-lg border border-black/20"
-      style={{ borderWidth: 0.5 }}
+      className="flex h-9 items-stretch overflow-hidden"
+      style={{ border: `0.5px solid ${LINE}`, borderRadius: 8 }}
     >
       <button
         type="button"
-        className="w-12 text-xl font-semibold"
-        onClick={() => onChange(Math.max(min, value - 1))}
+        className="min-h-[36px] w-11 text-lg font-semibold"
+        onClick={() => onChange(Math.max(0, value - 1))}
       >
         −
       </button>
-      <div className="flex flex-1 items-center justify-center text-lg font-semibold">{value}</div>
+      <div className="flex min-w-[2.5rem] flex-1 items-center justify-center text-[13px] font-semibold">
+        {value}
+      </div>
       <button
         type="button"
-        className="w-12 text-xl font-semibold"
-        onClick={() => onChange(Math.min(max, value + 1))}
+        className="min-h-[36px] w-11 text-lg font-semibold"
+        onClick={() => onChange(value + 1)}
       >
         +
       </button>
@@ -665,33 +814,23 @@ function Stepper({
   );
 }
 
-function QtyStepper({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+function MatQtyStepper({ value, onChange }: { value: number; onChange: (n: number) => void }) {
   return (
     <div
-      className="flex h-9 w-[110px] shrink-0 items-stretch overflow-hidden rounded-lg"
-      style={{ border: `0.5px solid ${LINE}` }}
+      className="flex h-[36px] w-[118px] shrink-0 items-stretch overflow-hidden"
+      style={{ border: `0.5px solid ${LINE}`, borderRadius: 8 }}
     >
-      <button type="button" className="w-9 text-lg" onClick={() => onChange(Math.max(0, value - 1))}>
+      <button
+        type="button"
+        className="w-11 text-lg font-medium"
+        onClick={() => onChange(Math.max(0, value - 1))}
+      >
         −
       </button>
-      <div className="flex flex-1 items-center justify-center text-sm font-semibold">{value}</div>
-      <button type="button" className="w-9 text-lg" onClick={() => onChange(value + 1)}>
+      <div className="flex flex-1 items-center justify-center text-[13px] font-semibold">{value}</div>
+      <button type="button" className="w-11 text-lg font-medium" onClick={() => onChange(value + 1)}>
         +
       </button>
     </div>
-  );
-}
-
-function ToggleRow({ on, onChange }: { on: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <button
-      type="button"
-      onClick={() => onChange(!on)}
-      className="flex min-h-[48px] w-full max-w-xs items-center justify-between rounded-lg border px-4 text-left font-semibold"
-      style={{ borderColor: LINE, background: on ? YELLOW : "#f9fafb" }}
-    >
-      <span>{on ? "Yes" : "No"}</span>
-      <span className="text-neutral-400">{on ? "ON" : "OFF"}</span>
-    </button>
   );
 }

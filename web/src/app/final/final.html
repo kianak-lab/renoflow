@@ -458,7 +458,7 @@ a.ni{color:inherit;text-decoration:none;}
   border-bottom:1px solid var(--plx-hdr-bb);
   box-shadow:none;
 }
-/* Header accent borders (painting, demo, security, cabinets, finishing) — overrides box-shadow:none above */
+/* Header accent borders (painting, security, cabinets, finishing) — overrides box-shadow:none above */
 .ts-exp-box:has(.ts-painting) .th, .ts-exp-box:has(.ts-demo) .th, .ts-exp-box:has(.ts-security) .th, .ts-exp-box:has(.ts-cabinets) .th, .ts-exp-box:has(.ts-finishing) .th{box-shadow:var(--tr-hdr-ux,none) !important;}
 .ts-exp-box:has(.ts-plumbing) .th-head-row--plumb, .ts-exp-box:has(.ts-hvac) .th-head-row--plumb, .ts-exp-box:has(.ts-insulation) .th-head-row--plumb, .ts-exp-box:has(.ts-drywall) .th-head-row--plumb, .ts-exp-box:has(.ts-framing) .th-head-row--plumb, .ts-exp-box:has(.ts-tile) .th-head-row--plumb, .ts-exp-box:has(.ts-flooring) .th-head-row--plumb, .ts-exp-box:has(.ts-painting) .th-head-row--plumb, .ts-exp-box:has(.ts-trim) .th-head-row--plumb, .ts-exp-box:has(.ts-demo) .th-head-row--plumb, .ts-exp-box:has(.ts-cabinets) .th-head-row--plumb, .ts-exp-box:has(.ts-lowvolt) .th-head-row--plumb, .ts-exp-box:has(.ts-security) .th-head-row--plumb, .ts-exp-box:has(.ts-electrical) .th-head-row--plumb{align-items:center;}
 .ts-exp-box:has(.ts-plumbing) .th-back-dash, .ts-exp-box:has(.ts-hvac) .th-back-dash, .ts-exp-box:has(.ts-insulation) .th-back-dash, .ts-exp-box:has(.ts-drywall) .th-back-dash, .ts-exp-box:has(.ts-framing) .th-back-dash, .ts-exp-box:has(.ts-tile) .th-back-dash, .ts-exp-box:has(.ts-flooring) .th-back-dash, .ts-exp-box:has(.ts-painting) .th-back-dash, .ts-exp-box:has(.ts-trim) .th-back-dash, .ts-exp-box:has(.ts-demo) .th-back-dash, .ts-exp-box:has(.ts-cabinets) .th-back-dash, .ts-exp-box:has(.ts-lowvolt) .th-back-dash, .ts-exp-box:has(.ts-security) .th-back-dash, .ts-exp-box:has(.ts-electrical) .th-back-dash{
@@ -2456,6 +2456,9 @@ function migrate(d){
     (r.trades||[]).forEach(function(t){
       if(t.days===undefined)t.days=0;
       if(t.daysCustom===undefined)t.daysCustom=false;
+      if(t.id==="demo" && t.note && String(t.note).indexOf("RF_DEMOLITION_V1\n")===0){
+        try{ t.rfDemolition=JSON.parse(String(t.note).slice("RF_DEMOLITION_V1\n".length)); }catch(e){}
+      }
     });
     if(r.d){
       if(r.d.dimMode===undefined)r.d.dimMode="rect";
@@ -2642,6 +2645,7 @@ function mergeRoomFromServer(localRoom, serverRoom){
       if(sit.p!==undefined) lit.p=sit.p;
       if(sit.wasAuto!==undefined) lit.wasAuto=sit.wasAuto;
     });
+    if(st.rfDemolition) lt.rfDemolition=st.rfDemolition;
     if(st.note!==undefined&&(!lt.note||!String(lt.note).trim())) lt.note=st.note;
     if(!lt.daysCustom&&st.days!==undefined) lt.days=st.days;
   });
@@ -3019,6 +3023,18 @@ function activateProjectId(id,list,opts){
     .then(function(){ return loadNewProject(); });
 }
 
+function maybeConsumeDemolitionReturnNav(){
+  try{
+    var raw=sessionStorage.getItem("rf_after_demolition_nav");
+    if(!raw) return null;
+    sessionStorage.removeItem("rf_after_demolition_nav");
+    var o=JSON.parse(raw);
+    if(!o||typeof o!=="object") return null;
+    if(Date.now()-(o.ts||0)>300000) return null;
+    return o;
+  }catch(e){ return null; }
+}
+
 function initFromServer(){
   fetch("/api/projects",{credentials:"include"})
   .then(function(res){
@@ -3056,7 +3072,9 @@ function initFromServer(){
     updateSidebarProjectHeader();
     rNav();
     uSide();
-    gP("dash");
+    var nav=maybeConsumeDemolitionReturnNav();
+    if(nav&&nav.pg==="tl") gP("tl");
+    else gP("dash");
   })
   .catch(function(e){
     console.error(e);
@@ -3071,7 +3089,7 @@ function syncRoomToSupabase(roomIndex){
   var room=(S.rooms||[])[roomIndex];
   if(!room||!room.dbRoomId)return Promise.resolve();
   var trades=(room.trades||[]).map(function(t){
-    return {
+    var row={
       id:t.id,
       note:t.note||"",
       open:!!t.open,
@@ -3081,6 +3099,8 @@ function syncRoomToSupabase(roomIndex){
         return {id:it.id,qty:it.qty||0,p:it.p,wasAuto:!!it.wasAuto};
       })
     };
+    if(t.id==="demo" && t._demoMaterialLines) row.demoMaterialLines=t._demoMaterialLines;
+    return row;
   });
   return fetch("/api/rooms/"+encodeURIComponent(room.dbRoomId),{
     method:"PATCH",
@@ -3464,6 +3484,46 @@ function applyAuto(room){
   }
 }
 
+var RF_DEMO_CHK=[
+  ["drywall","Drywall / plaster"],
+  ["tile_floor","Tile — floor"],
+  ["tile_walls","Tile — walls"],
+  ["hardwood","Hardwood / laminate"],
+  ["carpet","Carpet"],
+  ["cabinetry","Cabinetry / millwork"],
+  ["fixtures","Fixtures (toilet, tub, vanity, sink)"],
+  ["openings","Windows / doors"],
+  ["drop_ceiling","Drop ceiling / grid"],
+  ["insulation","Insulation"],
+  ["subfloor","Subfloor"],
+  ["concrete","Concrete / brick"]
+];
+function rfDemoCheckedLabels(t){
+  var out=[];
+  if(!t||!t.rfDemolition||typeof t.rfDemolition!=="object") return out;
+  var ch=t.rfDemolition.checklist||{};
+  for(var i=0;i<RF_DEMO_CHK.length;i++){
+    var k=RF_DEMO_CHK[i][0];
+    if(ch[k]) out.push(RF_DEMO_CHK[i][1]);
+  }
+  return out;
+}
+function rfDemoHasTimelineWork(t){
+  if(!t||t.id!=="demo") return false;
+  try{
+    var st=t.rfDemolition;
+    if(st&&typeof st==="object"){
+      var w=st.workers;
+      if(Array.isArray(w)&&w.some(function(x){ return (x.days||0)>0; })) return true;
+      var ch=st.checklist;
+      if(ch&&typeof ch==="object"){
+        for(var k in ch){ if(ch[k]) return true; }
+      }
+    }
+  }catch(e){}
+  return false;
+}
+
 // Room duration: sum of sequenced trades, with rough-ins in parallel
 function roomDurationDays(room){
   var days=0;
@@ -3479,7 +3539,9 @@ function roomDurationDays(room){
       days+=max;
     } else {
       var t=tm[step];
-      if(t && tradeCost(t)>0) days+=(t.days||0);
+      var demoActive=t&&t.id==="demo"&&(t.days||0)>0&&rfDemoHasTimelineWork(t);
+      if(demoActive) days+=(t.days||0);
+      else if(t && tradeCost(t)>0) days+=(t.days||0);
     }
   });
   return days;
@@ -3513,7 +3575,30 @@ function roomSchedule(room, offsetDays){
       }
     } else {
       var t=tm[step];
-      if(t && tradeCost(t)>0 && (t.days||0)>0){
+      var demoDays=(t&&t.id==="demo")?(t.days||0):0;
+      var demoGo=t&&t.id==="demo"&&demoDays>0&&rfDemoHasTimelineWork(t);
+      if(demoGo){
+        var labels=rfDemoCheckedLabels(t);
+        var total=demoDays;
+        if(!labels.length){
+          for(var j=0;j<total;j++){
+            schedule.push({dayNum:d+j+1, trades:[{id:step,name:TN[step],dayInTrade:j+1,total:total}]});
+          }
+          d+=total;
+        }else{
+          var n=labels.length;
+          var base=Math.floor(total/n), rem=total%n;
+          for(var li=0; li<n; li++){
+            var block=base+(li<rem?1:0);
+            if(block<1) continue;
+            var nm=labels[li];
+            for(var j2=0;j2<block;j2++){
+              schedule.push({dayNum:d+j2+1, trades:[{id:step,name:nm,dayInTrade:j2+1,total:block}]});
+            }
+            d+=block;
+          }
+        }
+      }else if(t && tradeCost(t)>0 && (t.days||0)>0){
         var total=t.days;
         for(var j=0;j<total;j++){
           schedule.push({dayNum:d+j+1, trades:[{id:step,name:TN[step],dayInTrade:j+1,total:total}]});

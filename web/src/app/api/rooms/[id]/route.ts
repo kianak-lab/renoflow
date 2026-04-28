@@ -13,6 +13,14 @@ type TradePatch = {
   days?: number;
   daysCustom?: boolean;
   items?: Array<{ id?: string; qty?: number; p?: number; wasAuto?: boolean }>;
+  /** Dynamic supplier lines for Demolition (cached_products), persisted to project_trade_items. */
+  demoMaterialLines?: Array<{
+    code: string;
+    label: string;
+    unit: string;
+    unit_price: number;
+    quantity: number;
+  }>;
 };
 
 type PatchBody = {
@@ -239,7 +247,18 @@ export async function PATCH(
       return NextResponse.json({ error: delItemsErr.message }, { status: 500 });
     }
 
-    const itemRows = buildItemRows(slug, patch.items);
+    const itemRows =
+      slug === "demo" && Array.isArray(patch.demoMaterialLines) && patch.demoMaterialLines.length > 0
+        ? patch.demoMaterialLines.map((r, sortOrder) => ({
+            code: String(r.code ?? "").trim() || `demo-${sortOrder}`,
+            label: String(r.label ?? "Material").trim() || "Material",
+            unit: String(r.unit ?? "ea").trim() || "ea",
+            unit_price: num(r.unit_price, 0),
+            quantity: num(r.quantity, 0),
+            was_auto: false,
+            sort_order: sortOrder,
+          }))
+        : buildItemRows(slug, patch.items);
     if (itemRows.length > 0) {
       const insertPayload = itemRows.map((r) => ({
         room_trade_id: rtUuid,

@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { unpackDemolitionNote } from "@/lib/demolition-workspace";
 import { TB, TN, type CatalogItem } from "@/lib/final-catalog";
 
 function cloneItems(slug: string): Array<CatalogItem & { qty: number; wasAuto: boolean }> {
@@ -119,18 +120,32 @@ export async function fetchRoomsForFinalApp(
           match.qty = num(dbIt, ["quantity", "qty"]);
           match.p = num(dbIt, ["unit_price", "p", "price"]);
           match.wasAuto = bool(dbIt, ["was_auto", "wasAuto"]);
+        } else if (slug === "demo" && code) {
+          tradeItems.push({
+            id: code,
+            l: String(dbIt.label ?? "Material"),
+            u: String(dbIt.unit ?? "ea"),
+            p: num(dbIt, ["unit_price", "p", "price"]),
+            qty: num(dbIt, ["quantity", "qty"]),
+            wasAuto: bool(dbIt, ["was_auto", "wasAuto"]),
+          });
         }
       }
+
+      const rawNote = String(rt.note ?? rt.notes ?? "");
+      const demoUnpack = slug === "demo" ? unpackDemolitionNote(rawNote) : null;
+      const noteOut = demoUnpack ? "" : rawNote;
 
       trades.push({
         id: slug,
         n: TN[slug] ?? slug,
         open: bool(rt, ["is_open", "isOpen"]),
-        note: String(rt.note ?? rt.notes ?? ""),
+        note: noteOut,
         fx: {},
         days: num(rt, ["days"]),
         daysCustom: bool(rt, ["days_custom", "daysCustom"]),
         items: tradeItems,
+        ...(demoUnpack ? { rfDemolition: demoUnpack } : {}),
       });
     }
 
