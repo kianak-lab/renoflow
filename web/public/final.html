@@ -1649,6 +1649,7 @@ a.ni{color:inherit;text-decoration:none;}
     box-shadow:none;
     -webkit-backdrop-filter:none;
     backdrop-filter:none;
+    overflow:visible;
   }
   #mob-nav.mob-nav--siteclean .mn--tab{
     flex:1;
@@ -1708,20 +1709,21 @@ a.ni{color:inherit;text-decoration:none;}
     flex-direction:column;
     align-items:center;
     justify-content:flex-start;
-    margin-top:-24px;
+    margin-top:-28px;
     padding-bottom:2px;
+    position:relative;
+    z-index:12;
   }
   #mob-nav.mob-nav--siteclean .mn-fab{
-    width:52px;
-    height:52px;
+    width:56px;
+    height:56px;
     border-radius:50%;
     background:#0f2318;
     border:3px solid #fff;
-    box-shadow:0 2px 12px rgba(15,35,24,0.3);
+    box-shadow:0 4px 16px rgba(15,35,24,0.35);
     color:#fff;
-    font-size:30px;
-    font-weight:300;
-    line-height:1;
+    font-size:0;
+    line-height:0;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -1731,8 +1733,12 @@ a.ni{color:inherit;text-decoration:none;}
     -webkit-appearance:none;
     padding:0;
     flex-shrink:0;
+    transition:transform .35s cubic-bezier(.34,1.56,.64,1);
   }
+  #mob-nav.mob-nav--siteclean .mn-fab svg{display:block;}
+  html.rf-fab-arc-open #mob-nav.mob-nav--siteclean .mn-fab{transform:rotate(45deg);}
   #mob-nav.mob-nav--siteclean .mn-fab:active{transform:scale(.96);}
+  html.rf-fab-arc-open #mob-nav.mob-nav--siteclean .mn-fab:active{transform:rotate(45deg) scale(.96);}
   #mob-nav.mob-nav--siteclean .mn-fab-label{
     margin-top:6px;
     font-size:9px;
@@ -1745,69 +1751,95 @@ a.ni{color:inherit;text-decoration:none;}
     max-width:72px;
     line-height:1.15;
   }
-  .rf-newjob-sheet{
+  #rf-fab-arc-backdrop{
     display:none;
     position:fixed;
     inset:0;
-    z-index:20000;
-    background:rgba(0,0,0,0.45);
-    align-items:flex-end;
-    justify-content:center;
-    box-sizing:border-box;
+    z-index:10088;
+    background:transparent;
+    backdrop-filter:blur(1px);
+    -webkit-backdrop-filter:blur(1px);
+    pointer-events:none;
+  }
+  html.rf-fab-arc-open #rf-fab-arc-backdrop{
+    display:block;
+    pointer-events:auto;
+  }
+  #mob-nav.mob-nav--siteclean .rf-fab-arc-layer{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:260px;
+    z-index:9;
+    pointer-events:none;
+  }
+  html.rf-fab-arc-open #mob-nav.mob-nav--siteclean .rf-fab-arc-layer{
+    pointer-events:auto;
+  }
+  #mob-nav.mob-nav--siteclean .rf-fab-arc-item{
+    position:absolute;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    margin:0;
     padding:0;
-  }
-  .rf-newjob-sheet.show{display:flex;}
-  .rf-newjob-sheet-panel{
-    width:100%;
-    max-width:100%;
-    background:#fff;
-    border-radius:16px 16px 0 0;
-    border:0.5px solid #e0e0e0;
-    border-bottom:none;
-    padding:12px 0 max(20px, env(safe-area-inset-bottom, 0px));
-    box-sizing:border-box;
-    max-height:85vh;
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
-    font-family:'IBM Plex Sans',system-ui,sans-serif;
-  }
-  .rf-newjob-sheet-hdr{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:8px 16px 12px;
-    border-bottom:0.5px solid #e0e0e0;
-  }
-  .rf-newjob-sheet-title{font-size:16px;font-weight:600;color:#111;}
-  .rf-newjob-sheet-x{
-    width:44px;height:44px;border:none;background:transparent;font-size:22px;line-height:1;color:#555;cursor:pointer;border-radius:8px;
-  }
-  .rf-newjob-row{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    padding:16px 16px;
-    min-height:44px;
-    border-bottom:0.5px solid #e0e0e0;
-    text-align:left;
-    width:100%;
-    box-sizing:border-box;
-    border-left:none;border-right:none;
-    background:#fff;
+    border:none;
+    background:transparent;
     cursor:pointer;
-    font:inherit;
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
     -webkit-tap-highlight-color:transparent;
+    appearance:none;
+    -webkit-appearance:none;
+    left:50%;
+    opacity:0;
+    transform:scale(.5) translateY(20px);
+    pointer-events:none;
+    transition:opacity .35s cubic-bezier(.34,1.56,.64,1), transform .35s cubic-bezier(.34,1.56,.64,1);
+    transition-delay:0s;
   }
-  .rf-newjob-row:last-child{border-bottom:none;}
-  .rf-newjob-row:active{background:#f9f9f9;}
-  .rf-newjob-ic{
-    width:44px;height:44px;border-radius:8px;background:#f9f9f9;border:0.5px solid #e0e0e0;
-    display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+  html.rf-fab-arc-open #mob-nav.mob-nav--siteclean .rf-fab-arc-item{
+    opacity:1;
+    transform:scale(1) translateY(0);
+    pointer-events:auto;
   }
-  .rf-newjob-row-txt{flex:1;min-width:0;}
-  .rf-newjob-row-h{font-size:15px;font-weight:600;color:#111;}
-  .rf-newjob-row-s{font-size:13px;color:#888;margin-top:4px;line-height:1.35;}
-  .rf-newjob-chev{color:#aaa;font-size:18px;flex-shrink:0;}
+  html.rf-fab-arc-open #mob-nav.mob-nav--siteclean .rf-fab-arc-item--1{
+    transition-delay:.05s;
+  }
+  html.rf-fab-arc-open #mob-nav.mob-nav--siteclean .rf-fab-arc-item--2{
+    transition-delay:.1s;
+  }
+  html.rf-fab-arc-open #mob-nav.mob-nav--siteclean .rf-fab-arc-item--3{
+    transition-delay:.15s;
+  }
+  #mob-nav.mob-nav--siteclean .rf-fab-arc-item--1{bottom:115px;margin-left:-115px;}
+  #mob-nav.mob-nav--siteclean .rf-fab-arc-item--2{bottom:152px;margin-left:-28px;}
+  #mob-nav.mob-nav--siteclean .rf-fab-arc-item--3{bottom:115px;margin-left:58px;}
+  #mob-nav.mob-nav--siteclean .rf-fab-arc-circle{
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    background:#0f2318;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  #mob-nav.mob-nav--siteclean .rf-fab-arc-circle svg{display:block;}
+  #mob-nav.mob-nav--siteclean .rf-fab-arc-pill{
+    font-size:9px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:#555;
+    background:#fff;
+    border:0.5px solid #e0e0e0;
+    border-radius:100px;
+    padding:5px 12px;
+    white-space:nowrap;
+    line-height:1.2;
+  }
 }
 
 /* ── Mobile: Airbnb-style surface (no search bar) ── */
@@ -2356,40 +2388,31 @@ a.ni{color:inherit;text-decoration:none;}
   </div>
 </div>
 
+<div id="rf-fab-arc-backdrop" class="rf-fab-arc-backdrop" aria-hidden="true" onclick="closeRfFabArc()"></div>
 <nav id="mob-nav" class="app-tabbar mob-nav mob-nav--siteclean" role="navigation" aria-label="Main">
   <button type="button" class="mn mn--tab on" data-pg="dash" onclick="gP('dash')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-9.5z"/></svg></span><span class="mn-l">Home</span></button>
   <button type="button" class="mn mn--tab" data-pg="proj" onclick="gP('proj')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/><rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span><span class="mn-l">Projects</span></button>
   <div class="mn-fab-col">
-    <button type="button" class="mn-fab" id="rf-mob-fab-new" onclick="openRfNewJobSheet(event)" aria-haspopup="dialog" aria-label="New job">+</button>
+    <button type="button" class="mn-fab" id="rf-mob-fab-new" onclick="toggleRfFabArc(event)" aria-haspopup="true" aria-expanded="false" aria-label="New job"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></button>
     <span class="mn-fab-label" aria-hidden="true">New Job</span>
   </div>
   <button type="button" class="mn mn--tab" data-pg="quote" onclick="gP('quote')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg></span><span class="mn-l">Quote</span></button>
   <button type="button" class="mn mn--tab" data-pg="clients" onclick="gP('clients')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="mn-l">Clients</span></button>
-</nav>
-
-<div id="rf-new-job-sheet" class="rf-newjob-sheet" aria-hidden="true" onclick="if(event.target===this)closeRfNewJobSheet()">
-  <div class="rf-newjob-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="rf-newjob-sheet-title" onclick="event.stopPropagation()">
-    <div class="rf-newjob-sheet-hdr">
-      <span id="rf-newjob-sheet-title" class="rf-newjob-sheet-title">Create</span>
-      <button type="button" class="rf-newjob-sheet-x" onclick="closeRfNewJobSheet()" aria-label="Close">×</button>
-    </div>
-    <button type="button" class="rf-newjob-row" onclick="rfSheetNewJob()">
-      <span class="rf-newjob-ic" aria-hidden="true">📋</span>
-      <span class="rf-newjob-row-txt"><div class="rf-newjob-row-h">New Job</div><div class="rf-newjob-row-s">Client → Rooms → Trades → Review &amp; Send</div></span>
-      <span class="rf-newjob-chev" aria-hidden="true">→</span>
+  <div id="rf-fab-arc-layer" class="rf-fab-arc-layer" aria-hidden="true">
+    <button type="button" class="rf-fab-arc-item rf-fab-arc-item--1" onclick="rfSheetNewJob()" aria-label="New Job">
+      <span class="rf-fab-arc-circle" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-7H9v7H5a1 1 0 0 1-1-1v-9.5z" stroke="#fff" stroke-width="1.75" stroke-linejoin="round"/><line x1="17.5" y1="6.5" x2="21.5" y2="10.5" stroke="#fff" stroke-width="1.75" stroke-linecap="round"/><line x1="21.5" y1="6.5" x2="17.5" y2="10.5" stroke="#fff" stroke-width="1.75" stroke-linecap="round"/></svg></span>
+      <span class="rf-fab-arc-pill">New Job</span>
     </button>
-    <button type="button" class="rf-newjob-row" onclick="rfSheetQuickQuote()">
-      <span class="rf-newjob-ic" aria-hidden="true">📄</span>
-      <span class="rf-newjob-row-txt"><div class="rf-newjob-row-h">Quick Quote</div><div class="rf-newjob-row-s">Open the quote builder for this project</div></span>
-      <span class="rf-newjob-chev" aria-hidden="true">→</span>
+    <button type="button" class="rf-fab-arc-item rf-fab-arc-item--2" onclick="rfSheetQuickQuote()" aria-label="Quick Quote">
+      <span class="rf-fab-arc-circle" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 3h8l5 5v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" stroke="#fff" stroke-width="1.75" stroke-linejoin="round"/><line x1="9" y1="12" x2="15" y2="12" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="16" x2="14" y2="16" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+      <span class="rf-fab-arc-pill">Quick Quote</span>
     </button>
-    <button type="button" class="rf-newjob-row" onclick="rfSheetNewClient()">
-      <span class="rf-newjob-ic" aria-hidden="true">👤</span>
-      <span class="rf-newjob-row-txt"><div class="rf-newjob-row-h">New Client</div><div class="rf-newjob-row-s">Add a client to your list</div></span>
-      <span class="rf-newjob-chev" aria-hidden="true">→</span>
+    <button type="button" class="rf-fab-arc-item rf-fab-arc-item--3" onclick="rfSheetNewClient()" aria-label="New Client">
+      <span class="rf-fab-arc-circle" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="8" r="3.25" stroke="#fff" stroke-width="1.75"/><path d="M4 20.5v-.5a6 6 0 0 1 6-6h1a6 6 0 0 1 6 6v.5" stroke="#fff" stroke-width="1.75" stroke-linecap="round"/><line x1="17.5" y1="6.5" x2="21.5" y2="10.5" stroke="#fff" stroke-width="1.75" stroke-linecap="round"/><line x1="21.5" y1="6.5" x2="17.5" y2="10.5" stroke="#fff" stroke-width="1.75" stroke-linecap="round"/></svg></span>
+      <span class="rf-fab-arc-pill">New Client</span>
     </button>
   </div>
-</div>
+</nav>
 
 <div class="mo" id="modal" onclick="closeMo(event)">
   <div class="mb"><div class="mb-t" id="mo-t"></div><div id="mo-b"></div><div class="mb-b" id="mo-btn"></div></div>
@@ -3961,6 +3984,7 @@ function mobStripScrollEnd(){
   if(__mobScrollBusy||!isMobTabLayout()) return;
   var strip=document.getElementById("mob-tab-strip");
   if(!strip) return;
+  closeRfFabArc();
   var w=strip.clientWidth;
   if(!w) return;
   var ix=Math.round(strip.scrollLeft/w);
@@ -3997,15 +4021,26 @@ function syncMobDashStatusBarBg(pg){
   main.classList.toggle("rf-mob-dash-status", !!on);
   root.classList.toggle("rf-mob-dash-status", !!on);
 }
-function openRfNewJobSheet(e){
+function toggleRfFabArc(e){
   if(e){ e.preventDefault(); e.stopPropagation(); }
-  var sh=document.getElementById("rf-new-job-sheet");
-  if(sh){ sh.classList.add("show"); sh.setAttribute("aria-hidden","false"); }
+  document.documentElement.classList.toggle("rf-fab-arc-open");
+  syncRfFabArcAria();
 }
-function closeRfNewJobSheet(){
-  var sh=document.getElementById("rf-new-job-sheet");
-  if(sh){ sh.classList.remove("show"); sh.setAttribute("aria-hidden","true"); }
+function closeRfFabArc(){
+  document.documentElement.classList.remove("rf-fab-arc-open");
+  syncRfFabArcAria();
 }
+function syncRfFabArcAria(){
+  var open=document.documentElement.classList.contains("rf-fab-arc-open");
+  var bd=document.getElementById("rf-fab-arc-backdrop");
+  var lay=document.getElementById("rf-fab-arc-layer");
+  var fab=document.getElementById("rf-mob-fab-new");
+  if(bd){ bd.setAttribute("aria-hidden", open?"false":"true"); }
+  if(lay){ lay.setAttribute("aria-hidden", open?"false":"true"); }
+  if(fab){ fab.setAttribute("aria-expanded", open?"true":"false"); }
+}
+function openRfNewJobSheet(e){ toggleRfFabArc(e); }
+function closeRfNewJobSheet(){ closeRfFabArc(); }
 function rfSheetNewJob(){ closeRfNewJobSheet(); openNewProjectClientFlow(); }
 function rfSheetQuickQuote(){ closeRfNewJobSheet(); gP("quote"); }
 function rfSheetNewClient(){ closeRfNewJobSheet(); newClient(); }
@@ -4030,6 +4065,7 @@ function syncShellTradeExp(){
 }
 
 function gP(pg){
+  closeRfFabArc();
   if(curPg==="room"&&typeof curR==="number"&&S.rooms&&S.rooms[curR]&&S.rooms[curR].dbRoomId){
     syncRoomToSupabase(curR).catch(function(e){ console.warn("[room sync]",e); });
   }
@@ -8009,6 +8045,10 @@ function closeMo(e){
 }
 
 document.addEventListener('keydown', function(e) {
+  if(e.key==='Escape' && document.documentElement.classList.contains('rf-fab-arc-open')){
+    closeRfFabArc();
+    return;
+  }
   if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'PageUp' || e.key === 'PageDown') {
     var el=e.target;
     if (el && el.tagName === 'INPUT' && el.type === 'number'){ e.preventDefault(); return; }
