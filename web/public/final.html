@@ -1599,12 +1599,29 @@ a.ni{color:inherit;text-decoration:none;}
     min-width:0;
     padding-bottom:calc(56px + max(8px, env(safe-area-inset-bottom, 0px)));
   }
-  /* Status bar / notch: solid #0f2318 behind time & battery (dashboard home) */
-  #main:has(.mob-tab-slab.mob-slab--active[data-pg="dash"]){
+  /* Status bar / notch: #0f2318 to top of screen (dashboard home). Fixed strip + main padding (JS sets .rf-mob-dash-status). */
+  #rf-dash-status-fill{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:10050;
+    pointer-events:none;
+    background:#0f2318;
+    height:0;
+    padding-top:constant(safe-area-inset-top);
+    padding-top:env(safe-area-inset-top, 0px);
+    box-sizing:content-box;
+  }
+  html.rf-mob-dash-status #rf-dash-status-fill{display:block;}
+  html.rf-mob-dash-status #main.rf-mob-dash-status{
+    padding-top:constant(safe-area-inset-top);
     padding-top:env(safe-area-inset-top, 0px);
     box-sizing:border-box;
-    background-color:#ffffff;
+    background-color:#fff;
     background-image:linear-gradient(#0f2318, #0f2318);
+    background-size:100% constant(safe-area-inset-top);
     background-size:100% env(safe-area-inset-top, 0px);
     background-repeat:no-repeat;
     background-position:0 0;
@@ -1708,7 +1725,7 @@ a.ni{color:inherit;text-decoration:none;}
     min-height: 100%;
     min-height: 100dvh;
   }
-  #main {
+  #main:not(.rf-mob-dash-status) {
     background: transparent;
   }
   .ph {
@@ -2122,6 +2139,7 @@ a.ni{color:inherit;text-decoration:none;}
 
 </style>
 <body>
+<div id="rf-dash-status-fill" aria-hidden="true"></div>
 <div id="sind">Saved</div>
 
 <div id="shell">
@@ -3819,6 +3837,17 @@ function mobStripScrollEnd(){
 function isMobTabLayout(){
   return typeof window.matchMedia==="function"&&window.matchMedia("(max-width:767px)").matches;
 }
+/** Mobile dashboard: class + fixed strip so #0f2318 reaches the status bar (env() + no :has() reliance). */
+function syncMobDashStatusBarBg(pg){
+  var main=document.getElementById("main");
+  var root=document.documentElement;
+  if(!main||!root) return;
+  var pager=document.getElementById("mob-tab-pager");
+  var pagerHidden=pager&&pager.style.display==="none";
+  var on=isMobTabLayout()&&String(pg)==="dash"&&!pagerHidden;
+  main.classList.toggle("rf-mob-dash-status", !!on);
+  root.classList.toggle("rf-mob-dash-status", !!on);
+}
 var matListScope="project",matListRoomIdx=null;
 /** When true, after POST /api/clients creates a project, go to project intake instead of dashboard. */
 var __rfAfterNewClientGoIntake=false;
@@ -3885,6 +3914,7 @@ function showPg(pg){
     intakeSlots=[];
     intakeTrades=[];
     rIntake();
+    syncMobDashStatusBarBg("intake");
     syncShellTradeExp();
     return;
   }
@@ -3960,6 +3990,7 @@ function showPg(pg){
     var mnProj=document.querySelector(".mn[data-pg='proj']");
     if(mnProj) mnProj.classList.add("on");
   }
+  syncMobDashStatusBarBg(pg);
   syncShellTradeExp();
 }
 
@@ -9284,6 +9315,18 @@ function useClient(i){
     __mobScrollTimer=setTimeout(mobStripScrollEnd, 72);
   }, {passive:true});
 })();
+
+if(typeof window.addEventListener==="function"){
+  window.addEventListener("resize", function(){
+    if(typeof curPg==="string") syncMobDashStatusBarBg(curPg);
+  }, {passive:true});
+  window.addEventListener("orientationchange", function(){
+    setTimeout(function(){
+      if(typeof curPg==="string") syncMobDashStatusBarBg(curPg);
+    }, 120);
+  }, {passive:true});
+}
+syncMobDashStatusBarBg(typeof curPg==="string"?curPg:"dash");
 
 initFromServer();
 </script>
