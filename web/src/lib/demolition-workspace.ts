@@ -43,7 +43,10 @@ export type DemoWorker = {
   id: string;
   name: string;
   days: number;
-  rate: number;
+  /** Private — what you pay this worker per day (never on client quote). */
+  myCostPerDay: number;
+  /** What you charge the client per day for this worker’s labour (on invoice). */
+  clientRatePerDay: number;
 };
 
 export type DemolitionV3State = {
@@ -53,7 +56,6 @@ export type DemolitionV3State = {
   hazmat: boolean;
   dumpster: boolean;
   workers: DemoWorker[];
-  clientLabourCharge: number;
   clientMaterialsMarkupPct: number;
   materialQty: Record<string, number>;
   /** When true, room-level applyAuto should not overwrite t.days */
@@ -66,7 +68,8 @@ const DEFAULT_WORKER = (): DemoWorker => ({
   id: `w-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
   name: "",
   days: 1,
-  rate: 450,
+  myCostPerDay: 200,
+  clientRatePerDay: 450,
 });
 
 export const DEMOLITION_DEFAULT_STATE: DemolitionV3State = {
@@ -76,7 +79,6 @@ export const DEMOLITION_DEFAULT_STATE: DemolitionV3State = {
   hazmat: false,
   dumpster: false,
   workers: [DEFAULT_WORKER()],
-  clientLabourCharge: 0,
   clientMaterialsMarkupPct: 20,
   materialQty: {},
   daysCustom: true,
@@ -166,14 +168,29 @@ function normalizeDemolitionState(raw: Partial<DemolitionV3State>): DemolitionV3
   if (typeof raw.hazmat === "boolean") base.hazmat = raw.hazmat;
   if (typeof raw.dumpster === "boolean") base.dumpster = raw.dumpster;
   if (Array.isArray(raw.workers) && raw.workers.length > 0) {
-    base.workers = raw.workers.map((w, i) => ({
-      id: String(w.id || `w-${i}`),
-      name: String(w.name || ""),
-      days: Math.max(0, Number(w.days) || 0),
-      rate: Math.max(0, Number(w.rate) || 0),
-    }));
+    base.workers = raw.workers.map((w, i) => {
+      const o = w as unknown as Record<string, unknown>;
+      const legacyRate = typeof o.rate === "number" && !Number.isNaN(o.rate) ? o.rate : null;
+      const myRaw = o.myCostPerDay;
+      const crRaw = o.clientRatePerDay;
+      let myCostPerDay = Math.max(0, Number(myRaw) || 0);
+      let clientRatePerDay = Math.max(0, Number(crRaw) || 0);
+      if (myRaw === undefined && crRaw === undefined && legacyRate !== null) {
+        myCostPerDay = 200;
+        clientRatePerDay = Math.max(0, legacyRate);
+      } else {
+        if (myRaw === undefined && myCostPerDay === 0) myCostPerDay = 200;
+        if (crRaw === undefined && clientRatePerDay === 0) clientRatePerDay = 450;
+      }
+      return {
+        id: String(o.id || `w-${i}`),
+        name: String(o.name || ""),
+        days: Math.max(0, Number(o.days) || 0),
+        myCostPerDay,
+        clientRatePerDay,
+      };
+    });
   }
-  if (typeof raw.clientLabourCharge === "number") base.clientLabourCharge = Math.max(0, raw.clientLabourCharge);
   if (typeof raw.clientMaterialsMarkupPct === "number")
     base.clientMaterialsMarkupPct = Math.max(0, raw.clientMaterialsMarkupPct);
   if (raw.materialQty && typeof raw.materialQty === "object") base.materialQty = { ...raw.materialQty };
@@ -196,7 +213,8 @@ function fromLegacyV2(raw: Record<string, unknown>): DemolitionV3State {
       id: `w-mig-${i}`,
       name: wn > 1 ? `Worker ${i + 1}` : "",
       days: Math.max(0, ld || 1),
-      rate: Math.max(0, lr || 450),
+      myCostPerDay: 200,
+      clientRatePerDay: Math.max(0, lr || 450),
     }));
   }
   if (typeof raw.markupPct === "number") s.clientMaterialsMarkupPct = raw.markupPct;
@@ -243,7 +261,16 @@ function mergeCatPickIntoQty(state: DemolitionV3State, t: TradeShape): Demolitio
 export function myLabourCost(workers: DemoWorker[]): number {
   let s = 0;
   for (const w of workers) {
-    s += Math.max(0, w.days) * Math.max(0, w.rate);
+    s += Math.max(0, w.days) * Math.max(0, w.myCostPerDay);
+  }
+  return Math.round(s * 100) / 100;
+}
+
+/** Labour billed to client from per-worker client rates (quote). */
+export function clientLabourBillable(workers: DemoWorker[]): number {
+  let s = 0;
+  for (const w of workers) {
+    s += Math.max(0, w.days) * Math.max(0, w.clientRatePerDay);
   }
   return Math.round(s * 100) / 100;
 }
@@ -265,10 +292,9 @@ export function applyDemolitionToTrade(
   t.daysCustom = !!d.daysCustom;
   t.note = packDemolitionNote({ ...d, v: 3 });
 
-  const myLab = myLabourCost(d.workers);
   if (!t.labour) t.labour = { mode: "job", rate: 55, qty: 0, jobPrice: 0 };
   t.labour.mode = "job";
-  const clientLab = d.clientLabourCharge > 0 ? d.clientLabourCharge : Math.round(myLab * 100) / 100;
+  const clientLab = clientLabourBillable(d.workers);
   t.labour.jobPrice = Math.round(clientLab * 100) / 100;
 
   if (!t.catPick) t.catPick = {};

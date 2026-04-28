@@ -26,6 +26,7 @@ import {
   type DemoWorker,
   type DemolitionV3State,
   DEMOLITION_DEFAULT_STATE,
+  clientLabourBillable,
   getDemolitionStateFromTrade,
   loadWorkspace,
   myLabourCost,
@@ -227,6 +228,10 @@ export default function DemolitionTradeApp() {
   }, [products, d.materialQty]);
 
   const labourMyCost = useMemo(() => myLabourCost(d.workers), [d.workers]);
+  const labourClientBillable = useMemo(
+    () => clientLabourBillable(d.workers),
+    [d.workers],
+  );
 
   const myCostsTotal = labourMyCost + materialMyCost;
 
@@ -236,8 +241,8 @@ export default function DemolitionTradeApp() {
   }, [materialMyCost, d.clientMaterialsMarkupPct]);
 
   const clientTotal = useMemo(() => {
-    return Math.round((d.clientLabourCharge + clientMaterialsCharge) * 100) / 100;
-  }, [d.clientLabourCharge, clientMaterialsCharge]);
+    return Math.round((labourClientBillable + clientMaterialsCharge) * 100) / 100;
+  }, [labourClientBillable, clientMaterialsCharge]);
 
   const profit = Math.round((clientTotal - myCostsTotal) * 100) / 100;
   const profitPerSq = sqFt > 0 ? Math.round((profit / sqFt) * 100) / 100 : 0;
@@ -298,7 +303,8 @@ export default function DemolitionTradeApp() {
           id: `w-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
           name: "",
           days: 1,
-          rate: 450,
+          myCostPerDay: 200,
+          clientRatePerDay: 450,
         },
       ],
     }));
@@ -616,31 +622,86 @@ export default function DemolitionTradeApp() {
                     onChange={(days) => patchWorker(w.id, { days })}
                   />
                 </div>
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <span className="text-[13px]" style={{ color: MUTED }}>
-                    Daily rate
-                  </span>
-                  <span className="text-[13px]">$</span>
-                  <input
-                    type="number"
-                    min={0}
-                    className="min-h-[44px] w-full min-w-[8rem] flex-1 rounded-lg border border-neutral-200 px-3 text-[13px] outline-none"
-                    value={w.rate || ""}
-                    onChange={(e) =>
-                      patchWorker(w.id, { rate: Math.max(0, Number(e.target.value) || 0) })
-                    }
-                  />
+                <div className="mt-3 space-y-2">
+                  <label className="block">
+                    <span className="text-[12px] font-semibold leading-snug text-neutral-800">
+                      My cost per day
+                    </span>
+                    <span className="mt-0.5 block text-[11px] leading-snug" style={{ color: MUTED }}>
+                      What you pay this worker — private, never shown to the client
+                    </span>
+                    <div className="mt-1 flex flex-wrap items-center gap-2">
+                      <span className="text-[13px]">$</span>
+                      <input
+                        type="number"
+                        min={0}
+                        className="min-h-[44px] w-full min-w-[8rem] flex-1 rounded-lg border border-neutral-200 px-3 text-[13px] outline-none"
+                        value={w.myCostPerDay || ""}
+                        onChange={(e) =>
+                          patchWorker(w.id, {
+                            myCostPerDay: Math.max(0, Number(e.target.value) || 0),
+                          })
+                        }
+                      />
+                      <span className="text-[12px]" style={{ color: MUTED }}>
+                        /day
+                      </span>
+                    </div>
+                  </label>
+                  <label className="block">
+                    <span className="text-[12px] font-semibold leading-snug text-neutral-800">
+                      Client rate per day
+                    </span>
+                    <span className="mt-0.5 block text-[11px] leading-snug" style={{ color: MUTED }}>
+                      What you charge the client for this worker — appears on quote / invoice
+                    </span>
+                    <div className="mt-1 flex flex-wrap items-center gap-2">
+                      <span className="text-[13px]">$</span>
+                      <input
+                        type="number"
+                        min={0}
+                        className="min-h-[44px] w-full min-w-[8rem] flex-1 rounded-lg border border-neutral-200 px-3 text-[13px] outline-none"
+                        value={w.clientRatePerDay || ""}
+                        onChange={(e) =>
+                          patchWorker(w.id, {
+                            clientRatePerDay: Math.max(0, Number(e.target.value) || 0),
+                          })
+                        }
+                      />
+                      <span className="text-[12px]" style={{ color: MUTED }}>
+                        /day
+                      </span>
+                    </div>
+                  </label>
                 </div>
-                <div className="mt-2 text-[13px] font-semibold" style={{ color: PRICE_GREEN }}>
-                  Subtotal {formatMoney(Math.max(0, w.days) * Math.max(0, w.rate))}
+                <div className="mt-3 space-y-1 border-t border-neutral-100 pt-2 text-[13px]">
+                  <div className="flex justify-between gap-2 font-medium text-neutral-800">
+                    <span>My cost (this worker)</span>
+                    <span>
+                      {formatMoney(Math.max(0, w.days) * Math.max(0, w.myCostPerDay))}
+                    </span>
+                  </div>
+                  <div className="flex justify-between gap-2 font-semibold" style={{ color: PRICE_GREEN }}>
+                    <span>Client labour (this worker)</span>
+                    <span>
+                      {formatMoney(Math.max(0, w.days) * Math.max(0, w.clientRatePerDay))}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
             <div
-              className="rounded-xl border px-3 py-3 text-[13px] font-semibold"
-              style={{ borderColor: LINE, color: PRICE_GREEN }}
+              className="space-y-2 rounded-xl border px-3 py-3 text-[13px]"
+              style={{ borderColor: LINE }}
             >
-              Workers total: {formatMoney(labourMyCost)}
+              <div className="flex justify-between gap-2 font-semibold text-neutral-800">
+                <span>Total my labour cost (private)</span>
+                <span>{formatMoney(labourMyCost)}</span>
+              </div>
+              <div className="flex justify-between gap-2 font-semibold" style={{ color: PRICE_GREEN }}>
+                <span>Total client labour (quote)</span>
+                <span>{formatMoney(labourClientBillable)}</span>
+              </div>
             </div>
           </div>
         )}
@@ -658,9 +719,12 @@ export default function DemolitionTradeApp() {
               {d.workers.map((w, idx) => (
                 <div key={w.id} className="flex justify-between gap-2 py-1 text-neutral-800">
                   <span>
-                    {workerSlotLabel(w, idx)} — {w.days} days × {formatMoney(w.rate)}
+                    {workerSlotLabel(w, idx)} — {w.days} days × {formatMoney(w.myCostPerDay)}{" "}
+                    <span className="text-[11px] text-neutral-500">(my cost/day)</span>
                   </span>
-                  <span className="shrink-0 font-medium">{formatMoney(w.days * w.rate)}</span>
+                  <span className="shrink-0 font-medium">
+                    {formatMoney(w.days * w.myCostPerDay)}
+                  </span>
                 </div>
               ))}
               <div className="flex justify-between gap-2 py-1 text-neutral-800">
@@ -681,22 +745,26 @@ export default function DemolitionTradeApp() {
                 <span className="inline-block h-2 w-2 rounded-full bg-green-600" aria-hidden />
                 CLIENT INVOICE — VISIBLE ON QUOTE
               </div>
-              <label className="block">
-                <span className="text-[13px]" style={{ color: MUTED }}>
-                  Labour charge to client
+              <p className="mb-2 text-[11px] leading-snug text-neutral-600">
+                Labour lines use each worker’s <strong>client rate per day</strong> from the Labour tab.
+              </p>
+              {d.workers.map((w, idx) => (
+                <div key={w.id} className="flex justify-between gap-2 py-1 text-neutral-800">
+                  <span>
+                    {workerSlotLabel(w, idx)} — {w.days} days × {formatMoney(w.clientRatePerDay)}{" "}
+                    <span className="text-[11px] text-neutral-500">(client rate/day)</span>
+                  </span>
+                  <span className="shrink-0 font-medium" style={{ color: PRICE_GREEN }}>
+                    {formatMoney(w.days * w.clientRatePerDay)}
+                  </span>
+                </div>
+              ))}
+              <div className="mt-2 flex justify-between gap-2 border-b border-green-100 pb-2 text-neutral-800">
+                <span className="font-medium">Labour subtotal (client)</span>
+                <span className="font-medium" style={{ color: PRICE_GREEN }}>
+                  {formatMoney(labourClientBillable)}
                 </span>
-                <input
-                  type="number"
-                  min={0}
-                  step={1}
-                  className="mt-1 min-h-[44px] w-full rounded-lg border border-green-200 px-3 text-[13px] outline-none"
-                  value={d.clientLabourCharge || ""}
-                  placeholder="0"
-                  onChange={(e) =>
-                    update({ clientLabourCharge: Math.max(0, Number(e.target.value) || 0) })
-                  }
-                />
-              </label>
+              </div>
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <span style={{ color: MUTED }}>Materials + markup</span>
                 <input
