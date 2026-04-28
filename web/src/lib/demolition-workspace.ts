@@ -71,6 +71,8 @@ export type DemolitionV3State = {
   /** Denormalized: always equals clientLabourBilled(); kept for JSON / APIs. */
   clientLabourCharge: number;
   clientMaterialsMarkupPct: number;
+  /** When false, material cost is your expense only (not on client quote). Default true. */
+  materialsBillToClient: boolean;
   materialQty: Record<string, number>;
   scope: DemoScope;
   checklist: Partial<Record<DemoChecklistKey, boolean>>;
@@ -129,6 +131,7 @@ export const DEMOLITION_DEFAULT_STATE: DemolitionV3State = {
   wasteDisposalAmount: 0,
   clientLabourCharge: 0,
   clientMaterialsMarkupPct: 20,
+  materialsBillToClient: true,
   materialQty: {},
   scope: "full",
   checklist: {},
@@ -145,6 +148,8 @@ type TradeShape = {
   days?: number;
   daysCustom?: boolean;
   labour?: { mode?: string; rate?: number; qty?: number; jobPrice?: number };
+  /** Mirrors DemolitionV3State.materialsBillToClient for final.html quote math. */
+  materialsBillToClient?: boolean;
   note?: string;
   catPick?: Record<
     string,
@@ -331,6 +336,7 @@ function normalizeDemolitionState(raw: Partial<DemolitionV3State>): DemolitionV3
 
   if (typeof raw.clientMaterialsMarkupPct === "number")
     base.clientMaterialsMarkupPct = Math.max(0, raw.clientMaterialsMarkupPct);
+  if (typeof raw.materialsBillToClient === "boolean") base.materialsBillToClient = raw.materialsBillToClient;
   if (raw.materialQty && typeof raw.materialQty === "object") base.materialQty = { ...raw.materialQty };
   if (typeof raw.daysCustom === "boolean") base.daysCustom = raw.daysCustom;
 
@@ -461,6 +467,7 @@ export function applyDemolitionToTrade(
   t.days = Math.max(wmax, tmax);
   t.daysCustom = !!d.daysCustom;
   t.note = packDemolitionNote({ ...d, v: 3 });
+  t.materialsBillToClient = d.materialsBillToClient;
 
   if (!t.labour) t.labour = { mode: "job", rate: 55, qty: 0, jobPrice: 0 };
   t.labour.mode = "job";

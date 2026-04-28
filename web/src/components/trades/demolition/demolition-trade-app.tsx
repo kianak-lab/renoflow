@@ -97,6 +97,7 @@ export default function DemolitionTradeApp() {
   const dbRoomIdParam = sp.get("dbRoomId") ?? "";
 
   const [tab, setTab] = useState<TabKey>("labour");
+  const [materialSearch, setMaterialSearch] = useState("");
   const [totalsMyOpen, setTotalsMyOpen] = useState(false);
   const [totalsProfitOpen, setTotalsProfitOpen] = useState(false);
   const [products, setProducts] = useState<CachedProductRow[]>([]);
@@ -263,9 +264,10 @@ export default function DemolitionTradeApp() {
   const myCostsTotal = labourMyCost + materialMyCost + wasteMy;
 
   const clientMaterialsCharge = useMemo(() => {
+    if (!d.materialsBillToClient) return 0;
     const mk = 1 + Math.max(0, d.clientMaterialsMarkupPct) / 100;
     return Math.round(materialMyCost * mk * 100) / 100;
-  }, [materialMyCost, d.clientMaterialsMarkupPct]);
+  }, [materialMyCost, d.clientMaterialsMarkupPct, d.materialsBillToClient]);
 
   const clientWastePass = d.wasteDisposalEnabled ? Math.round(d.wasteDisposalAmount * 100) / 100 : 0;
 
@@ -280,10 +282,21 @@ export default function DemolitionTradeApp() {
   const marginPct = clientTotal > 0 ? Math.round((profit / clientTotal) * 1000) / 10 : 0;
   const clientRatePerSq = sqFt > 0 ? Math.round((clientTotal / sqFt) * 100) / 100 : 0;
 
+  const filteredProducts = useMemo(() => {
+    const q = materialSearch.trim().toLowerCase();
+    if (!q) return products;
+    return products.filter((p) => {
+      const title = (p.title ?? "").toLowerCase();
+      const brand = (p.brand ?? "").toLowerCase();
+      const sub = (p.subsection ?? "").toLowerCase();
+      return title.includes(q) || brand.includes(q) || sub.includes(q);
+    });
+  }, [products, materialSearch]);
+
   const grouped = useMemo(() => {
     const order: string[] = [];
     const map = new Map<string, CachedProductRow[]>();
-    for (const p of products) {
+    for (const p of filteredProducts) {
       const k =
         p.subsection && String(p.subsection).trim()
           ? String(p.subsection).trim()
@@ -295,7 +308,7 @@ export default function DemolitionTradeApp() {
       map.get(k)!.push(p);
     }
     return { order, map };
-  }, [products]);
+  }, [filteredProducts]);
 
   function back() {
     if (projectId) persistLocal(dRef.current);
@@ -807,8 +820,66 @@ export default function DemolitionTradeApp() {
         {tab === "materials" && (
           <div className="min-w-0">
             {productsErr ? <p className="text-[13px] text-red-700">{productsErr}</p> : null}
+            {!productsErr && products.length > 0 ? (
+              <div className="mb-4 space-y-3">
+                <label className="block">
+                  <span className={sectionLabelCls}>Search products</span>
+                  <div
+                    className={`mt-1 border bg-white ${bubbleRounded}`}
+                    style={{ border: `0.5px solid ${SITE.border}` }}
+                  >
+                    <input
+                      type="search"
+                      autoComplete="off"
+                      placeholder="Name, brand, or category"
+                      className="min-h-[44px] w-full bg-transparent px-3 text-[13px] outline-none"
+                      value={materialSearch}
+                      onChange={(e) => setMaterialSearch(e.target.value)}
+                    />
+                  </div>
+                </label>
+                <div style={cardStyle} className={cardPad}>
+                  <div className={sectionLabelCls}>Who pays for materials</div>
+                  <p className="mt-1 text-[12px] leading-snug text-[#888]">
+                    Total material cost ({formatMoney(materialMyCost)}) counts toward your job costs. Turn off client
+                    billing when you absorb supplies; turn on to add them to the quote (with markup on the Totals tab).
+                  </p>
+                  <div
+                    className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                    style={{ gap: 6 }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => update({ materialsBillToClient: false })}
+                      className="min-h-[44px] shrink-0 px-4 text-[13px] font-semibold"
+                      style={{
+                        borderRadius: 100,
+                        background: !d.materialsBillToClient ? SITE.yellow : SITE.subtleBg,
+                        color: !d.materialsBillToClient ? SITE.ink : SITE.muted,
+                      }}
+                    >
+                      Your expense
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => update({ materialsBillToClient: true })}
+                      className="min-h-[44px] shrink-0 px-4 text-[13px] font-semibold"
+                      style={{
+                        borderRadius: 100,
+                        background: d.materialsBillToClient ? SITE.yellow : SITE.subtleBg,
+                        color: d.materialsBillToClient ? SITE.ink : SITE.muted,
+                      }}
+                    >
+                      Client invoice
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
             {!productsErr && products.length === 0 ? (
               <p className="text-[13px] text-[#888]">No products found</p>
+            ) : !productsErr && filteredProducts.length === 0 ? (
+              <p className="text-[13px] text-[#888]">No products match your search.</p>
             ) : (
               grouped.order.map((sub) => (
                 <section key={sub} className="mb-6">
@@ -898,7 +969,8 @@ export default function DemolitionTradeApp() {
                   type="number"
                   min={0}
                   max={200}
-                  className={`min-h-[44px] w-16 border px-2 text-center text-[13px] outline-none ${noSpinner} ${plexMono.className} ${bubbleRounded}`}
+                  disabled={!d.materialsBillToClient}
+                  className={`min-h-[44px] w-16 border px-2 text-center text-[13px] outline-none ${noSpinner} ${plexMono.className} ${bubbleRounded} disabled:opacity-45`}
                   style={{ border: `0.5px solid ${SITE.border}` }}
                   value={d.clientMaterialsMarkupPct}
                   onChange={(e) =>
@@ -915,6 +987,11 @@ export default function DemolitionTradeApp() {
                   {formatMoney(clientMaterialsCharge)}
                 </span>
               </div>
+              {!d.materialsBillToClient ? (
+                <p className="mt-1 text-[11px] leading-snug text-[#888]">
+                  Materials are set to <strong>your expense</strong> on the Materials tab — not added to the client quote.
+                </p>
+              ) : null}
               {d.wasteDisposalEnabled ? (
                 <div className="flex justify-between gap-2 py-1 text-neutral-800">
                   <span>Waste / disposal (pass-through)</span>

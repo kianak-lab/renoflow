@@ -145,7 +145,12 @@ export async function fetchRoomsForFinalApp(
         days: num(rt, ["days"]),
         daysCustom: bool(rt, ["days_custom", "daysCustom"]),
         items: tradeItems,
-        ...(demoUnpack ? { rfDemolition: demoUnpack } : {}),
+        ...(demoUnpack
+          ? {
+              rfDemolition: demoUnpack,
+              materialsBillToClient: demoUnpack.materialsBillToClient !== false,
+            }
+          : {}),
       });
     }
 
