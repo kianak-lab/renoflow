@@ -1,6 +1,6 @@
 "use client";
 
-import { IBM_Plex_Sans } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   useCallback,
@@ -15,10 +15,11 @@ import {
   formatDimsLine,
   formatMoney,
   parsePrice,
-  totalLabourHours,
 } from "@/lib/demolition-calculations";
 import {
   applyDemolitionToTrade,
+  crewBillableHours,
+  dayCostFromHourly,
   DEMOLITION_CHECKLIST,
   type CachedProductRow,
   type DemoChecklistKey,
@@ -26,26 +27,49 @@ import {
   type DemoWorker,
   type DemolitionV3State,
   DEMOLITION_DEFAULT_STATE,
-  clientLabourBillable,
+  type LabourCostMode,
   getDemolitionStateFromTrade,
+  hourlyFromDayCost,
   loadWorkspace,
   myLabourCost,
+  myWasteCost,
   readActiveProjectId,
   saveWorkspace,
 } from "@/lib/demolition-workspace";
 
-const plex = IBM_Plex_Sans({
+const plexSans = IBM_Plex_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
-const YELLOW = "#FFE000";
-const PRICE_GREEN = "#1a5c2e";
-const MUTED = "#6b7280";
-const LINE = "rgba(0,0,0,0.14)";
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+});
 
-type TabKey = "calculator" | "materials" | "labour" | "totals";
+/** Site Yellow — RenoFlow trade card */
+const SITE = {
+  yellow: "#FFE000",
+  ink: "#111111",
+  muted: "#888888",
+  subtleBg: "#f0f0f0",
+  white: "#ffffff",
+  cardBg: "#f9f9f9",
+  border: "#e0e0e0",
+  myCostsBorder: "#222222",
+  myCostsTotalBg: "#efefef",
+  green: "#2d7a2d",
+  greenTint: "rgba(45,122,45,0.06)",
+  profitLabel: "#7a6200",
+  profitBg: "#fffbe6",
+} as const;
+
+const sectionLabelCls =
+  "text-[10px] font-semibold uppercase tracking-[0.12em] text-[#888]";
+
+type TabKey = "labour" | "materials" | "totals" | "timeline";
 
 function useDebouncedFn<T>(fn: (arg: T) => void, ms: number): (arg: T) => void {
   const t = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -68,7 +92,8 @@ export default function DemolitionTradeApp() {
   const pidParam = sp.get("pid");
   const dbRoomIdParam = sp.get("dbRoomId") ?? "";
 
-  const [tab, setTab] = useState<TabKey>("calculator");
+  const [tab, setTab] = useState<TabKey>("labour");
+  const [scopeOpen, setScopeOpen] = useState(false);
   const [products, setProducts] = useState<CachedProductRow[]>([]);
   const [productsErr, setProductsErr] = useState<string | null>(null);
   const [d, setD] = useState<DemolitionV3State>(DEMOLITION_DEFAULT_STATE);
@@ -227,26 +252,27 @@ export default function DemolitionTradeApp() {
     return Math.round(s * 100) / 100;
   }, [products, d.materialQty]);
 
-  const labourMyCost = useMemo(() => myLabourCost(d.workers), [d.workers]);
-  const labourClientBillable = useMemo(
-    () => clientLabourBillable(d.workers),
-    [d.workers],
-  );
+  const labourMyCost = useMemo(() => myLabourCost(d), [d]);
+  const wasteMy = useMemo(() => myWasteCost(d), [d]);
 
-  const myCostsTotal = labourMyCost + materialMyCost;
+  const myCostsTotal = labourMyCost + materialMyCost + wasteMy;
 
   const clientMaterialsCharge = useMemo(() => {
     const mk = 1 + Math.max(0, d.clientMaterialsMarkupPct) / 100;
     return Math.round(materialMyCost * mk * 100) / 100;
   }, [materialMyCost, d.clientMaterialsMarkupPct]);
 
+  const clientWastePass = d.wasteDisposalEnabled ? Math.round(d.wasteDisposalAmount * 100) / 100 : 0;
+
   const clientTotal = useMemo(() => {
-    return Math.round((labourClientBillable + clientMaterialsCharge) * 100) / 100;
-  }, [labourClientBillable, clientMaterialsCharge]);
+    return Math.round(
+      (d.clientLabourCharge + clientMaterialsCharge + clientWastePass) * 100,
+    ) / 100;
+  }, [d.clientLabourCharge, clientMaterialsCharge, clientWastePass]);
 
   const profit = Math.round((clientTotal - myCostsTotal) * 100) / 100;
   const profitPerSq = sqFt > 0 ? Math.round((profit / sqFt) * 100) / 100 : 0;
-  const hrs = totalLabourHours(d.workers);
+  const hrs = useMemo(() => crewBillableHours(d), [d]);
   const profitPerHr = hrs > 0 ? Math.round((profit / hrs) * 100) / 100 : 0;
   const marginPct = clientTotal > 0 ? Math.round((profit / clientTotal) * 1000) / 10 : 0;
   const clientRatePerSq = sqFt > 0 ? Math.round((clientTotal / sqFt) * 100) / 100 : 0;
@@ -273,7 +299,7 @@ export default function DemolitionTradeApp() {
     router.push("/final");
   }
 
-  function pushTimeline() {
+  function pushCalendar() {
     if (projectId) persistLocal(dRef.current);
     try {
       sessionStorage.setItem(
@@ -294,28 +320,30 @@ export default function DemolitionTradeApp() {
     });
   }
 
+  function newWorker(): DemoWorker {
+    return {
+      id: `w-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+      name: "",
+      days: 1,
+      hourlyMyCost: 25,
+      myCostPerDay: 200,
+    };
+  }
+
   function addWorker() {
     update((prev) => ({
       ...prev,
-      workers: [
-        ...prev.workers,
-        {
-          id: `w-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-          name: "",
-          days: 1,
-          myCostPerDay: 200,
-          clientRatePerDay: 450,
-        },
-      ],
+      workers: [...prev.workers, newWorker()],
     }));
   }
 
   function removeWorker(id: string) {
     update((prev) => {
+      if (!prev.workerExpenseEnabled) return prev;
       const next = prev.workers.filter((w) => w.id !== id);
       return {
         ...prev,
-        workers: next.length ? next : prev.workers,
+        workers: next.length ? next : [newWorker()],
       };
     });
   }
@@ -327,34 +355,70 @@ export default function DemolitionTradeApp() {
     }));
   }
 
+  function setWorkerHourly(id: string, hourly: number) {
+    const h = Math.max(0, hourly);
+    patchWorker(id, { hourlyMyCost: h, myCostPerDay: dayCostFromHourly(h) });
+  }
+
+  function setWorkerDayCost(id: string, dayCost: number) {
+    const dc = Math.max(0, dayCost);
+    patchWorker(id, { myCostPerDay: dc, hourlyMyCost: hourlyFromDayCost(dc) });
+  }
+
+  function setTimelineDays(n: number) {
+    const nextDays = Math.max(1, Math.min(60, Math.floor(n) || 1));
+    update((prev) => {
+      const desc = [...prev.timelineDayDescriptions];
+      while (desc.length < nextDays) desc.push("");
+      while (desc.length > nextDays) desc.pop();
+      return { ...prev, timelineTotalDays: nextDays, timelineDayDescriptions: desc };
+    });
+  }
+
+  function setDayNote(dayIndex: number, text: string) {
+    update((prev) => {
+      const desc = [...prev.timelineDayDescriptions];
+      if (desc[dayIndex] === undefined) return prev;
+      desc[dayIndex] = text;
+      return { ...prev, timelineDayDescriptions: desc };
+    });
+  }
+
   const workerSlotLabel = (w: DemoWorker, idx: number) =>
     w.name.trim() || `Worker ${idx + 1}`;
 
+  const cardStyle = {
+    background: SITE.cardBg,
+    border: `0.5px solid ${SITE.border}`,
+    borderRadius: 8,
+  } as const;
+
+  const monoNum = `${plexMono.className} text-[14px] font-medium tabular-nums`;
+
   return (
     <div
-      className={`${plex.className} fixed inset-0 z-[200] flex flex-col bg-white text-neutral-900`}
+      className={`${plexSans.className} fixed inset-0 z-[300] flex max-w-[100vw] flex-col overflow-x-hidden bg-white text-[13px] text-neutral-900 antialiased`}
       style={{
-        fontFamily: "var(--font-ibm-plex), system-ui, sans-serif",
-        fontSize: "min(15px, 16px)",
         minHeight: "100dvh",
+        fontSize: 13,
       }}
     >
-      <header
-        className="shrink-0 rounded-b-none pt-[max(0.75rem,env(safe-area-inset-top))]"
-        style={{ background: YELLOW }}
-      >
-        <div className="flex items-start gap-2 px-3 pb-3 pt-1">
+      <header className="shrink-0" style={{ background: SITE.yellow }}>
+        <div className="flex items-start gap-2 px-3 pb-3 pt-[max(0.5rem,env(safe-area-inset-top))]">
           <button
             type="button"
             onClick={back}
-            className="flex h-11 min-h-[44px] w-11 min-w-[44px] shrink-0 items-center justify-center text-2xl font-semibold text-black"
+            className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center text-2xl font-semibold"
+            style={{ color: SITE.ink }}
             aria-label="Back"
           >
             ←
           </button>
           <div className="min-w-0 flex-1">
-            <h1 className="text-[15px] font-bold leading-tight text-black">Demolition</h1>
-            <p className="mt-0.5 text-[13px] leading-snug" style={{ color: MUTED }}>
+            <h1 className="text-[15px] font-bold leading-tight" style={{ color: SITE.ink }}>
+              Demolition
+            </h1>
+            <p className="mt-0.5 text-[13px] leading-snug text-[#888]">
               Structure · {roomName}
               {sqFt > 0 ? ` · ${sqFt} sq ft` : ceilingFt > 0 ? ` · ${ceilingFt} ft ceiling` : ""}
             </p>
@@ -363,16 +427,16 @@ export default function DemolitionTradeApp() {
       </header>
 
       <div
-        className="shrink-0 overflow-x-auto bg-white px-3 py-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        style={{ borderBottom: `0.5px solid ${LINE}` }}
+        className="shrink-0 border-b bg-white px-2 py-2"
+        style={{ borderColor: SITE.border }}
       >
-        <div className="flex w-max min-w-full gap-2 pb-0.5">
+        <div className="flex w-full gap-2">
           {(
             [
-              ["calculator", "Calculator"],
-              ["materials", "Materials"],
               ["labour", "Labour"],
+              ["materials", "Materials"],
               ["totals", "Totals"],
+              ["timeline", "Timeline"],
             ] as const
           ).map(([k, label]) => {
             const on = tab === k;
@@ -381,11 +445,11 @@ export default function DemolitionTradeApp() {
                 key={k}
                 type="button"
                 onClick={() => setTab(k)}
-                className="min-h-[44px] shrink-0 px-4 text-[13px] font-semibold transition-colors"
+                className="min-h-[44px] flex-1 px-1 text-center text-[13px] font-semibold transition-colors"
                 style={{
                   borderRadius: 100,
-                  background: on ? YELLOW : "#e5e7eb",
-                  color: on ? "#000" : MUTED,
+                  background: on ? SITE.yellow : SITE.subtleBg,
+                  color: on ? SITE.ink : SITE.muted,
                 }}
               >
                 {label}
@@ -395,153 +459,365 @@ export default function DemolitionTradeApp() {
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4">
+      <div
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4"
+        style={{ background: SITE.white }}
+      >
         {!projectId ? (
-          <p className="text-[13px]" style={{ color: MUTED }}>
+          <p className="text-[13px] text-[#888]">
             Open Demolition from a project room in RenoFlow so your work saves to the active job.
           </p>
         ) : null}
 
-        {tab === "calculator" && (
-          <div className="flex flex-col gap-5">
-            <div
-              className="rounded-xl px-4 py-4"
-              style={{ background: "#f3f4f6", border: `0.5px solid ${LINE}` }}
-            >
-              <div className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: MUTED }}>
-                From room
-              </div>
-              <div className="mt-1 text-[13px] font-medium text-neutral-800">{dimsLine}</div>
-              {sqFt > 0 ? (
-                <div className="mt-2 text-2xl font-bold tabular-nums text-black">{sqFt} sq ft</div>
-              ) : (
-                <div className="mt-2 text-[13px]" style={{ color: MUTED }}>
-                  Add room dimensions in the room editor for square footage.
-                </div>
-              )}
-            </div>
-
-            <div>
-              <div className="mb-2 text-[11px] font-bold uppercase tracking-wider text-neutral-500">
-                Scope
-              </div>
-              <div className="flex w-full flex-col gap-2">
-                {(["full", "selective"] as DemoScope[]).map((s) => {
-                  const on = d.scope === s;
+        {tab === "labour" && (
+          <div className="flex min-w-0 flex-col gap-4">
+            <div style={cardStyle} className="px-3 py-3">
+              <div className={sectionLabelCls}>My cost</div>
+              <div className="mt-2 flex w-full gap-2">
+                {(["job", "daily", "hourly"] as LabourCostMode[]).map((m) => {
+                  const on = d.labourCostMode === m;
+                  const label = m === "job" ? "Per job" : m === "daily" ? "Daily" : "Hourly";
                   return (
                     <button
-                      key={s}
+                      key={m}
                       type="button"
-                      onClick={() => update({ scope: s })}
-                      className="min-h-[48px] w-full rounded-xl px-4 text-left text-[13px] font-semibold"
+                      onClick={() => update({ labourCostMode: m })}
+                      className="min-h-[44px] flex-1 text-[13px] font-semibold"
                       style={{
-                        border: on ? "none" : `1px solid ${LINE}`,
-                        background: on ? "#000" : "#fff",
-                        color: on ? "#fff" : MUTED,
+                        borderRadius: 100,
+                        background: on ? SITE.yellow : SITE.subtleBg,
+                        color: on ? SITE.ink : SITE.muted,
                       }}
                     >
-                      {s === "full" ? "Full gut" : "Selective"}
+                      {label}
                     </button>
                   );
                 })}
               </div>
-            </div>
 
-            <div>
-              <div className="mb-2 text-[13px] font-semibold text-neutral-900">What&apos;s coming out</div>
-              <ul className="flex flex-col gap-0 rounded-xl border border-neutral-200 bg-white">
-                {DEMOLITION_CHECKLIST.map(({ key, label }) => {
-                  const on = !!d.checklist[key];
-                  return (
-                    <li
-                      key={key}
-                      className="flex min-h-[44px] items-center justify-between gap-3 border-t border-neutral-100 px-3 py-2 first:border-t-0"
-                    >
-                      <span className="text-[13px] text-neutral-900">{label}</span>
-                      <button
-                        type="button"
-                        aria-pressed={on}
-                        onClick={() => toggleChecklist(key)}
-                        className="flex h-9 min-w-[44px] items-center justify-center rounded-lg text-[15px] font-bold"
-                        style={{
-                          border: `1px solid ${on ? "#000" : LINE}`,
-                          background: on ? YELLOW : "#fff",
-                          color: "#000",
-                        }}
-                      >
-                        {on ? "✓" : ""}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-
-            <div className="rounded-xl border px-3 py-3" style={{ borderColor: LINE }}>
-              <div className="flex min-h-[44px] items-center justify-between gap-3">
-                <div>
-                  <div className="text-[13px] font-semibold">Hazmat present</div>
-                  <div className="text-[13px]" style={{ color: MUTED }}>
-                    Asbestos, lead, mold — client pays
+              {d.labourCostMode === "job" ? (
+                <label className="mt-3 block">
+                  <span className="text-[13px] text-neutral-800">My labour cost (job)</span>
+                  <div className="mt-1 flex min-h-[44px] items-center gap-2 rounded-lg border bg-white px-3" style={{ borderColor: SITE.border }}>
+                    <span className="text-[#888]">$</span>
+                    <input
+                      type="number"
+                      min={0}
+                      className={`min-h-[44px] w-full flex-1 bg-transparent text-[13px] outline-none ${plexMono.className}`}
+                      value={d.myLabourPerJob || ""}
+                      onChange={(e) =>
+                        update({ myLabourPerJob: Math.max(0, Number(e.target.value) || 0) })
+                      }
+                    />
                   </div>
-                </div>
-                <Switch on={d.hazmat} onChange={(hazmat) => update({ hazmat })} />
-              </div>
-              {d.hazmat ? (
-                <div
-                  className="mt-2 rounded-lg border px-3 py-2 text-[13px] font-medium text-red-800"
-                  style={{ borderColor: "#fecaca", background: "#fef2f2" }}
+                </label>
+              ) : (
+                <p className="mt-2 text-[13px] leading-snug text-[#888]">
+                  Turn on <strong>Worker expense</strong> below to enter crew days, hourly rate, and
+                  day cost (linked at 8 hrs/day).
+                </p>
+              )}
+            </div>
+
+            <div style={cardStyle} className="overflow-hidden">
+              <div className="flex min-h-[44px] w-full items-center justify-between gap-3 px-3">
+                <button
+                  type="button"
+                  className="min-w-0 flex-1 py-2 text-left"
+                  onClick={() =>
+                    update({ workerExpenseEnabled: !d.workerExpenseEnabled })
+                  }
                 >
-                  Hazmat flagged — add remediation cost to client invoice
+                  <div className="text-[13px] font-semibold text-neutral-900">Worker expense</div>
+                  <div className="text-[12px] text-[#888]">Crew days, rates — private</div>
+                </button>
+                <span className="shrink-0" onClick={(e) => e.stopPropagation()}>
+                  <SiteSwitch
+                    on={d.workerExpenseEnabled}
+                    onChange={(workerExpenseEnabled) => update({ workerExpenseEnabled })}
+                  />
+                </span>
+              </div>
+              {d.workerExpenseEnabled && d.labourCostMode !== "job" ? (
+                <div className="space-y-3 border-t px-3 pb-3 pt-2" style={{ borderColor: SITE.border }}>
+                  {d.workers.map((w, idx) => {
+                    const colOrder =
+                      d.labourCostMode === "hourly"
+                        ? (["days", "hourly", "day"] as const)
+                        : (["days", "day", "hourly"] as const);
+                    const daysCol = (
+                      <div key="days" className="min-w-0">
+                        <div className={sectionLabelCls}>Days</div>
+                        <DaysStepper
+                          value={w.days}
+                          onChange={(days) => patchWorker(w.id, { days })}
+                        />
+                      </div>
+                    );
+                    const hourlyCol = (
+                      <div key="hourly" className="min-w-0">
+                        <div className={sectionLabelCls}>Hourly</div>
+                        <div
+                          className="mt-1 flex min-h-[44px] items-center gap-1 rounded-lg border bg-white px-2"
+                          style={{ borderColor: SITE.border }}
+                        >
+                          <span className="text-[#888]">$</span>
+                          <input
+                            type="number"
+                            min={0}
+                            step={0.01}
+                            className={`min-h-[44px] w-full bg-transparent text-[13px] outline-none ${plexMono.className}`}
+                            value={w.hourlyMyCost || ""}
+                            onChange={(e) =>
+                              setWorkerHourly(w.id, Number(e.target.value) || 0)
+                            }
+                          />
+                        </div>
+                      </div>
+                    );
+                    const dayCol = (
+                      <div key="day" className="min-w-0">
+                        <div className={sectionLabelCls}>Day cost</div>
+                        <div
+                          className="mt-1 flex min-h-[44px] items-center gap-1 rounded-lg border bg-white px-2"
+                          style={{ borderColor: SITE.border }}
+                        >
+                          <span className="text-[#888]">$</span>
+                          <input
+                            type="number"
+                            min={0}
+                            step={0.01}
+                            className={`min-h-[44px] w-full bg-transparent text-[13px] outline-none ${plexMono.className}`}
+                            value={w.myCostPerDay || ""}
+                            onChange={(e) =>
+                              setWorkerDayCost(w.id, Number(e.target.value) || 0)
+                            }
+                          />
+                        </div>
+                      </div>
+                    );
+                    const byKey = { days: daysCol, hourly: hourlyCol, day: dayCol };
+                    return (
+                      <div key={w.id} style={cardStyle} className="bg-white px-2 py-3">
+                        <div className="mb-2 flex items-center gap-2">
+                          <input
+                            className="min-h-[44px] min-w-0 flex-1 rounded-lg border border-[#e0e0e0] px-2 text-[13px] outline-none"
+                            placeholder={workerSlotLabel(w, idx)}
+                            value={w.name}
+                            onChange={(e) => patchWorker(w.id, { name: e.target.value })}
+                          />
+                          <button
+                            type="button"
+                            className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-lg border text-lg"
+                            style={{ borderColor: SITE.border }}
+                            onClick={() => removeWorker(w.id)}
+                            aria-label="Remove worker"
+                          >
+                            ×
+                          </button>
+                        </div>
+                        <div className="grid w-full min-w-0 grid-cols-3 gap-2">
+                          {colOrder.map((k) => byKey[k])}
+                        </div>
+                        <div className={`mt-3 text-[13px] text-neutral-800 ${plexMono.className}`}>
+                          {w.days} days × {formatMoney(w.myCostPerDay)} ={" "}
+                          <span className="font-semibold">
+                            {formatMoney(Math.max(0, w.days) * Math.max(0, w.myCostPerDay))}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <button
+                    type="button"
+                    onClick={addWorker}
+                    className="flex min-h-[44px] w-full items-center justify-center rounded-lg border-2 border-dashed text-[13px] font-semibold"
+                    style={{ borderColor: SITE.border, color: SITE.ink }}
+                  >
+                    + Add worker
+                  </button>
                 </div>
               ) : null}
             </div>
 
-            <div className="rounded-xl border px-3 py-3" style={{ borderColor: LINE }}>
-              <div className="flex min-h-[44px] items-center justify-between gap-3">
-                <div>
-                  <div className="text-[13px] font-semibold">Dumpster needed</div>
-                  <div className="text-[13px]" style={{ color: MUTED }}>
-                    Pass-through cost to client
+            <div style={cardStyle} className="overflow-hidden">
+              <div className="flex min-h-[44px] w-full items-center justify-between gap-3 px-3">
+                <button
+                  type="button"
+                  className="min-w-0 flex-1 py-2 text-left"
+                  onClick={() => update({ wasteDisposalEnabled: !d.wasteDisposalEnabled })}
+                >
+                  <div className="text-[13px] font-semibold text-neutral-900">Waste / disposal</div>
+                  <div className="text-[12px] text-[#888]">
+                    Dumpster, bags, hazmat — pass to client
                   </div>
-                </div>
-                <Switch on={d.dumpster} onChange={(dumpster) => update({ dumpster })} />
+                </button>
+                <span className="shrink-0" onClick={(e) => e.stopPropagation()}>
+                  <SiteSwitch
+                    on={d.wasteDisposalEnabled}
+                    onChange={(wasteDisposalEnabled) => update({ wasteDisposalEnabled })}
+                  />
+                </span>
               </div>
+              {d.wasteDisposalEnabled ? (
+                <div className="border-t px-3 py-3" style={{ borderColor: SITE.border }}>
+                  <label className="block">
+                    <span className={sectionLabelCls}>Disposal amount (your cost)</span>
+                    <div
+                      className="mt-1 flex min-h-[44px] items-center gap-2 rounded-lg border bg-white px-3"
+                      style={{ borderColor: SITE.border }}
+                    >
+                      <span className="text-[#888]">$</span>
+                      <input
+                        type="number"
+                        min={0}
+                        className={`min-h-[44px] w-full flex-1 bg-transparent text-[13px] outline-none ${plexMono.className}`}
+                        value={d.wasteDisposalAmount || ""}
+                        onChange={(e) =>
+                          update({
+                            wasteDisposalAmount: Math.max(0, Number(e.target.value) || 0),
+                          })
+                        }
+                      />
+                    </div>
+                  </label>
+                </div>
+              ) : null}
             </div>
 
-            <button
-              type="button"
-              onClick={pushTimeline}
-              className="min-h-[48px] w-full rounded-xl bg-black px-4 text-[13px] font-semibold text-white"
-            >
-              Push to Timeline →
-            </button>
+            <div style={cardStyle} className="overflow-hidden">
+              <button
+                type="button"
+                className="flex min-h-[44px] w-full items-center justify-between px-3 text-left"
+                onClick={() => setScopeOpen((o) => !o)}
+              >
+                <span className="text-[13px] font-semibold text-neutral-900">
+                  Scope &amp; site checks
+                </span>
+                <span className="text-[#888]">{scopeOpen ? "▾" : "▸"}</span>
+              </button>
+              {scopeOpen ? (
+                <div className="space-y-4 border-t px-3 py-3" style={{ borderColor: SITE.border }}>
+                  <div>
+                    <div className={sectionLabelCls}>From room</div>
+                    <div className="mt-1 text-[13px] font-medium">{dimsLine}</div>
+                    {sqFt > 0 ? (
+                      <div className={`mt-1 text-[15px] font-semibold ${monoNum}`}>{sqFt} sq ft</div>
+                    ) : (
+                      <p className="mt-1 text-[13px] text-[#888]">
+                        Add room dimensions for square footage.
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <div className={sectionLabelCls}>Scope</div>
+                    <div className="mt-2 flex flex-col gap-2">
+                      {(["full", "selective"] as DemoScope[]).map((s) => {
+                        const on = d.scope === s;
+                        return (
+                          <button
+                            key={s}
+                            type="button"
+                            onClick={() => update({ scope: s })}
+                            className="min-h-[44px] w-full rounded-lg px-3 text-left text-[13px] font-semibold"
+                            style={{
+                              border: `0.5px solid ${SITE.border}`,
+                              background: on ? SITE.ink : SITE.white,
+                              color: on ? SITE.white : SITE.muted,
+                              borderRadius: 8,
+                            }}
+                          >
+                            {s === "full" ? "Full gut" : "Selective"}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[13px] font-semibold">What&apos;s coming out</div>
+                    <ul
+                      className="mt-2 overflow-hidden rounded-lg border bg-white"
+                      style={{ borderColor: SITE.border }}
+                    >
+                      {DEMOLITION_CHECKLIST.map(({ key, label }) => {
+                        const on = !!d.checklist[key];
+                        return (
+                          <li
+                            key={key}
+                            className="flex min-h-[44px] items-center justify-between gap-3 border-t px-3 py-2 first:border-t-0"
+                            style={{ borderColor: SITE.border }}
+                          >
+                            <span className="text-[13px]">{label}</span>
+                            <button
+                              type="button"
+                              aria-pressed={on}
+                              onClick={() => toggleChecklist(key)}
+                              className="min-h-[44px] min-w-[44px] rounded-lg text-[15px] font-bold"
+                              style={{
+                                border: `0.5px solid ${SITE.border}`,
+                                background: on ? SITE.yellow : SITE.white,
+                                color: SITE.ink,
+                              }}
+                            >
+                              {on ? "✓" : ""}
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                  <div
+                    className="rounded-lg border px-3 py-2"
+                    style={{ borderColor: SITE.border, background: SITE.white }}
+                  >
+                    <div className="flex min-h-[44px] items-center justify-between gap-3">
+                      <div>
+                        <div className="text-[13px] font-semibold">Hazmat present</div>
+                        <div className="text-[12px] text-[#888]">Asbestos, lead, mold</div>
+                      </div>
+                      <SiteSwitch on={d.hazmat} onChange={(hazmat) => update({ hazmat })} />
+                    </div>
+                  </div>
+                  <div
+                    className="rounded-lg border px-3 py-2"
+                    style={{ borderColor: SITE.border, background: SITE.white }}
+                  >
+                    <div className="flex min-h-[44px] items-center justify-between gap-3">
+                      <div>
+                        <div className="text-[13px] font-semibold">Dumpster needed</div>
+                        <div className="text-[12px] text-[#888]">Site logistics flag</div>
+                      </div>
+                      <SiteSwitch on={d.dumpster} onChange={(dumpster) => update({ dumpster })} />
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </div>
           </div>
         )}
 
         {tab === "materials" && (
-          <div>
+          <div className="min-w-0">
             {productsErr ? <p className="text-[13px] text-red-700">{productsErr}</p> : null}
             {!productsErr && products.length === 0 ? (
-              <p className="text-[13px]" style={{ color: MUTED }}>
-                No products found
-              </p>
+              <p className="text-[13px] text-[#888]">No products found</p>
             ) : (
               grouped.order.map((sub) => (
                 <section key={sub} className="mb-6">
-                  <h3 className="mb-2 text-[11px] font-bold uppercase tracking-wider text-neutral-500">
-                    {sub}
-                  </h3>
-                  <ul>
+                  <h3 className={`mb-2 ${sectionLabelCls}`}>{sub}</h3>
+                  <ul style={cardStyle} className="bg-white px-2 py-1">
                     {grouped.map.get(sub)!.map((p, pi) => (
                       <li
                         key={p.id}
-                        className="flex gap-3 py-3"
+                        className="flex min-w-0 gap-3 py-3"
                         style={{
-                          borderTop: pi === 0 ? undefined : "0.5px solid rgba(0,0,0,0.12)",
+                          borderTop: pi === 0 ? undefined : `0.5px solid ${SITE.border}`,
                         }}
                       >
-                        <div className="relative h-[120px] w-[120px] shrink-0 overflow-hidden bg-neutral-100" style={{ borderRadius: 8 }}>
+                        <div
+                          className="relative h-[120px] w-[120px] shrink-0 overflow-hidden bg-neutral-100"
+                          style={{ borderRadius: 8 }}
+                        >
                           {p.thumbnail ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
@@ -556,12 +832,10 @@ export default function DemolitionTradeApp() {
                         </div>
                         <div className="min-w-0 flex-1">
                           {p.brand ? (
-                            <div className="text-[10px] font-medium uppercase tracking-wide text-neutral-500">
-                              {p.brand}
-                            </div>
+                            <div className={sectionLabelCls}>{p.brand}</div>
                           ) : null}
                           <div className="text-[13px] font-medium leading-snug">{p.title ?? "—"}</div>
-                          <div className="text-[14px] font-medium" style={{ color: PRICE_GREEN }}>
+                          <div className={`mt-0.5 text-[15px] font-medium ${plexMono.className}`} style={{ color: SITE.green }}>
                             {p.price != null ? String(p.price) : "—"}
                           </div>
                         </div>
@@ -582,196 +856,101 @@ export default function DemolitionTradeApp() {
           </div>
         )}
 
-        {tab === "labour" && (
-          <div className="flex flex-col gap-4">
-            <button
-              type="button"
-              onClick={addWorker}
-              className="min-h-[44px] w-full rounded-xl border border-neutral-300 bg-neutral-50 text-[13px] font-semibold text-neutral-900"
-            >
-              + Add Worker
-            </button>
-            {d.workers.map((w, idx) => (
-              <div
-                key={w.id}
-                className="rounded-xl border px-3 py-3"
-                style={{ borderColor: LINE }}
-              >
-                <div className="mb-2 flex items-center justify-between gap-2">
-                  <input
-                    className="min-h-[44px] flex-1 rounded-lg border border-neutral-200 px-3 text-[13px] outline-none"
-                    placeholder={workerSlotLabel(w, idx)}
-                    value={w.name}
-                    onChange={(e) => patchWorker(w.id, { name: e.target.value })}
-                  />
-                  <button
-                    type="button"
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-neutral-200 text-lg text-neutral-600"
-                    onClick={() => removeWorker(w.id)}
-                    aria-label="Remove worker"
-                  >
-                    ×
-                  </button>
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="text-[13px]" style={{ color: MUTED }}>
-                    Days
-                  </span>
-                  <DaysStepper
-                    value={w.days}
-                    onChange={(days) => patchWorker(w.id, { days })}
-                  />
-                </div>
-                <div className="mt-3 space-y-2">
-                  <label className="block">
-                    <span className="text-[12px] font-semibold leading-snug text-neutral-800">
-                      My cost per day
-                    </span>
-                    <span className="mt-0.5 block text-[11px] leading-snug" style={{ color: MUTED }}>
-                      What you pay this worker — private, never shown to the client
-                    </span>
-                    <div className="mt-1 flex flex-wrap items-center gap-2">
-                      <span className="text-[13px]">$</span>
-                      <input
-                        type="number"
-                        min={0}
-                        className="min-h-[44px] w-full min-w-[8rem] flex-1 rounded-lg border border-neutral-200 px-3 text-[13px] outline-none"
-                        value={w.myCostPerDay || ""}
-                        onChange={(e) =>
-                          patchWorker(w.id, {
-                            myCostPerDay: Math.max(0, Number(e.target.value) || 0),
-                          })
-                        }
-                      />
-                      <span className="text-[12px]" style={{ color: MUTED }}>
-                        /day
-                      </span>
-                    </div>
-                  </label>
-                  <label className="block">
-                    <span className="text-[12px] font-semibold leading-snug text-neutral-800">
-                      Client rate per day
-                    </span>
-                    <span className="mt-0.5 block text-[11px] leading-snug" style={{ color: MUTED }}>
-                      What you charge the client for this worker — appears on quote / invoice
-                    </span>
-                    <div className="mt-1 flex flex-wrap items-center gap-2">
-                      <span className="text-[13px]">$</span>
-                      <input
-                        type="number"
-                        min={0}
-                        className="min-h-[44px] w-full min-w-[8rem] flex-1 rounded-lg border border-neutral-200 px-3 text-[13px] outline-none"
-                        value={w.clientRatePerDay || ""}
-                        onChange={(e) =>
-                          patchWorker(w.id, {
-                            clientRatePerDay: Math.max(0, Number(e.target.value) || 0),
-                          })
-                        }
-                      />
-                      <span className="text-[12px]" style={{ color: MUTED }}>
-                        /day
-                      </span>
-                    </div>
-                  </label>
-                </div>
-                <div className="mt-3 space-y-1 border-t border-neutral-100 pt-2 text-[13px]">
-                  <div className="flex justify-between gap-2 font-medium text-neutral-800">
-                    <span>My cost (this worker)</span>
-                    <span>
-                      {formatMoney(Math.max(0, w.days) * Math.max(0, w.myCostPerDay))}
-                    </span>
-                  </div>
-                  <div className="flex justify-between gap-2 font-semibold" style={{ color: PRICE_GREEN }}>
-                    <span>Client labour (this worker)</span>
-                    <span>
-                      {formatMoney(Math.max(0, w.days) * Math.max(0, w.clientRatePerDay))}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-            <div
-              className="space-y-2 rounded-xl border px-3 py-3 text-[13px]"
-              style={{ borderColor: LINE }}
-            >
-              <div className="flex justify-between gap-2 font-semibold text-neutral-800">
-                <span>Total my labour cost (private)</span>
-                <span>{formatMoney(labourMyCost)}</span>
-              </div>
-              <div className="flex justify-between gap-2 font-semibold" style={{ color: PRICE_GREEN }}>
-                <span>Total client labour (quote)</span>
-                <span>{formatMoney(labourClientBillable)}</span>
-              </div>
-            </div>
-          </div>
-        )}
-
         {tab === "totals" && (
-          <div className="flex flex-col gap-5 text-[13px]">
+          <div className="flex min-w-0 flex-col gap-5 text-[13px]">
             <section
-              className="rounded-xl border-2 border-neutral-800 bg-neutral-100 px-3 py-3"
-              style={{ borderColor: "#111" }}
+              className="px-3 py-3"
+              style={{
+                border: `0.5px solid ${SITE.myCostsBorder}`,
+                borderRadius: 8,
+                background: SITE.cardBg,
+              }}
             >
-              <div className="mb-2 flex items-center gap-2 font-bold text-neutral-900">
-                <span className="inline-block h-2 w-2 rounded-full bg-black" aria-hidden />
+              <div className={`mb-2 flex items-center gap-2 ${sectionLabelCls}`}>
+                <span className="h-2 w-2 shrink-0 rounded-full bg-black" aria-hidden />
                 MY COSTS — PRIVATE
               </div>
-              {d.workers.map((w, idx) => (
-                <div key={w.id} className="flex justify-between gap-2 py-1 text-neutral-800">
-                  <span>
-                    {workerSlotLabel(w, idx)} — {w.days} days × {formatMoney(w.myCostPerDay)}{" "}
-                    <span className="text-[11px] text-neutral-500">(my cost/day)</span>
-                  </span>
-                  <span className="shrink-0 font-medium">
-                    {formatMoney(w.days * w.myCostPerDay)}
-                  </span>
+              {d.labourCostMode === "job" ? (
+                <div className="flex justify-between gap-2 py-1 text-neutral-800">
+                  <span>Labour (per job)</span>
+                  <span className={`shrink-0 ${monoNum}`}>{formatMoney(d.myLabourPerJob)}</span>
                 </div>
-              ))}
+              ) : d.workerExpenseEnabled ? (
+                d.workers.map((w, idx) => (
+                  <div key={w.id} className="flex justify-between gap-2 py-1 text-neutral-800">
+                    <span>
+                      {workerSlotLabel(w, idx)} — {w.days} days × {formatMoney(w.myCostPerDay)}
+                    </span>
+                    <span className={`shrink-0 ${monoNum}`}>
+                      {formatMoney(w.days * w.myCostPerDay)}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className="flex justify-between gap-2 py-1 text-neutral-800">
+                  <span>Labour</span>
+                  <span className={`shrink-0 ${monoNum}`}>{formatMoney(0)}</span>
+                </div>
+              )}
               <div className="flex justify-between gap-2 py-1 text-neutral-800">
                 <span>Materials</span>
-                <span className="font-medium">{formatMoney(materialMyCost)}</span>
+                <span className={`shrink-0 ${monoNum}`}>{formatMoney(materialMyCost)}</span>
               </div>
+              {d.wasteDisposalEnabled ? (
+                <div className="flex justify-between gap-2 py-1 text-neutral-800">
+                  <span>Waste / disposal</span>
+                  <span className={`shrink-0 ${monoNum}`}>{formatMoney(d.wasteDisposalAmount)}</span>
+                </div>
+              ) : null}
               <div
-                className="mt-2 flex justify-between gap-2 rounded-lg px-2 py-2 text-[15px] font-bold"
-                style={{ background: "rgba(0,0,0,0.08)" }}
+                className="mt-2 flex justify-between gap-2 rounded-lg px-2 py-3 font-bold text-neutral-900"
+                style={{ background: SITE.myCostsTotalBg }}
               >
                 <span>Total my cost</span>
-                <span>{formatMoney(myCostsTotal)}</span>
+                <span className={`${plexMono.className} text-[18px] font-semibold tabular-nums`}>
+                  {formatMoney(myCostsTotal)}
+                </span>
               </div>
             </section>
 
-            <section className="rounded-xl border-2 border-green-700 bg-white px-3 py-3" style={{ borderColor: "#166534" }}>
-              <div className="mb-2 flex items-center gap-2 font-bold" style={{ color: "#166534" }}>
-                <span className="inline-block h-2 w-2 rounded-full bg-green-600" aria-hidden />
+            <section
+              className="px-3 py-3"
+              style={{
+                border: `0.5px solid ${SITE.green}`,
+                borderRadius: 8,
+                background: SITE.white,
+              }}
+            >
+              <div className={`mb-2 flex items-center gap-2 font-semibold ${sectionLabelCls}`} style={{ color: SITE.green }}>
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: SITE.green }} aria-hidden />
                 CLIENT INVOICE — VISIBLE ON QUOTE
               </div>
-              <p className="mb-2 text-[11px] leading-snug text-neutral-600">
-                Labour lines use each worker’s <strong>client rate per day</strong> from the Labour tab.
-              </p>
-              {d.workers.map((w, idx) => (
-                <div key={w.id} className="flex justify-between gap-2 py-1 text-neutral-800">
-                  <span>
-                    {workerSlotLabel(w, idx)} — {w.days} days × {formatMoney(w.clientRatePerDay)}{" "}
-                    <span className="text-[11px] text-neutral-500">(client rate/day)</span>
-                  </span>
-                  <span className="shrink-0 font-medium" style={{ color: PRICE_GREEN }}>
-                    {formatMoney(w.days * w.clientRatePerDay)}
-                  </span>
+              <label className="block">
+                <span className="text-[13px] text-[#888]">Labour charge to client</span>
+                <div
+                  className="mt-1 flex min-h-[44px] items-center gap-2 rounded-lg border px-3"
+                  style={{ borderColor: SITE.border }}
+                >
+                  <span className="text-[#888]">$</span>
+                  <input
+                    type="number"
+                    min={0}
+                    className={`min-h-[44px] w-full flex-1 bg-transparent text-[13px] outline-none ${plexMono.className}`}
+                    value={d.clientLabourCharge || ""}
+                    onChange={(e) =>
+                      update({ clientLabourCharge: Math.max(0, Number(e.target.value) || 0) })
+                    }
+                  />
                 </div>
-              ))}
-              <div className="mt-2 flex justify-between gap-2 border-b border-green-100 pb-2 text-neutral-800">
-                <span className="font-medium">Labour subtotal (client)</span>
-                <span className="font-medium" style={{ color: PRICE_GREEN }}>
-                  {formatMoney(labourClientBillable)}
-                </span>
-              </div>
-              <div className="mt-3 flex flex-wrap items-center gap-2">
-                <span style={{ color: MUTED }}>Materials + markup</span>
+              </label>
+              <div className="mt-3 flex min-h-[44px] flex-wrap items-center gap-2">
+                <span className="text-[13px] text-[#888]">Materials markup</span>
                 <input
                   type="number"
                   min={0}
                   max={200}
-                  className="min-h-[44px] w-20 rounded-lg border border-green-200 px-2 text-center text-[13px] outline-none"
+                  className={`min-h-[44px] w-16 rounded-lg border px-2 text-center text-[13px] outline-none ${plexMono.className}`}
+                  style={{ borderColor: SITE.border }}
                   value={d.clientMaterialsMarkupPct}
                   onChange={(e) =>
                     update({
@@ -779,51 +958,131 @@ export default function DemolitionTradeApp() {
                     })
                   }
                 />
-                <span>%</span>
+                <span className="text-[13px]">%</span>
               </div>
               <div className="mt-1 flex justify-between gap-2 text-neutral-800">
                 <span>Materials to client</span>
-                <span className="font-medium" style={{ color: PRICE_GREEN }}>
+                <span className={`shrink-0 font-medium ${monoNum}`} style={{ color: SITE.green }}>
                   {formatMoney(clientMaterialsCharge)}
                 </span>
               </div>
+              {d.wasteDisposalEnabled ? (
+                <div className="flex justify-between gap-2 py-1 text-neutral-800">
+                  <span>Waste / disposal (pass-through)</span>
+                  <span className={`shrink-0 ${monoNum}`} style={{ color: SITE.green }}>
+                    {formatMoney(clientWastePass)}
+                  </span>
+                </div>
+              ) : null}
               <div
-                className="mt-3 flex justify-between gap-2 rounded-lg px-2 py-3 text-[16px] font-bold"
-                style={{ background: "#dcfce7", color: "#166534" }}
+                className="mt-3 flex justify-between gap-2 rounded-lg px-2 py-4 font-bold"
+                style={{ background: SITE.greenTint, color: SITE.green }}
               >
-                <span>Total quote</span>
-                <span>{formatMoney(clientTotal)}</span>
+                <span className="text-[13px] uppercase tracking-wide">Total quote</span>
+                <span className={`${plexMono.className} text-[22px] font-semibold tabular-nums`}>
+                  {formatMoney(clientTotal)}
+                </span>
               </div>
             </section>
 
             <section
-              className="rounded-xl border-2 px-3 py-3"
-              style={{ borderColor: "#ca8a04", background: "#fffbe6" }}
+              className="px-3 py-3"
+              style={{
+                border: `0.5px solid ${SITE.yellow}`,
+                borderRadius: 8,
+                background: SITE.profitBg,
+              }}
             >
-              <div className="mb-2 flex items-center gap-2 font-bold text-yellow-900">
-                <span className="inline-block h-2 w-2 rounded-full bg-yellow-500" aria-hidden />
+              <div
+                className={`mb-2 flex items-center gap-2 font-semibold ${sectionLabelCls}`}
+                style={{ color: SITE.profitLabel }}
+              >
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: SITE.yellow }} aria-hidden />
                 MY PROFIT
               </div>
-              <div className="flex justify-between gap-2 py-1 text-yellow-950">
+              <div className="flex justify-between gap-2 py-1" style={{ color: "#422006" }}>
                 <span>Profit</span>
-                <span className="font-semibold">{formatMoney(profit)}</span>
+                <span className={`font-semibold ${monoNum}`}>{formatMoney(profit)}</span>
               </div>
-              <div className="flex justify-between gap-2 py-1 text-yellow-950">
+              <div className="flex justify-between gap-2 py-1" style={{ color: "#422006" }}>
                 <span>Profit / sq ft</span>
-                <span className="font-semibold">{formatMoney(profitPerSq)}</span>
+                <span className={`font-semibold ${monoNum}`}>{formatMoney(profitPerSq)}</span>
               </div>
-              <div className="flex justify-between gap-2 py-1 text-yellow-950">
+              <div className="flex justify-between gap-2 py-1" style={{ color: "#422006" }}>
                 <span>Profit / hr (crew hours)</span>
-                <span className="font-semibold">{formatMoney(profitPerHr)}</span>
+                <span className={`font-semibold ${monoNum}`}>{formatMoney(profitPerHr)}</span>
               </div>
-              <div className="flex justify-between gap-2 py-1 text-yellow-950">
+              <div className="flex justify-between gap-2 py-1" style={{ color: "#422006" }}>
                 <span>Margin</span>
-                <span className="font-semibold">{marginPct}%</span>
+                <span className={`font-semibold ${monoNum}`}>{marginPct}%</span>
               </div>
-              <p className="mt-2 text-[13px] leading-snug text-yellow-950">
+              <p className="mt-2 text-[13px] leading-snug" style={{ color: "#422006" }}>
                 Interior demo typically $2–$7/sq ft. Your rate: {formatMoney(clientRatePerSq)}/sq ft
               </p>
             </section>
+          </div>
+        )}
+
+        {tab === "timeline" && (
+          <div className="flex min-w-0 flex-col gap-4">
+            <div style={cardStyle} className="px-3 py-3">
+              <div className="flex min-h-[44px] items-center justify-between gap-3">
+                <button
+                  type="button"
+                  className="min-w-0 flex-1 py-2 text-left"
+                  onClick={() => update({ scheduleTradeEnabled: !d.scheduleTradeEnabled })}
+                >
+                  <div className="text-[13px] font-semibold">Schedule this trade</div>
+                  <div className="text-[12px] text-[#888]">Plan days on site</div>
+                </button>
+                <span className="shrink-0" onClick={(e) => e.stopPropagation()}>
+                  <SiteSwitch
+                    on={d.scheduleTradeEnabled}
+                    onChange={(scheduleTradeEnabled) => update({ scheduleTradeEnabled })}
+                  />
+                </span>
+              </div>
+              {d.scheduleTradeEnabled ? (
+                <div className="mt-4 space-y-4 border-t pt-4" style={{ borderColor: SITE.border }}>
+                  <div>
+                    <div className={sectionLabelCls}>Total days</div>
+                    <DaysStepperLarge value={d.timelineTotalDays} onChange={setTimelineDays} />
+                  </div>
+                  <div className="space-y-3">
+                    {d.timelineDayDescriptions.map((note, i) => (
+                      <div
+                        key={i}
+                        className="overflow-hidden rounded-lg border bg-white"
+                        style={{ borderColor: SITE.border }}
+                      >
+                        <div
+                          className="px-3 py-2 text-[13px] font-semibold"
+                          style={{ background: SITE.subtleBg, color: SITE.muted }}
+                        >
+                          Day {i + 1}
+                        </div>
+                        <textarea
+                          className="min-h-[44px] w-full resize-y border-t px-3 py-3 text-[13px] outline-none"
+                          style={{ borderColor: SITE.border }}
+                          placeholder="What happens this day…"
+                          rows={2}
+                          value={note}
+                          onChange={(e) => setDayNote(i, e.target.value)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={pushCalendar}
+                    className="min-h-[44px] w-full rounded-lg text-[13px] font-semibold text-white"
+                    style={{ background: SITE.ink }}
+                  >
+                    Push to Calendar
+                  </button>
+                </div>
+              ) : null}
+            </div>
           </div>
         )}
       </div>
@@ -831,19 +1090,22 @@ export default function DemolitionTradeApp() {
   );
 }
 
-function Switch({ on, onChange }: { on: boolean; onChange: (v: boolean) => void }) {
+function SiteSwitch({ on, onChange }: { on: boolean; onChange: (v: boolean) => void }) {
   return (
     <button
       type="button"
       role="switch"
       aria-checked={on}
-      onClick={() => onChange(!on)}
-      className="relative h-8 w-14 shrink-0 rounded-full transition-colors"
-      style={{ background: on ? YELLOW : "#d1d5db" }}
+      onClick={(e) => {
+        e.stopPropagation();
+        onChange(!on);
+      }}
+      className="relative h-8 min-h-[44px] w-[52px] min-w-[52px] shrink-0 self-center rounded-full transition-colors"
+      style={{ background: on ? SITE.ink : "#cccccc" }}
     >
       <span
-        className="absolute top-1 h-6 w-6 rounded-full bg-white shadow transition-transform"
-        style={{ left: on ? "calc(100% - 1.75rem)" : "0.25rem" }}
+        className="absolute top-1/2 h-7 w-7 -translate-y-1/2 rounded-full bg-white shadow transition-transform"
+        style={{ left: on ? "calc(100% - 1.85rem)" : "0.2rem" }}
       />
     </button>
   );
@@ -858,22 +1120,63 @@ function DaysStepper({
 }) {
   return (
     <div
-      className="flex h-9 items-stretch overflow-hidden"
-      style={{ border: `0.5px solid ${LINE}`, borderRadius: 8 }}
+      className="mt-1 flex min-h-[44px] w-full max-w-full items-stretch overflow-hidden"
+      style={{ border: `0.5px solid ${SITE.border}`, borderRadius: 8 }}
     >
       <button
         type="button"
-        className="min-h-[36px] w-11 text-lg font-semibold"
+        className="min-h-[44px] min-w-[44px] text-lg font-semibold"
+        style={{ color: SITE.ink }}
         onClick={() => onChange(Math.max(0, value - 1))}
       >
         −
       </button>
-      <div className="flex min-w-[2.5rem] flex-1 items-center justify-center text-[13px] font-semibold">
+      <div
+        className={`flex min-w-0 flex-1 items-center justify-center text-[15px] font-semibold tabular-nums ${plexMono.className}`}
+      >
         {value}
       </div>
       <button
         type="button"
-        className="min-h-[36px] w-11 text-lg font-semibold"
+        className="min-h-[44px] min-w-[44px] text-lg font-semibold"
+        style={{ color: SITE.ink }}
+        onClick={() => onChange(value + 1)}
+      >
+        +
+      </button>
+    </div>
+  );
+}
+
+function DaysStepperLarge({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (n: number) => void;
+}) {
+  return (
+    <div
+      className="mt-2 flex min-h-[44px] w-full items-stretch overflow-hidden"
+      style={{ border: `0.5px solid ${SITE.border}`, borderRadius: 8 }}
+    >
+      <button
+        type="button"
+        className="min-h-[44px] min-w-[44px] text-xl font-semibold"
+        style={{ color: SITE.ink }}
+        onClick={() => onChange(Math.max(1, value - 1))}
+      >
+        −
+      </button>
+      <div
+        className={`flex flex-1 items-center justify-center text-[18px] font-semibold tabular-nums ${plexMono.className}`}
+      >
+        {value}
+      </div>
+      <button
+        type="button"
+        className="min-h-[44px] min-w-[44px] text-xl font-semibold"
+        style={{ color: SITE.ink }}
         onClick={() => onChange(value + 1)}
       >
         +
@@ -885,18 +1188,28 @@ function DaysStepper({
 function MatQtyStepper({ value, onChange }: { value: number; onChange: (n: number) => void }) {
   return (
     <div
-      className="flex h-[36px] w-[118px] shrink-0 items-stretch overflow-hidden"
-      style={{ border: `0.5px solid ${LINE}`, borderRadius: 8 }}
+      className="flex h-[44px] w-[118px] shrink-0 items-stretch overflow-hidden"
+      style={{ border: `0.5px solid ${SITE.border}`, borderRadius: 8 }}
     >
       <button
         type="button"
-        className="w-11 text-lg font-medium"
+        className="min-h-[44px] min-w-[44px] text-lg font-medium"
+        style={{ color: SITE.ink }}
         onClick={() => onChange(Math.max(0, value - 1))}
       >
         −
       </button>
-      <div className="flex flex-1 items-center justify-center text-[13px] font-semibold">{value}</div>
-      <button type="button" className="w-11 text-lg font-medium" onClick={() => onChange(value + 1)}>
+      <div
+        className={`flex flex-1 items-center justify-center text-[15px] font-semibold tabular-nums ${plexMono.className}`}
+      >
+        {value}
+      </div>
+      <button
+        type="button"
+        className="min-h-[44px] min-w-[44px] text-lg font-medium"
+        style={{ color: SITE.ink }}
+        onClick={() => onChange(value + 1)}
+      >
         +
       </button>
     </div>

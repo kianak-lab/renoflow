@@ -1,3 +1,5 @@
+import { totalLabourHours } from "./demolition-calculations";
+
 export type CachedProductRow = {
   id: string;
   thumbnail: string | null;
@@ -9,6 +11,8 @@ export type CachedProductRow = {
 };
 
 export type DemoScope = "full" | "selective";
+
+export type LabourCostMode = "job" | "daily" | "hourly";
 
 export type DemoChecklistKey =
   | "drywall"
@@ -39,49 +43,81 @@ export const DEMOLITION_CHECKLIST: { key: DemoChecklistKey; label: string }[] = 
   { key: "concrete", label: "Concrete / brick" },
 ];
 
+/** Private crew cost: hourly ↔ day (8 hr day) kept in sync in UI. */
 export type DemoWorker = {
   id: string;
   name: string;
   days: number;
-  /** Private — what you pay this worker per day (never on client quote). */
+  hourlyMyCost: number;
   myCostPerDay: number;
-  /** What you charge the client per day for this worker’s labour (on invoice). */
-  clientRatePerDay: number;
 };
 
 export type DemolitionV3State = {
   v: 3;
+  labourCostMode: LabourCostMode;
+  /** When labourCostMode is "job", total private labour cost. */
+  myLabourPerJob: number;
+  workerExpenseEnabled: boolean;
+  workers: DemoWorker[];
+  wasteDisposalEnabled: boolean;
+  wasteDisposalAmount: number;
+  /** Editable labour charged to client (independent of worker grid). */
+  clientLabourCharge: number;
+  clientMaterialsMarkupPct: number;
+  materialQty: Record<string, number>;
   scope: DemoScope;
   checklist: Partial<Record<DemoChecklistKey, boolean>>;
   hazmat: boolean;
   dumpster: boolean;
-  workers: DemoWorker[];
-  clientMaterialsMarkupPct: number;
-  materialQty: Record<string, number>;
-  /** When true, room-level applyAuto should not overwrite t.days */
   daysCustom: boolean;
+  scheduleTradeEnabled: boolean;
+  timelineTotalDays: number;
+  timelineDayDescriptions: string[];
 };
 
 export const RF_DEMOLITION_NOTE_PREFIX = "RF_DEMOLITION_V1\n";
+
+const HRS_PER_DAY = 8;
+
+function round2(n: number): number {
+  return Math.round(Math.max(0, n) * 100) / 100;
+}
+
+export function hourlyFromDayCost(dayCost: number): number {
+  return round2(dayCost / HRS_PER_DAY);
+}
+
+export function dayCostFromHourly(hourly: number): number {
+  return round2(hourly * HRS_PER_DAY);
+}
 
 const DEFAULT_WORKER = (): DemoWorker => ({
   id: `w-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
   name: "",
   days: 1,
+  hourlyMyCost: 25,
   myCostPerDay: 200,
-  clientRatePerDay: 450,
 });
 
 export const DEMOLITION_DEFAULT_STATE: DemolitionV3State = {
   v: 3,
+  labourCostMode: "daily",
+  myLabourPerJob: 0,
+  workerExpenseEnabled: false,
+  workers: [DEFAULT_WORKER()],
+  wasteDisposalEnabled: false,
+  wasteDisposalAmount: 0,
+  clientLabourCharge: 0,
+  clientMaterialsMarkupPct: 20,
+  materialQty: {},
   scope: "full",
   checklist: {},
   hazmat: false,
   dumpster: false,
-  workers: [DEFAULT_WORKER()],
-  clientMaterialsMarkupPct: 20,
-  materialQty: {},
   daysCustom: true,
+  scheduleTradeEnabled: false,
+  timelineTotalDays: 1,
+  timelineDayDescriptions: [""],
 };
 
 type TradeShape = {
@@ -159,6 +195,68 @@ export function unpackDemolitionNote(note: string | undefined | null): Demolitio
   }
 }
 
+function normalizeWorkerRow(
+  w: unknown,
+  i: number,
+): { worker: DemoWorker; legacyClientLine: number } {
+  const o = w as unknown as Record<string, unknown>;
+  const legacyRate = typeof o.rate === "number" && !Number.isNaN(o.rate) ? o.rate : null;
+  const myRaw = o.myCostPerDay;
+  const crRaw = o.clientRatePerDay;
+  const days = Math.max(0, Number(o.days) || 0);
+
+  let myCostPerDay = Math.max(0, Number(myRaw) || 0);
+  let hourlyMyCost =
+    typeof o.hourlyMyCost === "number" && !Number.isNaN(o.hourlyMyCost)
+      ? Math.max(0, o.hourlyMyCost)
+      : 0;
+
+  let legacyClientLine = 0;
+  if (typeof crRaw === "number" && !Number.isNaN(crRaw)) {
+    legacyClientLine = days * Math.max(0, crRaw);
+  }
+
+  if (
+    legacyRate !== null &&
+    myRaw === undefined &&
+    crRaw === undefined &&
+    o.hourlyMyCost === undefined
+  ) {
+    myCostPerDay = 200;
+    hourlyMyCost = hourlyFromDayCost(myCostPerDay);
+    legacyClientLine = days * Math.max(0, legacyRate);
+  } else {
+    if (myCostPerDay === 0 && hourlyMyCost > 0) myCostPerDay = dayCostFromHourly(hourlyMyCost);
+    if (hourlyMyCost === 0 && myCostPerDay > 0) hourlyMyCost = hourlyFromDayCost(myCostPerDay);
+    if (myCostPerDay === 0 && hourlyMyCost === 0) {
+      myCostPerDay = 200;
+      hourlyMyCost = hourlyFromDayCost(myCostPerDay);
+    }
+  }
+
+  return {
+    worker: {
+      id: String(o.id || `w-${i}`),
+      name: String(o.name || ""),
+      days,
+      hourlyMyCost,
+      myCostPerDay,
+    },
+    legacyClientLine,
+  };
+}
+
+function syncTimelineDescriptions(
+  days: number,
+  desc: string[] | undefined,
+): string[] {
+  const n = Math.max(1, Math.min(60, Math.floor(days) || 1));
+  const base = Array.isArray(desc) ? [...desc] : [];
+  while (base.length < n) base.push("");
+  while (base.length > n) base.pop();
+  return base;
+}
+
 function normalizeDemolitionState(raw: Partial<DemolitionV3State>): DemolitionV3State {
   const base = { ...DEMOLITION_DEFAULT_STATE };
   if (raw.scope === "selective" || raw.scope === "full") base.scope = raw.scope;
@@ -167,34 +265,47 @@ function normalizeDemolitionState(raw: Partial<DemolitionV3State>): DemolitionV3
   }
   if (typeof raw.hazmat === "boolean") base.hazmat = raw.hazmat;
   if (typeof raw.dumpster === "boolean") base.dumpster = raw.dumpster;
+
+  if (raw.labourCostMode === "job" || raw.labourCostMode === "daily" || raw.labourCostMode === "hourly") {
+    base.labourCostMode = raw.labourCostMode;
+  }
+  if (typeof raw.myLabourPerJob === "number") base.myLabourPerJob = Math.max(0, raw.myLabourPerJob);
+  if (typeof raw.workerExpenseEnabled === "boolean") {
+    base.workerExpenseEnabled = raw.workerExpenseEnabled;
+  } else {
+    /* Notes saved before this flag default to expanded workers (old UI always showed crew). */
+    base.workerExpenseEnabled = true;
+  }
+  if (typeof raw.wasteDisposalEnabled === "boolean") base.wasteDisposalEnabled = raw.wasteDisposalEnabled;
+  if (typeof raw.wasteDisposalAmount === "number")
+    base.wasteDisposalAmount = Math.max(0, raw.wasteDisposalAmount);
+  if (typeof raw.clientLabourCharge === "number") base.clientLabourCharge = Math.max(0, raw.clientLabourCharge);
+  if (typeof raw.scheduleTradeEnabled === "boolean") base.scheduleTradeEnabled = raw.scheduleTradeEnabled;
+  if (typeof raw.timelineTotalDays === "number") base.timelineTotalDays = Math.max(1, raw.timelineTotalDays);
+
+  let migratedClientSum = 0;
   if (Array.isArray(raw.workers) && raw.workers.length > 0) {
     base.workers = raw.workers.map((w, i) => {
-      const o = w as unknown as Record<string, unknown>;
-      const legacyRate = typeof o.rate === "number" && !Number.isNaN(o.rate) ? o.rate : null;
-      const myRaw = o.myCostPerDay;
-      const crRaw = o.clientRatePerDay;
-      let myCostPerDay = Math.max(0, Number(myRaw) || 0);
-      let clientRatePerDay = Math.max(0, Number(crRaw) || 0);
-      if (myRaw === undefined && crRaw === undefined && legacyRate !== null) {
-        myCostPerDay = 200;
-        clientRatePerDay = Math.max(0, legacyRate);
-      } else {
-        if (myRaw === undefined && myCostPerDay === 0) myCostPerDay = 200;
-        if (crRaw === undefined && clientRatePerDay === 0) clientRatePerDay = 450;
-      }
-      return {
-        id: String(o.id || `w-${i}`),
-        name: String(o.name || ""),
-        days: Math.max(0, Number(o.days) || 0),
-        myCostPerDay,
-        clientRatePerDay,
-      };
+      const { worker, legacyClientLine } = normalizeWorkerRow(w, i);
+      migratedClientSum += legacyClientLine;
+      return worker;
     });
   }
+  if (base.clientLabourCharge === 0 && migratedClientSum > 0) {
+    base.clientLabourCharge = round2(migratedClientSum);
+  }
+
   if (typeof raw.clientMaterialsMarkupPct === "number")
     base.clientMaterialsMarkupPct = Math.max(0, raw.clientMaterialsMarkupPct);
   if (raw.materialQty && typeof raw.materialQty === "object") base.materialQty = { ...raw.materialQty };
   if (typeof raw.daysCustom === "boolean") base.daysCustom = raw.daysCustom;
+
+  base.timelineDayDescriptions = syncTimelineDescriptions(
+    base.timelineTotalDays,
+    raw.timelineDayDescriptions,
+  );
+  base.timelineTotalDays = base.timelineDayDescriptions.length;
+
   return base;
 }
 
@@ -209,13 +320,17 @@ function fromLegacyV2(raw: Record<string, unknown>): DemolitionV3State {
   const lr = Number(raw.labourRate);
   const wn = Math.max(1, Number(raw.workers) || 1);
   if (ld > 0 || lr > 0) {
+    const clientDay = Math.max(0, lr || 450);
+    const myDay = 200;
     s.workers = Array.from({ length: wn }, (_, i) => ({
       id: `w-mig-${i}`,
       name: wn > 1 ? `Worker ${i + 1}` : "",
       days: Math.max(0, ld || 1),
-      myCostPerDay: 200,
-      clientRatePerDay: Math.max(0, lr || 450),
+      hourlyMyCost: hourlyFromDayCost(myDay),
+      myCostPerDay: myDay,
     }));
+    s.workerExpenseEnabled = true;
+    s.clientLabourCharge = round2(wn * Math.max(0, ld || 1) * clientDay);
   }
   if (typeof raw.markupPct === "number") s.clientMaterialsMarkupPct = raw.markupPct;
   const dt = raw.demoType;
@@ -258,21 +373,26 @@ function mergeCatPickIntoQty(state: DemolitionV3State, t: TradeShape): Demolitio
   return changed ? { ...state, materialQty: mq } : state;
 }
 
-export function myLabourCost(workers: DemoWorker[]): number {
+export function myLabourCost(d: DemolitionV3State): number {
+  if (d.labourCostMode === "job") {
+    return round2(d.myLabourPerJob);
+  }
+  if (!d.workerExpenseEnabled) return 0;
   let s = 0;
-  for (const w of workers) {
+  for (const w of d.workers) {
     s += Math.max(0, w.days) * Math.max(0, w.myCostPerDay);
   }
-  return Math.round(s * 100) / 100;
+  return round2(s);
 }
 
-/** Labour billed to client from per-worker client rates (quote). */
-export function clientLabourBillable(workers: DemoWorker[]): number {
-  let s = 0;
-  for (const w of workers) {
-    s += Math.max(0, w.days) * Math.max(0, w.clientRatePerDay);
-  }
-  return Math.round(s * 100) / 100;
+export function myWasteCost(d: DemolitionV3State): number {
+  if (!d.wasteDisposalEnabled) return 0;
+  return round2(d.wasteDisposalAmount);
+}
+
+export function crewBillableHours(d: DemolitionV3State): number {
+  if (d.labourCostMode === "job" || !d.workerExpenseEnabled) return 0;
+  return totalLabourHours(d.workers);
 }
 
 export function maxWorkerDays(workers: DemoWorker[]): number {
@@ -287,15 +407,16 @@ export function applyDemolitionToTrade(
   products: CachedProductRow[],
 ): void {
   t.rfDemolition = { ...d, v: 3 };
-  const maxD = maxWorkerDays(d.workers);
-  t.days = Math.max(0, maxD);
+  const wmax =
+    d.workerExpenseEnabled && d.labourCostMode !== "job" ? maxWorkerDays(d.workers) : 0;
+  const tmax = d.scheduleTradeEnabled ? Math.max(0, d.timelineTotalDays) : 0;
+  t.days = Math.max(wmax, tmax);
   t.daysCustom = !!d.daysCustom;
   t.note = packDemolitionNote({ ...d, v: 3 });
 
   if (!t.labour) t.labour = { mode: "job", rate: 55, qty: 0, jobPrice: 0 };
   t.labour.mode = "job";
-  const clientLab = clientLabourBillable(d.workers);
-  t.labour.jobPrice = Math.round(clientLab * 100) / 100;
+  t.labour.jobPrice = round2(d.clientLabourCharge);
 
   if (!t.catPick) t.catPick = {};
   const lines: NonNullable<TradeShape["_demoMaterialLines"]> = [];
