@@ -12,18 +12,15 @@ import {
 import {
   ceilingFtFromDims,
   floorSqFtFromDims,
-  formatDimsLine,
   formatMoney,
   parsePrice,
 } from "@/lib/demolition-calculations";
 import {
   applyDemolitionToTrade,
+  clientLabourBilled,
   crewBillableHours,
   dayCostFromHourly,
-  DEMOLITION_CHECKLIST,
   type CachedProductRow,
-  type DemoChecklistKey,
-  type DemoScope,
   type DemoWorker,
   type DemolitionV3State,
   DEMOLITION_DEFAULT_STATE,
@@ -32,7 +29,6 @@ import {
   hourlyFromDayCost,
   loadWorkspace,
   myLabourCost,
-  myPrimaryLabourCost,
   myWasteCost,
   readActiveProjectId,
   saveWorkspace,
@@ -98,7 +94,6 @@ export default function DemolitionTradeApp() {
   const dbRoomIdParam = sp.get("dbRoomId") ?? "";
 
   const [tab, setTab] = useState<TabKey>("labour");
-  const [scopeOpen, setScopeOpen] = useState(false);
   const [totalsMyOpen, setTotalsMyOpen] = useState(false);
   const [totalsProfitOpen, setTotalsProfitOpen] = useState(false);
   const [products, setProducts] = useState<CachedProductRow[]>([]);
@@ -118,8 +113,6 @@ export default function DemolitionTradeApp() {
   const dims = room?.d as Record<string, unknown> | undefined;
   const sqFt = useMemo(() => floorSqFtFromDims(dims), [dims]);
   const ceilingFt = useMemo(() => ceilingFtFromDims(dims), [dims]);
-  const dimsLine = useMemo(() => formatDimsLine(dims), [dims]);
-
   const loadFromStorage = useCallback(() => {
     if (!projectId) return;
     const ws = loadWorkspace(projectId);
@@ -240,7 +233,8 @@ export default function DemolitionTradeApp() {
     (patch: Partial<DemolitionV3State> | ((prev: DemolitionV3State) => DemolitionV3State)) => {
       setD((prev) => {
         const base = typeof patch === "function" ? patch(prev) : { ...prev, ...patch };
-        const next = { ...base, v: 3 as const };
+        const merged = { ...base, v: 3 as const };
+        const next = { ...merged, clientLabourCharge: clientLabourBilled(merged) };
         debouncedLocal(next);
         debouncedRemote(next);
         return next;
@@ -260,7 +254,7 @@ export default function DemolitionTradeApp() {
   }, [products, d.materialQty]);
 
   const labourMyCost = useMemo(() => myLabourCost(d), [d]);
-  const primaryLabourOnly = useMemo(() => myPrimaryLabourCost(d), [d]);
+  const clientLabourTotal = useMemo(() => clientLabourBilled(d), [d]);
   const wasteMy = useMemo(() => myWasteCost(d), [d]);
 
   const myCostsTotal = labourMyCost + materialMyCost + wasteMy;
@@ -273,10 +267,8 @@ export default function DemolitionTradeApp() {
   const clientWastePass = d.wasteDisposalEnabled ? Math.round(d.wasteDisposalAmount * 100) / 100 : 0;
 
   const clientTotal = useMemo(() => {
-    return Math.round(
-      (d.clientLabourCharge + clientMaterialsCharge + clientWastePass) * 100,
-    ) / 100;
-  }, [d.clientLabourCharge, clientMaterialsCharge, clientWastePass]);
+    return Math.round((clientLabourTotal + clientMaterialsCharge + clientWastePass) * 100) / 100;
+  }, [clientLabourTotal, clientMaterialsCharge, clientWastePass]);
 
   const profit = Math.round((clientTotal - myCostsTotal) * 100) / 100;
   const profitPerSq = sqFt > 0 ? Math.round((profit / sqFt) * 100) / 100 : 0;
@@ -319,13 +311,6 @@ export default function DemolitionTradeApp() {
     }
     void persistRemote(dRef.current);
     router.push("/final");
-  }
-
-  function toggleChecklist(key: DemoChecklistKey) {
-    update((prev) => {
-      const checklist = { ...prev.checklist, [key]: !prev.checklist[key] };
-      return { ...prev, checklist };
-    });
   }
 
   function newWorker(): DemoWorker {
@@ -504,7 +489,14 @@ export default function DemolitionTradeApp() {
         {tab === "labour" && (
           <div className="flex min-w-0 flex-col gap-4">
             <div style={cardStyle} className={cardPad}>
-              <div className={sectionLabelCls}>My cost</div>
+              <div className={sectionLabelCls}>Labour — client invoice</div>
+              <h2 className="mt-1 text-[13px] font-semibold leading-snug text-neutral-900">
+                Labour cost billed to client
+              </h2>
+              <p className="mt-1 text-[12px] leading-snug text-[#888]">
+                This is what the client pays for labour on the quote. Your own crew cost is tracked in{" "}
+                <strong>Worker expense</strong> below.
+              </p>
               <div
                 className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                 style={{ gap: 6 }}
@@ -532,7 +524,7 @@ export default function DemolitionTradeApp() {
 
               {d.labourCostMode === "job" ? (
                 <label className="mt-3 block">
-                  <span className="text-[13px] text-neutral-800">My labour cost (job, USD)</span>
+                  <span className="text-[13px] text-neutral-800">Labour charge — flat per job (USD)</span>
                   <div
                     className={`mt-1 border bg-white ${bubbleRounded}`}
                     style={{ border: `0.5px solid ${SITE.border}` }}
@@ -552,14 +544,14 @@ export default function DemolitionTradeApp() {
               ) : d.labourCostMode === "daily" ? (
                 <div className="mt-3 space-y-3">
                   <div>
-                    <div className={sectionLabelCls}>Days (my cost)</div>
+                    <div className={sectionLabelCls}>Billable days (client)</div>
                     <DaysStepper
                       value={d.myCostDailyDays}
                       onChange={(n) => update({ myCostDailyDays: n })}
                     />
                   </div>
                   <label className="block">
-                    <span className="text-[13px] text-neutral-800">My cost per day (USD)</span>
+                    <span className="text-[13px] text-neutral-800">Client rate per day (USD)</span>
                     <div
                       className={`mt-1 border bg-white ${bubbleRounded}`}
                       style={{ border: `0.5px solid ${SITE.border}` }}
@@ -583,14 +575,11 @@ export default function DemolitionTradeApp() {
                       {formatMoney(d.myCostDailyDays * d.myCostDailyRate)}
                     </span>
                   </div>
-                  <p className="text-[12px] leading-snug text-[#888]">
-                    Separate from <strong>Worker expense</strong> below — both can be used at once.
-                  </p>
                 </div>
               ) : (
                 <div className="mt-3 space-y-3">
                   <label className="block">
-                    <span className="text-[13px] text-neutral-800">Hours (my cost)</span>
+                    <span className="text-[13px] text-neutral-800">Billable hours (client)</span>
                     <div
                       className={`mt-1 border bg-white ${bubbleRounded}`}
                       style={{ border: `0.5px solid ${SITE.border}` }}
@@ -609,7 +598,7 @@ export default function DemolitionTradeApp() {
                     </div>
                   </label>
                   <label className="block">
-                    <span className="text-[13px] text-neutral-800">My hourly cost (USD)</span>
+                    <span className="text-[13px] text-neutral-800">Client rate per hour (USD)</span>
                     <div
                       className={`mt-1 border bg-white ${bubbleRounded}`}
                       style={{ border: `0.5px solid ${SITE.border}` }}
@@ -633,9 +622,6 @@ export default function DemolitionTradeApp() {
                       {formatMoney(d.myCostHourlyHours * d.myCostHourlyRate)}
                     </span>
                   </div>
-                  <p className="text-[12px] leading-snug text-[#888]">
-                    Separate from <strong>Worker expense</strong> below — both can be used at once.
-                  </p>
                 </div>
               )}
             </div>
@@ -644,7 +630,9 @@ export default function DemolitionTradeApp() {
               <div className={`flex min-h-[44px] w-full items-center justify-between gap-3 ${cardPad}`}>
                 <div className="min-w-0 flex-1 pr-2">
                   <div className="text-[13px] font-semibold text-neutral-900">Worker expense</div>
-                  <div className="text-[12px] text-[#888]">Crew days, rates — private</div>
+                  <div className="text-[12px] text-[#888]">
+                    Your real labour cost (private) — not shown on the client quote
+                  </div>
                 </div>
                 <SiteSwitch
                   on={d.workerExpenseEnabled}
@@ -657,8 +645,8 @@ export default function DemolitionTradeApp() {
                   style={{ borderColor: SITE.border }}
                 >
                   <p className="text-[12px] leading-snug text-[#888]">
-                    Crew grid uses its own day / day-cost / hourly math (8 hr day). Not linked to the
-                    My cost card above.
+                    Day cost and hourly stay linked at 8 hrs/day. This grid is only for your internal
+                    cost, not the client bill.
                   </p>
                   {d.workers.map((w, idx) => {
                     const colOrder = ["days", "day", "hourly"] as const;
@@ -673,7 +661,7 @@ export default function DemolitionTradeApp() {
                     );
                     const hourlyCol = (
                       <div key="hourly" className="min-w-0">
-                        <div className={sectionLabelCls}>Hourly (USD)</div>
+                        <div className={sectionLabelCls}>Your hourly (USD)</div>
                         <div
                           className={`mt-1 border bg-white ${bubbleRounded}`}
                           style={{ border: `0.5px solid ${SITE.border}` }}
@@ -694,7 +682,7 @@ export default function DemolitionTradeApp() {
                     );
                     const dayCol = (
                       <div key="day" className="min-w-0">
-                        <div className={sectionLabelCls}>Day cost (USD)</div>
+                        <div className={sectionLabelCls}>Your day cost (USD)</div>
                         <div
                           className={`mt-1 border bg-white ${bubbleRounded}`}
                           style={{ border: `0.5px solid ${SITE.border}` }}
@@ -800,114 +788,6 @@ export default function DemolitionTradeApp() {
                 </div>
               ) : null}
             </div>
-
-            <div style={cardStyle} className="overflow-hidden">
-              <button
-                type="button"
-                className={`flex min-h-[44px] w-full items-center justify-between text-left ${cardPad}`}
-                onClick={() => setScopeOpen((o) => !o)}
-              >
-                <span className="text-[13px] font-semibold text-neutral-900">
-                  Scope &amp; site checks
-                </span>
-                <span className="text-[#888]">{scopeOpen ? "▾" : "▸"}</span>
-              </button>
-              {scopeOpen ? (
-                <div className={`space-y-4 border-t ${cardPad}`} style={{ borderColor: SITE.border }}>
-                  <div>
-                    <div className={sectionLabelCls}>From room</div>
-                    <div className="mt-1 text-[13px] font-medium">{dimsLine}</div>
-                    {sqFt > 0 ? (
-                      <div className={`mt-1 text-[15px] font-semibold ${monoNum}`}>{sqFt} sq ft</div>
-                    ) : (
-                      <p className="mt-1 text-[13px] text-[#888]">
-                        Add room dimensions for square footage.
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <div className={sectionLabelCls}>Scope</div>
-                    <div className="mt-2 flex flex-col gap-2">
-                      {(["full", "selective"] as DemoScope[]).map((s) => {
-                        const on = d.scope === s;
-                        return (
-                          <button
-                            key={s}
-                            type="button"
-                            onClick={() => update({ scope: s })}
-                            className={`min-h-[44px] w-full px-3 text-left text-[13px] font-semibold ${bubbleRounded}`}
-                            style={{
-                              border: `0.5px solid ${SITE.border}`,
-                              background: on ? SITE.ink : SITE.white,
-                              color: on ? SITE.white : SITE.muted,
-                            }}
-                          >
-                            {s === "full" ? "Full gut" : "Selective"}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-[13px] font-semibold">What&apos;s coming out</div>
-                    <ul
-                      className={`mt-2 overflow-hidden border bg-white ${bubbleRounded}`}
-                      style={{ border: `0.5px solid ${SITE.border}` }}
-                    >
-                      {DEMOLITION_CHECKLIST.map(({ key, label }) => {
-                        const on = !!d.checklist[key];
-                        return (
-                          <li
-                            key={key}
-                            className="flex min-h-[44px] items-center justify-between gap-3 border-t px-3 py-2 first:border-t-0"
-                            style={{ borderColor: SITE.border }}
-                          >
-                            <span className="text-[13px]">{label}</span>
-                            <button
-                              type="button"
-                              aria-pressed={on}
-                              onClick={() => toggleChecklist(key)}
-                              className={`min-h-[44px] min-w-[44px] text-[15px] font-bold ${bubbleRounded}`}
-                              style={{
-                                border: `0.5px solid ${SITE.border}`,
-                                background: on ? SITE.yellow : SITE.white,
-                                color: SITE.ink,
-                              }}
-                            >
-                              {on ? "✓" : ""}
-                            </button>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                  <div
-                    className={`border px-3 py-2 ${bubbleRounded}`}
-                    style={{ border: `0.5px solid ${SITE.border}`, background: SITE.white }}
-                  >
-                    <div className="flex min-h-[44px] items-center justify-between gap-3">
-                      <div className="min-w-0 pr-2">
-                        <div className="text-[13px] font-semibold">Hazmat present</div>
-                        <div className="text-[12px] text-[#888]">Asbestos, lead, mold</div>
-                      </div>
-                      <SiteSwitch on={d.hazmat} onChange={(hazmat) => update({ hazmat })} />
-                    </div>
-                  </div>
-                  <div
-                    className={`border px-3 py-2 ${bubbleRounded}`}
-                    style={{ border: `0.5px solid ${SITE.border}`, background: SITE.white }}
-                  >
-                    <div className="flex min-h-[44px] items-center justify-between gap-3">
-                      <div className="min-w-0 pr-2">
-                        <div className="text-[13px] font-semibold">Dumpster needed</div>
-                        <div className="text-[12px] text-[#888]">Site logistics flag</div>
-                      </div>
-                      <SiteSwitch on={d.dumpster} onChange={(dumpster) => update({ dumpster })} />
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-            </div>
           </div>
         )}
 
@@ -985,24 +865,20 @@ export default function DemolitionTradeApp() {
                 <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: SITE.green }} aria-hidden />
                 CLIENT INVOICE — VISIBLE ON QUOTE
               </div>
-              <label className="block">
-                <span className="text-[13px] text-[#888]">Labour charge to client (USD)</span>
+              <div className="block">
+                <span className="text-[13px] text-[#888]">Labour billed to client</span>
                 <div
-                  className={`mt-1 border bg-white ${bubbleRounded}`}
+                  className={`mt-1 flex min-h-[44px] items-center border bg-white px-3 ${bubbleRounded}`}
                   style={{ border: `0.5px solid ${SITE.border}` }}
                 >
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min={0}
-                    className={`min-h-[44px] w-full bg-transparent px-3 text-[13px] outline-none ${noSpinner} ${plexMono.className}`}
-                    value={d.clientLabourCharge}
-                    onChange={(e) =>
-                      update({ clientLabourCharge: parseMoneyInput(e.target.value) })
-                    }
-                  />
+                  <span className={`text-[15px] font-medium ${plexMono.className}`} style={{ color: SITE.green }}>
+                    {formatMoney(clientLabourTotal)}
+                  </span>
                 </div>
-              </label>
+                <p className="mt-1 text-[11px] leading-snug text-[#888]">
+                  Edit on the <strong>Labour</strong> tab under &quot;Labour cost billed to client&quot;.
+                </p>
+              </div>
               <div className="mt-3 flex min-h-[44px] flex-wrap items-center gap-2">
                 <span className="text-[13px] text-[#888]">Materials markup</span>
                 <input
@@ -1067,29 +943,26 @@ export default function DemolitionTradeApp() {
               </button>
               {totalsMyOpen ? (
                 <div className={`border-t px-[14px] pb-[14px] pt-2`} style={{ borderColor: SITE.border }}>
-                  <div className="flex justify-between gap-2 py-1 text-neutral-800">
-                    <span>
-                      {d.labourCostMode === "job"
-                        ? "My cost (per job)"
-                        : d.labourCostMode === "daily"
-                          ? `My cost — ${d.myCostDailyDays} d × ${formatMoney(d.myCostDailyRate)}`
-                          : `My cost — ${d.myCostHourlyHours} hrs × ${formatMoney(d.myCostHourlyRate)}`}
-                    </span>
-                    <span className={`shrink-0 ${monoNum}`}>{formatMoney(primaryLabourOnly)}</span>
-                  </div>
-                  {d.workerExpenseEnabled
-                    ? d.workers.map((w, idx) => (
-                        <div key={w.id} className="flex justify-between gap-2 py-1 text-neutral-800">
-                          <span>
-                            Worker — {workerSlotLabel(w, idx)} — {w.days} days ×{" "}
-                            {formatMoney(w.myCostPerDay)}
-                          </span>
-                          <span className={`shrink-0 ${monoNum}`}>
-                            {formatMoney(w.days * w.myCostPerDay)}
-                          </span>
-                        </div>
-                      ))
-                    : null}
+                  <p className="mb-2 text-[11px] uppercase tracking-[0.12em] text-[#888]">
+                    Your cost (private)
+                  </p>
+                  {d.workerExpenseEnabled ? (
+                    d.workers.map((w, idx) => (
+                      <div key={w.id} className="flex justify-between gap-2 py-1 text-neutral-800">
+                        <span>
+                          {workerSlotLabel(w, idx)} — {w.days} days × {formatMoney(w.myCostPerDay)}
+                        </span>
+                        <span className={`shrink-0 ${monoNum}`}>
+                          {formatMoney(w.days * w.myCostPerDay)}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="flex justify-between gap-2 py-1 text-neutral-800">
+                      <span>Worker expense</span>
+                      <span className={`shrink-0 ${monoNum}`}>{formatMoney(0)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between gap-2 py-1 text-neutral-800">
                     <span>Materials</span>
                     <span className={`shrink-0 ${monoNum}`}>{formatMoney(materialMyCost)}</span>
@@ -1225,6 +1098,11 @@ export default function DemolitionTradeApp() {
 }
 
 function SiteSwitch({ on, onChange }: { on: boolean; onChange: (v: boolean) => void }) {
+  const trackW = 52;
+  const trackH = 32;
+  const thumb = 26;
+  const pad = 3;
+  const travel = trackW - thumb - pad * 2;
   return (
     <button
       type="button"
@@ -1234,16 +1112,24 @@ function SiteSwitch({ on, onChange }: { on: boolean; onChange: (v: boolean) => v
         e.stopPropagation();
         onChange(!on);
       }}
-      className="relative h-8 w-[51px] shrink-0 touch-manipulation rounded-full border-0 p-0 outline-none transition-colors duration-200"
+      className="relative shrink-0 touch-manipulation rounded-full border-0 p-0 outline-none transition-colors duration-200"
       style={{
+        width: trackW,
+        height: trackH,
         background: on ? SITE.ink : "#cccccc",
         WebkitTapHighlightColor: "transparent",
       }}
       aria-label={on ? "On" : "Off"}
     >
       <span
-        className="pointer-events-none absolute left-[3px] top-1/2 h-[26px] w-[26px] -translate-y-1/2 rounded-full bg-white shadow-md transition-transform duration-200 ease-out"
-        style={{ transform: on ? "translateX(20px)" : "translateX(0)" }}
+        className="pointer-events-none absolute rounded-full bg-white shadow-md"
+        style={{
+          width: thumb,
+          height: thumb,
+          top: (trackH - thumb) / 2,
+          left: on ? pad + travel : pad,
+          transition: "left 0.2s ease-out",
+        }}
       />
     </button>
   );

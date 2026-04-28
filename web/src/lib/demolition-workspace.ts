@@ -54,20 +54,21 @@ export type DemoWorker = {
 
 export type DemolitionV3State = {
   v: 3;
+  /** How labour billed to the client is calculated (Labour tab, top card). */
   labourCostMode: LabourCostMode;
-  /** When labourCostMode is "job", total private labour cost. */
+  /** Client: flat labour charge when mode is per job. */
   myLabourPerJob: number;
-  /** Standalone “My cost” daily calc (not tied to worker grid). */
+  /** Client: billed days × rate when mode is daily. */
   myCostDailyDays: number;
   myCostDailyRate: number;
-  /** Standalone “My cost” hourly calc (not tied to worker grid). */
+  /** Client: billed hours × rate when mode is hourly. */
   myCostHourlyHours: number;
   myCostHourlyRate: number;
   workerExpenseEnabled: boolean;
   workers: DemoWorker[];
   wasteDisposalEnabled: boolean;
   wasteDisposalAmount: number;
-  /** Editable labour charged to client (independent of worker grid). */
+  /** Denormalized: always equals clientLabourBilled(); kept for JSON / APIs. */
   clientLabourCharge: number;
   clientMaterialsMarkupPct: number;
   materialQty: Record<string, number>;
@@ -87,6 +88,15 @@ const HRS_PER_DAY = 8;
 
 function round2(n: number): number {
   return Math.round(Math.max(0, n) * 100) / 100;
+}
+
+/** Labour amount billed to the client (from Labour tab — top card only). */
+export function clientLabourBilled(d: DemolitionV3State): number {
+  if (d.labourCostMode === "job") return round2(d.myLabourPerJob);
+  if (d.labourCostMode === "daily") {
+    return round2(Math.max(0, d.myCostDailyDays) * Math.max(0, d.myCostDailyRate));
+  }
+  return round2(Math.max(0, d.myCostHourlyHours) * Math.max(0, d.myCostHourlyRate));
 }
 
 export function hourlyFromDayCost(dayCost: number): number {
@@ -113,7 +123,6 @@ export const DEMOLITION_DEFAULT_STATE: DemolitionV3State = {
   myCostDailyRate: 200,
   myCostHourlyHours: 0,
   myCostHourlyRate: 25,
-  /** On so crew grid is available; totals are separate from “My cost” card. */
   workerExpenseEnabled: true,
   workers: [DEFAULT_WORKER()],
   wasteDisposalEnabled: false,
@@ -304,7 +313,6 @@ function normalizeDemolitionState(raw: Partial<DemolitionV3State>): DemolitionV3
   if (typeof raw.wasteDisposalEnabled === "boolean") base.wasteDisposalEnabled = raw.wasteDisposalEnabled;
   if (typeof raw.wasteDisposalAmount === "number")
     base.wasteDisposalAmount = Math.max(0, raw.wasteDisposalAmount);
-  if (typeof raw.clientLabourCharge === "number") base.clientLabourCharge = Math.max(0, raw.clientLabourCharge);
   if (typeof raw.scheduleTradeEnabled === "boolean") base.scheduleTradeEnabled = raw.scheduleTradeEnabled;
   if (typeof raw.timelineTotalDays === "number") base.timelineTotalDays = Math.max(1, raw.timelineTotalDays);
 
@@ -316,8 +324,9 @@ function normalizeDemolitionState(raw: Partial<DemolitionV3State>): DemolitionV3
       return worker;
     });
   }
-  if (base.clientLabourCharge === 0 && migratedClientSum > 0) {
-    base.clientLabourCharge = round2(migratedClientSum);
+  if (clientLabourBilled(base) === 0 && migratedClientSum > 0) {
+    base.labourCostMode = "job";
+    base.myLabourPerJob = round2(migratedClientSum);
   }
 
   if (typeof raw.clientMaterialsMarkupPct === "number")
@@ -330,6 +339,16 @@ function normalizeDemolitionState(raw: Partial<DemolitionV3State>): DemolitionV3
     raw.timelineDayDescriptions,
   );
   base.timelineTotalDays = base.timelineDayDescriptions.length;
+
+  if (
+    clientLabourBilled(base) === 0 &&
+    typeof raw.clientLabourCharge === "number" &&
+    raw.clientLabourCharge > 0
+  ) {
+    base.labourCostMode = "job";
+    base.myLabourPerJob = Math.max(0, raw.clientLabourCharge);
+  }
+  base.clientLabourCharge = clientLabourBilled(base);
 
   return base;
 }
@@ -355,7 +374,9 @@ function fromLegacyV2(raw: Record<string, unknown>): DemolitionV3State {
       myCostPerDay: myDay,
     }));
     s.workerExpenseEnabled = true;
-    s.clientLabourCharge = round2(wn * Math.max(0, ld || 1) * clientDay);
+    s.labourCostMode = "job";
+    s.myLabourPerJob = round2(wn * Math.max(0, ld || 1) * clientDay);
+    s.clientLabourCharge = s.myLabourPerJob;
   }
   if (typeof raw.markupPct === "number") s.clientMaterialsMarkupPct = raw.markupPct;
   const dt = raw.demoType;
@@ -398,16 +419,7 @@ function mergeCatPickIntoQty(state: DemolitionV3State, t: TradeShape): Demolitio
   return changed ? { ...state, materialQty: mq } : state;
 }
 
-/** Private labour from the “My cost” card only (per job / daily / hourly). */
-export function myPrimaryLabourCost(d: DemolitionV3State): number {
-  if (d.labourCostMode === "job") return round2(d.myLabourPerJob);
-  if (d.labourCostMode === "daily") {
-    return round2(Math.max(0, d.myCostDailyDays) * Math.max(0, d.myCostDailyRate));
-  }
-  return round2(Math.max(0, d.myCostHourlyHours) * Math.max(0, d.myCostHourlyRate));
-}
-
-/** Private labour from the worker expense grid only. */
+/** Private labour from the worker expense grid only (your cost). */
 export function workerLabourCost(d: DemolitionV3State): number {
   if (!d.workerExpenseEnabled) return 0;
   let s = 0;
@@ -417,9 +429,9 @@ export function workerLabourCost(d: DemolitionV3State): number {
   return round2(s);
 }
 
-/** Total private labour = my-cost card + worker grid (independent). */
+/** Your total private labour cost (worker grid only — not client bill). */
 export function myLabourCost(d: DemolitionV3State): number {
-  return round2(myPrimaryLabourCost(d) + workerLabourCost(d));
+  return workerLabourCost(d);
 }
 
 export function myWasteCost(d: DemolitionV3State): number {
@@ -452,7 +464,7 @@ export function applyDemolitionToTrade(
 
   if (!t.labour) t.labour = { mode: "job", rate: 55, qty: 0, jobPrice: 0 };
   t.labour.mode = "job";
-  t.labour.jobPrice = round2(d.clientLabourCharge);
+  t.labour.jobPrice = clientLabourBilled(d);
 
   if (!t.catPick) t.catPick = {};
   const lines: NonNullable<TradeShape["_demoMaterialLines"]> = [];
