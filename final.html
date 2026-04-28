@@ -1651,6 +1651,7 @@ a.ni{color:inherit;text-decoration:none;}
     -webkit-appearance:none;
     font:inherit;
     text-align:center;
+    text-decoration:none;
   }
   #mob-nav.mob-nav--siteclean .mn--tab:active{transform:scale(.97);}
   #mob-nav.mob-nav--siteclean .mn--tab.on{color:#0f2318;}
@@ -2365,7 +2366,7 @@ a.ni{color:inherit;text-decoration:none;}
 <div id="rf-fab-arc-backdrop" class="rf-fab-arc-backdrop" aria-hidden="true" onclick="closeRfFabArc()"></div>
 <nav id="mob-nav" class="app-tabbar mob-nav mob-nav--siteclean" role="navigation" aria-label="Main">
   <button type="button" class="mn mn--tab on" data-pg="dash" onclick="gP('dash')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-9.5z"/></svg></span><span class="mn-l">Home</span></button>
-  <button type="button" class="mn mn--tab" data-pg="proj" onclick="gP('proj')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/><rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span><span class="mn-l">Projects</span></button>
+  <a href="/projects" class="mn mn--tab" data-pg="proj"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/><rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span><span class="mn-l">Projects</span></a>
   <div class="mn-fab-col">
     <button type="button" class="mn-fab" id="rf-mob-fab-new" onclick="toggleRfFabArc(event)" aria-haspopup="true" aria-expanded="false" aria-label="New job"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></button>
     <span class="mn-fab-label" aria-hidden="true">New Job</span>
@@ -4032,6 +4033,14 @@ function syncShellTradeExp(){
 }
 
 function gP(pg){
+  if(pg==="proj"){
+    if(curPg==="room"&&typeof curR==="number"&&S.rooms&&S.rooms[curR]&&S.rooms[curR].dbRoomId){
+      syncRoomToSupabase(curR).catch(function(e){ console.warn("[room sync]",e); });
+    }
+    closeRfFabArc();
+    try{ window.location.assign("/projects"); }catch(e){ window.location.href="/projects"; }
+    return;
+  }
   closeRfFabArc();
   if(curPg==="room"&&typeof curR==="number"&&S.rooms&&S.rooms[curR]&&S.rooms[curR].dbRoomId){
     syncRoomToSupabase(curR).catch(function(e){ console.warn("[room sync]",e); });
