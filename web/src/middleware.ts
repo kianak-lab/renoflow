@@ -47,6 +47,7 @@ export async function middleware(request: NextRequest) {
   const needsAppGate =
     pathname === "/" ||
     pathname.startsWith("/final") ||
+    pathname.startsWith("/trades") ||
     pathname.startsWith("/projects") ||
     pathname.startsWith("/onboarding");
   if (needsAppGate) {
@@ -57,7 +58,10 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (pathname.startsWith("/final") && (await hasSession(request))) {
+  if (
+    (pathname.startsWith("/final") || pathname.startsWith("/trades")) &&
+    (await hasSession(request))
+  ) {
     if (request.cookies.get(ONBOARDING_BYPASS_COOKIE)?.value === ONBOARDING_BYPASS_VALUE) {
       return next;
     }

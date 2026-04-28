@@ -2328,12 +2328,12 @@ a.ni{color:inherit;text-decoration:none;}
 <script>
 "use strict";
 
-var TC={demo:"#e85547",framing:"#e87747",concrete:"#78909c",roofing:"#5c7a8a",electrical:"#e8c547",plumbing:"#47a0e8",hvac:"#8847e8",lowvolt:"#5c6bc0",security:"#455a64",comdoor:"#6d4c41",insulation:"#47e8c5",drywall:"#e847a0",tile:"#a0e847",flooring:"#e8a047",painting:"#47e8a0",trim:"#e88847",cabinets:"#7047e8",closets:"#8b7355",finishing:"#5d9c8a"};
+var TC={demo:"#FFE000",framing:"#e87747",concrete:"#78909c",roofing:"#5c7a8a",electrical:"#e8c547",plumbing:"#47a0e8",hvac:"#8847e8",lowvolt:"#5c6bc0",security:"#455a64",comdoor:"#6d4c41",insulation:"#47e8c5",drywall:"#e847a0",tile:"#a0e847",flooring:"#e8a047",painting:"#47e8a0",trim:"#e88847",cabinets:"#7047e8",closets:"#8b7355",finishing:"#5d9c8a"};
 var TN={demo:"Demolition",framing:"Framing",concrete:"Concrete",roofing:"Roofing",electrical:"Electrical",plumbing:"Plumbing",hvac:"HVAC",lowvolt:"Low voltage",security:"Security",comdoor:"Commercial door hardware",insulation:"Insulation",drywall:"Drywall",tile:"Tile",flooring:"Flooring",painting:"Painting",trim:"Trim & Millwork",cabinets:"Cabinets & tops",closets:"Closets",finishing:"Finishing"};
-var TIC={demo:"🔨",framing:"🪵",concrete:"🪨",roofing:"🏠",electrical:"⚡",plumbing:"💧",hvac:"🌀",lowvolt:"🔌",security:"🛡",comdoor:"🚪",insulation:"🧱",drywall:"⬜",tile:"🔲",flooring:"🪵",painting:"🎨",trim:"📏",cabinets:"🗄",closets:"👔",finishing:"✨"};
+var TIC={demo:"",framing:"🪵",concrete:"🪨",roofing:"🏠",electrical:"⚡",plumbing:"💧",hvac:"🌀",lowvolt:"🔌",security:"🛡",comdoor:"🚪",insulation:"🧱",drywall:"⬜",tile:"🔲",flooring:"🪵",painting:"🎨",trim:"📏",cabinets:"🗄",closets:"👔",finishing:"✨"};
 /* Legacy line-item seed empty — materials use supplier catalog (cached_products). */
 var TB={};
-var RICH_MEP_TRADES={demo:1,framing:1,hvac:1,insulation:1,drywall:1,tile:1,flooring:1,painting:1,trim:1,cabinets:1,lowvolt:1,security:1};
+var RICH_MEP_TRADES={framing:1,hvac:1,insulation:1,drywall:1,tile:1,flooring:1,painting:1,trim:1,cabinets:1,lowvolt:1,security:1};
 var RICH_LABOUR_DUP={
   hvac:{hv3:1},insulation:{in3:1},tile:{tih:1},flooring:{fll:1},painting:{pah:1},trim:{trl:1},cabinets:{cah:1},lowvolt:{lhl:1},security:{shl:1},framing:{fhl:1}
 };
@@ -6354,7 +6354,18 @@ function delTrade(ti){
 function expandTrade(ti){
   var room=S.rooms[curR];
   if(!room||!room.trades[ti])return;
-  room.trades[ti].open=true;
+  var tr=room.trades[ti];
+  if(tr&&tr.id==="demo"){
+    try{ ss(); }catch(e){}
+    var pid="";
+    try{ pid=localStorage.getItem("rf7_active_project")||""; }catch(e2){}
+    var q="ri="+encodeURIComponent(String(curR))+"&ti="+encodeURIComponent(String(ti));
+    if(pid) q+="&pid="+encodeURIComponent(pid);
+    if(room.dbRoomId) q+="&dbRoomId="+encodeURIComponent(String(room.dbRoomId));
+    window.location.href="/trades/demolition?"+q;
+    return;
+  }
+  tr.open=true;
   ss();
   expandedTi=ti;
   rRoom();

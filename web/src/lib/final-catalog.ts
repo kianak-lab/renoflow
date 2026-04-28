@@ -25,13 +25,8 @@ export const TN: Record<string, string> = {
 export type CatalogItem = { id: string; l: string; u: string; p: number };
 
 export const TB: Record<string, CatalogItem[]> = {
-  demo: [
-    { id: "d2", l: "🗑 Disposal bin", u: "load", p: 350 },
-    { id: "d3", l: "☣ Hazmat disposal", u: "load", p: 450 },
-    { id: "dm1", l: "🧤 Plastic sheeting", u: "roll", p: 18 },
-    { id: "dm2", l: "🗃 Demo bags", u: "box", p: 24 },
-    { id: "dm3", l: "😷 Respirators", u: "ea", p: 32 },
-  ],
+  /* Demolition: use Next /trades/demolition + Supabase cached_products only — no legacy emoji lines. */
+  demo: [],
   framing: [
     { id: "fhl", l: "👷 Framing labour", u: "hrs", p: 75 },
     { id: "frl1", l: "🪵 Studs 2x4", u: "ea", p: 4.5 },

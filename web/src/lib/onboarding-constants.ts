@@ -37,7 +37,7 @@ export type TradeRow = {
 };
 
 export const ONBOARDING_TRADES: TradeRow[] = [
-  { group: "Structure", id: "demo", label: "Demolition", icon: "🔨", defaultChecked: true },
+  { group: "Structure", id: "demo", label: "Demolition", icon: "◆", defaultChecked: true },
   { group: "Structure", id: "framing", label: "Framing", icon: "🏗", defaultChecked: true },
   { group: "Structure", id: "bulkhead", label: "Bulkhead", icon: "🏗", defaultChecked: false },
   { group: "Mechanical", id: "plumbing", label: "Plumbing", icon: "💧", defaultChecked: true },
