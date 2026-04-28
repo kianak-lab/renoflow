@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="RenoFlow">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="color-scheme" content="light">
 <link rel="manifest" href="/manifest.json">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,500;0,600;1,500&display=swap');
@@ -238,12 +239,12 @@ a.ni{color:inherit;text-decoration:none;}
 #p-dash .dash-header-bleed .brief-header{background:transparent;border:none;border-radius:0;box-shadow:none;padding:16px 0 18px;margin:0;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;}
 #p-dash .dash-header-bleed .brief-date{font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,.72);font-family:'IBM Plex Sans',system-ui,sans-serif;font-weight:500;opacity:1;}
 #p-dash .dash-header-bleed .brief-greeting{font-size:22px;font-weight:500;color:#fff;margin-top:6px;line-height:1.2;font-family:'IBM Plex Sans',system-ui,sans-serif;letter-spacing:-0.02em;}
-#p-dash .dash-header-bleed .brief-sub{font-size:13px;color:rgba(255,255,255,.45);margin-top:6px;line-height:1.35;opacity:1;}
+#p-dash .dash-header-bleed .brief-sub{font-size:13px;color:rgba(255,255,255,.72);margin-top:6px;line-height:1.35;opacity:1;font-weight:400;}
 #p-dash .dash-rf-logo-btn{appearance:none;border:none;background:transparent;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;}
 #p-dash .dash-rf-logo-square{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:8px;background:#1a3d28;border:0.5px solid #2a5a3a;box-sizing:border-box;}
 #p-dash .dash-rf-logo-mark{font-family:'IBM Plex Serif','Times New Roman',serif;font-size:16px;font-weight:600;color:#4a9a6a;line-height:1;}
 #p-dash .brief-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-#p-dash .brief-stat{background:#fff;border:0.5px solid #e0e0e0;border-radius:8px;padding:12px;text-align:center;box-shadow:none;}
+#p-dash .brief-stat{background:#f9f9f9;border:0.5px solid #e0e0e0;border-radius:8px;padding:12px;text-align:center;box-shadow:none;}
 #p-dash .brief-stat-l{font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:#aaa;margin-top:8px;font-family:'IBM Plex Sans',system-ui,sans-serif;font-weight:500;}
 #p-dash .brief-stat-v--proj,#p-dash .brief-stat-v--coll{color:#2d7a2d!important;}
 #p-dash .brief-stat-v--out{color:#c0392b!important;}
@@ -259,15 +260,17 @@ a.ni{color:inherit;text-decoration:none;}
 #p-dash .rg.dash-rg .rc.dash-proj--clean{padding:0;overflow:hidden;display:flex;flex-direction:column;align-items:stretch;max-height:none;}
 #p-dash .rg.dash-rg .rc.dash-proj--clean:hover{transform:none;}
 #p-dash .rg.dash-rg .rc.dash-proj--clean::before{display:none;}
-#p-dash .rg.dash-rg .rc.on.dash-proj--clean{background:#fff;border-color:#2d7a2d;}
-#p-dash .dash-proj-img{height:90px;min-height:90px;background:linear-gradient(180deg,#1a3d28 0%,#0f2318 100%);display:flex;align-items:center;justify-content:center;border-bottom:0.5px solid #e0e0e0;}
+#p-dash .rg.dash-rg .rc.dash-proj--clean{background:#f9f9f9;}
+#p-dash .rg.dash-rg .rc.on.dash-proj--clean{background:#f9f9f9;border-color:#2d7a2d;}
+#p-dash .dash-proj-img{height:90px;min-height:90px;background:#1a3d28;display:flex;align-items:center;justify-content:center;border-bottom:0.5px solid #e0e0e0;}
 #p-dash .dash-proj-img--photo{padding:0;}
 #p-dash .dash-proj-img--photo img{width:100%;height:100%;object-fit:cover;display:block;}
 #p-dash .dash-proj-initial{font-size:28px;font-weight:500;color:rgba(255,255,255,.72);}
 #p-dash .dash-proj-card-body{padding:10px 10px 8px;flex:1;min-width:0;}
-#p-dash .dash-proj-name{font-size:13px;font-weight:500;color:#222;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#p-dash .dash-proj-name{font-size:13px;font-weight:500;color:#111;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 #p-dash .dash-proj-desc{font-size:11px;color:#888;margin-top:4px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-#p-dash .dash-proj-days{font-size:11px;font-weight:500;color:#2d7a2d;margin-top:8px;}
+#p-dash .dash-proj-days{font-size:13px;min-height:1.2em;font-weight:500;color:#2d7a2d;margin-top:8px;}
+#p-dash .dash-proj-days--muted{color:#aaa;}
 #p-dash .dash-proj-due{font-size:10px;color:#aaa;margin-top:4px;line-height:1.2;}
 #p-dash .dash-proj-due--warn{color:#c0392b;font-weight:500;}
 #p-dash .dash-proj-due--soon{color:#2d7a2d;font-weight:500;}
@@ -278,14 +281,16 @@ a.ni{color:inherit;text-decoration:none;}
 #p-dash .qa-pill{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 18px;border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;border:none;-webkit-tap-highlight-color:transparent;}
 #p-dash .qa-pill--primary{background:#0f2318;color:#fff;}
 #p-dash .qa-pill--secondary{background:#fff;color:#555;border:0.5px solid #e0e0e0;}
-#p-dash .arc.dash-arc-new{min-height:200px;border:0.5px dashed #e0e0e0;border-radius:8px;background:#fff;color:#888;box-shadow:none;padding:16px 12px;}
+#p-dash .arc.dash-arc-new{min-height:200px;border:0.5px dashed #e0e0e0;border-radius:8px;background:#f9f9f9;color:#888;box-shadow:none;padding:16px 12px;}
 #p-dash .arc.dash-arc-new:hover{border-color:#2d7a2d;color:#2d7a2d;}
 #p-dash .dash-arc-icon{font-size:24px;line-height:1;margin-bottom:8px;font-weight:300;}
 #p-dash .dash-arc-label{font-size:12px;font-weight:500;}
 #p-dash .alert-card{box-shadow:none;border:0.5px solid #e0e0e0;border-radius:8px;}
 #p-dash .dproj-fab{box-shadow:none;border:0.5px solid #e0e0e0;}
 #p-dash .dash-jiggle-bar-row{border:0.5px solid #e0e0e0;box-shadow:none;}
-#p-dash .dash-empty-card{background:#fff;border:0.5px solid #e0e0e0;border-radius:8px;padding:20px 16px;box-shadow:none;}
+#p-dash .dash-empty-card{background:#f9f9f9;border:0.5px solid #e0e0e0;border-radius:8px;padding:20px 16px;box-shadow:none;}
+#p-dash .pc,#p-dash .brief-wrap{font-size:13px;}
+#p-dash .alert-card{background:#f9f9f9;}
 #p-dash .alert-btn{min-height:44px;padding:10px 14px;border-radius:100px;border:0.5px solid #e0e0e0;font-family:'IBM Plex Sans',system-ui,sans-serif;}
 .sb-tot{padding:14px 18px;border-top:1px solid var(--sb-bd);background:var(--sf2);}
 .tot-l{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;}
@@ -1597,7 +1602,7 @@ a.ni{color:inherit;text-decoration:none;}
     flex:1;
     min-height:0;
     min-width:0;
-    padding-bottom:calc(56px + max(8px, env(safe-area-inset-bottom, 0px)));
+    padding-bottom:calc(88px + max(8px, env(safe-area-inset-bottom, 0px)));
   }
   /* Status bar / notch: #0f2318 to top of screen (dashboard home). Fixed strip + main padding (JS sets .rf-mob-dash-status). */
   #rf-dash-status-fill{
@@ -1626,34 +1631,34 @@ a.ni{color:inherit;text-decoration:none;}
     background-repeat:no-repeat;
     background-position:0 0;
   }
-  #mob-nav{
+  #mob-nav.mob-nav--siteclean{
     display:flex !important;
     position:fixed;
     left:0;
     right:0;
     bottom:0;
-    z-index:100;
+    z-index:10100;
     box-sizing:border-box;
     flex-direction:row;
-    align-items:stretch;
+    align-items:flex-end;
     justify-content:space-between;
     gap:0;
     background:#ffffff;
     border-top:0.5px solid #e0e0e0;
-    padding:6px 2px max(6px, env(safe-area-inset-bottom, 0px));
+    padding:28px 4px max(8px, env(safe-area-inset-bottom, 0px));
     box-shadow:none;
     -webkit-backdrop-filter:none;
     backdrop-filter:none;
   }
-  #mob-nav .mn{
+  #mob-nav.mob-nav--siteclean .mn--tab{
     flex:1;
     min-width:0;
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:flex-start;
+    justify-content:flex-end;
     gap:2px;
-    padding:6px 2px 4px;
+    padding:0 2px 2px;
     margin:0;
     border:none;
     background:transparent;
@@ -1662,6 +1667,7 @@ a.ni{color:inherit;text-decoration:none;}
     font-size:10px;
     font-weight:500;
     line-height:1.15;
+    min-height:44px;
     cursor:pointer;
     -webkit-tap-highlight-color:transparent;
     transition:color .15s,transform .1s;
@@ -1670,9 +1676,9 @@ a.ni{color:inherit;text-decoration:none;}
     font:inherit;
     text-align:center;
   }
-  #mob-nav .mn:active{transform:scale(.97);}
-  #mob-nav .mn.on{color:#0f2318;}
-  #mob-nav .mn-i{
+  #mob-nav.mob-nav--siteclean .mn--tab:active{transform:scale(.97);}
+  #mob-nav.mob-nav--siteclean .mn--tab.on{color:#0f2318;}
+  #mob-nav.mob-nav--siteclean .mn-i{
     display:flex;
     align-items:center;
     justify-content:center;
@@ -1680,9 +1686,9 @@ a.ni{color:inherit;text-decoration:none;}
     height:28px;
     margin-bottom:0;
   }
-  #mob-nav .mn-i svg{display:block;width:22px;height:22px;stroke:currentColor;stroke-width:1.35;flex-shrink:0;}
-  #mob-nav .mn.on .mn-i{transform:none;}
-  #mob-nav .mn-l{
+  #mob-nav.mob-nav--siteclean .mn-i svg{display:block;width:22px;height:22px;stroke:currentColor;stroke-width:1.35;flex-shrink:0;}
+  #mob-nav.mob-nav--siteclean .mn--tab.on .mn-i{transform:none;}
+  #mob-nav.mob-nav--siteclean .mn-l{
     font-size:9px;
     font-weight:500;
     letter-spacing:0.05em;
@@ -1694,7 +1700,114 @@ a.ni{color:inherit;text-decoration:none;}
     padding:0;
     margin-top:2px;
   }
-  #mob-nav .mn.on .mn-l{font-weight:600;color:#0f2318;}
+  #mob-nav.mob-nav--siteclean .mn--tab.on .mn-l{font-weight:600;color:#0f2318;}
+  #mob-nav.mob-nav--siteclean .mn-fab-col{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    margin-top:-24px;
+    padding-bottom:2px;
+  }
+  #mob-nav.mob-nav--siteclean .mn-fab{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    background:#0f2318;
+    border:3px solid #fff;
+    box-shadow:0 2px 12px rgba(15,35,24,0.3);
+    color:#fff;
+    font-size:30px;
+    font-weight:300;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    appearance:none;
+    -webkit-appearance:none;
+    padding:0;
+    flex-shrink:0;
+  }
+  #mob-nav.mob-nav--siteclean .mn-fab:active{transform:scale(.96);}
+  #mob-nav.mob-nav--siteclean .mn-fab-label{
+    margin-top:6px;
+    font-size:9px;
+    font-weight:600;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:#0f2318;
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    text-align:center;
+    max-width:72px;
+    line-height:1.15;
+  }
+  .rf-newjob-sheet{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:20000;
+    background:rgba(0,0,0,0.45);
+    align-items:flex-end;
+    justify-content:center;
+    box-sizing:border-box;
+    padding:0;
+  }
+  .rf-newjob-sheet.show{display:flex;}
+  .rf-newjob-sheet-panel{
+    width:100%;
+    max-width:100%;
+    background:#fff;
+    border-radius:16px 16px 0 0;
+    border:0.5px solid #e0e0e0;
+    border-bottom:none;
+    padding:12px 0 max(20px, env(safe-area-inset-bottom, 0px));
+    box-sizing:border-box;
+    max-height:85vh;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+  }
+  .rf-newjob-sheet-hdr{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px 16px 12px;
+    border-bottom:0.5px solid #e0e0e0;
+  }
+  .rf-newjob-sheet-title{font-size:16px;font-weight:600;color:#111;}
+  .rf-newjob-sheet-x{
+    width:44px;height:44px;border:none;background:transparent;font-size:22px;line-height:1;color:#555;cursor:pointer;border-radius:8px;
+  }
+  .rf-newjob-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:16px 16px;
+    min-height:44px;
+    border-bottom:0.5px solid #e0e0e0;
+    text-align:left;
+    width:100%;
+    box-sizing:border-box;
+    border-left:none;border-right:none;
+    background:#fff;
+    cursor:pointer;
+    font:inherit;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .rf-newjob-row:last-child{border-bottom:none;}
+  .rf-newjob-row:active{background:#f9f9f9;}
+  .rf-newjob-ic{
+    width:44px;height:44px;border-radius:8px;background:#f9f9f9;border:0.5px solid #e0e0e0;
+    display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+  }
+  .rf-newjob-row-txt{flex:1;min-width:0;}
+  .rf-newjob-row-h{font-size:15px;font-weight:600;color:#111;}
+  .rf-newjob-row-s{font-size:13px;color:#888;margin-top:4px;line-height:1.35;}
+  .rf-newjob-chev{color:#aaa;font-size:18px;flex-shrink:0;}
 }
 
 /* ── Mobile: Airbnb-style surface (no search bar) ── */
@@ -2227,12 +2340,12 @@ a.ni{color:inherit;text-decoration:none;}
       <div id="mob-tab-strip" class="mob-tab-strip" aria-label="App pages">
         <section class="mob-tab-slab mob-slab--active" data-pg="dash"><div id="p-dash"></div></section>
         <section class="mob-tab-slab" data-pg="proj"><div id="p-proj"></div></section>
-        <section class="mob-tab-slab" data-pg="shop"><div id="p-shop" style="display:none"></div></section>
-        <section class="mob-tab-slab" data-pg="tl"><div id="p-tl" style="display:none"></div></section>
         <section class="mob-tab-slab" data-pg="quote"><div id="p-quote" style="display:none"></div></section>
         <section class="mob-tab-slab" data-pg="clients"><div id="p-clients" style="display:none"></div></section>
       </div>
     </div>
+    <div id="p-shop" style="display:none"></div>
+    <div id="p-tl" style="display:none"></div>
     <div id="p-intake" style="display:none"></div>
     <div id="p-push" style="display:none"></div>
     <div id="p-room" style="display:none"></div>
@@ -2243,14 +2356,40 @@ a.ni{color:inherit;text-decoration:none;}
   </div>
 </div>
 
-<nav id="mob-nav" class="app-tabbar mob-nav" role="navigation" aria-label="Main">
-  <button type="button" class="mn on" data-pg="dash" onclick="gP('dash')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-9.5z"/></svg></span><span class="mn-l">Home</span></button>
-  <button type="button" class="mn" data-pg="proj" onclick="gP('proj')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/><rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span><span class="mn-l">Projects</span></button>
-  <button type="button" class="mn" data-pg="shop" onclick="openProjectMaterials()"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 7.5h15v9a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 16.5v-9Z"/><path d="M8.5 7.5V5.25A1.25 1.25 0 0 1 9.75 4h4.5A1.25 1.25 0 0 1 15.5 5.25V7.5"/><line x1="4.5" y1="12" x2="19.5" y2="12"/></svg></span><span class="mn-l">Materials</span></button>
-  <button type="button" class="mn" data-pg="tl" onclick="gP('tl')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg></span><span class="mn-l">Timeline</span></button>
-  <button type="button" class="mn" data-pg="quote" onclick="gP('quote')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg></span><span class="mn-l">Quote</span></button>
-  <button type="button" class="mn" data-pg="clients" onclick="gP('clients')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="mn-l">Clients</span></button>
+<nav id="mob-nav" class="app-tabbar mob-nav mob-nav--siteclean" role="navigation" aria-label="Main">
+  <button type="button" class="mn mn--tab on" data-pg="dash" onclick="gP('dash')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-9.5z"/></svg></span><span class="mn-l">Home</span></button>
+  <button type="button" class="mn mn--tab" data-pg="proj" onclick="gP('proj')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/><rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span><span class="mn-l">Projects</span></button>
+  <div class="mn-fab-col">
+    <button type="button" class="mn-fab" id="rf-mob-fab-new" onclick="openRfNewJobSheet(event)" aria-haspopup="dialog" aria-label="New job">+</button>
+    <span class="mn-fab-label" aria-hidden="true">New Job</span>
+  </div>
+  <button type="button" class="mn mn--tab" data-pg="quote" onclick="gP('quote')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg></span><span class="mn-l">Quote</span></button>
+  <button type="button" class="mn mn--tab" data-pg="clients" onclick="gP('clients')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="mn-l">Clients</span></button>
 </nav>
+
+<div id="rf-new-job-sheet" class="rf-newjob-sheet" aria-hidden="true" onclick="if(event.target===this)closeRfNewJobSheet()">
+  <div class="rf-newjob-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="rf-newjob-sheet-title" onclick="event.stopPropagation()">
+    <div class="rf-newjob-sheet-hdr">
+      <span id="rf-newjob-sheet-title" class="rf-newjob-sheet-title">Create</span>
+      <button type="button" class="rf-newjob-sheet-x" onclick="closeRfNewJobSheet()" aria-label="Close">×</button>
+    </div>
+    <button type="button" class="rf-newjob-row" onclick="rfSheetNewJob()">
+      <span class="rf-newjob-ic" aria-hidden="true">📋</span>
+      <span class="rf-newjob-row-txt"><div class="rf-newjob-row-h">New Job</div><div class="rf-newjob-row-s">Client → Rooms → Trades → Review &amp; Send</div></span>
+      <span class="rf-newjob-chev" aria-hidden="true">→</span>
+    </button>
+    <button type="button" class="rf-newjob-row" onclick="rfSheetQuickQuote()">
+      <span class="rf-newjob-ic" aria-hidden="true">📄</span>
+      <span class="rf-newjob-row-txt"><div class="rf-newjob-row-h">Quick Quote</div><div class="rf-newjob-row-s">Open the quote builder for this project</div></span>
+      <span class="rf-newjob-chev" aria-hidden="true">→</span>
+    </button>
+    <button type="button" class="rf-newjob-row" onclick="rfSheetNewClient()">
+      <span class="rf-newjob-ic" aria-hidden="true">👤</span>
+      <span class="rf-newjob-row-txt"><div class="rf-newjob-row-h">New Client</div><div class="rf-newjob-row-s">Add a client to your list</div></span>
+      <span class="rf-newjob-chev" aria-hidden="true">→</span>
+    </button>
+  </div>
+</div>
 
 <div class="mo" id="modal" onclick="closeMo(event)">
   <div class="mb"><div class="mb-t" id="mo-t"></div><div id="mo-b"></div><div class="mb-b" id="mo-btn"></div></div>
@@ -3806,7 +3945,7 @@ var curPg="dash",curR=null;
 /** Set when navigating to All rooms — blocks the same pointer/ghost click from opening a room's trades view. */
 var __rfNavToRoomsAt=0;
 var __rfListPickRoomI=null, __rfAddRoomStayOnList=false;
-var MOB_TAB_ORDER=["dash","proj","shop","tl","quote","clients"];
+var MOB_TAB_ORDER=["dash","proj","quote","clients"];
 var __mobScrollBusy=false;
 var __mobScrollTimer=null;
 function mobStripScrollEnd(){
@@ -3832,6 +3971,7 @@ function mobStripScrollEnd(){
   if(np==="quote") rQuote();
   if(np==="clients") rClients();
   if(np==="shop"){ matListScope="project"; matListRoomIdx=null; rShop(); }
+  syncMobDashStatusBarBg(np);
   syncShellTradeExp();
 }
 function isMobTabLayout(){
@@ -3848,6 +3988,18 @@ function syncMobDashStatusBarBg(pg){
   main.classList.toggle("rf-mob-dash-status", !!on);
   root.classList.toggle("rf-mob-dash-status", !!on);
 }
+function openRfNewJobSheet(e){
+  if(e){ e.preventDefault(); e.stopPropagation(); }
+  var sh=document.getElementById("rf-new-job-sheet");
+  if(sh){ sh.classList.add("show"); sh.setAttribute("aria-hidden","false"); }
+}
+function closeRfNewJobSheet(){
+  var sh=document.getElementById("rf-new-job-sheet");
+  if(sh){ sh.classList.remove("show"); sh.setAttribute("aria-hidden","true"); }
+}
+function rfSheetNewJob(){ closeRfNewJobSheet(); openNewProjectClientFlow(); }
+function rfSheetQuickQuote(){ closeRfNewJobSheet(); gP("quote"); }
+function rfSheetNewClient(){ closeRfNewJobSheet(); newClient(); }
 var matListScope="project",matListRoomIdx=null;
 /** When true, after POST /api/clients creates a project, go to project intake instead of dashboard. */
 var __rfAfterNewClientGoIntake=false;
@@ -3932,6 +4084,9 @@ function showPg(pg){
       el.style.display="block";
       if(p==="room") return;
     });
+    var ps0=document.getElementById("p-shop"), pt0=document.getElementById("p-tl");
+    if(ps0) ps0.style.display="none";
+    if(pt0) pt0.style.display="none";
     document.querySelectorAll(".mob-tab-slab").forEach(function(slab){
       var d=slab.getAttribute("data-pg");
       slab.classList.toggle("mob-slab--active", d===pg);
@@ -3954,7 +4109,7 @@ function showPg(pg){
       if(el) el.style.display="none";
     });
     document.querySelectorAll(".mob-tab-slab").forEach(function(slab){ slab.classList.remove("mob-slab--active"); });
-    ["intake","room","rooms","cal","shop","quote","inv","clients","sett","push"].forEach(function(p){
+    ["intake","room","rooms","cal","shop","tl","quote","inv","clients","sett","push"].forEach(function(p){
       var el=document.getElementById("p-"+p);
       if(!el) return;
       if(p===pg){
@@ -5020,7 +5175,10 @@ function rDash(){
     if(String(cn||'').trim()) descParts.push(String(cn).trim());
     if(String(ad||'').trim()) descParts.push(String(ad).trim());
     var descText=descParts.length?descParts.join(' · '):'—';
-    var activeHtml=da!==null?('<div class="dash-proj-days">'+da+' day'+(da!==1?'s':'')+' active</div>'):'';
+    var activeHtml;
+    if(da===null) activeHtml='<div class="dash-proj-days dash-proj-days--muted">—</div>';
+    else if(da===0) activeHtml='<div class="dash-proj-days dash-proj-days--muted">0 days active</div>';
+    else activeHtml='<div class="dash-proj-days">'+da+' day'+(da!==1?'s':'')+' active</div>';
     var dueHtml;
     if(dr===null) dueHtml='<div class="dash-proj-due">No deadline set</div>';
     else if(dr<0) dueHtml='<div class="dash-proj-due dash-proj-due--warn">Past deadline by '+Math.abs(dr)+' day'+(Math.abs(dr)!==1?'s':'')+'</div>';
