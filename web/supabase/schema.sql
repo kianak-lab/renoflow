@@ -364,24 +364,23 @@ for all using (
 -- Trade rows referenced by project_room_trades.trade_id (RenoFlow UI slugs)
 insert into public.trade_catalog (id, label, sort_order) values
   ('demo', 'Demolition', 10),
-  ('framing', 'Framing', 20),
+  ('framing', 'Framing / Bulkhead', 20),
   ('concrete', 'Concrete', 22),
   ('roofing', 'Roofing', 24),
   ('electrical', 'Electrical', 30),
   ('plumbing', 'Plumbing', 40),
   ('hvac', 'HVAC', 50),
-  ('lowvolt', 'Low voltage', 55),
-  ('security', 'Security', 56),
-  ('comdoor', 'Commercial door hardware', 57),
+  ('low-voltage', 'Low Voltage / Security / Commercial Door Hardware', 55),
   ('insulation', 'Insulation', 60),
-  ('drywall', 'Drywall', 70),
+  ('drywall', 'Drywall / Taping', 70),
   ('tile', 'Tile', 80),
   ('flooring', 'Flooring', 90),
-  ('painting', 'Painting', 100),
-  ('trim', 'Trim & Millwork', 110),
-  ('cabinets', 'Cabinets', 120),
+  ('painting', 'Painting / Finishing', 100),
+  ('doors-trim', 'Doors / Trim / Millwork', 110),
+  ('cabinets', 'Cabinets & Tops', 120),
   ('closets', 'Closets', 125),
-  ('finishing', 'Finishing', 130)
+  ('landscaping', 'Landscaping / Deck / Fence / Sheds', 130),
+  ('cleaning', 'Cleaning', 140)
 on conflict (id) do nothing;
 
 -- Shareable client intake links (public form → saves client on contractor's account)

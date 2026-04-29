@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { unpackDemolitionNote } from "@/lib/demolition-workspace";
-import { TB, TN, type CatalogItem } from "@/lib/final-catalog";
+import { TB, TN, normalizeTradeSlug, type CatalogItem } from "@/lib/final-catalog";
 
 function cloneItems(slug: string): Array<CatalogItem & { qty: number; wasAuto: boolean }> {
   const rows = TB[slug] ?? TB.demo;
@@ -32,7 +32,7 @@ function bool(row: Record<string, unknown>, keys: string[]): boolean {
 }
 
 function tradeIdToSlug(tradeId: unknown): string {
-  const s = String(tradeId ?? "demo").trim().toLowerCase();
+  const s = normalizeTradeSlug(String(tradeId ?? "demo"));
   if (s && TN[s]) return s;
   if (s && TB[s]) return s;
   return "demo";

@@ -2,27 +2,87 @@
 
 export const TN: Record<string, string> = {
   demo: "Demolition",
-  framing: "Framing",
+  framing: "Framing / Bulkhead",
   concrete: "Concrete",
   roofing: "Roofing",
   electrical: "Electrical",
   plumbing: "Plumbing",
   hvac: "HVAC",
-  lowvolt: "Low voltage",
-  security: "Security",
-  comdoor: "Commercial door hardware",
+  "low-voltage": "Low Voltage / Security / Commercial Door Hardware",
   insulation: "Insulation",
-  drywall: "Drywall",
+  drywall: "Drywall / Taping",
   tile: "Tile",
   flooring: "Flooring",
-  painting: "Painting",
-  trim: "Trim & Millwork",
-  cabinets: "Cabinets & tops",
+  painting: "Painting / Finishing",
+  "doors-trim": "Doors / Trim / Millwork",
+  cabinets: "Cabinets & Tops",
   closets: "Closets",
-  finishing: "Finishing",
+  landscaping: "Landscaping / Deck / Fence / Sheds",
+  cleaning: "Cleaning",
 };
 
 export type CatalogItem = { id: string; l: string; u: string; p: number };
+
+/** Legacy ids merged into `low-voltage`. */
+const TB_LOW_VOLTAGE_LINES: CatalogItem[] = [
+  { id: "lhl", l: "👷 Low-voltage labour", u: "hrs", p: 95 },
+  { id: "lvc1", l: "🌐 Cat6 outdoor", u: "ft", p: 3.8 },
+  { id: "lvc2", l: "🔥 Cat6 plenum", u: "ft", p: 3.2 },
+  { id: "lvc3", l: "📡 Cat6 non-plenum", u: "ft", p: 2.6 },
+  { id: "lvc4", l: "📡 Coax RG6", u: "ft", p: 1.8 },
+  { id: "lvc5", l: "🖥 HDMI cable", u: "ft", p: 4.5 },
+  { id: "lvc6", l: "🔊 Speaker wire", u: "ft", p: 2.1 },
+  { id: "lve1", l: "🔌 Patch panel", u: "ea", p: 95 },
+  { id: "lve2", l: "🌐 Network switch", u: "ea", p: 180 },
+  { id: "lve3", l: "🛜 Wireless AP", u: "ea", p: 220 },
+  { id: "lve4", l: "🔀 HDMI to RJ45 adapter", u: "ea", p: 65 },
+  { id: "lve5", l: "🖥 Monitor", u: "ea", p: 280 },
+  { id: "lvp1", l: "🧱 PVC conduit", u: "ft", p: 2.2 },
+  { id: "lvp2", l: "🪝 PVC connectors", u: "ea", p: 4.5 },
+  { id: "lvp3", l: "⬛ PVC boxes", u: "ea", p: 12 },
+  { id: "lvp4", l: "📷 Camera back box", u: "ea", p: 28 },
+  { id: "shl", l: "👷 Security labour", u: "hrs", p: 95 },
+  { id: "sca1", l: "🎥 Interior camera", u: "ea", p: 180 },
+  { id: "sca2", l: "🎥 Exterior camera", u: "ea", p: 220 },
+  { id: "sca3", l: "🎥 PTZ camera", u: "ea", p: 1200 },
+  { id: "sca4", l: "🚪 Doorbell camera", u: "ea", p: 150 },
+  { id: "ses1", l: "📼 NVR unit", u: "ea", p: 450 },
+  { id: "ses2", l: "🔌 PoE switch", u: "ea", p: 320 },
+  { id: "ses3", l: "💾 Hard drive", u: "ea", p: 120 },
+  { id: "ses4", l: "🖥 Monitor (NVR)", u: "ea", p: 280 },
+  { id: "sea1", l: "🧲 Mag lock", u: "ea", p: 180 },
+  { id: "sea2", l: "💳 Card reader", u: "ea", p: 145 },
+  { id: "sea3", l: "⏹ Exit button", u: "ea", p: 45 },
+  { id: "sea4", l: "🎛 Access controller", u: "ea", p: 890 },
+  { id: "sea5", l: "🗝 Key fobs", u: "ea", p: 8 },
+  { id: "cd1", l: "🚪 Door closers", u: "ea", p: 85 },
+  { id: "cd2", l: "🚪 Exit devices", u: "ea", p: 420 },
+  { id: "cd3", l: "📎 Hinges", u: "ea", p: 28 },
+  { id: "cd4", l: "🔐 Locksets", u: "ea", p: 180 },
+  { id: "cd5", l: "🛑 Door stops", u: "ea", p: 12 },
+  { id: "cd6", l: "👷 Commercial hardware labour", u: "hrs", p: 95 },
+];
+
+const TB_PAINTING_CORE: CatalogItem[] = [
+  { id: "pah", l: "👷 Paint labour", u: "hrs", p: 55 },
+  { id: "pnt1", l: "🪣 Interior paint", u: "gallon", p: 58 },
+  { id: "pnt2", l: "🪣 Exterior paint", u: "gallon", p: 64 },
+  { id: "pnt3", l: "🫙 Primer", u: "gallon", p: 42 },
+  { id: "pnt4", l: "🪣 Ceiling paint", u: "gallon", p: 48 },
+  { id: "pnt5", l: "🪣 Trim paint", u: "gallon", p: 52 },
+  { id: "sup1", l: "🎨 Roller covers", u: "ea", p: 6 },
+  { id: "sup2", l: "🖌 Paint brushes", u: "ea", p: 12 },
+  { id: "sup3", l: "🧻 Painter tape", u: "roll", p: 8.5 },
+  { id: "sup4", l: "🗂 Drop sheets", u: "ea", p: 14 },
+  { id: "sup5", l: "🪵 Sandpaper", u: "pack", p: 8 },
+  { id: "sup6", l: "🧪 Caulking", u: "tube", p: 5.5 },
+];
+
+const TB_FINISHING_LEGACY_LINES: CatalogItem[] = [
+  { id: "pfn1", l: "👷 Punch / detail labour", u: "hrs", p: 62 },
+  { id: "pfn2", l: "🔧 Hardware / accessories", u: "ea", p: 28 },
+  { id: "pfn3", l: "✨ Final touch-ups", u: "hrs", p: 58 },
+];
 
 export const TB: Record<string, CatalogItem[]> = {
   /* Demolition: use Next /trades/demolition + Supabase cached_products only — no legacy emoji lines. */
@@ -86,48 +146,7 @@ export const TB: Record<string, CatalogItem[]> = {
     { id: "hvd5", l: "⬛ Return grilles", u: "ea", p: 38 },
     { id: "hvd6", l: "⬛ Plenum box", u: "ea", p: 120 },
   ],
-  lowvolt: [
-    { id: "lhl", l: "👷 Low-voltage labour", u: "hrs", p: 95 },
-    { id: "lvc1", l: "🌐 Cat6 outdoor", u: "ft", p: 3.8 },
-    { id: "lvc2", l: "🔥 Cat6 plenum", u: "ft", p: 3.2 },
-    { id: "lvc3", l: "📡 Cat6 non-plenum", u: "ft", p: 2.6 },
-    { id: "lvc4", l: "📡 Coax RG6", u: "ft", p: 1.8 },
-    { id: "lvc5", l: "🖥 HDMI cable", u: "ft", p: 4.5 },
-    { id: "lvc6", l: "🔊 Speaker wire", u: "ft", p: 2.1 },
-    { id: "lve1", l: "🔌 Patch panel", u: "ea", p: 95 },
-    { id: "lve2", l: "🌐 Network switch", u: "ea", p: 180 },
-    { id: "lve3", l: "🛜 Wireless AP", u: "ea", p: 220 },
-    { id: "lve4", l: "🔀 HDMI to RJ45 adapter", u: "ea", p: 65 },
-    { id: "lve5", l: "🖥 Monitor", u: "ea", p: 280 },
-    { id: "lvp1", l: "🧱 PVC conduit", u: "ft", p: 2.2 },
-    { id: "lvp2", l: "🪝 PVC connectors", u: "ea", p: 4.5 },
-    { id: "lvp3", l: "⬛ PVC boxes", u: "ea", p: 12 },
-    { id: "lvp4", l: "📷 Camera back box", u: "ea", p: 28 },
-  ],
-  security: [
-    { id: "shl", l: "👷 Security labour", u: "hrs", p: 95 },
-    { id: "sca1", l: "🎥 Interior camera", u: "ea", p: 180 },
-    { id: "sca2", l: "🎥 Exterior camera", u: "ea", p: 220 },
-    { id: "sca3", l: "🎥 PTZ camera", u: "ea", p: 1200 },
-    { id: "sca4", l: "🚪 Doorbell camera", u: "ea", p: 150 },
-    { id: "ses1", l: "📼 NVR unit", u: "ea", p: 450 },
-    { id: "ses2", l: "🔌 PoE switch", u: "ea", p: 320 },
-    { id: "ses3", l: "💾 Hard drive", u: "ea", p: 120 },
-    { id: "ses4", l: "🖥 Monitor", u: "ea", p: 280 },
-    { id: "sea1", l: "🧲 Mag lock", u: "ea", p: 180 },
-    { id: "sea2", l: "💳 Card reader", u: "ea", p: 145 },
-    { id: "sea3", l: "⏹ Exit button", u: "ea", p: 45 },
-    { id: "sea4", l: "🎛 Access controller", u: "ea", p: 890 },
-    { id: "sea5", l: "🗝 Key fobs", u: "ea", p: 8 },
-  ],
-  comdoor: [
-    { id: "cd1", l: "🚪 Door closers", u: "ea", p: 85 },
-    { id: "cd2", l: "🚪 Exit devices", u: "ea", p: 420 },
-    { id: "cd3", l: "📎 Hinges", u: "ea", p: 28 },
-    { id: "cd4", l: "🔐 Locksets", u: "ea", p: 180 },
-    { id: "cd5", l: "🛑 Door stops", u: "ea", p: 12 },
-    { id: "cd6", l: "👷 Hardware labour", u: "hrs", p: 95 },
-  ],
+  "low-voltage": TB_LOW_VOLTAGE_LINES,
   insulation: [
     { id: "in3", l: "👷 Insulation labour", u: "hrs", p: 55 },
     { id: "inb1", l: "🧱 R-14 batt", u: "bag", p: 38 },
@@ -185,21 +204,8 @@ export const TB: Record<string, CatalogItem[]> = {
     { id: "fli4", l: "📏 Baseboards", u: "ft", p: 3.2 },
     { id: "fli5", l: "〰 Quarter round", u: "ft", p: 2.4 },
   ],
-  painting: [
-    { id: "pah", l: "👷 Paint labour", u: "hrs", p: 55 },
-    { id: "pnt1", l: "🪣 Interior paint", u: "gallon", p: 58 },
-    { id: "pnt2", l: "🪣 Exterior paint", u: "gallon", p: 64 },
-    { id: "pnt3", l: "🫙 Primer", u: "gallon", p: 42 },
-    { id: "pnt4", l: "🪣 Ceiling paint", u: "gallon", p: 48 },
-    { id: "pnt5", l: "🪣 Trim paint", u: "gallon", p: 52 },
-    { id: "sup1", l: "🎨 Roller covers", u: "ea", p: 6 },
-    { id: "sup2", l: "🖌 Paint brushes", u: "ea", p: 12 },
-    { id: "sup3", l: "🧻 Painter tape", u: "roll", p: 8.5 },
-    { id: "sup4", l: "🗂 Drop sheets", u: "ea", p: 14 },
-    { id: "sup5", l: "🪵 Sandpaper", u: "pack", p: 8 },
-    { id: "sup6", l: "🧪 Caulking", u: "tube", p: 5.5 },
-  ],
-  trim: [
+  painting: [...TB_PAINTING_CORE, ...TB_FINISHING_LEGACY_LINES],
+  "doors-trim": [
     { id: "trl", l: "👷 Trim & millwork labour", u: "hrs", p: 65 },
     { id: "trb1", l: "📏 Baseboard", u: "ft", p: 2.5 },
     { id: "trb2", l: "🚪 Door casing", u: "ft", p: 2.8 },
@@ -236,10 +242,17 @@ export const TB: Record<string, CatalogItem[]> = {
     { id: "cl2", l: "📐 Wire / melamine", u: "ln ft", p: 42 },
     { id: "cl3", l: "🚪 Bifold / bypass doors", u: "ea", p: 240 },
   ],
-  finishing: [
-    { id: "fn1", l: "👷 Punch / detail labour", u: "hrs", p: 62 },
-    { id: "fn2", l: "🔧 Hardware / accessories", u: "ea", p: 28 },
-    { id: "fn3", l: "✨ Final touch-ups", u: "hrs", p: 58 },
+  landscaping: [
+    { id: "lsl", l: "👷 Exterior labour", u: "hrs", p: 72 },
+    { id: "ls1", l: "🌿 Sod / grading", u: "sqft", p: 2.5 },
+    { id: "ls2", l: "🪵 Deck boards", u: "sqft", p: 12 },
+    { id: "ls3", l: "🛖 Fence panels", u: "lf", p: 48 },
+    { id: "ls4", l: "🏠 Shed shell package", u: "ea", p: 4200 },
+  ],
+  cleaning: [
+    { id: "clnl", l: "👷 Cleaning labour", u: "hrs", p: 52 },
+    { id: "cln1", l: "🧽 Post-construction clean", u: "ea", p: 450 },
+    { id: "cln2", l: "✨ Final detail clean", u: "ea", p: 280 },
   ],
 };
 
@@ -266,19 +279,35 @@ export const INTAKE_TRADE_IDS = [
   "electrical",
   "plumbing",
   "hvac",
-  "lowvolt",
-  "security",
-  "comdoor",
+  "low-voltage",
   "insulation",
   "drywall",
   "tile",
   "flooring",
   "painting",
-  "trim",
+  "doors-trim",
   "cabinets",
   "closets",
-  "finishing",
+  "landscaping",
+  "cleaning",
 ] as const;
+
+/** Maps deprecated DB / workspace trade ids to current catalog slugs. */
+const LEGACY_TRADE_SLUG_MAP: Record<string, string> = {
+  lowvolt: "low-voltage",
+  security: "low-voltage",
+  comdoor: "low-voltage",
+  trim: "doors-trim",
+  finishing: "painting",
+  bulkhead: "framing",
+  deck_fence: "landscaping",
+  "deck-fence": "landscaping",
+};
+
+export function normalizeTradeSlug(raw: string): string {
+  const s = raw.trim().toLowerCase();
+  return LEGACY_TRADE_SLUG_MAP[s] ?? s;
+}
 
 export function tradeUuidToSlug(
   tradeRows: Record<string, unknown>[],
@@ -289,7 +318,7 @@ export function tradeUuidToSlug(
     const id = rowStr(raw, ["id"]);
     if (!id || id !== tid) continue;
     const slug = rowStr(raw, ["slug", "code", "key"]);
-    if (slug) return slug.trim().toLowerCase();
+    if (slug) return normalizeTradeSlug(slug.trim().toLowerCase());
     const name = typeof raw.name === "string" ? raw.name.trim() : "";
     if (name) {
       for (const [sl, lab] of Object.entries(TRADE_LABEL)) {
