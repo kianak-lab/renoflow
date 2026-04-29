@@ -291,9 +291,31 @@ export default function ProjectsManager() {
     };
   }, [fabOpen]);
 
+  /** Lock document scroll on this screen so iOS rubber-band does not move the shell / tab bar. */
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const prev = {
+      htmlOverflow: html.style.overflow,
+      bodyOverflow: body.style.overflow,
+      htmlOverscroll: html.style.overscrollBehavior,
+      bodyOverscroll: body.style.overscrollBehavior,
+    };
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    html.style.overscrollBehavior = "none";
+    body.style.overscrollBehavior = "none";
+    return () => {
+      html.style.overflow = prev.htmlOverflow;
+      body.style.overflow = prev.bodyOverflow;
+      html.style.overscrollBehavior = prev.htmlOverscroll;
+      body.style.overscrollBehavior = prev.bodyOverscroll;
+    };
+  }, []);
+
   return (
     <div
-      className="flex h-dvh max-h-dvh flex-col overflow-hidden"
+      className="flex max-h-[100svh] min-h-0 flex-col overflow-hidden [height:100svh]"
       style={{ fontFamily: "inherit" }}
     >
       <header
@@ -342,7 +364,7 @@ export default function ProjectsManager() {
       </header>
 
       <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain [-webkit-overflow-scrolling:touch] pb-[88px] md:pb-6">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-none pb-4 md:pb-6">
         <div
           className="flex gap-1.5 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           style={{ padding: "12px 14px", gap: 6 }}
@@ -534,10 +556,10 @@ export default function ProjectsManager() {
         />
 
         <nav
-          className="relative z-[10100] flex shrink-0 flex-row items-end justify-between border-t bg-white md:hidden"
+          className="relative z-[10100] flex shrink-0 flex-row items-center justify-between border-t bg-white md:hidden"
           style={{
             borderTop: "0.5px solid #e0e0e0",
-            padding: `28px 4px max(8px, env(safe-area-inset-bottom, 0px))`,
+            padding: `10px 4px max(8px, env(safe-area-inset-bottom, 0px))`,
             boxShadow: "none",
           }}
           aria-label="Main"
@@ -545,7 +567,7 @@ export default function ProjectsManager() {
           <Link
             href="/final"
             prefetch={false}
-            className="flex min-h-[44px] flex-1 flex-col items-center justify-end gap-0.5 bg-transparent px-0.5 pb-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
+            className="flex min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 bg-transparent px-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
           >
             <span className="flex h-7 w-7 items-center justify-center text-current" aria-hidden>
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
@@ -555,7 +577,7 @@ export default function ProjectsManager() {
             <span className="max-w-full truncate text-[9px] font-medium uppercase tracking-wide">Home</span>
           </Link>
 
-          <div className="flex min-h-[44px] flex-1 flex-col items-center justify-end gap-0.5 text-[#0f2318]">
+          <div className="flex min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 text-[#0f2318]">
             <span className="flex h-7 w-7 items-center justify-center text-current" aria-hidden>
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="7" height="7" rx="1.25" />
@@ -569,7 +591,7 @@ export default function ProjectsManager() {
             </span>
           </div>
 
-          <div className="relative z-[12] flex min-w-0 flex-1 flex-col items-center" style={{ marginTop: -28 }}>
+          <div className="relative z-[12] flex min-w-0 flex-1 flex-col items-center justify-center">
             <div
               className="absolute bottom-full left-1/2 z-10 -translate-x-1/2"
               style={{
@@ -714,7 +736,7 @@ export default function ProjectsManager() {
               </svg>
             </button>
             <span
-              className="mt-1.5 text-center text-[9px] font-semibold uppercase tracking-wide text-[#0f2318]"
+              className="mt-1 text-center text-[9px] font-semibold uppercase tracking-wide text-[#0f2318]"
               style={{ letterSpacing: "0.05em" }}
               aria-hidden
             >
@@ -725,7 +747,7 @@ export default function ProjectsManager() {
           <Link
             href="/final"
             prefetch={false}
-            className="flex min-h-[44px] flex-1 flex-col items-center justify-end gap-0.5 bg-transparent px-0.5 pb-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
+            className="flex min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 bg-transparent px-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
           >
             <span className="flex h-7 w-7 items-center justify-center text-current" aria-hidden>
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
@@ -741,7 +763,7 @@ export default function ProjectsManager() {
           <Link
             href="/final"
             prefetch={false}
-            className="flex min-h-[44px] flex-1 flex-col items-center justify-end gap-0.5 bg-transparent px-0.5 pb-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
+            className="flex min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 bg-transparent px-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
           >
             <span className="flex h-7 w-7 items-center justify-center text-current" aria-hidden>
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
