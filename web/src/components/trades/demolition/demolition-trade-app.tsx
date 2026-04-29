@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -88,13 +89,44 @@ function useDebouncedFn<T>(fn: (arg: T) => void, ms: number): (arg: T) => void {
   );
 }
 
-export default function DemolitionTradeApp() {
+export type DemolitionTradeAppProps = {
+  /** URL query `pid` from server render — anchors SPA transitions before client search params sync */
+  initialPid?: string;
+  /** URL query `dbRoomId` from server render */
+  initialDbRoomId?: string;
+};
+
+export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) {
+  const { initialPid = "", initialDbRoomId = "" } = props;
   const router = useRouter();
   const sp = useSearchParams();
+  /** Fallback when Next.js client router hasn't surfaced query strings yet (common after SPA navigation). */
+  const [locPid, setLocPid] = useState("");
+  const [locDbRoomId, setLocDbRoomId] = useState("");
+  const searchSig = sp.toString();
+  useLayoutEffect(() => {
+    try {
+      const q = new URLSearchParams(window.location.search);
+      setLocPid((q.get("pid") ?? "").trim());
+      setLocDbRoomId((q.get("dbRoomId") ?? "").trim());
+    } catch {
+      /* ignore */
+    }
+  }, [searchSig]);
+
+  const pidParam =
+    (sp.get("pid") ?? "").trim() ||
+    initialPid.trim() ||
+    locPid.trim() ||
+    undefined;
+  const dbRoomIdParam =
+    (sp.get("dbRoomId") ?? "").trim() ||
+    initialDbRoomId.trim() ||
+    locDbRoomId.trim() ||
+    "";
+
   const riParam = Number(sp.get("ri") ?? "0");
   const tiParam = Number(sp.get("ti") ?? "0");
-  const pidParam = sp.get("pid");
-  const dbRoomIdParam = sp.get("dbRoomId") ?? "";
 
   const [tab, setTab] = useState<TabKey>("labour");
   const [materialSearch, setMaterialSearch] = useState("");
@@ -154,6 +186,49 @@ export default function DemolitionTradeApp() {
   useEffect(() => {
     loadFromStorage();
   }, [loadFromStorage]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const ws = projectId ? loadWorkspace(projectId) : null;
+    console.log("[RF demolition] URL params", {
+      pid_sp: sp.get("pid"),
+      dbRoomId_sp: sp.get("dbRoomId"),
+      initialPidProp: initialPid,
+      initialDbRoomIdProp: initialDbRoomId,
+      locPid,
+      locDbRoomId,
+      mergedPid: pidParam ?? null,
+      mergedDbRoomId: dbRoomIdParam || null,
+      projectIdResolved: projectId || null,
+      activeProjectFallback: readActiveProjectId(),
+    });
+    console.log(
+      "[RF demolition] loadWorkspace(" + (projectId || "(empty)") + ")",
+      ws == null
+        ? ws
+        : {
+            topKeys: ws && typeof ws === "object" ? Object.keys(ws) : [],
+            roomsLength: ws?.rooms?.length ?? 0,
+            roomSummaries: ws?.rooms?.map((r, i) => ({
+              i,
+              n: r?.n,
+              dbRoomId: r?.dbRoomId,
+              tradesCount: r?.trades?.length ?? 0,
+              tradeIds: (r?.trades ?? []).map((t) => (t as { id?: string }).id),
+            })),
+          },
+    );
+  }, [
+    projectId,
+    sp,
+    searchSig,
+    initialPid,
+    initialDbRoomId,
+    locPid,
+    locDbRoomId,
+    pidParam,
+    dbRoomIdParam,
+  ]);
 
   useEffect(() => {
     let cancelled = false;

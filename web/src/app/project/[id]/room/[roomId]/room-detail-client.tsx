@@ -379,6 +379,12 @@ export default function RoomDetailClient({
     [projectId, roomId, router],
   );
 
+  /** Same hydration as Open → — Labour shortcut must not navigate before workspace exists in localStorage */
+  const navigateDemolitionAfterHydrate = useCallback(async () => {
+    await hydrateProjectWorkspaceFromApi(projectId);
+    router.push(demolitionHref(projectId, roomId));
+  }, [projectId, roomId, router]);
+
   return (
     <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden">
       <header
@@ -532,18 +538,25 @@ export default function RoomDetailClient({
                         >
                           Materials
                         </Link>
-                        <Link
-                          href={
-                            t.trade_id === "demo"
-                              ? demolitionHref(projectId, roomId)
-                              : finalHref(projectId, { room: roomId, trade: t.trade_id })
-                          }
-                          prefetch={false}
-                          className="inline-flex min-h-[36px] flex-1 items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#555] no-underline [-webkit-tap-highlight-color:transparent]"
-                          style={{ border: "0.5px solid #e0e0e0", flex: "1 1 80px" }}
-                        >
-                          Labour
-                        </Link>
+                        {t.trade_id === "demo" ? (
+                          <button
+                            type="button"
+                            onClick={() => void navigateDemolitionAfterHydrate()}
+                            className="inline-flex min-h-[36px] flex-1 cursor-pointer items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#555] [-webkit-tap-highlight-color:transparent]"
+                            style={{ border: "0.5px solid #e0e0e0", flex: "1 1 80px" }}
+                          >
+                            Labour
+                          </button>
+                        ) : (
+                          <Link
+                            href={finalHref(projectId, { room: roomId, trade: t.trade_id })}
+                            prefetch={false}
+                            className="inline-flex min-h-[36px] flex-1 items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#555] no-underline [-webkit-tap-highlight-color:transparent]"
+                            style={{ border: "0.5px solid #e0e0e0", flex: "1 1 80px" }}
+                          >
+                            Labour
+                          </Link>
+                        )}
                         <button
                           type="button"
                           disabled={openingTradeId === t.id}

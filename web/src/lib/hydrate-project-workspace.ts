@@ -1,5 +1,15 @@
 import { loadWorkspace, saveWorkspace, type WorkspaceShape } from "@/lib/demolition-workspace";
 
+/** Deep-clone API payload into plain JSON so localStorage always holds serializable `WorkspaceShape`. */
+function cloneRoomsForStorage(rooms: unknown): WorkspaceShape["rooms"] {
+  try {
+    const parsed = JSON.parse(JSON.stringify(Array.isArray(rooms) ? rooms : [])) as unknown;
+    return parsed as WorkspaceShape["rooms"];
+  } catch {
+    return [];
+  }
+}
+
 /**
  * Loads project workspace data from Supabase via `/api/projects/[id]/workspace`
  * and persists it to localStorage in the shape expected by `final.html` and
@@ -17,11 +27,15 @@ export async function hydrateProjectWorkspaceFromApi(projectId: string): Promise
   if (!res.ok) {
     throw new Error(j.error ?? "Could not load workspace.");
   }
-  const rooms = Array.isArray(j.rooms) ? j.rooms : [];
+  const rooms = cloneRoomsForStorage(j.rooms);
   const prev = loadWorkspace(projectId);
+  const prevPlain =
+    prev != null
+      ? (JSON.parse(JSON.stringify(prev)) as WorkspaceShape)
+      : ({} as WorkspaceShape);
   const next: WorkspaceShape = {
-    ...(prev ?? {}),
-    rooms: rooms as WorkspaceShape["rooms"],
+    ...prevPlain,
+    rooms,
   };
   saveWorkspace(projectId, next);
   try {
