@@ -453,6 +453,21 @@ export default function RoomDetailClient({
             >
               Trades Sheet
             </h1>
+            <p
+              style={{
+                margin: "6px 0 0",
+                fontSize: 13,
+                fontWeight: 500,
+                color: "rgba(255,255,255,0.55)",
+                letterSpacing: "0.02em",
+              }}
+            >
+              {loading
+                ? "…"
+                : data
+                  ? `${data.trades.length} ${data.trades.length === 1 ? "trade" : "trades"}`
+                  : "—"}
+            </p>
           </div>
         </div>
       </header>
