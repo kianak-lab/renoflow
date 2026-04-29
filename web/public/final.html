@@ -6986,6 +6986,7 @@ function saveAddTradesPick(){
   applyAuto(room);
   closeMo();
   ss();rRoom();uSide();rNav();
+  if(room.dbRoomId){ syncRoomToSupabase(curR).catch(function(e){ console.warn("[room sync]",e); }); }
 }
 function addTradeById(tid){
   var room=S.rooms[curR];
@@ -6994,6 +6995,7 @@ function addTradeById(tid){
   applyAuto(room);
   closeMo();
   ss();rRoom();uSide();rNav();
+  if(room.dbRoomId){ syncRoomToSupabase(curR).catch(function(e){ console.warn("[room sync]",e); }); }
 }
 function openRoomListTradesModal(ri){
   if(ri<0 || ri>=S.rooms.length) return;
@@ -7029,6 +7031,7 @@ function applyRoomListTradesPick(){
   closeMo();
   ss();rNav();uSide();
   gRoom(ri);
+  if(room.dbRoomId){ syncRoomToSupabase(ri).catch(function(e){ console.warn("[room sync]",e); }); }
 }
 
 function toggleDimMobPanel(e){

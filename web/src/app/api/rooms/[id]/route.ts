@@ -189,7 +189,17 @@ export async function PATCH(
     const slug = String(t.id ?? "")
       .trim()
       .toLowerCase();
-    if (!slug || !validSlugs.has(slug)) continue;
+    if (!slug) {
+      return NextResponse.json({ error: "Each trade must include a non-empty id." }, { status: 400 });
+    }
+    if (!validSlugs.has(slug)) {
+      return NextResponse.json(
+        {
+          error: `Trade "${slug}" is missing from trade_catalog. Seed catalog ids (demo, framing, electrical, …) in Supabase.`,
+        },
+        { status: 422 },
+      );
+    }
     normalized.push({ slug, patch: t });
   }
 
