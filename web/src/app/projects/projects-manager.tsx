@@ -313,6 +313,38 @@ export default function ProjectsManager() {
     };
   }, []);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    const sync = () => {
+      if (typeof window.matchMedia !== "function" || !window.matchMedia("(max-width: 767px)").matches) {
+        root.style.removeProperty("--rf-nav-bottom");
+        return;
+      }
+      const vv = window.visualViewport;
+      if (!vv) {
+        root.style.removeProperty("--rf-nav-bottom");
+        return;
+      }
+      const lh = window.innerHeight || document.documentElement.clientHeight || 0;
+      const inset = Math.max(0, lh - vv.height - vv.offsetTop);
+      root.style.setProperty("--rf-nav-bottom", `${inset}px`);
+    };
+    sync();
+    const vv = window.visualViewport;
+    vv?.addEventListener("resize", sync);
+    vv?.addEventListener("scroll", sync);
+    window.addEventListener("resize", sync);
+    const onOrient = () => window.setTimeout(sync, 160);
+    window.addEventListener("orientationchange", onOrient);
+    return () => {
+      vv?.removeEventListener("resize", sync);
+      vv?.removeEventListener("scroll", sync);
+      window.removeEventListener("resize", sync);
+      window.removeEventListener("orientationchange", onOrient);
+      root.style.removeProperty("--rf-nav-bottom");
+    };
+  }, []);
+
   return (
     <div
       className="flex min-h-0 w-full flex-1 flex-col overflow-hidden"
@@ -557,8 +589,9 @@ export default function ProjectsManager() {
       </div>
 
       <nav
-        className="fixed bottom-0 left-0 right-0 z-[10100] flex flex-row items-end justify-between border-t bg-white [transform:translateZ(0)] md:hidden"
+        className="fixed left-0 right-0 z-[10100] flex w-full flex-row items-end justify-between border-t bg-white md:hidden"
         style={{
+          bottom: "var(--rf-nav-bottom, 0px)",
           borderTop: "0.5px solid #e0e0e0",
           padding: `28px 4px max(8px, env(safe-area-inset-bottom, 0px))`,
           boxShadow: "none",
