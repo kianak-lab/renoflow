@@ -543,6 +543,16 @@ export default function RoomDetailClient({
                       >
                         <button
                           type="button"
+                          disabled={deletingTradeId === t.id || openingTradeId === t.id}
+                          onClick={() => void deleteTrade(t)}
+                          className="inline-flex min-h-[36px] flex-1 cursor-pointer items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#b42318] [-webkit-tap-highlight-color:transparent] disabled:opacity-60"
+                          style={{ border: "0.5px solid #f5d4d1", flex: "1 1 88px" }}
+                          aria-label={`Delete ${t.name}`}
+                        >
+                          {deletingTradeId === t.id ? "…" : "Delete"}
+                        </button>
+                        <button
+                          type="button"
                           disabled={openingTradeId === t.id || deletingTradeId === t.id}
                           onClick={() => void openTradeNavigate(t)}
                           className="inline-flex min-h-[36px] flex-[1.15] items-center justify-center gap-1 rounded-[100px] bg-[#0f2318] px-3 text-[11px] font-medium text-white [-webkit-tap-highlight-color:transparent] disabled:opacity-60"
@@ -555,16 +565,6 @@ export default function RoomDetailClient({
                               Open <span aria-hidden>→</span>
                             </>
                           )}
-                        </button>
-                        <button
-                          type="button"
-                          disabled={deletingTradeId === t.id || openingTradeId === t.id}
-                          onClick={() => void deleteTrade(t)}
-                          className="inline-flex min-h-[36px] flex-1 cursor-pointer items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#b42318] [-webkit-tap-highlight-color:transparent] disabled:opacity-60"
-                          style={{ border: "0.5px solid #f5d4d1", flex: "1 1 88px" }}
-                          aria-label={`Delete ${t.name}`}
-                        >
-                          {deletingTradeId === t.id ? "…" : "Delete"}
                         </button>
                       </div>
                     </div>
