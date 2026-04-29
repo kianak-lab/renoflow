@@ -303,40 +303,19 @@ export default function ProjectsManager() {
           paddingTop: "max(0.75rem, env(safe-area-inset-top, 0px))",
         }}
       >
-        <div className="flex items-start justify-between gap-3 px-3.5 pb-3 pt-0.5" style={{ paddingLeft: 14, paddingRight: 14 }}>
-          <div className="min-w-0 flex-1">
-            <h1 className="text-[22px] font-medium leading-tight tracking-tight text-white">
-              Projects
-            </h1>
-          </div>
-          <Link
-            href="/final"
-            prefetch={false}
-            className="flex h-11 min-h-[44px] w-11 min-w-[44px] shrink-0 items-center justify-center rounded-lg no-underline [-webkit-tap-highlight-color:transparent]"
-            aria-label="RenoFlow workspace"
-          >
-            <span
-              className="flex h-10 w-10 items-center justify-center rounded-lg"
-              style={{
-                background: "#1a3d28",
-                border: "0.5px solid #2a5a3a",
-                boxSizing: "border-box",
-              }}
-            >
-              <span
-                className="text-base font-semibold leading-none"
-                style={{ fontFamily: "var(--rf-plex-serif), 'Times New Roman', serif", color: "#4a9a6a" }}
-              >
-                R°
-              </span>
-            </span>
-          </Link>
+        <div className="px-3.5 pb-3 pt-0.5" style={{ paddingLeft: 14, paddingRight: 14 }}>
+          <h1 className="text-[22px] font-medium leading-tight tracking-tight text-white">
+            Projects
+          </h1>
         </div>
 
         <div className="px-3.5 pb-4" style={{ paddingLeft: 14, paddingRight: 14 }}>
           <label className="relative block">
-            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-white/50" aria-hidden>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round">
+            <span
+              className="pointer-events-none absolute bottom-0 left-3 top-0 flex w-[18px] items-center justify-start text-white/50"
+              aria-hidden
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" className="shrink-0">
                 <circle cx="11" cy="11" r="7" />
                 <path d="M20 20l-4.3-4.3" />
               </svg>
@@ -346,14 +325,16 @@ export default function ProjectsManager() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search projects, clients..."
-              className="w-full rounded-[10px] py-2.5 pl-10 pr-3.5 text-[15px] text-white outline-none placeholder:text-white/40"
+              className="w-full rounded-[10px] pr-3.5 text-[15px] text-white outline-none placeholder:text-white/40"
               style={{
                 background: "rgba(255,255,255,0.1)",
                 border: "0.5px solid rgba(255,255,255,0.15)",
                 paddingTop: 10,
                 paddingBottom: 10,
-                paddingLeft: 14 + 22,
+                paddingLeft: 12 + 18 + 10,
                 paddingRight: 14,
+                minHeight: 44,
+                boxSizing: "border-box",
               }}
             />
           </label>
