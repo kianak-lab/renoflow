@@ -137,33 +137,6 @@ function matchesFilter(p: ProjectRow, filter: FilterPill): boolean {
   return true;
 }
 
-function StatusIcons() {
-  return (
-    <div className="flex items-center gap-1.5 text-white" aria-hidden>
-      <svg width="18" height="12" viewBox="0 0 18 12" fill="none" className="opacity-90">
-        <path
-          d="M1 9.5h2.5v2H1v-2zm4-2h2.5v4H5v-4zm4-4h2.5v8H9v-8zm4-3h2.5v11h-2.5V.5z"
-          fill="currentColor"
-        />
-      </svg>
-      <svg width="20" height="14" viewBox="0 0 20 14" fill="none" className="opacity-90">
-        <path
-          d="M2 6.5c2.5-3.5 13.5-3.5 16 0-2.5 3.5-13.5 3.5-16 0z"
-          stroke="currentColor"
-          strokeWidth="1.2"
-          strokeLinejoin="round"
-        />
-        <circle cx="10" cy="6.5" r="2" fill="currentColor" />
-      </svg>
-      <svg width="24" height="12" viewBox="0 0 24 12" fill="none" className="opacity-90">
-        <rect x="2" y="3" width="18" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
-        <path d="M21 5v3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-        <rect x="4" y="5" width="12" height="4" rx="0.5" fill="currentColor" />
-      </svg>
-    </div>
-  );
-}
-
 export default function ProjectsManager() {
   const [projects, setProjects] = useState<ProjectRow[]>([]);
   const [clients, setClients] = useState<ClientRow[]>([]);
@@ -176,7 +149,6 @@ export default function ProjectsManager() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterPill>("all");
   const [fabOpen, setFabOpen] = useState(false);
-  const [statusTime, setStatusTime] = useState("");
 
   const [fName, setFName] = useState("");
   const [fClientId, setFClientId] = useState("");
@@ -184,20 +156,6 @@ export default function ProjectsManager() {
   const [fAddress, setFAddress] = useState("");
   const [fQuote, setFQuote] = useState("");
   const [fNotes, setFNotes] = useState("");
-
-  useEffect(() => {
-    const tick = () => {
-      const d = new Date();
-      const h = d.getHours();
-      const m = d.getMinutes();
-      const am = h >= 12 ? "PM" : "AM";
-      const hh = ((h + 11) % 12) + 1;
-      setStatusTime(`${hh}:${m.toString().padStart(2, "0")} ${am}`);
-    };
-    tick();
-    const id = setInterval(tick, 30_000);
-    return () => clearInterval(id);
-  }, []);
 
   const load = useCallback(async () => {
     setError(null);
@@ -342,26 +300,12 @@ export default function ProjectsManager() {
         className="shrink-0 text-white"
         style={{
           background: "#0f2318",
-          paddingTop: "max(0.5rem, env(safe-area-inset-top, 0px))",
+          paddingTop: "max(0.75rem, env(safe-area-inset-top, 0px))",
         }}
       >
-        <div
-          className="flex items-center justify-between gap-3 px-3.5 pb-1 pt-1.5"
-          style={{ paddingLeft: 14, paddingRight: 14 }}
-        >
-          <time className="text-[13px] font-medium tabular-nums text-white">{statusTime}</time>
-          <StatusIcons />
-        </div>
-
-        <div className="flex items-start justify-between gap-3 px-3.5 pb-3 pt-1" style={{ paddingLeft: 14, paddingRight: 14 }}>
+        <div className="flex items-start justify-between gap-3 px-3.5 pb-3 pt-0.5" style={{ paddingLeft: 14, paddingRight: 14 }}>
           <div className="min-w-0 flex-1">
-            <p
-              className="text-[11px] font-medium uppercase text-white/70"
-              style={{ letterSpacing: "0.12em" }}
-            >
-              Your jobs
-            </p>
-            <h1 className="mt-1.5 text-[22px] font-medium leading-tight tracking-tight text-white">
+            <h1 className="text-[22px] font-medium leading-tight tracking-tight text-white">
               Projects
             </h1>
           </div>
