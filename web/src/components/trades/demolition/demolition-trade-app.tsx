@@ -327,6 +327,18 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
     [dbRoomIdParam, room, projectId, ri, ti, products],
   );
 
+  const pushToQuote = useCallback(async () => {
+    if (!projectId) return;
+    persistLocal(dRef.current);
+    await persistRemote(dRef.current);
+    try {
+      localStorage.setItem("rf7_active_project", projectId);
+    } catch {
+      /* quota / private mode */
+    }
+    router.push(`/final?project=${encodeURIComponent(projectId)}&pg=quote`);
+  }, [projectId, persistLocal, persistRemote, router]);
+
   const debouncedLocal = useDebouncedFn(persistLocal, 280);
   const debouncedRemote = useDebouncedFn(
     useCallback((next: DemolitionV3State) => void persistRemote(next), [persistRemote]),
@@ -1238,6 +1250,16 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
                 </div>
               ) : null}
             </section>
+
+            <button
+              type="button"
+              onClick={() => void pushToQuote()}
+              disabled={!projectId}
+              className={`min-h-[48px] w-full text-[14px] font-semibold text-white touch-manipulation disabled:opacity-45 ${bubbleRounded}`}
+              style={{ background: SITE.ink }}
+            >
+              Push to Quote
+            </button>
           </div>
         )}
 

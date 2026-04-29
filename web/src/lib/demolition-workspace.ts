@@ -456,17 +456,51 @@ export function maxWorkerDays(workers: DemoWorker[]): number {
   return m;
 }
 
+/**
+ * Snapshot for `trade.rfDemolition` when syncing workspace / merges. Full editable state
+ * stays in `trade.note` (RF_DEMOLITION_V1); this blob omits private crew rates and
+ * demolition timeline copy when "Schedule this trade" is off so quote-facing data paths
+ * never carry MY COSTS fields or internal day notes.
+ */
+export function sanitizeDemolitionForQuoteRfBlob(d: DemolitionV3State): DemolitionV3State {
+  const workers = d.workers.map((w) => ({
+    ...w,
+    hourlyMyCost: 0,
+    myCostPerDay: 0,
+  }));
+  let timelineTotalDays = d.timelineTotalDays;
+  let timelineDayDescriptions = d.timelineDayDescriptions;
+  let scheduleTradeEnabled = d.scheduleTradeEnabled;
+  if (!d.scheduleTradeEnabled) {
+    scheduleTradeEnabled = false;
+    timelineTotalDays = 1;
+    timelineDayDescriptions = [""];
+  }
+  const out: DemolitionV3State = {
+    ...d,
+    v: 3,
+    workers,
+    workerExpenseEnabled: false,
+    scheduleTradeEnabled,
+    timelineTotalDays,
+    timelineDayDescriptions,
+    clientLabourCharge: clientLabourBilled(d),
+  };
+  return out;
+}
+
 export function applyDemolitionToTrade(
   t: TradeShape,
   d: DemolitionV3State,
   products: CachedProductRow[],
 ): void {
-  t.rfDemolition = { ...d, v: 3 };
+  const packed: DemolitionV3State = { ...d, v: 3 };
+  t.rfDemolition = sanitizeDemolitionForQuoteRfBlob(packed);
   const wmax = d.workerExpenseEnabled ? maxWorkerDays(d.workers) : 0;
   const tmax = d.scheduleTradeEnabled ? Math.max(0, d.timelineTotalDays) : 0;
   t.days = Math.max(wmax, tmax);
   t.daysCustom = !!d.daysCustom;
-  t.note = packDemolitionNote({ ...d, v: 3 });
+  t.note = packDemolitionNote(packed);
   t.materialsBillToClient = d.materialsBillToClient;
 
   if (!t.labour) t.labour = { mode: "job", rate: 55, qty: 0, jobPrice: 0 };
