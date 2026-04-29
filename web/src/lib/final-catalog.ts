@@ -257,6 +257,29 @@ function rowStr(row: Record<string, unknown>, keys: string[]): string | null {
   return null;
 }
 
+/** Same order as `INTAKE_TRADE_IDS` in `final.html` — trades pickable for a room. */
+export const INTAKE_TRADE_IDS = [
+  "demo",
+  "framing",
+  "concrete",
+  "roofing",
+  "electrical",
+  "plumbing",
+  "hvac",
+  "lowvolt",
+  "security",
+  "comdoor",
+  "insulation",
+  "drywall",
+  "tile",
+  "flooring",
+  "painting",
+  "trim",
+  "cabinets",
+  "closets",
+  "finishing",
+] as const;
+
 export function tradeUuidToSlug(
   tradeRows: Record<string, unknown>[],
   tradeId: string,

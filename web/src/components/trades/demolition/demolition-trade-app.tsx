@@ -91,8 +91,8 @@ function useDebouncedFn<T>(fn: (arg: T) => void, ms: number): (arg: T) => void {
 export default function DemolitionTradeApp() {
   const router = useRouter();
   const sp = useSearchParams();
-  const ri = Number(sp.get("ri") ?? "0");
-  const ti = Number(sp.get("ti") ?? "0");
+  const riParam = Number(sp.get("ri") ?? "0");
+  const tiParam = Number(sp.get("ti") ?? "0");
   const pidParam = sp.get("pid");
   const dbRoomIdParam = sp.get("dbRoomId") ?? "";
 
@@ -107,6 +107,31 @@ export default function DemolitionTradeApp() {
   dRef.current = d;
 
   const projectId = pidParam || readActiveProjectId() || "";
+
+  const { ri, ti } = useMemo(() => {
+    const fallbackRi = Number.isFinite(riParam) && riParam >= 0 ? Math.floor(riParam) : 0;
+    const fallbackTi = Number.isFinite(tiParam) && tiParam >= 0 ? Math.floor(tiParam) : 0;
+    if (!projectId) return { ri: fallbackRi, ti: fallbackTi };
+    const ws = loadWorkspace(projectId);
+    const rooms = ws?.rooms ?? [];
+    if (!rooms.length) return { ri: fallbackRi, ti: fallbackTi };
+    let useRi =
+      fallbackRi < rooms.length && fallbackRi >= 0 ? fallbackRi : 0;
+    if (dbRoomIdParam) {
+      const idx = rooms.findIndex(
+        (r) => String((r as { dbRoomId?: string }).dbRoomId ?? "") === dbRoomIdParam,
+      );
+      if (idx >= 0) useRi = idx;
+    }
+    const rRoom = rooms[useRi];
+    const trades = (rRoom?.trades ?? []) as Array<{ id?: string }>;
+    let useTi =
+      fallbackTi < trades.length && fallbackTi >= 0 ? fallbackTi : 0;
+    const demoI = trades.findIndex((t) => String(t.id ?? "") === "demo");
+    if (demoI >= 0) useTi = demoI;
+    return { ri: useRi, ti: useTi };
+  }, [projectId, riParam, tiParam, dbRoomIdParam]);
+
   const room = useMemo(() => {
     if (!projectId) return null;
     const ws = loadWorkspace(projectId);

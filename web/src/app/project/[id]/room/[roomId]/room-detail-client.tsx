@@ -1,41 +1,49 @@
 "use client";
 
 import Link from "next/link";
-import {
+import React, {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
+import { INTAKE_TRADE_IDS, TN } from "@/lib/final-catalog";
 
-type HubTradeChip = { trade_id: string; label: string };
-
-type HubRoom = {
+type TradeRow = {
   id: string;
+  trade_id: string;
   name: string;
-  icon: string;
-  dimensionsLabel: string;
-  estimatedTotal: number;
-  trades: HubTradeChip[];
+  categoryLabel: string;
+  note: string;
+  is_open: boolean;
+  days: number;
+  estimated_total: number;
+  status: "complete" | "in_progress" | "pending";
 };
 
-type HubPayload = {
+type RoomPayload = {
   project: {
     id: string;
     name: string;
     client_name: string;
-    address: string;
     quote_number: string;
-    start_date: string;
   };
-  stats: {
-    projectValue: number;
-    outstanding: number;
-    roomsCount: number;
-    daysActive: number;
+  room: {
+    id: string;
+    name: string;
+    dimensions: {
+      length_ft: number;
+      width_ft: number;
+      height_ft: number;
+      floor_sq_ft: number;
+    };
+    dimensions_line: string;
+    estimated_total: number;
   };
-  rooms: HubRoom[];
+  trades: TradeRow[];
+  room_total: number;
 };
 
 function fmtMoney(n: number): string {
@@ -47,7 +55,7 @@ function fmtMoney(n: number): string {
   }).format(n);
 }
 
-function hubFinalHref(projectId: string, query?: Record<string, string>): string {
+function finalHref(projectId: string, query?: Record<string, string>): string {
   const sp = new URLSearchParams();
   sp.set("project", projectId);
   if (query) {
@@ -58,37 +66,159 @@ function hubFinalHref(projectId: string, query?: Record<string, string>): string
   return `/final?${sp.toString()}`;
 }
 
-export default function ProjectHubClient({ projectId }: { projectId: string }) {
-  const [data, setData] = useState<HubPayload | null>(null);
+function demolitionHref(projectId: string, roomId: string): string {
+  const sp = new URLSearchParams();
+  sp.set("pid", projectId);
+  sp.set("dbRoomId", roomId);
+  return `/trades/demolition?${sp.toString()}`;
+}
+
+function tradeVisual(slug: string): {
+  bg: string;
+  fg: string;
+  Icon: () => React.ReactElement;
+} {
+  const s = slug.trim().toLowerCase();
+  if (s === "demo") {
+    return {
+      bg: "#fff8e1",
+      fg: "#e65100",
+      Icon: () => (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path
+            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
+    };
+  }
+  if (s === "plumbing") {
+    return {
+      bg: "#e3f2fd",
+      fg: "#1565c0",
+      Icon: () => (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path
+            d="M8 5v6a4 4 0 0 0 8 0V5M9 11v8m6-8v8"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+          />
+        </svg>
+      ),
+    };
+  }
+  if (s === "tile") {
+    return {
+      bg: "#f3e5f5",
+      fg: "#7b1fa2",
+      Icon: () => (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <rect x="4" y="4" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.4" />
+          <rect x="14" y="4" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.4" />
+          <rect x="4" y="14" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.4" />
+          <rect x="14" y="14" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.4" />
+        </svg>
+      ),
+    };
+  }
+  if (s === "electrical") {
+    return {
+      bg: "#fff3e0",
+      fg: "#f57f17",
+      Icon: () => (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path
+            d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
+    };
+  }
+  if (s === "drywall") {
+    return {
+      bg: "#f5f5f5",
+      fg: "#757575",
+      Icon: () => (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <rect x="5" y="5" width="14" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
+          <path d="M5 12h14M12 5v14" stroke="currentColor" strokeWidth="1.2" opacity="0.5" />
+        </svg>
+      ),
+    };
+  }
+  return {
+    bg: "#f5f5f5",
+    fg: "#757575",
+    Icon: () => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path
+          d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  };
+}
+
+function statusDotStyle(status: TradeRow["status"]): { dot: string; text: string; label: string } {
+  if (status === "complete") return { dot: "#2d7a2d", text: "#2d7a2d", label: "Complete" };
+  if (status === "in_progress") return { dot: "#f5a623", text: "#f5a623", label: "In Progress" };
+  return { dot: "#aaa", text: "#aaa", label: "Pending" };
+}
+
+export default function RoomDetailClient({
+  projectId,
+  roomId,
+}: {
+  projectId: string;
+  roomId: string;
+}) {
+  const [data, setData] = useState<RoomPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [fabOpen, setFabOpen] = useState(false);
+  const [addTradeOpen, setAddTradeOpen] = useState(false);
+  const [pick, setPick] = useState<Record<string, boolean>>({});
+  const [savingTrades, setSavingTrades] = useState(false);
 
   const headerRef = useRef<HTMLElement>(null);
   const [mobHeaderSpacer, setMobHeaderSpacer] = useState(0);
+
+  const monoStyle = { fontFamily: "var(--rf-plex-mono)" } as const;
 
   const load = useCallback(async () => {
     setError(null);
     setLoading(true);
     try {
-      const res = await fetch(`/api/projects/${encodeURIComponent(projectId)}/hub`, {
-        cache: "no-store",
-        credentials: "include",
-      });
-      const j = (await res.json().catch(() => ({}))) as { error?: string } & Partial<HubPayload>;
+      const res = await fetch(
+        `/api/projects/${encodeURIComponent(projectId)}/rooms/${encodeURIComponent(roomId)}`,
+        { cache: "no-store", credentials: "include" },
+      );
+      const j = (await res.json().catch(() => ({}))) as { error?: string } & Partial<RoomPayload>;
       if (!res.ok) {
-        setError(j.error ?? "Could not load project.");
+        setError(j.error ?? "Could not load room.");
         setData(null);
         return;
       }
-      setData(j as HubPayload);
+      setData(j as RoomPayload);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Request failed.");
       setData(null);
     } finally {
       setLoading(false);
     }
-  }, [projectId]);
+  }, [projectId, roomId]);
 
   useEffect(() => {
     void load();
@@ -101,6 +231,22 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
       document.documentElement.classList.remove("rf-fab-arc-open");
     };
   }, [fabOpen]);
+
+  useEffect(() => {
+    if (!addTradeOpen) return;
+    const html = document.documentElement;
+    const body = document.body;
+    const prev = {
+      htmlOverflow: html.style.overflow,
+      bodyOverflow: body.style.overflow,
+    };
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    return () => {
+      html.style.overflow = prev.htmlOverflow;
+      body.style.overflow = prev.bodyOverflow;
+    };
+  }, [addTradeOpen]);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -136,9 +282,72 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
       ro.disconnect();
       mq.removeEventListener("change", apply);
     };
-  }, [loading, data?.project?.name]);
+  }, [loading, data?.room?.name]);
 
-  const monoStyle = { fontFamily: "var(--rf-plex-mono)" } as const;
+  const existingSlugs = useMemo(() => new Set((data?.trades ?? []).map((t) => t.trade_id)), [data?.trades]);
+
+  const addTradeOptions = useMemo(
+    () => INTAKE_TRADE_IDS.filter((tid) => !existingSlugs.has(tid)),
+    [existingSlugs],
+  );
+
+  const openAddTradeModal = useCallback(() => {
+    const init: Record<string, boolean> = {};
+    for (const tid of addTradeOptions) init[tid] = false;
+    setPick(init);
+    setAddTradeOpen(true);
+  }, [addTradeOptions]);
+
+  const saveAddedTrades = useCallback(async () => {
+    if (!data) return;
+    const chosen = Object.entries(pick)
+      .filter(([, v]) => v)
+      .map(([k]) => k);
+    if (!chosen.length) {
+      setAddTradeOpen(false);
+      return;
+    }
+    setSavingTrades(true);
+    try {
+      const tradesPayload = [
+        ...data.trades.map((t) => ({
+          id: t.trade_id,
+          open: t.is_open,
+          days: t.days,
+          note: t.note ?? "",
+        })),
+        ...chosen.map((slug) => ({
+          id: slug,
+          open: false,
+          days: 0,
+          note: "",
+        })),
+      ];
+      const res = await fetch(`/api/rooms/${encodeURIComponent(roomId)}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ trades: tradesPayload }),
+      });
+      const j = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) throw new Error(j.error ?? "Could not add trades.");
+      setAddTradeOpen(false);
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Save failed.");
+    } finally {
+      setSavingTrades(false);
+    }
+  }, [data, pick, roomId, load]);
+
+  const subtitleLine = useMemo(() => {
+    if (!data) return "";
+    const r = data.room.name.trim();
+    const c = data.project.client_name.trim();
+    return [r, c].filter(Boolean).join(" · ");
+  }, [data]);
+
+  const dimShow = (v: number) => (v > 0 ? String(v) : "—");
 
   return (
     <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden">
@@ -158,10 +367,10 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
       >
         <div className="flex flex-row items-start gap-3">
           <Link
-            href="/projects"
+            href={`/project/${encodeURIComponent(projectId)}`}
             prefetch={false}
             className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-white [-webkit-tap-highlight-color:transparent]"
-            aria-label="Back to projects"
+            aria-label="Back to project rooms"
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
               <path
@@ -184,7 +393,7 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                 fontWeight: 500,
               }}
             >
-              PROJECT
+              {loading ? "…" : subtitleLine || "—"}
             </div>
             <h1
               style={{
@@ -195,7 +404,7 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                 margin: 0,
               }}
             >
-              {loading ? "…" : data?.project.name ?? "Project"}
+              Room
             </h1>
             <p
               style={{
@@ -203,25 +412,37 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                 color: "rgba(255,255,255,0.5)",
                 margin: "6px 0 0",
                 lineHeight: 1.35,
+                ...monoStyle,
               }}
             >
-              {loading
-                ? "…"
-                : [data?.project.client_name?.trim(), data?.project.address?.trim()]
-                    .filter(Boolean)
-                    .join(" · ") || "—"}
+              {loading ? "…" : data?.room.dimensions_line ?? "—"}
+            </p>
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", margin: "4px 0 0" }}>
+              Est. value{" "}
+              <span style={monoStyle}>{loading ? "…" : data ? fmtMoney(data.room.estimated_total) : "—"}</span>
             </p>
             {!loading && data ? (
               <div className="mt-3 flex flex-wrap gap-2">
                 <Link
-                  href={hubFinalHref(projectId, { pg: "quote" })}
+                  href={finalHref(projectId, { pg: "quote" })}
                   prefetch={false}
                   className="inline-flex min-h-[40px] items-center justify-center rounded-[100px] bg-white px-4 text-[12px] font-semibold text-[#0f2318] no-underline [-webkit-tap-highlight-color:transparent]"
                 >
                   View Quote
                 </Link>
                 <Link
-                  href={hubFinalHref(projectId, { pg: "tl" })}
+                  href={finalHref(projectId, { pg: "shop", room: roomId })}
+                  prefetch={false}
+                  className="inline-flex min-h-[40px] items-center justify-center rounded-[100px] px-4 text-[12px] font-semibold text-white no-underline [-webkit-tap-highlight-color:transparent]"
+                  style={{
+                    background: "rgba(255,255,255,0.12)",
+                    border: "0.5px solid rgba(255,255,255,0.35)",
+                  }}
+                >
+                  Materials
+                </Link>
+                <Link
+                  href={finalHref(projectId, { pg: "tl", room: roomId })}
                   prefetch={false}
                   className="inline-flex min-h-[40px] items-center justify-center rounded-[100px] px-4 text-[12px] font-semibold text-white no-underline [-webkit-tap-highlight-color:transparent]"
                   style={{
@@ -232,7 +453,7 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                   Timeline
                 </Link>
                 <Link
-                  href={hubFinalHref(projectId, { pg: "inv" })}
+                  href={finalHref(projectId, { room: roomId })}
                   prefetch={false}
                   className="inline-flex min-h-[40px] items-center justify-center rounded-[100px] px-4 text-[12px] font-semibold text-white no-underline [-webkit-tap-highlight-color:transparent]"
                   style={{
@@ -240,18 +461,7 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                     border: "0.5px solid rgba(255,255,255,0.35)",
                   }}
                 >
-                  Invoice
-                </Link>
-                <Link
-                  href={hubFinalHref(projectId, { pg: "shop" })}
-                  prefetch={false}
-                  className="inline-flex min-h-[40px] items-center justify-center rounded-[100px] px-4 text-[12px] font-semibold text-white no-underline [-webkit-tap-highlight-color:transparent]"
-                  style={{
-                    background: "rgba(255,255,255,0.12)",
-                    border: "0.5px solid rgba(255,255,255,0.35)",
-                  }}
-                >
-                  Materials
+                  Edit Dims
                 </Link>
               </div>
             ) : null}
@@ -290,29 +500,24 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                     padding: 14,
                   }}
                 >
-                  <div className="flex justify-between gap-3 text-[13px]">
-                    <span className="text-[#888]">Project value</span>
-                    <span className="font-medium text-[#2d7a2d]" style={monoStyle}>
-                      {fmtMoney(data.stats.projectValue)}
-                    </span>
-                  </div>
-                  <div className="mt-2 flex justify-between gap-3 text-[13px]">
-                    <span className="text-[#888]">Outstanding</span>
-                    <span className="font-medium text-[#c0392b]" style={monoStyle}>
-                      {fmtMoney(data.stats.outstanding)}
-                    </span>
-                  </div>
-                  <div className="mt-2 flex justify-between gap-3 text-[13px]">
-                    <span className="text-[#888]">Rooms</span>
-                    <span className="font-medium text-[#111]" style={monoStyle}>
-                      {data.stats.roomsCount}
-                    </span>
-                  </div>
-                  <div className="mt-2 flex justify-between gap-3 text-[13px]">
-                    <span className="text-[#888]">Days active</span>
-                    <span className="font-medium text-[#111]" style={monoStyle}>
-                      {data.stats.daysActive}
-                    </span>
+                  <div className="grid grid-cols-3 gap-3 text-center">
+                    {(["length_ft", "width_ft", "height_ft"] as const).map((key, idx) => (
+                      <div key={key}>
+                        <div
+                          className="uppercase text-[#aaa]"
+                          style={{ fontSize: 10, letterSpacing: "0.08em" }}
+                        >
+                          {["Length", "Width", "Height"][idx]}
+                        </div>
+                        <div
+                          className="mt-1 text-[#111]"
+                          style={{ fontSize: 18, fontWeight: 500, ...monoStyle }}
+                        >
+                          {dimShow(data.room.dimensions[key])}
+                        </div>
+                        <div className="mt-0.5 text-[10px] text-[#aaa]">ft</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
@@ -320,109 +525,154 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                   className="mb-2 font-semibold uppercase text-[#888]"
                   style={{ fontSize: 10, letterSpacing: "0.12em" }}
                 >
-                  ROOMS
+                  TRADES
                 </p>
 
-                {data.rooms.map((room) => (
-                  <div
-                    key={room.id}
-                    className="mb-3 overflow-hidden bg-white"
-                    style={{
-                      border: "0.5px solid #e0e0e0",
-                      borderRadius: 10,
-                    }}
-                  >
-                    <div className="flex flex-row gap-3 p-3">
-                      <div
-                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px]"
-                        style={{ background: "#1a3d28", width: 44, height: 44 }}
-                        aria-hidden
-                      >
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                          <path
-                            d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-7h-6v7H5a1 1 0 0 1-1-1v-9.5z"
-                            stroke="#fff"
-                            strokeWidth="1.5"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[14px] font-medium text-[#111]">{room.name}</p>
-                        <p className="mt-0.5 text-[12px] text-[#888]" style={monoStyle}>
-                          {room.dimensionsLabel}
-                        </p>
-                        {room.trades.length ? (
-                          <div className="mt-2 flex flex-wrap gap-1.5">
-                            {room.trades.map((t) => (
-                              <span
-                                key={`${room.id}-${t.trade_id}`}
-                                className="inline-block rounded-[100px] px-2 py-1 text-[10px] font-semibold uppercase text-[#555]"
-                                style={{
-                                  background: "#f5f5f5",
-                                  border: "0.5px solid #e0e0e0",
-                                  letterSpacing: "0.06em",
-                                }}
-                              >
-                                {t.label}
-                              </span>
-                            ))}
-                          </div>
-                        ) : null}
-                      </div>
-                      <div className="shrink-0 text-right text-[13px] font-medium text-[#111]" style={monoStyle}>
-                        {fmtMoney(room.estimatedTotal)}
-                      </div>
-                    </div>
+                {data.trades.map((t) => {
+                  const vis = tradeVisual(t.trade_id);
+                  const St = statusDotStyle(t.status);
+                  const openHref =
+                    t.trade_id === "demo"
+                      ? demolitionHref(projectId, roomId)
+                      : finalHref(projectId, { room: roomId, trade: t.trade_id });
+                  const Icon = vis.Icon;
+                  return (
                     <div
-                      className="flex flex-row flex-wrap gap-2"
-                      style={{
-                        borderTop: "0.5px solid #f0f0f0",
-                        padding: "8px 12px",
-                      }}
+                      key={t.id}
+                      className="mb-3 overflow-hidden bg-white"
+                      style={{ border: "0.5px solid #e0e0e0", borderRadius: 10 }}
                     >
-                      <Link
-                        href={hubFinalHref(projectId, { pg: "shop", room: room.id })}
-                        prefetch={false}
-                        className="inline-flex min-h-[40px] flex-1 items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#555] no-underline [-webkit-tap-highlight-color:transparent]"
-                        style={{ border: "0.5px solid #e0e0e0", flex: "1 1 90px" }}
+                      <div className="flex flex-row gap-3 p-3">
+                        <div
+                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px]"
+                          style={{ background: vis.bg, color: vis.fg, width: 40, height: 40 }}
+                          aria-hidden
+                        >
+                          <Icon />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[14px] font-medium text-[#111]">{t.name}</p>
+                          <p
+                            className="mt-0.5 text-[11px] uppercase text-[#aaa]"
+                            style={{ letterSpacing: "0.06em" }}
+                          >
+                            {t.categoryLabel}
+                          </p>
+                          <div className="mt-2 flex flex-row items-center gap-2">
+                            <span
+                              className="inline-block h-1.5 w-1.5 shrink-0 rounded-full"
+                              style={{ background: St.dot }}
+                              aria-hidden
+                            />
+                            <span
+                              className="text-[10px] font-semibold uppercase"
+                              style={{ color: St.text, letterSpacing: "0.06em" }}
+                            >
+                              {St.label}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="shrink-0 text-right">
+                          <div className="text-[14px] font-medium text-[#111]" style={monoStyle}>
+                            {fmtMoney(t.estimated_total)}
+                          </div>
+                          <div className="mt-0.5 text-[11px] text-[#aaa]">{t.days} days</div>
+                        </div>
+                      </div>
+                      <div
+                        className="flex flex-row flex-wrap gap-2"
+                        style={{
+                          borderTop: "0.5px solid #f0f0f0",
+                          padding: "8px 14px",
+                        }}
                       >
-                        Materials
-                      </Link>
-                      <Link
-                        href={hubFinalHref(projectId, { pg: "tl", room: room.id })}
-                        prefetch={false}
-                        className="inline-flex min-h-[40px] flex-1 items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#555] no-underline [-webkit-tap-highlight-color:transparent]"
-                        style={{ border: "0.5px solid #e0e0e0", flex: "1 1 90px" }}
-                      >
-                        Timeline
-                      </Link>
-                      <Link
-                        href={`/project/${encodeURIComponent(projectId)}/room/${encodeURIComponent(room.id)}`}
-                        prefetch={false}
-                        className="inline-flex min-h-[40px] flex-[1.1] items-center justify-center gap-1 rounded-[100px] bg-[#0f2318] px-3 text-[11px] font-medium text-white no-underline [-webkit-tap-highlight-color:transparent]"
-                        style={{ flex: "1.1 1 100px" }}
-                      >
-                        Open <span aria-hidden>→</span>
-                      </Link>
+                        <Link
+                          href={finalHref(projectId, { pg: "shop", room: roomId })}
+                          prefetch={false}
+                          className="inline-flex min-h-[36px] flex-1 items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#555] no-underline [-webkit-tap-highlight-color:transparent]"
+                          style={{ border: "0.5px solid #e0e0e0", flex: "1 1 80px" }}
+                        >
+                          Materials
+                        </Link>
+                        <Link
+                          href={
+                            t.trade_id === "demo"
+                              ? demolitionHref(projectId, roomId)
+                              : finalHref(projectId, { room: roomId, trade: t.trade_id })
+                          }
+                          prefetch={false}
+                          className="inline-flex min-h-[36px] flex-1 items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#555] no-underline [-webkit-tap-highlight-color:transparent]"
+                          style={{ border: "0.5px solid #e0e0e0", flex: "1 1 80px" }}
+                        >
+                          Labour
+                        </Link>
+                        <Link
+                          href={openHref}
+                          prefetch={false}
+                          className="inline-flex min-h-[36px] flex-[1.15] items-center justify-center gap-1 rounded-[100px] bg-[#0f2318] px-3 text-[11px] font-medium text-white no-underline [-webkit-tap-highlight-color:transparent]"
+                          style={{ flex: "1.15 1 96px" }}
+                        >
+                          Open <span aria-hidden>→</span>
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
 
-                <Link
-                  href={hubFinalHref(projectId, { openAddRoom: "1" })}
-                  prefetch={false}
-                  className="mb-6 flex min-h-[52px] flex-row items-center justify-center gap-2 rounded-[10px] text-[14px] font-medium text-[#555] no-underline [-webkit-tap-highlight-color:transparent]"
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!addTradeOptions.length) return;
+                    openAddTradeModal();
+                  }}
+                  className="mb-4 flex min-h-[52px] w-full flex-row items-center justify-center gap-2 rounded-[10px] text-[14px] font-medium text-[#555] [-webkit-tap-highlight-color:transparent] disabled:opacity-45"
                   style={{
                     border: "1px dashed #ccc",
                     background: "#fafafa",
                   }}
+                  disabled={!addTradeOptions.length}
                 >
                   <span className="text-lg leading-none text-[#888]" aria-hidden>
                     +
                   </span>
-                  Add room
-                </Link>
+                  Add trade
+                </button>
+
+                <p
+                  className="mb-2 font-semibold uppercase text-[#888]"
+                  style={{ fontSize: 10, letterSpacing: "0.12em" }}
+                >
+                  ROOM TOTAL
+                </p>
+                <div
+                  className="mb-6 overflow-hidden bg-white"
+                  style={{ border: "0.5px solid #e0e0e0", borderRadius: 10 }}
+                >
+                  <div className="p-3.5">
+                    {data.trades.map((t, idx) => (
+                      <div
+                        key={t.id}
+                        className="flex flex-row justify-between gap-2 text-[13px]"
+                        style={{ marginTop: idx ? 8 : 0 }}
+                      >
+                        <span className="text-[#444]">{t.name}</span>
+                        <span className="shrink-0 font-medium text-[#111]" style={monoStyle}>
+                          {fmtMoney(t.estimated_total)}
+                        </span>
+                      </div>
+                    ))}
+                    <div
+                      className="my-3"
+                      style={{ borderTop: "0.5px solid #e0e0e0", height: 0 }}
+                    />
+                    <div className="flex flex-row items-center justify-between gap-2">
+                      <span className="text-[14px] font-medium text-[#111]">Room Total</span>
+                      <span className="text-[18px] font-medium text-[#2d7a2d]" style={monoStyle}>
+                        {fmtMoney(data.room_total)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </>
             ) : loading ? (
               <p className="py-10 text-center text-[13px] text-[#888]">Loading…</p>
@@ -443,6 +693,66 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
           aria-hidden={!fabOpen}
         />
       </div>
+
+      {addTradeOpen ? (
+        <div
+          className="fixed inset-0 z-[20000] flex items-end justify-center bg-black/35 md:items-center"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="rf-add-trade-title"
+          onClick={() => !savingTrades && setAddTradeOpen(false)}
+        >
+          <div
+            className="w-full max-w-lg rounded-t-[14px] bg-white p-4 md:rounded-[14px]"
+            style={{
+              maxHeight: "72vh",
+              overflow: "auto",
+              paddingBottom: "max(16px, env(safe-area-inset-bottom, 16px))",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p id="rf-add-trade-title" className="text-[16px] font-semibold text-[#111]">
+              Add trade
+            </p>
+            <p className="mt-1 text-[13px] text-[#666]">Select trades to add to this room.</p>
+            <div className="mt-3 flex max-h-[42vh] flex-col gap-2 overflow-y-auto">
+              {addTradeOptions.map((tid) => (
+                <label
+                  key={tid}
+                  className="flex cursor-pointer flex-row items-center gap-3 rounded-[10px] border border-[#e8e8e8] px-3 py-2.5"
+                  style={{ borderWidth: 0.5 }}
+                >
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 accent-[#0f2318]"
+                    checked={pick[tid] ?? false}
+                    onChange={(e) => setPick((p) => ({ ...p, [tid]: e.target.checked }))}
+                  />
+                  <span className="text-[14px] text-[#111]">{TN[tid] ?? tid}</span>
+                </label>
+              ))}
+            </div>
+            <div className="mt-4 flex flex-row gap-2">
+              <button
+                type="button"
+                className="min-h-[44px] flex-1 rounded-[100px] border border-[#ddd] bg-white text-[13px] font-semibold text-[#555]"
+                disabled={savingTrades}
+                onClick={() => setAddTradeOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="min-h-[44px] flex-1 rounded-[100px] bg-[#0f2318] text-[13px] font-semibold text-white disabled:opacity-50"
+                disabled={savingTrades}
+                onClick={() => void saveAddedTrades()}
+              >
+                {savingTrades ? "Saving…" : "Save"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <nav
         className="fixed bottom-0 left-0 right-0 z-[10100] flex md:hidden"

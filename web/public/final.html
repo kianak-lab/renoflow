@@ -3316,20 +3316,22 @@ function rfParseBootFromLocation(){
       project:u.searchParams.get("project"),
       room:u.searchParams.get("room"),
       pg:u.searchParams.get("pg"),
+      trade:u.searchParams.get("trade"),
       openAdd:u.searchParams.get("openAddRoom")==="1"
     };
   }catch(e){
-    return {project:null,room:null,pg:null,openAdd:false};
+    return {project:null,room:null,pg:null,trade:null,openAdd:false};
   }
 }
 
 function rfStripBootParamsFromUrl(){
   try{
     var u=new URL(window.location.href);
-    if(!u.searchParams.has("project")&&!u.searchParams.has("room")&&!u.searchParams.has("pg")&&!u.searchParams.has("openAddRoom"))return;
+    if(!u.searchParams.has("project")&&!u.searchParams.has("room")&&!u.searchParams.has("pg")&&!u.searchParams.has("trade")&&!u.searchParams.has("openAddRoom"))return;
     u.searchParams.delete("project");
     u.searchParams.delete("room");
     u.searchParams.delete("pg");
+    u.searchParams.delete("trade");
     u.searchParams.delete("openAddRoom");
     var q=u.searchParams.toString();
     history.replaceState({}, "", u.pathname+(q?"?"+q:""));
@@ -3354,7 +3356,14 @@ function rfApplyBootNavigation(){
   }
   if(ri>=0){
     gRoom(ri);
-    if(b.pg==="shop"&&typeof openRoomMaterials==="function"){
+    if(b.trade){
+      var tid=String(b.trade||"").trim().toLowerCase();
+      if(tid&&tid!=="demo"){
+        var br=S.rooms&&S.rooms[curR];
+        var btr=br&&br.trades;
+        if(btr){ for(var j=0;j<btr.length;j++){ if(String(btr[j].id||"").toLowerCase()===tid){ try{ expandTrade(j); }catch(eT){} break; } } }
+      }
+    }else if(b.pg==="shop"&&typeof openRoomMaterials==="function"){
       openRoomMaterials(ri);
     }else if(b.pg==="tl"){
       gP("tl");
