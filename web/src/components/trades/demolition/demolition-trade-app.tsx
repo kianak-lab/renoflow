@@ -353,10 +353,13 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
         const next = { ...merged, clientLabourCharge: clientLabourBilled(merged) };
         debouncedLocal(next);
         debouncedRemote(next);
+        if (typeof patch === "object" && patch !== null && "materialsBillToClient" in patch) {
+          persistLocal(next);
+        }
         return next;
       });
     },
-    [debouncedLocal, debouncedRemote],
+    [debouncedLocal, debouncedRemote, persistLocal],
   );
 
   const materialMyCost = useMemo(() => {
@@ -445,6 +448,17 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
     }
     void persistRemote(dRef.current);
     router.push("/final");
+  }
+
+  function pushMaterialsList() {
+    if (!projectId) return;
+    persistLocal(dRef.current);
+    const qs = new URLSearchParams();
+    qs.set("pid", projectId);
+    if (dbRoomIdParam) qs.set("dbRoomId", dbRoomIdParam);
+    qs.set("ri", String(ri));
+    qs.set("ti", String(ti));
+    router.push(`/trades/demolition/materials-list?${qs.toString()}`);
   }
 
   function newWorker(): DemoWorker {
@@ -968,8 +982,9 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
                 <div style={cardStyle} className={cardPad}>
                   <div className={sectionLabelCls}>Who pays for materials</div>
                   <p className="mt-1 text-[12px] leading-snug text-[#888]">
-                    Total material cost ({formatMoney(materialMyCost)}) counts toward your job costs. Turn off client
-                    billing when you absorb supplies; turn on to add them to the quote (with markup on the Totals tab).
+                    Total material cost ({formatMoney(materialMyCost)}) counts toward your job costs. Choose{" "}
+                    <strong>Your expense</strong> when you absorb supplies. With <strong>Client invoice</strong>, every
+                    quantity you set below is billed to the client on the quote (with markup on the Totals tab).
                   </p>
                   <div
                     className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -1059,6 +1074,17 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
                 </section>
               ))
             )}
+            {!productsErr && products.length > 0 ? (
+              <button
+                type="button"
+                onClick={() => pushMaterialsList()}
+                disabled={!projectId}
+                className={`mt-6 min-h-[48px] w-full text-[14px] font-semibold text-white touch-manipulation disabled:opacity-45 ${bubbleRounded}`}
+                style={{ background: SITE.ink }}
+              >
+                Push to Materials List
+              </button>
+            ) : null}
           </div>
         )}
 

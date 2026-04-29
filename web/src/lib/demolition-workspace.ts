@@ -542,5 +542,15 @@ export function applyDemolitionToTrade(
       });
     }
   }
+  /** Align every catalog line with demolition quantities so client billing includes all picked rows. */
+  for (const id of Object.keys(t.catPick)) {
+    const row = t.catPick[id];
+    if (!row) continue;
+    const qty = Math.max(0, d.materialQty[id] ?? 0);
+    row.q = qty;
+    if (d.materialsBillToClient && qty > 0) {
+      row.m = d.clientMaterialsMarkupPct;
+    }
+  }
   t._demoMaterialLines = lines;
 }
