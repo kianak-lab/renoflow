@@ -347,8 +347,6 @@ export default function RoomDetailClient({
     return [r, c].filter(Boolean).join(" · ");
   }, [data]);
 
-  const dimShow = (v: number) => (v > 0 ? String(v) : "—");
-
   return (
     <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden">
       <header
@@ -404,67 +402,8 @@ export default function RoomDetailClient({
                 margin: 0,
               }}
             >
-              Room
+              Trades Sheet
             </h1>
-            <p
-              style={{
-                fontSize: 13,
-                color: "rgba(255,255,255,0.5)",
-                margin: "6px 0 0",
-                lineHeight: 1.35,
-                ...monoStyle,
-              }}
-            >
-              {loading ? "…" : data?.room.dimensions_line ?? "—"}
-            </p>
-            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", margin: "4px 0 0" }}>
-              Est. value{" "}
-              <span style={monoStyle}>{loading ? "…" : data ? fmtMoney(data.room.estimated_total) : "—"}</span>
-            </p>
-            {!loading && data ? (
-              <div className="mt-3 flex flex-wrap gap-2">
-                <Link
-                  href={finalHref(projectId, { pg: "quote" })}
-                  prefetch={false}
-                  className="inline-flex min-h-[40px] items-center justify-center rounded-[100px] bg-white px-4 text-[12px] font-semibold text-[#0f2318] no-underline [-webkit-tap-highlight-color:transparent]"
-                >
-                  View Quote
-                </Link>
-                <Link
-                  href={finalHref(projectId, { pg: "shop", room: roomId })}
-                  prefetch={false}
-                  className="inline-flex min-h-[40px] items-center justify-center rounded-[100px] px-4 text-[12px] font-semibold text-white no-underline [-webkit-tap-highlight-color:transparent]"
-                  style={{
-                    background: "rgba(255,255,255,0.12)",
-                    border: "0.5px solid rgba(255,255,255,0.35)",
-                  }}
-                >
-                  Materials
-                </Link>
-                <Link
-                  href={finalHref(projectId, { pg: "tl", room: roomId })}
-                  prefetch={false}
-                  className="inline-flex min-h-[40px] items-center justify-center rounded-[100px] px-4 text-[12px] font-semibold text-white no-underline [-webkit-tap-highlight-color:transparent]"
-                  style={{
-                    background: "rgba(255,255,255,0.12)",
-                    border: "0.5px solid rgba(255,255,255,0.35)",
-                  }}
-                >
-                  Timeline
-                </Link>
-                <Link
-                  href={finalHref(projectId, { room: roomId })}
-                  prefetch={false}
-                  className="inline-flex min-h-[40px] items-center justify-center rounded-[100px] px-4 text-[12px] font-semibold text-white no-underline [-webkit-tap-highlight-color:transparent]"
-                  style={{
-                    background: "rgba(255,255,255,0.12)",
-                    border: "0.5px solid rgba(255,255,255,0.35)",
-                  }}
-                >
-                  Edit Dims
-                </Link>
-              </div>
-            ) : null}
           </div>
         </div>
       </header>
@@ -492,35 +431,6 @@ export default function RoomDetailClient({
 
             {!loading && data ? (
               <>
-                <div
-                  className="mb-4"
-                  style={{
-                    border: "0.5px solid #e0e0e0",
-                    borderRadius: 10,
-                    padding: 14,
-                  }}
-                >
-                  <div className="grid grid-cols-3 gap-3 text-center">
-                    {(["length_ft", "width_ft", "height_ft"] as const).map((key, idx) => (
-                      <div key={key}>
-                        <div
-                          className="uppercase text-[#aaa]"
-                          style={{ fontSize: 10, letterSpacing: "0.08em" }}
-                        >
-                          {["Length", "Width", "Height"][idx]}
-                        </div>
-                        <div
-                          className="mt-1 text-[#111]"
-                          style={{ fontSize: 18, fontWeight: 500, ...monoStyle }}
-                        >
-                          {dimShow(data.room.dimensions[key])}
-                        </div>
-                        <div className="mt-0.5 text-[10px] text-[#aaa]">ft</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
                 <p
                   className="mb-2 font-semibold uppercase text-[#888]"
                   style={{ fontSize: 10, letterSpacing: "0.12em" }}
@@ -625,7 +535,7 @@ export default function RoomDetailClient({
                     if (!addTradeOptions.length) return;
                     openAddTradeModal();
                   }}
-                  className="mb-4 flex min-h-[52px] w-full flex-row items-center justify-center gap-2 rounded-[10px] text-[14px] font-medium text-[#555] [-webkit-tap-highlight-color:transparent] disabled:opacity-45"
+                  className="mb-6 flex min-h-[52px] w-full flex-row items-center justify-center gap-2 rounded-[10px] text-[14px] font-medium text-[#555] [-webkit-tap-highlight-color:transparent] disabled:opacity-45"
                   style={{
                     border: "1px dashed #ccc",
                     background: "#fafafa",
@@ -637,42 +547,6 @@ export default function RoomDetailClient({
                   </span>
                   Add trade
                 </button>
-
-                <p
-                  className="mb-2 font-semibold uppercase text-[#888]"
-                  style={{ fontSize: 10, letterSpacing: "0.12em" }}
-                >
-                  ROOM TOTAL
-                </p>
-                <div
-                  className="mb-6 overflow-hidden bg-white"
-                  style={{ border: "0.5px solid #e0e0e0", borderRadius: 10 }}
-                >
-                  <div className="p-3.5">
-                    {data.trades.map((t, idx) => (
-                      <div
-                        key={t.id}
-                        className="flex flex-row justify-between gap-2 text-[13px]"
-                        style={{ marginTop: idx ? 8 : 0 }}
-                      >
-                        <span className="text-[#444]">{t.name}</span>
-                        <span className="shrink-0 font-medium text-[#111]" style={monoStyle}>
-                          {fmtMoney(t.estimated_total)}
-                        </span>
-                      </div>
-                    ))}
-                    <div
-                      className="my-3"
-                      style={{ borderTop: "0.5px solid #e0e0e0", height: 0 }}
-                    />
-                    <div className="flex flex-row items-center justify-between gap-2">
-                      <span className="text-[14px] font-medium text-[#111]">Room Total</span>
-                      <span className="text-[18px] font-medium text-[#2d7a2d]" style={monoStyle}>
-                        {fmtMoney(data.room_total)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
               </>
             ) : loading ? (
               <p className="py-10 text-center text-[13px] text-[#888]">Loading…</p>
