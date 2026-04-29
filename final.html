@@ -242,7 +242,7 @@ a.ni{color:inherit;text-decoration:none;}
 #p-dash .dash-header-bleed .brief-greeting{font-size:22px;font-weight:500;color:#fff;margin-top:6px;line-height:1.2;font-family:'IBM Plex Sans',system-ui,sans-serif;letter-spacing:-0.02em;}
 #p-dash .dash-header-bleed .brief-sub{font-size:13px;color:rgba(255,255,255,.72);margin-top:6px;line-height:1.35;opacity:1;font-weight:400;min-height:1.35em;}
 #p-dash .dash-rf-logo-btn{appearance:none;border:none;background:transparent;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;min-width:80px;min-height:80px;display:flex;align-items:center;justify-content:center;}
-#p-dash .dash-rf-logo-square{display:flex;align-items:center;justify-content:center;width:80px;height:80px;border-radius:50%;background:#1a3d28;border:0.5px solid #2a5a3a;box-sizing:border-box;overflow:hidden;flex-shrink:0;}
+#p-dash .dash-rf-logo-square{display:flex;align-items:center;justify-content:center;width:80px;height:80px;border-radius:50%;background:#1a3d28;border:0.5px solid rgba(42,90,58,.85);box-sizing:border-box;overflow:hidden;flex-shrink:0;box-shadow:0 0 0 3px #fff;}
 #p-dash .dash-rf-logo-square--photo{padding:0;background:#1a3d28;}
 #p-dash .dash-rf-logo-img{width:100%;height:100%;object-fit:contain;object-position:center;display:block;}
 #p-dash .dash-rf-logo-mark{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:11px;font-weight:600;color:#4a9a6a;line-height:1.2;text-align:center;padding:4px 8px;text-transform:none;letter-spacing:0.02em;max-width:100%;}
@@ -5043,7 +5043,7 @@ function dashHeaderRfLogo(){
   }
   return '<button type="button" class="dash-rf-logo-btn" onclick="gP(\'sett\')" title="Company settings" aria-label="Open company settings"><span class="'+sq+'">'+inner+'</span></button>';
 }
-var __rfDashWeatherCache={t:0,text:""};
+var __rfDashWeatherCache={t:0,text:"",u:""};
 function rfWmoWeatherPhrase(code){
   code=parseInt(code,10)||0;
   if(code===0)return"Clear";
@@ -5063,7 +5063,7 @@ function refreshDashWeather(){
   var el=document.getElementById("dash-weather");
   if(!el)return;
   var now=Date.now();
-  if(__rfDashWeatherCache.text&&__rfDashWeatherCache.t>now-30*60*1000){
+  if(__rfDashWeatherCache.text&&__rfDashWeatherCache.u==="c"&&__rfDashWeatherCache.t>now-30*60*1000){
     el.textContent=__rfDashWeatherCache.text;
     return;
   }
@@ -5071,7 +5071,7 @@ function refreshDashWeather(){
   function apply(lat,lon){
     var url="https://api.open-meteo.com/v1/forecast?latitude="+encodeURIComponent(lat)+"&longitude="+encodeURIComponent(lon)
       +"&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min"
-      +"&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto";
+      +"&temperature_unit=celsius&wind_speed_unit=kph&timezone=auto";
     fetch(url).then(function(r){return r.json();}).then(function(data){
       var cur=data&&data.current;
       var day=data&&data.daily;
@@ -5079,9 +5079,9 @@ function refreshDashWeather(){
       var hi=day.temperature_2m_max[0];
       var lo=day.temperature_2m_min[0];
       var t=Math.round(cur.temperature_2m);
-      var line=t+"°F · "+rfWmoWeatherPhrase(cur.weather_code)+" · High "+Math.round(hi)+"° / Low "+Math.round(lo)+"°";
+      var line=t+"°C · "+rfWmoWeatherPhrase(cur.weather_code)+" · High "+Math.round(hi)+"° / Low "+Math.round(lo)+"°";
       el.textContent=line;
-      __rfDashWeatherCache={t:now,text:line};
+      __rfDashWeatherCache={t:now,text:line,u:"c"};
     }).catch(function(){
       el.textContent="Weather unavailable";
     });
