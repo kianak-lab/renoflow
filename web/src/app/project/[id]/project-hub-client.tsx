@@ -454,22 +454,22 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                           className="relative flex shrink-0 items-center justify-center overflow-hidden rounded-[10px] [-webkit-tap-highlight-color:transparent] disabled:opacity-60"
                           style={{
                             background: "#1a3d28",
-                            width: 44,
-                            height: 44,
+                            width: 132,
+                            height: 132,
                           }}
                           aria-label={`Choose photo for ${room.name}`}
                           disabled={uploadingPhotoRoomId === room.id}
                           onClick={() => document.getElementById(inputId)?.click()}
                         >
                           {uploadingPhotoRoomId === room.id ? (
-                            <span className="text-[16px] leading-none text-white" aria-hidden>
+                            <span className="text-[48px] leading-none text-white" aria-hidden>
                               …
                             </span>
                           ) : coverPhoto ? (
                             // eslint-disable-next-line @next/next/no-img-element -- user-selected data URL from device gallery
                             <img src={coverPhoto} alt="" className="h-full w-full object-cover" />
                           ) : (
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+                            <svg width="66" height="66" viewBox="0 0 24 24" fill="none" aria-hidden>
                               <path
                                 d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-7h-6v7H5a1 1 0 0 1-1-1v-9.5z"
                                 stroke="#fff"
