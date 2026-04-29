@@ -15,6 +15,7 @@ type HubRoom = {
   id: string;
   name: string;
   icon: string;
+  dimensions?: Record<string, unknown>;
   dimensionsLabel: string;
   estimatedTotal: number;
   trades: HubTradeChip[];
@@ -58,12 +59,36 @@ function hubFinalHref(projectId: string, query?: Record<string, string>): string
   return `/final?${sp.toString()}`;
 }
 
+function roomCoverPhoto(dims: Record<string, unknown> | undefined): string | null {
+  const v = dims?.cover_photo;
+  return typeof v === "string" && v.startsWith("data:image") ? v : null;
+}
+
+async function compressImageFileToJpegDataUrl(file: File, maxSide = 720, quality = 0.82): Promise<string> {
+  const bitmap = await createImageBitmap(file);
+  try {
+    const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+    const w = Math.max(1, Math.round(bitmap.width * scale));
+    const h = Math.max(1, Math.round(bitmap.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Could not prepare image.");
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    return canvas.toDataURL("image/jpeg", quality);
+  } finally {
+    bitmap.close();
+  }
+}
+
 export default function ProjectHubClient({ projectId }: { projectId: string }) {
   const [data, setData] = useState<HubPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [fabOpen, setFabOpen] = useState(false);
   const [deletingRoomId, setDeletingRoomId] = useState<string | null>(null);
+  const [uploadingPhotoRoomId, setUploadingPhotoRoomId] = useState<string | null>(null);
 
   const headerRef = useRef<HTMLElement>(null);
   const [mobHeaderSpacer, setMobHeaderSpacer] = useState(0);
@@ -117,6 +142,50 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
       }
     },
     [load],
+  );
+
+  const uploadRoomPhoto = useCallback(
+    async (roomId: string, fileList: FileList | null) => {
+      const file = fileList?.[0];
+      if (!file || !data) return;
+      if (!file.type.startsWith("image/")) {
+        setError("Please choose an image file.");
+        return;
+      }
+      setUploadingPhotoRoomId(roomId);
+      setError(null);
+      try {
+        const dataUrl = await compressImageFileToJpegDataUrl(file);
+        if (dataUrl.length > 4_500_000) {
+          setError("That image is too large after compressing. Try a smaller photo.");
+          return;
+        }
+        const room = data.rooms.find((r) => r.id === roomId);
+        const prevDims =
+          room?.dimensions && typeof room.dimensions === "object"
+            ? { ...(room.dimensions as Record<string, unknown>) }
+            : {};
+        const res = await fetch(`/api/rooms/${encodeURIComponent(roomId)}`, {
+          method: "PATCH",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            dimensions: { ...prevDims, cover_photo: dataUrl },
+          }),
+        });
+        const j = (await res.json().catch(() => ({}))) as { error?: string };
+        if (!res.ok) {
+          setError(j.error ?? "Could not save photo.");
+          return;
+        }
+        await load();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Could not process image.");
+      } finally {
+        setUploadingPhotoRoomId(null);
+      }
+    },
+    [data, load],
   );
 
   useEffect(() => {
@@ -353,7 +422,10 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                   ROOMS
                 </p>
 
-                {data.rooms.map((room) => (
+                {data.rooms.map((room) => {
+                  const coverPhoto = roomCoverPhoto(room.dimensions);
+                  const inputId = `room-cover-${room.id}`;
+                  return (
                   <div
                     key={room.id}
                     className="mb-3 overflow-hidden bg-white"
@@ -363,19 +435,50 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                     }}
                   >
                     <div className="flex flex-row gap-3 p-3">
-                      <div
-                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px]"
-                        style={{ background: "#1a3d28", width: 44, height: 44 }}
-                        aria-hidden
-                      >
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                          <path
-                            d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-7h-6v7H5a1 1 0 0 1-1-1v-9.5z"
-                            stroke="#fff"
-                            strokeWidth="1.5"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
+                      <div className="relative shrink-0">
+                        <input
+                          id={inputId}
+                          type="file"
+                          accept="image/*"
+                          className="sr-only"
+                          tabIndex={-1}
+                          aria-hidden
+                          disabled={uploadingPhotoRoomId === room.id}
+                          onChange={(e) => {
+                            void uploadRoomPhoto(room.id, e.target.files);
+                            e.target.value = "";
+                          }}
+                        />
+                        <button
+                          type="button"
+                          className="relative flex shrink-0 items-center justify-center overflow-hidden rounded-[10px] [-webkit-tap-highlight-color:transparent] disabled:opacity-60"
+                          style={{
+                            background: "#1a3d28",
+                            width: 44,
+                            height: 44,
+                          }}
+                          aria-label={`Choose photo for ${room.name}`}
+                          disabled={uploadingPhotoRoomId === room.id}
+                          onClick={() => document.getElementById(inputId)?.click()}
+                        >
+                          {uploadingPhotoRoomId === room.id ? (
+                            <span className="text-[16px] leading-none text-white" aria-hidden>
+                              …
+                            </span>
+                          ) : coverPhoto ? (
+                            // eslint-disable-next-line @next/next/no-img-element -- user-selected data URL from device gallery
+                            <img src={coverPhoto} alt="" className="h-full w-full object-cover" />
+                          ) : (
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+                              <path
+                                d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-7h-6v7H5a1 1 0 0 1-1-1v-9.5z"
+                                stroke="#fff"
+                                strokeWidth="1.5"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          )}
+                        </button>
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="text-[14px] font-medium text-[#111]">{room.name}</p>
@@ -438,7 +541,8 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                       </Link>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
 
                 <Link
                   href={hubFinalHref(projectId, { openAddRoom: "1" })}

@@ -217,6 +217,7 @@ export async function GET(_request: Request, context: RouteCtx) {
       id: roomId,
       name: str(room, ["name"], "Room"),
       icon: str(room, ["icon"], ""),
+      dimensions: dims,
       dimensionsLabel: formatDims(dims),
       estimatedTotal: Math.round(est * 100) / 100,
       trades: chips,

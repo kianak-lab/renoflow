@@ -150,7 +150,20 @@ export async function PATCH(
     roomUpdate.sort_order = body.sort_order;
   }
   if (body.dimensions !== undefined && typeof body.dimensions === "object" && body.dimensions !== null) {
-    roomUpdate.dimensions = body.dimensions;
+    const { data: dimRow, error: dimLoadErr } = await supabase
+      .from("project_rooms")
+      .select("dimensions")
+      .eq("id", roomId)
+      .maybeSingle();
+    if (dimLoadErr) {
+      return NextResponse.json({ error: dimLoadErr.message }, { status: 500 });
+    }
+    const prevRaw = dimRow ? (dimRow as { dimensions?: unknown }).dimensions : undefined;
+    const prev =
+      prevRaw && typeof prevRaw === "object" && prevRaw !== null
+        ? { ...(prevRaw as Record<string, unknown>) }
+        : {};
+    roomUpdate.dimensions = { ...prev, ...(body.dimensions as Record<string, unknown>) };
   }
 
   if (Object.keys(roomUpdate).length > 0) {
