@@ -306,25 +306,12 @@ a.ni{color:inherit;text-decoration:none;}
 #main > #p-inv,
 #main > #p-push{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;}
 .mob-tab-pager{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;}
-@media (min-width:768px){
-  .mob-tab-strip{position:relative;flex:1;min-height:0;overflow:hidden;}
-  .mob-tab-slab{display:none;position:absolute;left:0;right:0;top:0;bottom:0;flex-direction:column;overflow:hidden;}
-  .mob-tab-slab.mob-slab--active{display:flex;}
-}
+.mob-tab-strip{position:relative;flex:1;min-height:0;overflow:hidden;}
+.mob-tab-slab{display:none;position:absolute;left:0;right:0;top:0;bottom:0;flex-direction:column;overflow:hidden;}
+.mob-tab-slab.mob-slab--active{display:flex;}
+.mob-tab-slab>[id^="p-"]{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 @media (max-width:767px){
   #main{overflow:hidden;}
-  .mob-tab-strip{
-    display:flex;flex-direction:row;flex:1;min-width:0;min-height:0;height:100%;
-    overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;
-    scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;
-  }
-  .mob-tab-slab{
-    display:flex;flex-direction:column;flex:0 0 100%;width:100%;min-width:100%;
-    min-height:0;height:100%;max-height:100%;overflow:hidden;
-    scroll-snap-align:start;scroll-snap-stop:always;
-  }
-  .mob-tab-slab>[id^="p-"]{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 }
 .ph{padding:24px 32px 18px;border-bottom:1px solid var(--bd);background:var(--ph-bg);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-shrink:0;}
 .p-room--plumb-max .ph{background:#fff;border-bottom:1px solid #E0E0E0;}
@@ -3991,35 +3978,6 @@ var curPg="dash",curR=null;
 var __rfNavToRoomsAt=0;
 var __rfListPickRoomI=null, __rfAddRoomStayOnList=false;
 var MOB_TAB_ORDER=["dash","proj","quote","clients"];
-var __mobScrollBusy=false;
-var __mobScrollTimer=null;
-function mobStripScrollEnd(){
-  if(__mobScrollBusy||!isMobTabLayout()) return;
-  var strip=document.getElementById("mob-tab-strip");
-  if(!strip) return;
-  closeRfFabArc();
-  var w=strip.clientWidth;
-  if(!w) return;
-  var ix=Math.round(strip.scrollLeft/w);
-  if(ix<0) ix=0;
-  if(ix>=MOB_TAB_ORDER.length) ix=MOB_TAB_ORDER.length-1;
-  var np=MOB_TAB_ORDER[ix];
-  if(np===curPg) return;
-  curPg=np;
-  document.querySelectorAll(".ni[data-pg],.mn[data-pg],.mtn[data-pg]").forEach(function(n){ n.classList.remove("on"); });
-  document.querySelectorAll("[data-pg='"+np+"']").forEach(function(n){ n.classList.add("on"); });
-  document.querySelectorAll(".mob-tab-slab").forEach(function(slab){
-    slab.classList.toggle("mob-slab--active", slab.getAttribute("data-pg")===np);
-  });
-  if(np==="dash") rDash();
-  if(np==="proj") rProj();
-  if(np==="tl") rTimeline();
-  if(np==="quote") rQuote();
-  if(np==="clients") rClients();
-  if(np==="shop"){ matListScope="project"; matListRoomIdx=null; rShop(); }
-  syncMobDashStatusBarBg(np);
-  syncShellTradeExp();
-}
 function isMobTabLayout(){
   return typeof window.matchMedia==="function"&&window.matchMedia("(max-width:767px)").matches;
 }
@@ -4111,7 +4069,6 @@ function showPg(pg){
   var pbtn=document.querySelector(".proj-new-btn");
   if(pbtn) pbtn.classList.toggle("on", pg==="intake");
   var pager=document.getElementById("mob-tab-pager");
-  var strip=document.getElementById("mob-tab-strip");
   var inMob=MOB_TAB_ORDER.indexOf(pg)>=0;
 
   if(pg==="intake"){
@@ -4150,17 +4107,6 @@ function showPg(pg){
       var d=slab.getAttribute("data-pg");
       slab.classList.toggle("mob-slab--active", d===pg);
     });
-    if(isMobTabLayout()&&strip){
-      var ix=MOB_TAB_ORDER.indexOf(pg);
-      __mobScrollBusy=true;
-      requestAnimationFrame(function(){
-        requestAnimationFrame(function(){
-          var w=strip.clientWidth;
-          if(w&&ix>=0) strip.scrollLeft=ix*w;
-          setTimeout(function(){ __mobScrollBusy=false; }, 320);
-        });
-      });
-    }
   }else{
     if(pager) pager.style.display="none";
     MOB_TAB_ORDER.forEach(function(p){
@@ -9594,17 +9540,7 @@ function useClient(i){
     +'</div>', []);
 }
 
-(function mobTabStripInit(){
-  var strip=document.getElementById("mob-tab-strip");
-  if(!strip) return;
-  strip.addEventListener("scroll", function(){
-    if(__mobScrollBusy) return;
-    clearTimeout(__mobScrollTimer);
-    __mobScrollTimer=setTimeout(mobStripScrollEnd, 72);
-  }, {passive:true});
-})();
-
-if(typeof window.addEventListener==="function"){
+initFromServer();
   window.addEventListener("resize", function(){
     if(typeof curPg==="string") syncMobDashStatusBarBg(curPg);
   }, {passive:true});
