@@ -324,7 +324,7 @@ a.ni{color:inherit;text-decoration:none;}
     min-height:0;height:100%;max-height:100%;overflow:hidden;
     scroll-snap-align:start;scroll-snap-stop:always;
   }
-  .mob-tab-slab>[id^="p-"]{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .mob-tab-slab>[id^="p-"]{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;}
 }
 .ph{padding:24px 32px 18px;border-bottom:1px solid var(--bd);background:var(--ph-bg);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-shrink:0;}
 .p-room--plumb-max .ph{background:#fff;border-bottom:1px solid #E0E0E0;}
@@ -1601,7 +1601,19 @@ a.ni{color:inherit;text-decoration:none;}
 }
 #mob-nav{display:none;}
 @media (max-width: 767px) {
-  #shell{flex-direction:column;}
+  /* Lock the app shell on mobile web/PWA so rubber-band scroll does not move the bottom navigation. */
+  html,body{
+    overflow:hidden;
+    overscroll-behavior:none;
+    height:100%;
+    max-height:100svh;
+  }
+  #shell{
+    flex-direction:column;
+    height:100svh;
+    max-height:100svh;
+    min-height:0;
+  }
   .mob-topnav{display:none !important;}
   #sb{display:none !important;}
   #main{
@@ -1620,16 +1632,20 @@ a.ni{color:inherit;text-decoration:none;}
     z-index:10100;
     box-sizing:border-box;
     flex-direction:row;
-    align-items:flex-end;
+    align-items:center;
     justify-content:space-between;
     gap:0;
     background:#ffffff;
     border-top:0.5px solid #e0e0e0;
-    padding:28px 4px max(8px, env(safe-area-inset-bottom, 0px));
+    padding:10px 4px max(8px, env(safe-area-inset-bottom, 0px));
     box-shadow:none;
     -webkit-backdrop-filter:none;
     backdrop-filter:none;
     overflow:visible;
+    transform:translateZ(0);
+    -webkit-transform:translateZ(0);
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
   }
   #mob-nav.mob-nav--siteclean .mn--tab{
     flex:1;
@@ -1637,7 +1653,7 @@ a.ni{color:inherit;text-decoration:none;}
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:flex-end;
+    justify-content:center;
     gap:2px;
     padding:0 2px 2px;
     margin:0;
@@ -1689,8 +1705,8 @@ a.ni{color:inherit;text-decoration:none;}
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:flex-start;
-    margin-top:-28px;
+    justify-content:center;
+    margin-top:0;
     padding-bottom:2px;
     position:relative;
     z-index:12;
@@ -2369,7 +2385,7 @@ a.ni{color:inherit;text-decoration:none;}
 </div>
 
 <div id="rf-fab-arc-backdrop" class="rf-fab-arc-backdrop" aria-hidden="true" onclick="closeRfFabArc()"></div>
-<nav id="mob-nav" class="app-tabbar mob-nav mob-nav--siteclean" role="navigation" aria-label="Main">
+<nav id="mob-nav" class="app-tabbar mob-nav mob-nav--siteclean" role="navigation" aria-label="Bottom navigation">
   <button type="button" class="mn mn--tab on" data-pg="dash" onclick="gP('dash')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-9.5z"/></svg></span><span class="mn-l">Home</span></button>
   <a href="/projects" class="mn mn--tab" data-pg="proj"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/><rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span><span class="mn-l">Projects</span></a>
   <div class="mn-fab-col">
