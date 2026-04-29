@@ -354,7 +354,7 @@ export default function ProjectsManager() {
         className="shrink-0 text-white"
         style={{
           background: "#0f2318",
-          paddingTop: "max(0.75rem, env(safe-area-inset-top, 0px))",
+          paddingTop: "env(safe-area-inset-top, 0px)",
         }}
       >
         <div className="px-3.5 pb-3 pt-0.5" style={{ paddingLeft: 14, paddingRight: 14 }}>
@@ -593,7 +593,10 @@ export default function ProjectsManager() {
         style={{
           bottom: "var(--rf-nav-bottom, 0px)",
           borderTop: "0.5px solid #e0e0e0",
-          padding: `28px 4px max(8px, env(safe-area-inset-bottom, 0px))`,
+          paddingTop: 28,
+          paddingLeft: 4,
+          paddingRight: 4,
+          paddingBottom: "env(safe-area-inset-bottom, 0px)",
           boxShadow: "none",
         }}
         aria-label="Bottom navigation"
