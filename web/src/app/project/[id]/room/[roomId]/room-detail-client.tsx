@@ -57,24 +57,6 @@ function fmtMoney(n: number): string {
   }).format(n);
 }
 
-function finalHref(projectId: string, query?: Record<string, string>): string {
-  const sp = new URLSearchParams();
-  sp.set("project", projectId);
-  if (query) {
-    Object.entries(query).forEach(([k, v]) => {
-      if (v) sp.set(k, v);
-    });
-  }
-  return `/final?${sp.toString()}`;
-}
-
-function demolitionHref(projectId: string, roomId: string): string {
-  const sp = new URLSearchParams();
-  sp.set("pid", projectId);
-  sp.set("dbRoomId", roomId);
-  return `/trades/demolition?${sp.toString()}`;
-}
-
 function tradeVisual(slug: string): {
   bg: string;
   fg: string;
@@ -194,6 +176,7 @@ export default function RoomDetailClient({
   const [pick, setPick] = useState<Record<string, boolean>>({});
   const [savingTrades, setSavingTrades] = useState(false);
   const [openingTradeId, setOpeningTradeId] = useState<string | null>(null);
+  const [deletingTradeId, setDeletingTradeId] = useState<string | null>(null);
 
   const headerRef = useRef<HTMLElement>(null);
   const [mobHeaderSpacer, setMobHeaderSpacer] = useState(0);
@@ -345,6 +328,40 @@ export default function RoomDetailClient({
     }
   }, [data, pick, roomId, load]);
 
+  const deleteTrade = useCallback(
+    async (t: TradeRow) => {
+      if (!data) return;
+      const label = TN[t.trade_id] ?? t.name;
+      if (!window.confirm(`Remove "${label}" from this room? This cannot be undone.`)) return;
+      setDeletingTradeId(t.id);
+      setError(null);
+      try {
+        const tradesPayload = data.trades
+          .filter((row) => row.trade_id !== t.trade_id)
+          .map((row) => ({
+            id: row.trade_id,
+            open: row.is_open,
+            days: row.days,
+            note: row.note ?? "",
+          }));
+        const res = await fetch(`/api/rooms/${encodeURIComponent(roomId)}`, {
+          method: "PATCH",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ trades: tradesPayload }),
+        });
+        const j = (await res.json().catch(() => ({}))) as { error?: string };
+        if (!res.ok) throw new Error(j.error ?? "Could not remove trade.");
+        await load();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Remove failed.");
+      } finally {
+        setDeletingTradeId(null);
+      }
+    },
+    [data, roomId, load],
+  );
+
   const subtitleLine = useMemo(() => {
     if (!data) return "";
     const r = data.room.name.trim();
@@ -378,12 +395,6 @@ export default function RoomDetailClient({
     },
     [projectId, roomId, router],
   );
-
-  /** Same hydration as Open → — Labour shortcut must not navigate before workspace exists in localStorage */
-  const navigateDemolitionAfterHydrate = useCallback(async () => {
-    await hydrateProjectWorkspaceFromApi(projectId);
-    router.push(demolitionHref(projectId, roomId));
-  }, [projectId, roomId, router]);
 
   return (
     <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden">
@@ -530,36 +541,9 @@ export default function RoomDetailClient({
                           padding: "8px 14px",
                         }}
                       >
-                        <Link
-                          href={finalHref(projectId, { pg: "shop", room: roomId })}
-                          prefetch={false}
-                          className="inline-flex min-h-[36px] flex-1 items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#555] no-underline [-webkit-tap-highlight-color:transparent]"
-                          style={{ border: "0.5px solid #e0e0e0", flex: "1 1 80px" }}
-                        >
-                          Materials
-                        </Link>
-                        {t.trade_id === "demo" ? (
-                          <button
-                            type="button"
-                            onClick={() => void navigateDemolitionAfterHydrate()}
-                            className="inline-flex min-h-[36px] flex-1 cursor-pointer items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#555] [-webkit-tap-highlight-color:transparent]"
-                            style={{ border: "0.5px solid #e0e0e0", flex: "1 1 80px" }}
-                          >
-                            Labour
-                          </button>
-                        ) : (
-                          <Link
-                            href={finalHref(projectId, { room: roomId, trade: t.trade_id })}
-                            prefetch={false}
-                            className="inline-flex min-h-[36px] flex-1 items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#555] no-underline [-webkit-tap-highlight-color:transparent]"
-                            style={{ border: "0.5px solid #e0e0e0", flex: "1 1 80px" }}
-                          >
-                            Labour
-                          </Link>
-                        )}
                         <button
                           type="button"
-                          disabled={openingTradeId === t.id}
+                          disabled={openingTradeId === t.id || deletingTradeId === t.id}
                           onClick={() => void openTradeNavigate(t)}
                           className="inline-flex min-h-[36px] flex-[1.15] items-center justify-center gap-1 rounded-[100px] bg-[#0f2318] px-3 text-[11px] font-medium text-white [-webkit-tap-highlight-color:transparent] disabled:opacity-60"
                           style={{ flex: "1.15 1 96px" }}
@@ -571,6 +555,16 @@ export default function RoomDetailClient({
                               Open <span aria-hidden>→</span>
                             </>
                           )}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={deletingTradeId === t.id || openingTradeId === t.id}
+                          onClick={() => void deleteTrade(t)}
+                          className="inline-flex min-h-[36px] flex-1 cursor-pointer items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#b42318] [-webkit-tap-highlight-color:transparent] disabled:opacity-60"
+                          style={{ border: "0.5px solid #f5d4d1", flex: "1 1 88px" }}
+                          aria-label={`Delete ${t.name}`}
+                        >
+                          {deletingTradeId === t.id ? "…" : "Delete"}
                         </button>
                       </div>
                     </div>
