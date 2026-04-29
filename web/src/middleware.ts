@@ -91,6 +91,12 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  if (pathname.startsWith("/api/weather")) {
+    if (!(await hasSession(request))) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+  }
+
   if (
     pathname.startsWith("/api/projects") ||
     pathname.startsWith("/api/rooms") ||
