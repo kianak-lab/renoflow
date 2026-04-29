@@ -982,9 +982,11 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
                 <div style={cardStyle} className={cardPad}>
                   <div className={sectionLabelCls}>Who pays for materials</div>
                   <p className="mt-1 text-[12px] leading-snug text-[#888]">
-                    Total material cost ({formatMoney(materialMyCost)}) counts toward your job costs. Choose{" "}
-                    <strong>Your expense</strong> when you absorb supplies. With <strong>Client invoice</strong>, every
-                    quantity you set below is billed to the client on the quote (with markup on the Totals tab).
+                    Supplier subtotal for quantities below: {formatMoney(materialMyCost)}.{" "}
+                    <strong>Private expense</strong> keeps materials in{" "}
+                    <strong>MY COSTS — PRIVATE</strong> on Totals only — nothing is pushed to the client quote.{" "}
+                    <strong>Client invoice</strong> bills the client (with markup on Totals) and those amounts appear on
+                    the quote.
                   </p>
                   <div
                     className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -1000,7 +1002,7 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
                         color: !d.materialsBillToClient ? SITE.ink : SITE.muted,
                       }}
                     >
-                      Your expense
+                      Private expense
                     </button>
                     <button
                       type="button"
@@ -1135,16 +1137,21 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
                 <span className="text-[13px]">%</span>
               </div>
               <div className="mt-1 flex justify-between gap-2 text-neutral-800">
-                <span>Materials to client</span>
+                <span>Materials (client quote)</span>
                 <span className={`shrink-0 font-medium ${monoNum}`} style={{ color: SITE.green }}>
                   {formatMoney(clientMaterialsCharge)}
                 </span>
               </div>
               {!d.materialsBillToClient ? (
                 <p className="mt-1 text-[11px] leading-snug text-[#888]">
-                  Materials are set to <strong>your expense</strong> on the Materials tab — not added to the client quote.
+                  Materials are <strong>private expense</strong> — they stay under MY COSTS only and are{" "}
+                  <strong>not</strong> on the quote.
                 </p>
-              ) : null}
+              ) : (
+                <p className="mt-1 text-[11px] leading-snug text-[#888]">
+                  Materials are a <strong>client expense</strong> — shown here with markup and included in quote totals.
+                </p>
+              )}
               {d.wasteDisposalEnabled ? (
                 <div className="flex justify-between gap-2 py-1 text-neutral-800">
                   <span>Waste / disposal (pass-through)</span>
@@ -1207,7 +1214,11 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
                     </div>
                   )}
                   <div className="flex justify-between gap-2 py-1 text-neutral-800">
-                    <span>Materials</span>
+                    <span className="min-w-0 pr-2">
+                      {d.materialsBillToClient
+                        ? "Materials (your supplier cost)"
+                        : "Materials (private expense · not on quote)"}
+                    </span>
                     <span className={`shrink-0 ${monoNum}`}>{formatMoney(materialMyCost)}</span>
                   </div>
                   {d.wasteDisposalEnabled ? (

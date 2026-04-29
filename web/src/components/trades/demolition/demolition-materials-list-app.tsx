@@ -175,6 +175,22 @@ export default function DemolitionMaterialsListApp(props: DemolitionMaterialsLis
     return typeof m === "number" && !Number.isNaN(m) ? Math.max(0, m) : 0;
   }, [projectId]);
 
+  const catPickThumbs = useMemo(() => {
+    if (!projectId) return {} as Record<string, string>;
+    const ws = loadWorkspace(projectId);
+    const tr = ws?.rooms?.[ri]?.trades?.[ti] as
+      | { catPick?: Record<string, { thumb?: string }> }
+      | undefined;
+    const out: Record<string, string> = {};
+    const cp = tr?.catPick;
+    if (!cp || typeof cp !== "object") return out;
+    for (const [pid, row] of Object.entries(cp)) {
+      const th = row?.thumb;
+      if (typeof th === "string" && th.trim()) out[pid] = th.trim();
+    }
+    return out;
+  }, [projectId, ri, ti]);
+
   const rows = useMemo(() => {
     if (!d) return [];
     const out: Array<{
@@ -186,6 +202,7 @@ export default function DemolitionMaterialsListApp(props: DemolitionMaterialsLis
       qty: number;
       supplierExt: number;
       quoteLine: number;
+      thumbUrl: string | null;
     }> = [];
     for (const p of products) {
       const id = String(p.id);
@@ -203,6 +220,9 @@ export default function DemolitionMaterialsListApp(props: DemolitionMaterialsLis
         p.subsection && String(p.subsection).trim()
           ? String(p.subsection).trim()
           : "(Uncategorized)";
+      const thumbRaw = p.thumbnail ?? catPickThumbs[id] ?? null;
+      const thumbUrl =
+        typeof thumbRaw === "string" && thumbRaw.trim() ? thumbRaw.trim() : null;
       out.push({
         id,
         title: p.title ?? "—",
@@ -212,6 +232,7 @@ export default function DemolitionMaterialsListApp(props: DemolitionMaterialsLis
         qty,
         supplierExt,
         quoteLine,
+        thumbUrl,
       });
     }
     out.sort((a, b) =>
@@ -220,7 +241,7 @@ export default function DemolitionMaterialsListApp(props: DemolitionMaterialsLis
         : a.subsection.localeCompare(b.subsection),
     );
     return out;
-  }, [products, d, globalMatPct]);
+  }, [products, d, globalMatPct, catPickThumbs]);
 
   const supplierGrand = useMemo(
     () => Math.round(rows.reduce((s, r) => s + r.supplierExt, 0) * 100) / 100,
@@ -315,44 +336,66 @@ export default function DemolitionMaterialsListApp(props: DemolitionMaterialsLis
               <p className="mt-1 text-[13px] text-neutral-800">
                 {d.materialsBillToClient ? (
                   <>
-                    <strong className="text-neutral-900">Client invoice</strong> — lines below match what is billed on
-                    the quote (demolition markup {d.clientMaterialsMarkupPct}%
+                    <strong className="text-neutral-900">Client invoice</strong> — a{" "}
+                    <strong>client expense</strong>: amounts appear on the quote (demolition markup{" "}
+                    {d.clientMaterialsMarkupPct}%
                     {globalMatPct > 0 ? ` · project materials ${globalMatPct}%` : ""}).
                   </>
                 ) : (
                   <>
-                    <strong className="text-neutral-900">Your expense</strong> — supplier costs only; not added to the
-                    client quote.
+                    <strong className="text-neutral-900">Private expense</strong> — only your supplier totals below;{" "}
+                    <strong>not</strong> on the client quote.
                   </>
                 )}
               </p>
             </div>
 
             {rows.map((r) => (
-              <article key={r.id} style={cardStyle} className={cardPad}>
-                <div className={sectionLabelCls}>{r.subsection}</div>
-                {r.brand ? <div className="mt-0.5 text-[11px] text-[#888]">{r.brand}</div> : null}
-                <h2 className="mt-1 text-[14px] font-semibold leading-snug text-neutral-900">{r.title}</h2>
-                <dl className={`mt-3 grid gap-2 text-[13px] ${monoNum}`}>
-                  <div className="flex justify-between gap-2">
-                    <dt className="text-[#888]">Unit</dt>
-                    <dd>{formatMoney(r.unitPrice)}</dd>
-                  </div>
-                  <div className="flex justify-between gap-2">
-                    <dt className="text-[#888]">Qty</dt>
-                    <dd>{r.qty}</dd>
-                  </div>
-                  <div className="flex justify-between gap-2 font-semibold text-neutral-900">
-                    <dt className="font-normal text-[#888]">Supplier total</dt>
-                    <dd style={{ color: SITE.green }}>{formatMoney(r.supplierExt)}</dd>
-                  </div>
-                  {d.materialsBillToClient ? (
-                    <div className="flex justify-between gap-2 border-t pt-2 font-semibold text-neutral-900" style={{ borderColor: SITE.border }}>
-                      <dt className="font-normal text-[#888]">On quote (est.)</dt>
-                      <dd style={{ color: SITE.green }}>{formatMoney(r.quoteLine)}</dd>
-                    </div>
+              <article key={r.id} style={cardStyle} className={`${cardPad} flex gap-3`}>
+                <div
+                  className="relative h-16 w-16 shrink-0 overflow-hidden bg-neutral-100"
+                  style={{ borderRadius: 8 }}
+                >
+                  {r.thumbUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={r.thumbUrl}
+                      alt=""
+                      width={64}
+                      height={64}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
                   ) : null}
-                </dl>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className={sectionLabelCls}>{r.subsection}</div>
+                  {r.brand ? <div className="mt-0.5 text-[11px] text-[#888]">{r.brand}</div> : null}
+                  <h2 className="mt-1 text-[14px] font-semibold leading-snug text-neutral-900">{r.title}</h2>
+                  <dl className={`mt-3 grid gap-2 text-[13px] ${monoNum}`}>
+                    <div className="flex justify-between gap-2">
+                      <dt className="text-[#888]">Unit</dt>
+                      <dd>{formatMoney(r.unitPrice)}</dd>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <dt className="text-[#888]">Qty</dt>
+                      <dd>{r.qty}</dd>
+                    </div>
+                    <div className="flex justify-between gap-2 font-semibold text-neutral-900">
+                      <dt className="font-normal text-[#888]">Supplier total</dt>
+                      <dd style={{ color: SITE.green }}>{formatMoney(r.supplierExt)}</dd>
+                    </div>
+                    {d.materialsBillToClient ? (
+                      <div
+                        className="flex justify-between gap-2 border-t pt-2 font-semibold text-neutral-900"
+                        style={{ borderColor: SITE.border }}
+                      >
+                        <dt className="font-normal text-[#888]">On quote (est.)</dt>
+                        <dd style={{ color: SITE.green }}>{formatMoney(r.quoteLine)}</dd>
+                      </div>
+                    ) : null}
+                  </dl>
+                </div>
               </article>
             ))}
 
