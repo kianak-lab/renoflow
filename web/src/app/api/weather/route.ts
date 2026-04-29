@@ -24,6 +24,7 @@ export async function GET(request: Request) {
   upstream.searchParams.set("temperature_unit", "celsius");
   upstream.searchParams.set("wind_speed_unit", "kph");
   upstream.searchParams.set("timezone", "auto");
+  upstream.searchParams.set("forecast_days", "7");
 
   let res: Response;
   try {
@@ -39,9 +40,24 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Weather service error" }, { status: 502 });
   }
 
-  const data = (await res.json()) as { reason?: string; error?: boolean };
+  const data = (await res.json()) as {
+    reason?: string;
+    error?: boolean;
+    current?: { temperature_2m?: number; weather_code?: number };
+    daily?: { temperature_2m_max?: number[]; temperature_2m_min?: number[] };
+  };
   if (data && (data.reason || data.error === true)) {
     return NextResponse.json({ error: "Weather service error" }, { status: 502 });
+  }
+  const daily = data?.daily;
+  const cur = data?.current;
+  if (
+    !cur ||
+    typeof cur.temperature_2m !== "number" ||
+    !daily?.temperature_2m_max?.length ||
+    !daily?.temperature_2m_min?.length
+  ) {
+    return NextResponse.json({ error: "Malformed weather payload" }, { status: 502 });
   }
 
   return NextResponse.json(data, {

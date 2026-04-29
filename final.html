@@ -26,7 +26,7 @@
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
 input[type=number]{-moz-appearance:textfield;appearance:textfield;}
-html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:15px;font-weight:400;line-height:1.5;}
+html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,sans-serif,'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',emoji;font-size:15px;font-weight:400;line-height:1.5;}
 .pt,.brief-greeting,.brief-stat-v,.qco,.tot-a,.tl-sv,.qtr.gd .qr,.dep-bal-v,.inv-stat-v{font-weight:700;letter-spacing:-0.3px;}
 #shell{display:flex;flex-direction:row;height:100vh;max-height:100dvh;overflow:hidden;}
 .mob-topnav{display:none;flex-shrink:0;background:var(--topbar-bg);border-bottom:1px solid var(--bd);color:var(--tx2);z-index:50;}
@@ -2468,7 +2468,7 @@ a.ni{color:inherit;text-decoration:none;}
 
 var TC={demo:"#FFE000",framing:"#e87747",concrete:"#78909c",roofing:"#5c7a8a",electrical:"#e8c547",plumbing:"#47a0e8",hvac:"#8847e8",lowvolt:"#5c6bc0",security:"#455a64",comdoor:"#6d4c41",insulation:"#47e8c5",drywall:"#e847a0",tile:"#a0e847",flooring:"#e8a047",painting:"#47e8a0",trim:"#e88847",cabinets:"#7047e8",closets:"#8b7355",finishing:"#5d9c8a"};
 var TN={demo:"Demolition",framing:"Framing",concrete:"Concrete",roofing:"Roofing",electrical:"Electrical",plumbing:"Plumbing",hvac:"HVAC",lowvolt:"Low voltage",security:"Security",comdoor:"Commercial door hardware",insulation:"Insulation",drywall:"Drywall",tile:"Tile",flooring:"Flooring",painting:"Painting",trim:"Trim & Millwork",cabinets:"Cabinets & tops",closets:"Closets",finishing:"Finishing"};
-var TIC={demo:"",framing:"????",concrete:"????",roofing:"????",electrical:"???",plumbing:"????",hvac:"????",lowvolt:"????",security:"????",comdoor:"????",insulation:"????",drywall:"??",tile:"????",flooring:"????",painting:"????",trim:"????",cabinets:"????",closets:"????",finishing:"???"};
+var TIC={demo:"\u{1F528}",framing:"\u{1FAB5}",concrete:"\u{1FAA8}",roofing:"\u{1F3E0}",electrical:"\u{26A1}",plumbing:"\u{1F4A7}",hvac:"\u{1F300}",lowvolt:"\u{1F50C}",security:"\u{1F512}",comdoor:"\u{1F6AA}",insulation:"\u{1F9F1}",drywall:"\u{2B1C}",tile:"\u{1F7E9}",flooring:"\u{1F532}",painting:"\u{1F3A8}",trim:"\u{1F4CF}",cabinets:"\u{1F5C4}",closets:"\u{1F45A}",finishing:"\u{2728}"};
 /* Legacy line-item seed empty ??? materials use supplier catalog (cached_products). */
 var TB={};
 var RICH_MEP_TRADES={framing:1,hvac:1,insulation:1,drywall:1,tile:1,flooring:1,painting:1,trim:1,cabinets:1,lowvolt:1,security:1};
@@ -2526,27 +2526,27 @@ function richTradeMaterialSectionsHtml(t,ti,px,c){
 }
 var AM={frl1:"studs",frl3:"plates",dwr1:"dwWall",inb1:"insBatt",pnt1:"paintWall",pnt4:"paintCeil",pnt3:"primer",flm1:"floor",flu1:"under",tif1:"tileFl",trb1:"base"};
 var ELEC_FX_DEV=[
-  {id:"ed_out",l:"Outlet",ic:"????",p:180,u:"ea"},{id:"ed_sw",l:"Switch",ic:"????",p:160,u:"ea"},{id:"ed_dim",l:"Dimmer",ic:"????",p:85,u:"ea"},
-  {id:"ed_gfci",l:"GFCI",ic:"????",p:210,u:"ea"},{id:"ed_usb",l:"USB Outlet",ic:"????",p:45,u:"ea"},{id:"ed_3w",l:"3-way Switch",ic:"????",p:32,u:"ea"}
+  {id:"ed_out",l:"Outlet",ic:"\u{1F50C}",p:180,u:"ea"},{id:"ed_sw",l:"Switch",ic:"\u{1F518}",p:160,u:"ea"},{id:"ed_dim",l:"Dimmer",ic:"\u{1F505}",p:85,u:"ea"},
+  {id:"ed_gfci",l:"GFCI",ic:"\u{26A1}",p:210,u:"ea"},{id:"ed_usb",l:"USB Outlet",ic:"\u{1F50C}",p:45,u:"ea"},{id:"ed_3w",l:"3-way Switch",ic:"\u{1F500}",p:32,u:"ea"}
 ];
 var ELEC_FX_FIX=[
-  {id:"ef_pot",l:"Pot Light",ic:"??",p:145,u:"ea"},{id:"ef_lfix",l:"Light Fixture",ic:"???",p:220,u:"ea"},{id:"ef_exh",l:"Exhaust Fan",ic:"????",p:280,u:"ea"},
-  {id:"ef_panel",l:"Panel Upgrade",ic:"???",p:2200,u:"ea"},{id:"ef_ev",l:"EV Charger",ic:"????",p:800,u:"ea"},{id:"ef_cfan",l:"Ceiling Fan",ic:"????",p:350,u:"ea"}
+  {id:"ef_pot",l:"Pot Light",ic:"\u{1F4A1}",p:145,u:"ea"},{id:"ef_lfix",l:"Light Fixture",ic:"\u{1F4A1}",p:220,u:"ea"},{id:"ef_exh",l:"Exhaust Fan",ic:"\u{1F4A8}",p:280,u:"ea"},
+  {id:"ef_panel",l:"Panel Upgrade",ic:"\u{26A1}",p:2200,u:"ea"},{id:"ef_ev",l:"EV Charger",ic:"\u{1F50C}",p:800,u:"ea"},{id:"ef_cfan",l:"Ceiling Fan",ic:"\u{1F4A8}",p:350,u:"ea"}
 ];
 var FX={
-  plumbing:[{id:"toilet",l:"Toilet",ic:"????",p:380,u:"ea"},{id:"vanity",l:"Vanity Faucet",ic:"????",p:220,u:"ea"},{id:"shower",l:"Shower Valve",ic:"????",p:480,u:"ea"},{id:"tub",l:"Tub",ic:"????",p:650,u:"ea"},{id:"kitchen",l:"Kitchen Faucet",ic:"????",p:280,u:"ea"},{id:"dishwash",l:"Dishwasher Conn",ic:"????",p:320,u:"ea"},{id:"roughin",l:"Rough-in Point",ic:"????",p:650,u:"ea"}],
-  cabinets:[{id:"upper",l:"Upper Cabs",ic:"????",p:280,u:"ln ft"},{id:"lower",l:"Lower Cabs",ic:"????",p:320,u:"ln ft"},{id:"counter",l:"Countertop",ic:"??",p:85,u:"sqft"},{id:"island",l:"Island",ic:"????",p:2800,u:"ea"},{id:"pantry",l:"Pantry",ic:"????",p:850,u:"ea"}]
+  plumbing:[{id:"toilet",l:"Toilet",ic:"\u{1F6BD}",p:380,u:"ea"},{id:"vanity",l:"Vanity Faucet",ic:"\u{1F6BF}",p:220,u:"ea"},{id:"shower",l:"Shower Valve",ic:"\u{1F6BF}",p:480,u:"ea"},{id:"tub",l:"Tub",ic:"\u{1F6C1}",p:650,u:"ea"},{id:"kitchen",l:"Kitchen Faucet",ic:"\u{1F6B0}",p:280,u:"ea"},{id:"dishwash",l:"Dishwasher Conn",ic:"\u{1F37D}\uFE0F",p:320,u:"ea"},{id:"roughin",l:"Rough-in Point",ic:"\u{1F527}",p:650,u:"ea"}],
+  cabinets:[{id:"upper",l:"Upper Cabs",ic:"\u{1F5C4}",p:280,u:"ln ft"},{id:"lower",l:"Lower Cabs",ic:"\u{1F5C4}",p:320,u:"ln ft"},{id:"counter",l:"Countertop",ic:"\u{1F4CF}",p:85,u:"sqft"},{id:"island",l:"Island",ic:"\u{1F3D7}",p:2800,u:"ea"},{id:"pantry",l:"Pantry",ic:"\u{1F6AA}",p:850,u:"ea"}]
 };
 var RT=[
-  {n:"Kitchen",    ic:"????",trades:["demo","framing","electrical","plumbing","drywall","tile","flooring","painting","trim","cabinets"]},
-  {n:"Bathroom",   ic:"????",trades:["demo","framing","electrical","plumbing","insulation","drywall","tile","painting","trim"]},
-  {n:"Bedroom",    ic:"????",trades:["demo","electrical","insulation","drywall","flooring","painting","trim"]},
-  {n:"Living Room",ic:"????",trades:["demo","electrical","drywall","flooring","painting","trim"]},
-  {n:"Basement",   ic:"??", trades:["demo","framing","electrical","plumbing","hvac","insulation","drywall","flooring","painting","trim"]},
-  {n:"Laundry",    ic:"????",trades:["demo","electrical","plumbing","drywall","flooring","painting","trim"]},
-  {n:"Garage",     ic:"????",trades:["demo","electrical","drywall","flooring","painting"]},
-  {n:"Whole House",ic:"????",trades:["demo","framing","concrete","roofing","electrical","plumbing","hvac","lowvolt","security","insulation","drywall","tile","flooring","comdoor","trim","painting","cabinets","closets","finishing"]},
-  {n:"Custom",     ic:"???", trades:["demo","framing","concrete","roofing","electrical","plumbing","hvac","lowvolt","security","insulation","drywall","tile","flooring","comdoor","trim","painting","cabinets","closets","finishing"]}
+  {n:"Kitchen",    ic:"\u{1F373}",trades:["demo","framing","electrical","plumbing","drywall","tile","flooring","painting","trim","cabinets"]},
+  {n:"Bathroom",   ic:"\u{1F6BF}",trades:["demo","framing","electrical","plumbing","insulation","drywall","tile","painting","trim"]},
+  {n:"Bedroom",    ic:"\u{1F6CF}",trades:["demo","electrical","insulation","drywall","flooring","painting","trim"]},
+  {n:"Living Room",ic:"\u{1F6CB}",trades:["demo","electrical","drywall","flooring","painting","trim"]},
+  {n:"Basement",   ic:"\u{2B07}", trades:["demo","framing","electrical","plumbing","hvac","insulation","drywall","flooring","painting","trim"]},
+  {n:"Laundry",    ic:"\u{1FAE7}",trades:["demo","electrical","plumbing","drywall","flooring","painting","trim"]},
+  {n:"Garage",     ic:"\u{1F697}",trades:["demo","electrical","drywall","flooring","painting"]},
+  {n:"Whole House",ic:"\u{1F3E0}",trades:["demo","framing","concrete","roofing","electrical","plumbing","hvac","lowvolt","security","insulation","drywall","tile","flooring","comdoor","trim","painting","cabinets","closets","finishing"]},
+  {n:"Custom",     ic:"\u{270F}", trades:["demo","framing","concrete","roofing","electrical","plumbing","hvac","lowvolt","security","insulation","drywall","tile","flooring","comdoor","trim","painting","cabinets","closets","finishing"]}
 ];
 
 // Sequence: demo ??? framing ??? concrete/roofing shell ??? ROUGHIN (MEP + low-volt + security) ??? shell ??? finishes
@@ -5134,20 +5134,26 @@ function refreshDashWeather(){
     el.textContent=__rfDashWeatherCache.text;
     return;
   }
-  el.textContent="Loading weather???";
+  el.textContent="Loading weather\u2026";
   function apply(lat,lon){
     var url="/api/weather?latitude="+encodeURIComponent(lat)+"&longitude="+encodeURIComponent(lon);
-    fetch(url,{credentials:"include",cache:"no-store"}).then(function(r){
+    fetch(url,{credentials:"same-origin",cache:"no-store"}).then(function(r){
       if(!r.ok) throw new Error("wx");
       return r.json();
     }).then(function(data){
       var cur=data&&data.current;
       var day=data&&data.daily;
-      if(!cur||!day||!day.temperature_2m_max||!day.temperature_2m_min)throw new Error("wx");
-      var hi=day.temperature_2m_max[0];
-      var lo=day.temperature_2m_min[0];
-      var t=Math.round(cur.temperature_2m);
-      var line=t+"?C ? "+rfWmoWeatherPhrase(cur.weather_code)+" ? High "+Math.round(hi)+"? / Low "+Math.round(lo)+"?";
+      if(!cur||!day) throw new Error("wx");
+      var maxArr=day.temperature_2m_max;
+      var minArr=day.temperature_2m_min;
+      if(!maxArr||!minArr||!maxArr.length||!minArr.length) throw new Error("wx");
+      var t=Math.round(Number(cur.temperature_2m));
+      var hi=Number(maxArr[0]);
+      var lo=Number(minArr[0]);
+      if(!Number.isFinite(t)||!Number.isFinite(hi)||!Number.isFinite(lo)) throw new Error("wx");
+      var deg="\u00B0";
+      var dot="\u00B7";
+      var line=t+deg+"C "+dot+" "+rfWmoWeatherPhrase(Number(cur.weather_code))+" "+dot+" High "+Math.round(hi)+deg+" / Low "+Math.round(lo)+deg;
       el.textContent=line;
       __rfDashWeatherCache={t:now,text:line,u:"c"};
     }).catch(function(){
@@ -5206,7 +5212,7 @@ function rDash(){
   var el=document.getElementById("p-dash");
   __rfDashJiggleMode=false;
   if(!window.__rfProjectList){
-    el.innerHTML='<div class="pc"><div class="brief-wrap" style="text-align:center;padding:40px 20px;color:var(--tx3)">Loading projects???</div></div>';
+    el.innerHTML='<div class="pc"><div class="brief-wrap" style="text-align:center;padding:40px 20px;color:var(--tx3)">Loading projects\u2026</div></div>';
     refreshProjectList().then(function(){ rDash(); });
     return;
   }
@@ -5242,8 +5248,8 @@ function rDash(){
     if((st==='sent'||st==='partial')&&inv.deposit>0&&!inv.depositPaid){
       alerts.push({
         type:'warning',
-        icon:'????',
-        title:'Deposit pending ??? '+(inv.clientName||inv.num),
+        icon:'\u{1F4B0}',
+        title:'Deposit pending ? '+(inv.clientName||inv.num),
         sub:f(inv.deposit)+' deposit not yet received ? '+inv.num,
         btn:'View Invoice',
         fn:'gP(\'inv\');openInv(\''+inv.id+'\')'
@@ -5260,7 +5266,7 @@ function rDash(){
       if(daysLeft<=2&&daysLeft>0){
         alerts.push({
           type:'info',
-          icon:'?',
+          icon:'\u{1F4C5}',
           title:(inv.clientName||inv.num)+' payment due soon',
           sub:'Due in '+daysLeft+' day'+(daysLeft!==1?'s':'')+' ? '+f(inv.total),
           btn:'View Invoice',
@@ -5274,7 +5280,7 @@ function rDash(){
   if(n===0){
     alerts.push({
       type:'info',
-      icon:'????',
+      icon:'\u{1F3E0}',
       title:'No rooms added yet',
       sub:'Start by adding rooms to your project',
       btn:'Add Room',
@@ -5376,7 +5382,7 @@ function rDash(){
     +'<div class="brief-header__text">'
     +'<div class="brief-date">'+dateStr+'</div>'
     +'<div class="brief-greeting">'+greeting+'</div>'
-    +'<div class="brief-sub" id="dash-weather" aria-live="polite">Loading weather???</div>'
+    +'<div class="brief-sub" id="dash-weather" aria-live="polite">Loading weather\u2026</div>'
     +'</div>'
     +'<div class="brief-header__logo">'+dashHeaderRfLogo()+'</div>'
     +'</div></div>'
