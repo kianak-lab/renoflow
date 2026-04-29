@@ -26,9 +26,9 @@
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
 input[type=number]{-moz-appearance:textfield;appearance:textfield;}
-html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:15px;font-weight:400;line-height:1.5;}
+html,body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:15px;font-weight:400;line-height:1.5;}
 .pt,.brief-greeting,.brief-stat-v,.qco,.tot-a,.tl-sv,.qtr.gd .qr,.dep-bal-v,.inv-stat-v{font-weight:700;letter-spacing:-0.3px;}
-#shell{display:flex;flex-direction:row;height:100vh;max-height:100dvh;overflow:hidden;}
+#shell{display:flex;flex-direction:row;height:100%;height:100dvh;min-height:0;overflow:hidden;}
 .mob-topnav{display:none;flex-shrink:0;background:var(--topbar-bg);border-bottom:1px solid var(--bd);color:var(--tx2);z-index:50;}
 .mob-topnav__scroll{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:6px;padding:8px 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;box-sizing:border-box;min-height:48px;}
 .mob-topnav__scroll::-webkit-scrollbar{display:none;}
@@ -328,7 +328,6 @@ a.ni{color:inherit;text-decoration:none;}
   .mob-tab-slab.mob-slab--active{display:flex;}
 }
 @media (max-width:767px){
-  #main{overflow:hidden;}
   .mob-tab-strip{
     display:flex;flex-direction:row;flex:1;min-width:0;min-height:0;height:100%;
     overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;
@@ -1616,16 +1615,19 @@ a.ni{color:inherit;text-decoration:none;}
   .tl-day-date{width:80px;}
 }
 @media (max-width: 767px) {
-  /* Reduce rubber-band on the document; keep height like desktop #shell (100vh / 100dvh) so fixed bottom nav sits flush. */
   html,body{
+    height:100%;
+    height:100dvh;
     overflow:hidden;
     overscroll-behavior:none;
   }
   #shell{
+    display:flex;
     flex-direction:column;
-    height:100vh;
-    max-height:100dvh;
+    height:100%;
+    height:100dvh;
     min-height:0;
+    overflow:hidden;
   }
   .mob-topnav{display:none !important;}
   #sb{display:none !important;}
@@ -1633,7 +1635,8 @@ a.ni{color:inherit;text-decoration:none;}
     flex:1;
     min-height:0;
     min-width:0;
-    padding-bottom:calc(80px + env(safe-area-inset-bottom, 34px));
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
   }
   #mob-nav.mob-nav--siteclean .mn--tab{
     flex:1;
@@ -2272,20 +2275,13 @@ a.ni{color:inherit;text-decoration:none;}
 }
 @media (max-width:767px){
 #mob-nav{
-  position:fixed!important;
-  bottom:0!important;
-  left:0!important;
-  right:0!important;
-  width:100%!important;
-  z-index:9999!important;
-  background:#ffffff!important;
-  border-top:0.5px solid #e0e0e0!important;
-  display:flex!important;
-  align-items:center!important;
-  padding:8px 0 env(safe-area-inset-bottom, 34px) 0!important;
-  height:auto!important;
-  transform:none!important;
-  margin:0!important;
+  flex-shrink:0;
+  width:100%;
+  background:#ffffff;
+  border-top:0.5px solid #e0e0e0;
+  display:flex;
+  align-items:center;
+  padding:8px 0 34px 0;
 }
 }
 #shell.shell--trade-exp #mob-nav{display:none!important;pointer-events:none;}
@@ -2393,9 +2389,7 @@ a.ni{color:inherit;text-decoration:none;}
     <div id="p-sett" style="display:none"></div>
     <div id="p-inv" style="display:none"></div>
   </div>
-</div>
 
-<div id="rf-fab-arc-backdrop" class="rf-fab-arc-backdrop" aria-hidden="true" onclick="closeRfFabArc()"></div>
 <nav id="mob-nav" class="app-tabbar mob-nav mob-nav--siteclean" role="navigation" aria-label="Bottom navigation">
   <button type="button" class="mn mn--tab on" data-pg="dash" onclick="gP('dash')"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-9.5z"/></svg></span><span class="mn-l">Home</span></button>
   <a href="/projects" class="mn mn--tab" data-pg="proj"><span class="mn-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/><rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span><span class="mn-l">Projects</span></a>
@@ -2420,6 +2414,9 @@ a.ni{color:inherit;text-decoration:none;}
     </button>
   </div>
 </nav>
+</div>
+
+<div id="rf-fab-arc-backdrop" class="rf-fab-arc-backdrop" aria-hidden="true" onclick="closeRfFabArc()"></div>
 
 <div class="mo" id="modal" onclick="closeMo(event)">
   <div class="mb"><div class="mb-t" id="mo-t"></div><div id="mo-b"></div><div class="mb-b" id="mo-btn"></div></div>
