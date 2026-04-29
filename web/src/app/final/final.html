@@ -3377,7 +3377,16 @@ function rfApplyBootNavigation(){
   }
   if(b.pg&&typeof b.pg==="string"){
     var ok=["dash","proj","quote","clients","tl","cal","shop","inv","rooms"];
-    if(ok.indexOf(b.pg)>=0){ try{ gP(b.pg); }catch(e){} }
+    if(ok.indexOf(b.pg)>=0){
+      if(b.pg==="shop"){
+        try{
+          if(typeof openProjectMaterials==="function") openProjectMaterials();
+          else gP("shop");
+        }catch(e){}
+      }else{
+        try{ gP(b.pg); }catch(e){}
+      }
+    }
   }
   rfStripBootParamsFromUrl();
 }

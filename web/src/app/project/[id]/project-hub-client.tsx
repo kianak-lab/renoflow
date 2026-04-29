@@ -63,6 +63,7 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [fabOpen, setFabOpen] = useState(false);
+  const [deletingRoomId, setDeletingRoomId] = useState<string | null>(null);
 
   const headerRef = useRef<HTMLElement>(null);
   const [mobHeaderSpacer, setMobHeaderSpacer] = useState(0);
@@ -89,6 +90,34 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
       setLoading(false);
     }
   }, [projectId]);
+
+  const deleteRoom = useCallback(
+    async (roomId: string, roomName: string) => {
+      const ok = window.confirm(
+        `Delete "${roomName}"? Materials and trades for this room will be removed. This cannot be undone.`,
+      );
+      if (!ok) return;
+      setDeletingRoomId(roomId);
+      setError(null);
+      try {
+        const res = await fetch(`/api/rooms/${encodeURIComponent(roomId)}`, {
+          method: "DELETE",
+          credentials: "include",
+        });
+        const j = (await res.json().catch(() => ({}))) as { error?: string };
+        if (!res.ok) {
+          setError(j.error ?? "Could not delete room.");
+          return;
+        }
+        await load();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Delete failed.");
+      } finally {
+        setDeletingRoomId(null);
+      }
+    },
+    [load],
+  );
 
   useEffect(() => {
     void load();
@@ -251,7 +280,7 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                     border: "0.5px solid rgba(255,255,255,0.35)",
                   }}
                 >
-                  Materials
+                  All Materials
                 </Link>
               </div>
             ) : null}
@@ -387,16 +416,17 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                         className="inline-flex min-h-[40px] flex-1 items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#555] no-underline [-webkit-tap-highlight-color:transparent]"
                         style={{ border: "0.5px solid #e0e0e0", flex: "1 1 90px" }}
                       >
-                        Materials
+                        Room Materials
                       </Link>
-                      <Link
-                        href={hubFinalHref(projectId, { pg: "tl", room: room.id })}
-                        prefetch={false}
-                        className="inline-flex min-h-[40px] flex-1 items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#555] no-underline [-webkit-tap-highlight-color:transparent]"
+                      <button
+                        type="button"
+                        disabled={deletingRoomId === room.id}
+                        onClick={() => void deleteRoom(room.id, room.name)}
+                        className="inline-flex min-h-[40px] flex-1 items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#c0392b] [-webkit-tap-highlight-color:transparent] disabled:opacity-50"
                         style={{ border: "0.5px solid #e0e0e0", flex: "1 1 90px" }}
                       >
-                        Timeline
-                      </Link>
+                        {deletingRoomId === room.id ? "…" : "Delete"}
+                      </button>
                       <Link
                         href={`/project/${encodeURIComponent(projectId)}/room/${encodeURIComponent(room.id)}`}
                         prefetch={false}
