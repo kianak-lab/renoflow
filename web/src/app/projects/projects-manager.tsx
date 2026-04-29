@@ -587,7 +587,7 @@ export default function ProjectsManager() {
                         Timeline
                       </Link>
                       <Link
-                        href="/final"
+                        href={`/project/${encodeURIComponent(p.id)}`}
                         prefetch={false}
                         className="inline-flex min-h-[44px] flex-[1.1] items-center justify-center gap-1 rounded-[100px] bg-[#0f2318] px-3 text-[11px] font-medium text-white no-underline [-webkit-tap-highlight-color:transparent]"
                         style={{ flex: "1.1 1 100px" }}

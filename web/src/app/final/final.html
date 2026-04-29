@@ -3309,7 +3309,72 @@ function maybeConsumeDemolitionReturnNav(){
   }catch(e){ return null; }
 }
 
+function rfParseBootFromLocation(){
+  try{
+    var u=new URL(window.location.href);
+    return {
+      project:u.searchParams.get("project"),
+      room:u.searchParams.get("room"),
+      pg:u.searchParams.get("pg"),
+      openAdd:u.searchParams.get("openAddRoom")==="1"
+    };
+  }catch(e){
+    return {project:null,room:null,pg:null,openAdd:false};
+  }
+}
+
+function rfStripBootParamsFromUrl(){
+  try{
+    var u=new URL(window.location.href);
+    if(!u.searchParams.has("project")&&!u.searchParams.has("room")&&!u.searchParams.has("pg")&&!u.searchParams.has("openAddRoom"))return;
+    u.searchParams.delete("project");
+    u.searchParams.delete("room");
+    u.searchParams.delete("pg");
+    u.searchParams.delete("openAddRoom");
+    var q=u.searchParams.toString();
+    history.replaceState({}, "", u.pathname+(q?"?"+q:""));
+  }catch(e){}
+}
+
+/** Handles `/final?project=&room=&pg=` deep-links from the Next.js project hub. */
+function rfApplyBootNavigation(){
+  var b=window.__rfBootNav;
+  if(!b)return;
+  window.__rfBootNav=null;
+  var ri=-1;
+  if(b.room){
+    for(var i=0;i<(S.rooms||[]).length;i++){
+      if(S.rooms[i].dbRoomId&&String(S.rooms[i].dbRoomId)===String(b.room)){ ri=i; break; }
+    }
+  }
+  if(b.openAdd){
+    setTimeout(function(){ try{ addRoomMo(); }catch(e){} }, 80);
+    rfStripBootParamsFromUrl();
+    return;
+  }
+  if(ri>=0){
+    gRoom(ri);
+    if(b.pg==="shop"&&typeof openRoomMaterials==="function"){
+      openRoomMaterials(ri);
+    }else if(b.pg==="tl"){
+      gP("tl");
+    }else if(b.pg==="quote"){
+      gP("quote");
+    }else if(b.pg==="inv"){
+      gP("inv");
+    }
+    rfStripBootParamsFromUrl();
+    return;
+  }
+  if(b.pg&&typeof b.pg==="string"){
+    var ok=["dash","proj","quote","clients","tl","cal","shop","inv","rooms"];
+    if(ok.indexOf(b.pg)>=0){ try{ gP(b.pg); }catch(e){} }
+  }
+  rfStripBootParamsFromUrl();
+}
+
 function initFromServer(){
+  window.__rfBootNav=rfParseBootFromLocation();
   fetch("/api/projects",{credentials:"include"})
   .then(function(res){
     return res.json().then(function(j){
@@ -3337,7 +3402,9 @@ function initFromServer(){
     window.__rfProjectList=list;
     var stored=localStorage.getItem("rf7_active_project");
     var pick=null;
-    if(stored&&list.some(function(x){return x.id===stored;}))pick=stored;
+    var bn=window.__rfBootNav||{};
+    if(bn.project&&list.some(function(x){return x.id===bn.project;}))pick=bn.project;
+    else if(stored&&list.some(function(x){return x.id===stored;}))pick=stored;
     else if(S.proj&&S.proj.dbProjectId&&list.some(function(x){return x.id===S.proj.dbProjectId;}))pick=S.proj.dbProjectId;
     else pick=list[0].id;
     return activateProjectId(pick,list,{skipPersist:true});
@@ -3349,6 +3416,7 @@ function initFromServer(){
     var nav=maybeConsumeDemolitionReturnNav();
     if(nav&&nav.pg==="tl") gP("tl");
     else gP("dash");
+    rfApplyBootNavigation();
   })
   .catch(function(e){
     console.error(e);

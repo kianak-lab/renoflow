@@ -49,6 +49,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/final") ||
     pathname.startsWith("/trades") ||
     pathname.startsWith("/projects") ||
+    pathname.startsWith("/project") ||
     pathname.startsWith("/onboarding");
   if (needsAppGate) {
     if (!(await hasSession(request))) {
@@ -59,7 +60,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (
-    (pathname.startsWith("/final") || pathname.startsWith("/trades")) &&
+    (pathname.startsWith("/final") || pathname.startsWith("/trades") || pathname.startsWith("/project")) &&
     (await hasSession(request))
   ) {
     if (request.cookies.get(ONBOARDING_BYPASS_COOKIE)?.value === ONBOARDING_BYPASS_VALUE) {
