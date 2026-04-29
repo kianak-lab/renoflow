@@ -6,7 +6,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 
@@ -150,7 +149,6 @@ export default function ProjectsManager() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterPill>("all");
   const [fabOpen, setFabOpen] = useState(false);
-  const bottomNavRef = useRef<HTMLElement | null>(null);
 
   const [fName, setFName] = useState("");
   const [fClientId, setFClientId] = useState("");
@@ -293,31 +291,6 @@ export default function ProjectsManager() {
     };
   }, [fabOpen]);
 
-  /** Keep tab bar aligned to the visual viewport on iOS / PWA when browser chrome or keyboard resizes. */
-  useEffect(() => {
-    const nav = bottomNavRef.current;
-    const vv = typeof window !== "undefined" ? window.visualViewport : null;
-    if (!nav || !vv) return;
-
-    const sync = () => {
-      if (typeof window.matchMedia === "function" && window.matchMedia("(min-width: 768px)").matches) {
-        nav.style.bottom = "";
-        return;
-      }
-      const gap = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-      nav.style.bottom = `${gap}px`;
-    };
-
-    sync();
-    vv.addEventListener("resize", sync);
-    vv.addEventListener("scroll", sync);
-    return () => {
-      vv.removeEventListener("resize", sync);
-      vv.removeEventListener("scroll", sync);
-      nav.style.bottom = "";
-    };
-  }, []);
-
   return (
     <div
       className="flex h-dvh max-h-dvh flex-col overflow-hidden"
@@ -368,7 +341,8 @@ export default function ProjectsManager() {
         </div>
       </header>
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain [-webkit-overflow-scrolling:touch] pb-[calc(88px+max(8px,env(safe-area-inset-bottom,0px)))] md:pb-6">
+      <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain [-webkit-overflow-scrolling:touch] pb-[88px] md:pb-6">
         <div
           className="flex gap-1.5 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           style={{ padding: "12px 14px", gap: 6 }}
@@ -546,10 +520,9 @@ export default function ProjectsManager() {
         </div>
       </div>
 
-      <>
         <div
           role="presentation"
-          className="fixed inset-0 z-[10088] md:hidden"
+          className="absolute inset-0 z-[10088] md:hidden"
           style={{
             display: fabOpen ? "block" : "none",
             background: "transparent",
@@ -561,13 +534,11 @@ export default function ProjectsManager() {
         />
 
         <nav
-          ref={bottomNavRef}
-          className="fixed bottom-0 left-0 right-0 z-[10100] flex flex-row items-end justify-between border-t bg-white [transform:translateZ(0)] md:hidden"
+          className="relative z-[10100] flex shrink-0 flex-row items-end justify-between border-t bg-white md:hidden"
           style={{
             borderTop: "0.5px solid #e0e0e0",
             padding: `28px 4px max(8px, env(safe-area-inset-bottom, 0px))`,
             boxShadow: "none",
-            backfaceVisibility: "hidden",
           }}
           aria-label="Main"
         >
@@ -782,7 +753,7 @@ export default function ProjectsManager() {
             <span className="max-w-full truncate text-[9px] font-medium uppercase tracking-wide">Clients</span>
           </Link>
         </nav>
-      </>
+      </div>
 
       {editing ? (
         <div

@@ -22,7 +22,7 @@ const plexSerif = IBM_Plex_Serif({
 export default function ProjectsLayout({ children }: { children: ReactNode }) {
   return (
     <div
-      className={`${plexSans.className} min-h-dvh bg-[#ffffff] text-[#111]`}
+      className={`${plexSans.className} h-dvh max-h-dvh overflow-hidden bg-[#ffffff] text-[#111]`}
       style={
         {
           ["--rf-plex-mono" as string]: plexMono.style.fontFamily,
