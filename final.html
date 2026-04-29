@@ -3049,10 +3049,20 @@ function switchProject(id){
 }
 
 function newProjectMo(){
-  var body='<div class="field"><label>Project name</label><input type="text" id="np-name" placeholder="Kitchen reno" /></div>'
+  __rfNpPendingCover="";
+  var body='<div class="field"><label>Project name</label><input type="text" id="np-name" placeholder="Kitchen reno" oninput="if(!__rfNpPendingCover)try{renderNpNewProjectCoverPreview();}catch(e){}"/></div>'
+    +'<div class="field"><label>Project / site photo (optional)</label>'
+    +'<div style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-top:8px">'
+    +'<div id="np-proj-photo-preview"></div>'
+    +'<div style="flex:1;min-width:200px">'
+    +'<input type="file" class="cf-input" id="np-proj-photo-file" accept="image/*" onchange="handleNpNewProjectCover(this)" style="font-size:13px;max-width:100%"/>'
+    +'<div style="margin-top:8px"><button type="button" class="btn bg sm" onclick="clearNpNewProjectCover()">Remove photo</button></div>'
+    +'<p style="font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.45">Job cover for cards and lists — not the client headshot. Shown on this device with the project.</p>'
+    +'</div></div></div>'
     +'<div class="field"><label>Client</label><input type="text" id="np-client" placeholder="Client name" /></div>'
     +'<div class="field"><label>Address</label><input type="text" id="np-addr" placeholder="123 Main St" /></div>';
   showMo("New Project",body,[{l:"Create",fn:"submitNewProject()"}]);
+  setTimeout(function(){ try{ renderNpNewProjectCoverPreview(); }catch(e){} },0);
 }
 
 function submitNewProject(){
@@ -3104,6 +3114,12 @@ function submitNewProject(){
       rNav();
       uSide();
       rClients();
+      if(__rfNpPendingCover){
+        if(!S.proj) S.proj=DS().proj;
+        S.proj.cover=__rfNpPendingCover;
+        __rfNpPendingCover="";
+        try{ ss(); }catch(e0){}
+      }
       gP("dash");
     });
   })
@@ -4628,6 +4644,30 @@ function companyLogoDataUrl(){
   return (S.co&&S.co.logo)?String(S.co.logo).trim():"";
 }
 var __rfPendingProjectCover="";
+/** Pending cover for quick "New Project" modal (not client form). */
+var __rfNpPendingCover="";
+function renderNpNewProjectCoverPreview(){
+  var box=document.getElementById("np-proj-photo-preview");
+  if(!box) return;
+  var u=__rfNpPendingCover?String(__rfNpPendingCover):"";
+  if(u) box.innerHTML='<div class="pl-thumb pl-thumb--photo"><img src="'+safeDataUrlForAttr(u)+'" alt="Project"/></div>';
+  else{
+    var nm=document.getElementById("np-name");
+    var t=(nm&&nm.value)?nm.value.trim():"";
+    var ch=t?t.charAt(0).toUpperCase():"?";
+    box.innerHTML='<div class="pl-thumb">'+escHtml(ch)+"</div>";
+  }
+}
+function handleNpNewProjectCover(inp){
+  readImageFileToDataUrl(inp,800*1024,function(data){
+    __rfNpPendingCover=data;
+    try{ renderNpNewProjectCoverPreview(); }catch(e){}
+  });
+}
+function clearNpNewProjectCover(){
+  __rfNpPendingCover="";
+  try{ renderNpNewProjectCoverPreview(); }catch(e){}
+}
 function getLocalProjectCover(projectId){
   if(!projectId) return "";
   var pid=String(projectId);
@@ -5281,10 +5321,9 @@ function rDash(){
     else if(dr===0) dueHtml='<div class="dash-proj-due dash-proj-due--soon">Due today</div>';
     else dueHtml='<div class="dash-proj-due">'+dr+' day'+(dr!==1?'s':'')+' until deadline</div>';
     var cthumb=getLocalProjectCover(p.id);
-    var cClientPh=clientPhotoDataUrlByProjectRow(p);
     var tInit=String(nm).trim().charAt(0).toUpperCase()||"?";
-    var imgBlock=(cthumb||cClientPh)
-      ?('<div class="dash-proj-img dash-proj-img--photo" aria-hidden="true"><img src="'+safeDataUrlForAttr(cthumb||cClientPh)+'" alt=""/></div>')
+    var imgBlock=cthumb
+      ?('<div class="dash-proj-img dash-proj-img--photo" aria-hidden="true"><img src="'+safeDataUrlForAttr(cthumb)+'" alt=""/></div>')
       :('<div class="dash-proj-img" aria-hidden="true"><span class="dash-proj-initial">'+escHtml(tInit)+'</span></div>');
     return '<div class="rc dash-proj dash-proj--clean'+(active?' on':'')+'" data-pid="'+escAttr(p.id)+'" role="button" tabindex="0">'
       +'<div class="dproj-acts" onclick="event.stopPropagation();">'
@@ -9172,6 +9211,10 @@ function toggleCfProjectMode(){
   nf.style.display=createOn?"":"none";
   ew.style.display=createOn?"none":"";
   if(ph) ph.style.display=createOn?"":"none";
+  if(!createOn){
+    __rfPendingProjectCover="";
+    try{ renderCfPendingCoverPreview(); }catch(e){}
+  }
 }
 
 function openNewProjectClientFlow(){
@@ -9218,6 +9261,15 @@ function showClientForm(idx, cl){
       +'<div id="cf-newproj-fields">'
       +'<div class="cf-field"><div class="cf-label">Project name</div>'
       +'<input class="cf-input" id="cf-np-name" type="text" placeholder="Leave blank to use “Client name — Job”" /></div>'
+      +'<div class="cf-field" id="cf-proj-photo-field">'
+      +'<div class="cf-label">Project / site photo (optional)</div>'
+      +'<div style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:12px">'
+      +'<div id="cf-proj-photo-preview"></div>'
+      +'<div style="flex:1;min-width:200px">'
+      +'<input type="file" class="cf-input" id="cf-proj-photo-file" accept="image/*" onchange="handlePendingProjectCover(this)" style="font-size:13px;max-width:100%"/>'
+      +'<div style="margin-top:8px"><button type="button" class="btn bg sm" onclick="clearPendingProjectCover()">Remove project photo</button></div>'
+      +'<p style="font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.45">Separate from the client headshot in <strong>Clients</strong>. This image is the job card / workspace cover — site, kitchen, floor plan, etc. Stored with the project on this device.</p>'
+      +'</div></div></div>'
       +'</div>'
       +'<div id="cf-existing-proj-wrap" style="display:none">'
       +'<div class="cf-field"><div class="cf-label">Or link to an existing project</div>'
@@ -9240,23 +9292,12 @@ function showClientForm(idx, cl){
     +'<div class="cf-field"><div class="cf-label">Address</div>'
     +'<input class="cf-input" id="cf-address" type="text" placeholder="123 Main St, Toronto ON" value="'+escHtml(v.address||'')+'"/></div>'
     +'<div class="cf-field"><div class="cf-label">Notes</div>'
-    +'<textarea class="cf-textarea" id="cf-notes" placeholder="Referral source, special notes...">'+escHtml(v.notes||'')+'</textarea></div>'
-    +(isNew?'<div class="cf-field" id="cf-proj-photo-field" style="display:none">'
-    +'<div class="cf-label">Project photo (optional)</div>'
-    +'<div style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:12px">'
-    +'<div id="cf-proj-photo-preview"></div>'
-    +'<div style="flex:1;min-width:200px">'
-    +'<input type="file" class="cf-input" id="cf-proj-photo-file" accept="image/*" onchange="handlePendingProjectCover(this)" style="font-size:13px;max-width:100%"/>'
-    +'<div style="margin-top:8px"><button type="button" class="btn bg sm" onclick="clearPendingProjectCover()">Remove photo</button></div>'
-    +'<p style="font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.45">Shown on project cards and the job list. Camera photos are auto-resized to save space. Stored in this browser with the project.</p>'
-    +'</div></div></div>':'');
+    +'<textarea class="cf-textarea" id="cf-notes" placeholder="Referral source, special notes...">'+escHtml(v.notes||'')+'</textarea></div>';
 
   var saveFn = isNew ? "saveNewClient()" : "saveEditClient("+idx+")";
   showMo(isNew?"New Client":"Edit Client", body, [{l:"Save Client", fn:saveFn}]);
   if(isNew){
     try{toggleCfProjectMode();}catch(e){}
-    var pf=document.getElementById("cf-proj-photo-field");
-    if(pf) pf.style.display="";
     __rfPendingProjectCover="";
     setTimeout(function(){
       try{
