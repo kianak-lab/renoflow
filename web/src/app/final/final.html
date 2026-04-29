@@ -235,14 +235,21 @@ a.ni{color:inherit;text-decoration:none;}
 /* Same technique as /trades/demolition: viewport-fit=cover; safe-area only on bleed (no extra rem, avoids double inset) */
 #p-dash .dash-header-bleed{margin-left:-32px;margin-right:-32px;padding-left:32px;padding-right:32px;padding-top:env(safe-area-inset-top, 0px);background:#0f2318;box-sizing:border-box;}
 @media (max-width:767px){
+  /* Sticky so header stays pinned while #p-dash scrolls (fixed would scroll inside overflow:auto). */
   #p-dash .dash-header-bleed{
-    position:fixed;top:0;left:0;right:0;z-index:100;width:100%;
+    position:-webkit-sticky;
+    position:sticky;
+    top:0;
+    left:0;
+    right:0;
+    z-index:100;
+    width:100%;
     margin-left:0!important;margin-right:0!important;
-    padding-left:20px;padding-right:20px;padding-top:env(safe-area-inset-top, 0px);
-    background:#0f2318;box-sizing:border-box;
+    padding-left:20px;padding-right:20px;
+    padding-top:env(safe-area-inset-top, 0px);
+    background:#0f2318;
+    box-sizing:border-box;
   }
-  /* Reserve space: safe-area + brief-header (16+18 pad) + 80px logo row + text column buffer */
-  #p-dash{padding-top:calc(env(safe-area-inset-top, 0px) + 148px);}
 }
 #p-dash .dash-header-bleed .brief-header{background:transparent;border:none;border-radius:0;box-shadow:none;padding:16px 0 18px;margin:0;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;}
 #p-dash .dash-header-bleed .brief-date{font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,.72);font-family:'IBM Plex Sans',system-ui,sans-serif;font-weight:500;opacity:1;}
@@ -1631,9 +1638,9 @@ a.ni{color:inherit;text-decoration:none;}
   #mob-nav.mob-nav--siteclean{
     display:flex !important;
     position:fixed;
+    bottom:0;
     left:0;
     right:0;
-    bottom:0;
     width:100%;
     z-index:10100;
     box-sizing:border-box;
@@ -1643,7 +1650,10 @@ a.ni{color:inherit;text-decoration:none;}
     gap:0;
     background:#ffffff;
     border-top:0.5px solid #e0e0e0;
-    padding:28px 4px env(safe-area-inset-bottom, 34px);
+    padding-top:8px;
+    padding-left:4px;
+    padding-right:4px;
+    padding-bottom:env(safe-area-inset-bottom, 34px);
     box-shadow:none;
     -webkit-backdrop-filter:none;
     backdrop-filter:none;

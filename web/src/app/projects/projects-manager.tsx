@@ -344,6 +344,7 @@ export default function ProjectsManager() {
         style={{
           background: "#0f2318",
           paddingTop: "env(safe-area-inset-top, 0px)",
+          zIndex: 100,
         }}
       >
         <div className="px-3.5 pb-3 pt-0.5" style={{ paddingLeft: 14, paddingRight: 14 }}>
@@ -388,7 +389,7 @@ export default function ProjectsManager() {
         className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
         style={{ marginTop: mobHeaderSpacer }}
       >
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-none pb-[calc(88px+env(safe-area-inset-bottom,34px))] md:pb-6">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-none pb-[calc(16px+env(safe-area-inset-bottom,34px))] md:pb-6">
         <div
           className="flex gap-1.5 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           style={{ padding: "12px 14px", gap: 6 }}
