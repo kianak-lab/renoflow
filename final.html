@@ -22,7 +22,7 @@
   --sb-bg:#ffffff;--sb-bd:#ebebeb;--ph-bg:#ffffff;--topbar-bg:#fafafa;--r:12px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-/* No browser number spinners ‚?? use on-page +/‚?? only where provided */
+/* No browser number spinners ??? use on-page +/??? only where provided */
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
 input[type=number]{-moz-appearance:textfield;appearance:textfield;}
@@ -145,7 +145,7 @@ a.ni{color:inherit;text-decoration:none;}
 .dproj-thumb.dproj-thumb--photo img{width:100%;height:100%;object-fit:cover;display:block}
 .dproj-top{display:flex;flex-direction:column;align-items:stretch;gap:4px;min-width:0}
 .dproj-mid{flex:0 0 auto;min-width:0;width:100%}
-/* Active project cards: same tile width as before; +‚?? strip height; text compressed to fit; inset from edges */
+/* Active project cards: same tile width as before; +??? strip height; text compressed to fit; inset from edges */
 .rc.dash-proj{
   box-sizing:border-box;
   min-height:0;
@@ -229,7 +229,7 @@ a.ni{color:inherit;text-decoration:none;}
 .brief-quick{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
 .brief-quick-t{font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;margin-bottom:10px;}
 .brief-quick-btns{display:flex;gap:8px;flex-wrap:wrap;}
-/* ========== Site Clean ‚?? RenoFlow dashboard (#p-dash) ========== */
+/* ========== Site Clean ??? RenoFlow dashboard (#p-dash) ========== */
 #p-dash,#p-dash .dash-proj-intake-btn,#p-dash .qa-pill,#p-dash .dash-rf-logo-btn{font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;}
 #p-dash .brief-stat-v,#p-dash .dash-proj-initial{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:500;font-size:18px;letter-spacing:-0.02em;}
 /* Same technique as /trades/demolition: viewport-fit=cover + padding-top max(0.5rem, safe-area) so #0f2318 fills behind status bar */
@@ -499,7 +499,7 @@ a.ni{color:inherit;text-decoration:none;}
 .ts-plumb-dim-top .dim-g{grid-template-columns:1fr 1fr;}
 .ts-plumb-dim-top .pills{gap:4px;}
 .ts-plumb-days-band .tc-lab-bubble--days{width:100%;box-sizing:border-box;}
-/* Plumbing maximized ‚?? reference UI: light canvas, large white cards, neutral grays */
+/* Plumbing maximized ??? reference UI: light canvas, large white cards, neutral grays */
 .ts-exp-box:where(:has(.ts-plumbing),:has(.ts-hvac),:has(.ts-insulation),:has(.ts-drywall),:has(.ts-framing),:has(.ts-tile),:has(.ts-flooring),:has(.ts-painting),:has(.ts-trim),:has(.ts-demo),:has(.ts-cabinets),:has(.ts-lowvolt),:has(.ts-security),:has(.ts-electrical)){
   --plx-canvas:#F5F5F5;
   --plx-card:#FFFFFF;
@@ -525,7 +525,7 @@ a.ni{color:inherit;text-decoration:none;}
   border-bottom:1px solid var(--plx-hdr-bb);
   box-shadow:none;
 }
-/* Header accent borders (painting, security, cabinets, finishing) ‚?? overrides box-shadow:none above */
+/* Header accent borders (painting, security, cabinets, finishing) ??? overrides box-shadow:none above */
 .ts-exp-box:has(.ts-painting) .th, .ts-exp-box:has(.ts-demo) .th, .ts-exp-box:has(.ts-security) .th, .ts-exp-box:has(.ts-cabinets) .th, .ts-exp-box:has(.ts-finishing) .th{box-shadow:var(--tr-hdr-ux,none) !important;}
 .ts-exp-box:has(.ts-plumbing) .th-head-row--plumb, .ts-exp-box:has(.ts-hvac) .th-head-row--plumb, .ts-exp-box:has(.ts-insulation) .th-head-row--plumb, .ts-exp-box:has(.ts-drywall) .th-head-row--plumb, .ts-exp-box:has(.ts-framing) .th-head-row--plumb, .ts-exp-box:has(.ts-tile) .th-head-row--plumb, .ts-exp-box:has(.ts-flooring) .th-head-row--plumb, .ts-exp-box:has(.ts-painting) .th-head-row--plumb, .ts-exp-box:has(.ts-trim) .th-head-row--plumb, .ts-exp-box:has(.ts-demo) .th-head-row--plumb, .ts-exp-box:has(.ts-cabinets) .th-head-row--plumb, .ts-exp-box:has(.ts-lowvolt) .th-head-row--plumb, .ts-exp-box:has(.ts-security) .th-head-row--plumb, .ts-exp-box:has(.ts-electrical) .th-head-row--plumb{align-items:center;}
 .ts-exp-box:has(.ts-plumbing) .th-back-dash, .ts-exp-box:has(.ts-hvac) .th-back-dash, .ts-exp-box:has(.ts-insulation) .th-back-dash, .ts-exp-box:has(.ts-drywall) .th-back-dash, .ts-exp-box:has(.ts-framing) .th-back-dash, .ts-exp-box:has(.ts-tile) .th-back-dash, .ts-exp-box:has(.ts-flooring) .th-back-dash, .ts-exp-box:has(.ts-painting) .th-back-dash, .ts-exp-box:has(.ts-trim) .th-back-dash, .ts-exp-box:has(.ts-demo) .th-back-dash, .ts-exp-box:has(.ts-cabinets) .th-back-dash, .ts-exp-box:has(.ts-lowvolt) .th-back-dash, .ts-exp-box:has(.ts-security) .th-back-dash, .ts-exp-box:has(.ts-electrical) .th-back-dash{
@@ -551,7 +551,7 @@ a.ni{color:inherit;text-decoration:none;}
   outline-offset:1px;
 }
 .ts-exp-box:has(.ts-plumbing) .th-back-dash-svg, .ts-exp-box:has(.ts-hvac) .th-back-dash-svg, .ts-exp-box:has(.ts-insulation) .th-back-dash-svg, .ts-exp-box:has(.ts-drywall) .th-back-dash-svg, .ts-exp-box:has(.ts-framing) .th-back-dash-svg, .ts-exp-box:has(.ts-tile) .th-back-dash-svg, .ts-exp-box:has(.ts-flooring) .th-back-dash-svg, .ts-exp-box:has(.ts-painting) .th-back-dash-svg, .ts-exp-box:has(.ts-trim) .th-back-dash-svg, .ts-exp-box:has(.ts-demo) .th-back-dash-svg, .ts-exp-box:has(.ts-cabinets) .th-back-dash-svg, .ts-exp-box:has(.ts-lowvolt) .th-back-dash-svg, .ts-exp-box:has(.ts-security) .th-back-dash-svg, .ts-exp-box:has(.ts-electrical) .th-back-dash-svg{pointer-events:none;flex-shrink:0;}
-/* Remove separator line between total and close (√?) in expanded plumbing header */
+/* Remove separator line between total and close (??) in expanded plumbing header */
 .ts-exp-box:has(.ts-plumbing) .ts-in-modal .th-act, .ts-exp-box:has(.ts-hvac) .ts-in-modal .th-act, .ts-exp-box:has(.ts-insulation) .ts-in-modal .th-act, .ts-exp-box:has(.ts-drywall) .ts-in-modal .th-act, .ts-exp-box:has(.ts-framing) .ts-in-modal .th-act, .ts-exp-box:has(.ts-tile) .ts-in-modal .th-act, .ts-exp-box:has(.ts-flooring) .ts-in-modal .th-act, .ts-exp-box:has(.ts-painting) .ts-in-modal .th-act, .ts-exp-box:has(.ts-trim) .ts-in-modal .th-act, .ts-exp-box:has(.ts-demo) .ts-in-modal .th-act, .ts-exp-box:has(.ts-cabinets) .ts-in-modal .th-act, .ts-exp-box:has(.ts-lowvolt) .ts-in-modal .th-act, .ts-exp-box:has(.ts-security) .ts-in-modal .th-act, .ts-exp-box:has(.ts-electrical) .ts-in-modal .th-act{border-left:none;padding-left:8px;}
 .ts-exp-box:has(.ts-plumbing) .th-main--modal, .ts-exp-box:has(.ts-hvac) .th-main--modal, .ts-exp-box:has(.ts-insulation) .th-main--modal, .ts-exp-box:has(.ts-drywall) .th-main--modal, .ts-exp-box:has(.ts-framing) .th-main--modal, .ts-exp-box:has(.ts-tile) .th-main--modal, .ts-exp-box:has(.ts-flooring) .th-main--modal, .ts-exp-box:has(.ts-painting) .th-main--modal, .ts-exp-box:has(.ts-trim) .th-main--modal, .ts-exp-box:has(.ts-demo) .th-main--modal, .ts-exp-box:has(.ts-cabinets) .th-main--modal, .ts-exp-box:has(.ts-lowvolt) .th-main--modal, .ts-exp-box:has(.ts-security) .th-main--modal, .ts-exp-box:has(.ts-electrical) .th-main--modal{padding:16px 18px;}
 .ts-exp-box:has(.ts-plumbing) .tn, .ts-exp-box:has(.ts-hvac) .tn, .ts-exp-box:has(.ts-insulation) .tn, .ts-exp-box:has(.ts-drywall) .tn, .ts-exp-box:has(.ts-framing) .tn, .ts-exp-box:has(.ts-tile) .tn, .ts-exp-box:has(.ts-flooring) .tn, .ts-exp-box:has(.ts-painting) .tn, .ts-exp-box:has(.ts-trim) .tn, .ts-exp-box:has(.ts-demo) .tn, .ts-exp-box:has(.ts-cabinets) .tn, .ts-exp-box:has(.ts-lowvolt) .tn, .ts-exp-box:has(.ts-security) .tn, .ts-exp-box:has(.ts-electrical) .tn{font-size:18px;font-weight:600;letter-spacing:-0.2px;color:var(--plx-ink);}
@@ -772,7 +772,7 @@ a.ni{color:inherit;text-decoration:none;}
   background:#fff!important;
 }
 .ts-exp-box:has(.ts-plumbing) .days-reset:hover, .ts-exp-box:has(.ts-hvac) .days-reset:hover, .ts-exp-box:has(.ts-insulation) .days-reset:hover, .ts-exp-box:has(.ts-drywall) .days-reset:hover, .ts-exp-box:has(.ts-framing) .days-reset:hover, .ts-exp-box:has(.ts-tile) .days-reset:hover, .ts-exp-box:has(.ts-flooring) .days-reset:hover, .ts-exp-box:has(.ts-painting) .days-reset:hover, .ts-exp-box:has(.ts-trim) .days-reset:hover, .ts-exp-box:has(.ts-demo) .days-reset:hover, .ts-exp-box:has(.ts-cabinets) .days-reset:hover, .ts-exp-box:has(.ts-lowvolt) .days-reset:hover, .ts-exp-box:has(.ts-security) .days-reset:hover, .ts-exp-box:has(.ts-electrical) .days-reset:hover{background:#F0F0F0!important;}
-/* Section titles ‚?? same ‚??Labour‚?ù treatment: one simple heading, no extra color bars */
+/* Section titles ??? same ???Labour??? treatment: one simple heading, no extra color bars */
 .ts-exp-box:has(.ts-plumbing) .tc-sec-h-rough, .ts-exp-box:has(.ts-hvac) .tc-sec-h-rough, .ts-exp-box:has(.ts-insulation) .tc-sec-h-rough, .ts-exp-box:has(.ts-drywall) .tc-sec-h-rough, .ts-exp-box:has(.ts-framing) .tc-sec-h-rough, .ts-exp-box:has(.ts-tile) .tc-sec-h-rough, .ts-exp-box:has(.ts-flooring) .tc-sec-h-rough, .ts-exp-box:has(.ts-painting) .tc-sec-h-rough, .ts-exp-box:has(.ts-trim) .tc-sec-h-rough, .ts-exp-box:has(.ts-demo) .tc-sec-h-rough, .ts-exp-box:has(.ts-cabinets) .tc-sec-h-rough, .ts-exp-box:has(.ts-lowvolt) .tc-sec-h-rough, .ts-exp-box:has(.ts-security) .tc-sec-h-rough, .ts-exp-box:has(.ts-electrical) .tc-sec-h-rough,
 .ts-exp-box:has(.ts-plumbing) .tc-sec-h-mat, .ts-exp-box:has(.ts-hvac) .tc-sec-h-mat, .ts-exp-box:has(.ts-insulation) .tc-sec-h-mat, .ts-exp-box:has(.ts-drywall) .tc-sec-h-mat, .ts-exp-box:has(.ts-framing) .tc-sec-h-mat, .ts-exp-box:has(.ts-tile) .tc-sec-h-mat, .ts-exp-box:has(.ts-flooring) .tc-sec-h-mat, .ts-exp-box:has(.ts-painting) .tc-sec-h-mat, .ts-exp-box:has(.ts-trim) .tc-sec-h-mat, .ts-exp-box:has(.ts-demo) .tc-sec-h-mat, .ts-exp-box:has(.ts-cabinets) .tc-sec-h-mat, .ts-exp-box:has(.ts-lowvolt) .tc-sec-h-mat, .ts-exp-box:has(.ts-security) .tc-sec-h-mat, .ts-exp-box:has(.ts-electrical) .tc-sec-h-mat,
 .ts-exp-box:has(.ts-plumbing) .tc-sec-h-fixfin, .ts-exp-box:has(.ts-hvac) .tc-sec-h-fixfin, .ts-exp-box:has(.ts-insulation) .tc-sec-h-fixfin, .ts-exp-box:has(.ts-drywall) .tc-sec-h-fixfin, .ts-exp-box:has(.ts-framing) .tc-sec-h-fixfin, .ts-exp-box:has(.ts-tile) .tc-sec-h-fixfin, .ts-exp-box:has(.ts-flooring) .tc-sec-h-fixfin, .ts-exp-box:has(.ts-painting) .tc-sec-h-fixfin, .ts-exp-box:has(.ts-trim) .tc-sec-h-fixfin, .ts-exp-box:has(.ts-demo) .tc-sec-h-fixfin, .ts-exp-box:has(.ts-cabinets) .tc-sec-h-fixfin, .ts-exp-box:has(.ts-lowvolt) .tc-sec-h-fixfin, .ts-exp-box:has(.ts-security) .tc-sec-h-fixfin, .ts-exp-box:has(.ts-electrical) .tc-sec-h-fixfin,
@@ -797,7 +797,7 @@ a.ni{color:inherit;text-decoration:none;}
 .ts-exp-box:has(.ts-plumbing) .ts-plumb-section-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-hvac) .ts-plumb-section-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-insulation) .ts-plumb-section-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-drywall) .ts-plumb-section-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-framing) .ts-plumb-section-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-tile) .ts-plumb-section-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-flooring) .ts-plumb-section-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-painting) .ts-plumb-section-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-trim) .ts-plumb-section-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-demo) .ts-plumb-section-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-cabinets) .ts-plumb-section-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-lowvolt) .ts-plumb-section-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-security) .ts-plumb-section-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-electrical) .ts-plumb-section-bubble .tc-sec-h-tools-hdr{
   margin:0 0 14px 0;
 }
-/* Tools: bill row ‚?? no grey box; label above toggles, left-aligned */
+/* Tools: bill row ??? no grey box; label above toggles, left-aligned */
 .ts-exp-box:has(.ts-plumbing) .ts-plumb-section-bubble .tc-tools-bill-wrap, .ts-exp-box:has(.ts-hvac) .ts-plumb-section-bubble .tc-tools-bill-wrap, .ts-exp-box:has(.ts-insulation) .ts-plumb-section-bubble .tc-tools-bill-wrap, .ts-exp-box:has(.ts-drywall) .ts-plumb-section-bubble .tc-tools-bill-wrap, .ts-exp-box:has(.ts-framing) .ts-plumb-section-bubble .tc-tools-bill-wrap, .ts-exp-box:has(.ts-tile) .ts-plumb-section-bubble .tc-tools-bill-wrap, .ts-exp-box:has(.ts-flooring) .ts-plumb-section-bubble .tc-tools-bill-wrap, .ts-exp-box:has(.ts-painting) .ts-plumb-section-bubble .tc-tools-bill-wrap, .ts-exp-box:has(.ts-trim) .ts-plumb-section-bubble .tc-tools-bill-wrap, .ts-exp-box:has(.ts-demo) .ts-plumb-section-bubble .tc-tools-bill-wrap, .ts-exp-box:has(.ts-cabinets) .ts-plumb-section-bubble .tc-tools-bill-wrap, .ts-exp-box:has(.ts-lowvolt) .ts-plumb-section-bubble .tc-tools-bill-wrap, .ts-exp-box:has(.ts-security) .ts-plumb-section-bubble .tc-tools-bill-wrap, .ts-exp-box:has(.ts-electrical) .ts-plumb-section-bubble .tc-tools-bill-wrap{
   background:#fff;
   border:none;
@@ -881,7 +881,7 @@ a.ni{color:inherit;text-decoration:none;}
 .ts-exp-box:has(.ts-plumbing) .ts-plumb-tools-bubble, .ts-exp-box:has(.ts-hvac) .ts-plumb-tools-bubble, .ts-exp-box:has(.ts-insulation) .ts-plumb-tools-bubble, .ts-exp-box:has(.ts-drywall) .ts-plumb-tools-bubble, .ts-exp-box:has(.ts-framing) .ts-plumb-tools-bubble, .ts-exp-box:has(.ts-tile) .ts-plumb-tools-bubble, .ts-exp-box:has(.ts-flooring) .ts-plumb-tools-bubble, .ts-exp-box:has(.ts-painting) .ts-plumb-tools-bubble, .ts-exp-box:has(.ts-trim) .ts-plumb-tools-bubble, .ts-exp-box:has(.ts-demo) .ts-plumb-tools-bubble, .ts-exp-box:has(.ts-cabinets) .ts-plumb-tools-bubble, .ts-exp-box:has(.ts-lowvolt) .ts-plumb-tools-bubble, .ts-exp-box:has(.ts-security) .ts-plumb-tools-bubble, .ts-exp-box:has(.ts-electrical) .ts-plumb-tools-bubble{
   margin-bottom:24px;
 }
-/* Tools line card: match roughing ‚?? larger type, price in blue */
+/* Tools line card: match roughing ??? larger type, price in blue */
 .ts-exp-box:has(.ts-plumbing) .ts-plumb-tools-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-hvac) .ts-plumb-tools-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-insulation) .ts-plumb-tools-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-drywall) .ts-plumb-tools-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-framing) .ts-plumb-tools-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-tile) .ts-plumb-tools-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-flooring) .ts-plumb-tools-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-painting) .ts-plumb-tools-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-trim) .ts-plumb-tools-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-demo) .ts-plumb-tools-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-cabinets) .ts-plumb-tools-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-lowvolt) .ts-plumb-tools-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-security) .ts-plumb-tools-bubble .tc-sec-h-tools-hdr, .ts-exp-box:has(.ts-electrical) .ts-plumb-tools-bubble .tc-sec-h-tools-hdr{font-size:20px!important;}
 .ts-exp-box:has(.ts-plumbing) .ts-plumb-tools-bubble .tc-card-ic, .ts-exp-box:has(.ts-hvac) .ts-plumb-tools-bubble .tc-card-ic, .ts-exp-box:has(.ts-insulation) .ts-plumb-tools-bubble .tc-card-ic, .ts-exp-box:has(.ts-drywall) .ts-plumb-tools-bubble .tc-card-ic, .ts-exp-box:has(.ts-framing) .ts-plumb-tools-bubble .tc-card-ic, .ts-exp-box:has(.ts-tile) .ts-plumb-tools-bubble .tc-card-ic, .ts-exp-box:has(.ts-flooring) .ts-plumb-tools-bubble .tc-card-ic, .ts-exp-box:has(.ts-painting) .ts-plumb-tools-bubble .tc-card-ic, .ts-exp-box:has(.ts-trim) .ts-plumb-tools-bubble .tc-card-ic, .ts-exp-box:has(.ts-demo) .ts-plumb-tools-bubble .tc-card-ic, .ts-exp-box:has(.ts-cabinets) .ts-plumb-tools-bubble .tc-card-ic, .ts-exp-box:has(.ts-lowvolt) .ts-plumb-tools-bubble .tc-card-ic, .ts-exp-box:has(.ts-security) .ts-plumb-tools-bubble .tc-card-ic, .ts-exp-box:has(.ts-electrical) .ts-plumb-tools-bubble .tc-card-ic{font-size:25px;}
 .ts-exp-box:has(.ts-plumbing) .ts-plumb-tools-bubble .tc-card-n, .ts-exp-box:has(.ts-hvac) .ts-plumb-tools-bubble .tc-card-n, .ts-exp-box:has(.ts-insulation) .ts-plumb-tools-bubble .tc-card-n, .ts-exp-box:has(.ts-drywall) .ts-plumb-tools-bubble .tc-card-n, .ts-exp-box:has(.ts-framing) .ts-plumb-tools-bubble .tc-card-n, .ts-exp-box:has(.ts-tile) .ts-plumb-tools-bubble .tc-card-n, .ts-exp-box:has(.ts-flooring) .ts-plumb-tools-bubble .tc-card-n, .ts-exp-box:has(.ts-painting) .ts-plumb-tools-bubble .tc-card-n, .ts-exp-box:has(.ts-trim) .ts-plumb-tools-bubble .tc-card-n, .ts-exp-box:has(.ts-demo) .ts-plumb-tools-bubble .tc-card-n, .ts-exp-box:has(.ts-cabinets) .ts-plumb-tools-bubble .tc-card-n, .ts-exp-box:has(.ts-lowvolt) .ts-plumb-tools-bubble .tc-card-n, .ts-exp-box:has(.ts-security) .ts-plumb-tools-bubble .tc-card-n, .ts-exp-box:has(.ts-electrical) .ts-plumb-tools-bubble .tc-card-n{font-size:13px;}
@@ -978,7 +978,7 @@ a.ni{color:inherit;text-decoration:none;}
   margin:0 0 14px;
 }
 .ts-exp-box:has(.ts-plumbing) .pl-exp-tl-look .sep, .ts-exp-box:has(.ts-hvac) .pl-exp-tl-look .sep, .ts-exp-box:has(.ts-insulation) .pl-exp-tl-look .sep, .ts-exp-box:has(.ts-drywall) .pl-exp-tl-look .sep, .ts-exp-box:has(.ts-framing) .pl-exp-tl-look .sep, .ts-exp-box:has(.ts-tile) .pl-exp-tl-look .sep, .ts-exp-box:has(.ts-flooring) .pl-exp-tl-look .sep, .ts-exp-box:has(.ts-painting) .pl-exp-tl-look .sep, .ts-exp-box:has(.ts-trim) .pl-exp-tl-look .sep, .ts-exp-box:has(.ts-demo) .pl-exp-tl-look .sep, .ts-exp-box:has(.ts-cabinets) .pl-exp-tl-look .sep, .ts-exp-box:has(.ts-lowvolt) .pl-exp-tl-look .sep, .ts-exp-box:has(.ts-security) .pl-exp-tl-look .sep, .ts-exp-box:has(.ts-electrical) .pl-exp-tl-look .sep{background:transparent;height:12px;margin:0;}
-/* ‚??‚?? Per-trade colour themes (plumbing excluded). Card fill stays #fff. ‚??‚?? */
+/* ?????? Per-trade colour themes (plumbing excluded). Card fill stays #fff. ?????? */
 .ts.ts-demo, .ts-exp-box:has(.ts-demo){
   --plx-th-bg:#1a1a1a; --plx-hdr-bb:#f0c030; --plx-ink:#f0c030; --plx-muted:#e8c030;
   --plx-border:#f0c030; --plx-blue-b:#f0c030; --plx-fo:#f0c030; --plx-track:#2a2a2a; --plx-canvas:#F5F5F5; --plx-sub:#1f1f1f;
@@ -1114,7 +1114,7 @@ a.ni{color:inherit;text-decoration:none;}
 #shell.shell--trade-exp .ts-exp-box{height:100%;max-height:100%;min-height:0;}
 .ts-exp-box .ts{flex:1;min-height:0;display:flex;flex-direction:column;min-width:0;}
 .ts-exp-box .ts-scroll-pane{max-height:none!important;flex:1;min-height:0;-webkit-overflow-scrolling:touch;}
-/* Qty stepper: middle value fills space between ‚?? and + */
+/* Qty stepper: middle value fills space between ??? and + */
 .ts-exp-box .tc-card-q{flex:1 1 auto;align-items:stretch;justify-content:space-between;gap:4px;min-width:0;max-width:none;width:100%;}
 .ts-exp-box .tc-cqm,.ts-exp-box .tc-cqc{flex:1;min-width:0;max-width:none;width:auto;}
 .ts-exp-box .tc-cqb{flex-shrink:0;}
@@ -1150,7 +1150,7 @@ a.ni{color:inherit;text-decoration:none;}
 #p-room,#p-rooms{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
 #p-rooms .p-rooms-inner{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
 #p-rooms .p-rooms-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-/* Chevrons (e.g. timeline room rows) ‚?? not used on room trade card headers */
+/* Chevrons (e.g. timeline room rows) ??? not used on room trade card headers */
 .ta{color:var(--tx3);font-size:11px;transition:transform .2s;}
 .ta.op{transform:rotate(180deg);}
 .tdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
@@ -1173,12 +1173,12 @@ a.ni{color:inherit;text-decoration:none;}
 .days-reset{font-size:10px;color:var(--ac);cursor:pointer;font-family:'Inter',system-ui,sans-serif;text-transform:uppercase;letter-spacing:1px;padding:3px 7px;border:1px solid rgba(90,154,90,.25);border-radius:4px;background:rgba(90,154,90,.05);}
 .days-reset:hover{background:rgba(90,154,90,.12);}
 
-/* Trade line items ‚?? same card grid as plumbing fixtures: 3 col desktop, 2 col phone; fixed card box */
+/* Trade line items ??? same card grid as plumbing fixtures: 3 col desktop, 2 col phone; fixed card box */
 .tc-item-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 10px;margin-bottom:4px;align-items:start;}
 @media(max-width:700px){
   .tc-item-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
 }
-/* Maximized trade only: pack many line-item cards per row (‚??8‚??12 on wide screens); labour stays 2-up */
+/* Maximized trade only: pack many line-item cards per row (???8???12 on wide screens); labour stays 2-up */
 @media(min-width:701px){
   .ts-exp-box .tc-item-grid:not(.tc-lab-grid){
     grid-template-columns:repeat(auto-fill,minmax(115px,1fr))!important;
@@ -1625,7 +1625,7 @@ a.ni{color:inherit;text-decoration:none;}
     gap:0;
     background:#ffffff;
     border-top:0.5px solid #e0e0e0;
-    padding:28px 4px max(8px, env(safe-area-inset-bottom, 0px));
+    padding:12px 4px max(34px, env(safe-area-inset-bottom, 34px));
     box-shadow:none;
     -webkit-backdrop-filter:none;
     backdrop-filter:none;
@@ -1637,9 +1637,9 @@ a.ni{color:inherit;text-decoration:none;}
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:flex-end;
+    justify-content:center;
     gap:2px;
-    padding:0 2px 2px;
+    padding:0 2px 8px;
     margin:0;
     border:none;
     background:transparent;
@@ -1823,7 +1823,7 @@ a.ni{color:inherit;text-decoration:none;}
   }
 }
 
-/* ‚??‚?? Mobile: Airbnb-style surface (no search bar) ‚??‚?? */
+/* ?????? Mobile: Airbnb-style surface (no search bar) ?????? */
 @media (max-width: 767px) {
   :root {
     --bg: #f7f7f7;
@@ -2116,7 +2116,7 @@ a.ni{color:inherit;text-decoration:none;}
 .rf-lightbox.rf-lb-on{display:flex;}
 .rf-lightbox-img{max-width:96vw;max-height:92vh;object-fit:contain;border-radius:4px;cursor:default;}
 
-/* ‚??‚?? CLIENT DB ‚??‚?? */
+/* ?????? CLIENT DB ?????? */
 .cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
 .cl-card{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:6px 10px;box-shadow:0 1px 4px rgba(0,0,0,.04);cursor:pointer;transition:all .2s;position:relative;}
 .cl-card:hover{border-color:var(--bd2);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.08);}
@@ -2163,7 +2163,7 @@ a.ni{color:inherit;text-decoration:none;}
 .cf-input:focus{border-color:var(--ac);}
 .cf-textarea{width:100%;background:#fff;border:1px solid var(--bd2);border-radius:7px;padding:9px 12px;color:var(--tx);font-family:'Inter',system-ui,sans-serif;font-size:14px;outline:none;resize:vertical;min-height:60px;transition:border .15s;}
 .cf-textarea:focus{border-color:var(--ac);}
-/* ‚??‚?? INVOICE ‚??‚?? */
+/* ?????? INVOICE ?????? */
 .inv-status-draft{background:#f0f0f0;color:#666;}
 .inv-status-sent{background:#e8f0fe;color:#1a73e8;}
 .inv-status-partial{background:#fff3e0;color:#e65c00;}
@@ -2227,7 +2227,7 @@ a.ni{color:inherit;text-decoration:none;}
 
 .inv-doc{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:32px;max-width:660px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
 
-/* Intake wizard ‚?? #p-intake sits in #main flex; let .pc scroll so room grid + Save stay reachable */
+/* Intake wizard ??? #p-intake sits in #main flex; let .pc scroll so room grid + Save stay reachable */
 #p-intake{
   flex:1;
   min-height:0;
@@ -2269,7 +2269,8 @@ a.ni{color:inherit;text-decoration:none;}
     bottom: 0;
     left: 0;
     right: 0;
-    padding-bottom: 34px;
+    padding: 12px 0 max(34px, env(safe-area-inset-bottom, 34px)) 0;
+    align-items: flex-end;
     background: #fff;
     border-top: 0.5px solid #e0e0e0;
     z-index: 9999;
@@ -2467,8 +2468,8 @@ a.ni{color:inherit;text-decoration:none;}
 
 var TC={demo:"#FFE000",framing:"#e87747",concrete:"#78909c",roofing:"#5c7a8a",electrical:"#e8c547",plumbing:"#47a0e8",hvac:"#8847e8",lowvolt:"#5c6bc0",security:"#455a64",comdoor:"#6d4c41",insulation:"#47e8c5",drywall:"#e847a0",tile:"#a0e847",flooring:"#e8a047",painting:"#47e8a0",trim:"#e88847",cabinets:"#7047e8",closets:"#8b7355",finishing:"#5d9c8a"};
 var TN={demo:"Demolition",framing:"Framing",concrete:"Concrete",roofing:"Roofing",electrical:"Electrical",plumbing:"Plumbing",hvac:"HVAC",lowvolt:"Low voltage",security:"Security",comdoor:"Commercial door hardware",insulation:"Insulation",drywall:"Drywall",tile:"Tile",flooring:"Flooring",painting:"Painting",trim:"Trim & Millwork",cabinets:"Cabinets & tops",closets:"Closets",finishing:"Finishing"};
-var TIC={demo:"",framing:"?™µ",concrete:"?™®",roofing:"?è†",electrical:"‚?°",plumbing:"??ß",hvac:"???",lowvolt:"???",security:"??°",comdoor:"??™",insulation:"?ß±",drywall:"‚¨?",tile:"??≤",flooring:"?™µ",painting:"??®",trim:"??è",cabinets:"???",closets:"???",finishing:"‚?®"};
-/* Legacy line-item seed empty ‚?? materials use supplier catalog (cached_products). */
+var TIC={demo:"",framing:"????",concrete:"????",roofing:"????",electrical:"???",plumbing:"????",hvac:"????",lowvolt:"????",security:"????",comdoor:"????",insulation:"????",drywall:"??",tile:"????",flooring:"????",painting:"????",trim:"????",cabinets:"????",closets:"????",finishing:"???"};
+/* Legacy line-item seed empty ??? materials use supplier catalog (cached_products). */
 var TB={};
 var RICH_MEP_TRADES={framing:1,hvac:1,insulation:1,drywall:1,tile:1,flooring:1,painting:1,trim:1,cabinets:1,lowvolt:1,security:1};
 var RICH_LABOUR_DUP={
@@ -2525,30 +2526,30 @@ function richTradeMaterialSectionsHtml(t,ti,px,c){
 }
 var AM={frl1:"studs",frl3:"plates",dwr1:"dwWall",inb1:"insBatt",pnt1:"paintWall",pnt4:"paintCeil",pnt3:"primer",flm1:"floor",flu1:"under",tif1:"tileFl",trb1:"base"};
 var ELEC_FX_DEV=[
-  {id:"ed_out",l:"Outlet",ic:"???",p:180,u:"ea"},{id:"ed_sw",l:"Switch",ic:"??°",p:160,u:"ea"},{id:"ed_dim",l:"Dimmer",ic:"???",p:85,u:"ea"},
-  {id:"ed_gfci",l:"GFCI",ic:"???",p:210,u:"ea"},{id:"ed_usb",l:"USB Outlet",ic:"???",p:45,u:"ea"},{id:"ed_3w",l:"3-way Switch",ic:"??Å",p:32,u:"ea"}
+  {id:"ed_out",l:"Outlet",ic:"????",p:180,u:"ea"},{id:"ed_sw",l:"Switch",ic:"????",p:160,u:"ea"},{id:"ed_dim",l:"Dimmer",ic:"????",p:85,u:"ea"},
+  {id:"ed_gfci",l:"GFCI",ic:"????",p:210,u:"ea"},{id:"ed_usb",l:"USB Outlet",ic:"????",p:45,u:"ea"},{id:"ed_3w",l:"3-way Switch",ic:"????",p:32,u:"ea"}
 ];
 var ELEC_FX_FIX=[
-  {id:"ef_pot",l:"Pot Light",ic:"‚≠?",p:145,u:"ea"},{id:"ef_lfix",l:"Light Fixture",ic:"‚?®",p:220,u:"ea"},{id:"ef_exh",l:"Exhaust Fan",ic:"???",p:280,u:"ea"},
-  {id:"ef_panel",l:"Panel Upgrade",ic:"‚?°",p:2200,u:"ea"},{id:"ef_ev",l:"EV Charger",ic:"???",p:800,u:"ea"},{id:"ef_cfan",l:"Ceiling Fan",ic:"???",p:350,u:"ea"}
+  {id:"ef_pot",l:"Pot Light",ic:"??",p:145,u:"ea"},{id:"ef_lfix",l:"Light Fixture",ic:"???",p:220,u:"ea"},{id:"ef_exh",l:"Exhaust Fan",ic:"????",p:280,u:"ea"},
+  {id:"ef_panel",l:"Panel Upgrade",ic:"???",p:2200,u:"ea"},{id:"ef_ev",l:"EV Charger",ic:"????",p:800,u:"ea"},{id:"ef_cfan",l:"Ceiling Fan",ic:"????",p:350,u:"ea"}
 ];
 var FX={
-  plumbing:[{id:"toilet",l:"Toilet",ic:"??Ω",p:380,u:"ea"},{id:"vanity",l:"Vanity Faucet",ic:"??∞",p:220,u:"ea"},{id:"shower",l:"Shower Valve",ic:"??ø",p:480,u:"ea"},{id:"tub",l:"Tub",ic:"??Å",p:650,u:"ea"},{id:"kitchen",l:"Kitchen Faucet",ic:"??∞",p:280,u:"ea"},{id:"dishwash",l:"Dishwasher Conn",ic:"?çΩ",p:320,u:"ea"},{id:"roughin",l:"Rough-in Point",ic:"??ß",p:650,u:"ea"}],
-  cabinets:[{id:"upper",l:"Upper Cabs",ic:"???",p:280,u:"ln ft"},{id:"lower",l:"Lower Cabs",ic:"???",p:320,u:"ln ft"},{id:"counter",l:"Countertop",ic:"‚¨?",p:85,u:"sqft"},{id:"island",l:"Island",ic:"?èù",p:2800,u:"ea"},{id:"pantry",l:"Pantry",ic:"???",p:850,u:"ea"}]
+  plumbing:[{id:"toilet",l:"Toilet",ic:"????",p:380,u:"ea"},{id:"vanity",l:"Vanity Faucet",ic:"????",p:220,u:"ea"},{id:"shower",l:"Shower Valve",ic:"????",p:480,u:"ea"},{id:"tub",l:"Tub",ic:"????",p:650,u:"ea"},{id:"kitchen",l:"Kitchen Faucet",ic:"????",p:280,u:"ea"},{id:"dishwash",l:"Dishwasher Conn",ic:"????",p:320,u:"ea"},{id:"roughin",l:"Rough-in Point",ic:"????",p:650,u:"ea"}],
+  cabinets:[{id:"upper",l:"Upper Cabs",ic:"????",p:280,u:"ln ft"},{id:"lower",l:"Lower Cabs",ic:"????",p:320,u:"ln ft"},{id:"counter",l:"Countertop",ic:"??",p:85,u:"sqft"},{id:"island",l:"Island",ic:"????",p:2800,u:"ea"},{id:"pantry",l:"Pantry",ic:"????",p:850,u:"ea"}]
 };
 var RT=[
-  {n:"Kitchen",    ic:"?ç≥",trades:["demo","framing","electrical","plumbing","drywall","tile","flooring","painting","trim","cabinets"]},
-  {n:"Bathroom",   ic:"??ø",trades:["demo","framing","electrical","plumbing","insulation","drywall","tile","painting","trim"]},
-  {n:"Bedroom",    ic:"??è",trades:["demo","electrical","insulation","drywall","flooring","painting","trim"]},
-  {n:"Living Room",ic:"???",trades:["demo","electrical","drywall","flooring","painting","trim"]},
-  {n:"Basement",   ic:"‚¨?", trades:["demo","framing","electrical","plumbing","hvac","insulation","drywall","flooring","painting","trim"]},
-  {n:"Laundry",    ic:"?´ß",trades:["demo","electrical","plumbing","drywall","flooring","painting","trim"]},
-  {n:"Garage",     ic:"???",trades:["demo","electrical","drywall","flooring","painting"]},
-  {n:"Whole House",ic:"?è†",trades:["demo","framing","concrete","roofing","electrical","plumbing","hvac","lowvolt","security","insulation","drywall","tile","flooring","comdoor","trim","painting","cabinets","closets","finishing"]},
-  {n:"Custom",     ic:"‚?è", trades:["demo","framing","concrete","roofing","electrical","plumbing","hvac","lowvolt","security","insulation","drywall","tile","flooring","comdoor","trim","painting","cabinets","closets","finishing"]}
+  {n:"Kitchen",    ic:"????",trades:["demo","framing","electrical","plumbing","drywall","tile","flooring","painting","trim","cabinets"]},
+  {n:"Bathroom",   ic:"????",trades:["demo","framing","electrical","plumbing","insulation","drywall","tile","painting","trim"]},
+  {n:"Bedroom",    ic:"????",trades:["demo","electrical","insulation","drywall","flooring","painting","trim"]},
+  {n:"Living Room",ic:"????",trades:["demo","electrical","drywall","flooring","painting","trim"]},
+  {n:"Basement",   ic:"??", trades:["demo","framing","electrical","plumbing","hvac","insulation","drywall","flooring","painting","trim"]},
+  {n:"Laundry",    ic:"????",trades:["demo","electrical","plumbing","drywall","flooring","painting","trim"]},
+  {n:"Garage",     ic:"????",trades:["demo","electrical","drywall","flooring","painting"]},
+  {n:"Whole House",ic:"????",trades:["demo","framing","concrete","roofing","electrical","plumbing","hvac","lowvolt","security","insulation","drywall","tile","flooring","comdoor","trim","painting","cabinets","closets","finishing"]},
+  {n:"Custom",     ic:"???", trades:["demo","framing","concrete","roofing","electrical","plumbing","hvac","lowvolt","security","insulation","drywall","tile","flooring","comdoor","trim","painting","cabinets","closets","finishing"]}
 ];
 
-// Sequence: demo ‚?? framing ‚?? concrete/roofing shell ‚?? ROUGHIN (MEP + low-volt + security) ‚?? shell ‚?? finishes
+// Sequence: demo ??? framing ??? concrete/roofing shell ??? ROUGHIN (MEP + low-volt + security) ??? shell ??? finishes
 var SEQ=['demo','framing','concrete','roofing','ROUGHIN','insulation','drywall','tile','flooring','comdoor','trim','painting','cabinets','closets','finishing'];
 var ROUGHIN=['electrical','plumbing','hvac','lowvolt','security'];
 
@@ -2839,7 +2840,7 @@ function formatProjectSelectTitle(p){
     if(who) extra.push(who);
     if(addr) extra.push(addr);
   }
-  return extra.length?name+" ‚?? "+extra.join(" ¬∑ "):name;
+  return extra.length?name+" ??? "+extra.join(" ? "):name;
 }
 function sidebarHasActiveJob(){
   if(!S||!S.proj) return false;
@@ -2876,7 +2877,7 @@ function updateSidebarProjectHeader(){
     if(S.proj.client&&String(S.proj.client).trim()) ex.push(String(S.proj.client).trim());
     var ad=S.proj.address||S.proj.addr;
     if(ad&&String(ad).trim()) ex.push(String(ad).trim());
-    titleStr=ex.length?label+" ‚?? "+ex.join(" ¬∑ "):label;
+    titleStr=ex.length?label+" ??? "+ex.join(" ? "):label;
   }else{
     label="Untitled";
     titleStr=label;
@@ -3073,7 +3074,7 @@ function newProjectMo(){
     +'<div style="flex:1;min-width:200px">'
     +'<input type="file" class="cf-input" id="np-proj-photo-file" accept="image/*" onchange="handleNpNewProjectCover(this)" style="font-size:13px;max-width:100%"/>'
     +'<div style="margin-top:8px"><button type="button" class="btn bg sm" onclick="clearNpNewProjectCover()">Remove photo</button></div>'
-    +'<p style="font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.45">Job cover for cards and lists ‚?? not the client headshot. Shown on this device with the project.</p>'
+    +'<p style="font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.45">Job cover for cards and lists ??? not the client headshot. Shown on this device with the project.</p>'
     +'</div></div></div>'
     +'<div class="field"><label>Client</label><input type="text" id="np-client" placeholder="Client name" /></div>'
     +'<div class="field"><label>Address</label><input type="text" id="np-addr" placeholder="123 Main St" /></div>';
@@ -3089,7 +3090,7 @@ function submitNewProject(){
   var clientName=clientEl?clientEl.value.trim():"";
   var addr=addrEl?addrEl.value.trim():"";
   var fullName=clientName||projName||"New client";
-  if(!projName)projName=fullName+" ‚?? Job";
+  if(!projName)projName=fullName+" ??? Job";
   fetch("/api/clients",{
     method:"POST",
     credentials:"include",
@@ -3335,7 +3336,7 @@ function ensureCatPick(t){
   if(!t.catPick||typeof t.catPick!=="object") t.catPick={};
 }
 function rfParseSupplierUnit(priceText){
-  if(!priceText||priceText==="‚??") return 0;
+  if(!priceText||priceText==="???") return 0;
   var m=String(priceText).match(/(\d+(?:\.\d+)?)/);
   if(!m) return 0;
   return parseFloat(m[1])||0;
@@ -3368,7 +3369,7 @@ function catalogClientTotal(t,globalMkOverride){
   });
   return s;
 }
-/* Plumbing TB used to include pl1 ‚??Plumber Labour‚?ù; main Labour block is source of truth ‚?? hide/ignore pl1. */
+/* Plumbing TB used to include pl1 ???Plumber Labour???; main Labour block is source of truth ??? hide/ignore pl1. */
 function hidePlumberLabourItem(t,it){ return t&&t.id==='plumbing'&&it&&it.id==='pl1'; }
 function hideElectricalLabourItem(t,it){ return t&&t.id==='electrical'&&it&&it.id==='el1'; }
 /* Plumbing: tools line (pl4) can be on client quote or expensed to the business. */
@@ -3589,25 +3590,25 @@ function formulaHint(tradeId, room){
   var m=roomMetrics(room);
   if(!c) return 'add dimensions for auto';
   switch(tradeId){
-    case 'demo':       return Math.round(c.fl)+' sqft √∑ 150/day';
-    case 'framing':    return Math.round(c.pr)+' ft √∑ 30/day'+(c.doors?' + '+c.doors+' doors':'');
-    case 'concrete':   return Math.round(c.fl)+' sqft footprint √∑ 400/day + setup';
-    case 'roofing':    return Math.round(c.fl)+' sqft footprint √∑ 2000/day + detail';
-    case 'electrical': return (m.elPts||0)+' rough-in pts √∑ 8/day';
-    case 'plumbing':   return m.plFix+' fixtures √? 0.75 + 0.5 setup';
-    case 'hvac':       return Math.round(c.fl)+' sqft √∑ 250/day';
-    case 'lowvolt':    return (m.elPts||0)+' low-volt pts √∑ 10/day';
-    case 'security':   return (m.elPts||0)+' rough-in pts √∑ 8/day';
-    case 'comdoor':    return Math.round(c.pr)+' ft perimeter √∑ 80/day';
-    case 'insulation': return Math.round(c.net)+' sqft √∑ 400/day';
-    case 'drywall':    return c.dwWall+' sheets √∑ 15/day + 2 mud';
-    case 'tile':       return Math.round(m.tileSqft||c.fl)+' sqft √∑ 40/day';
-    case 'flooring':   return Math.round(c.fl)+' sqft √∑ 250/day';
-    case 'painting':   return Math.round(c.net+c.fl)+' sqft √∑ 500/day + 1 dry';
-    case 'trim':       return Math.round(c.pr)+' ft √∑ 40/day'+(c.doors?' + '+c.doors+' doors':'');
-    case 'cabinets':   return m.cabLf>0? m.cabLf+' ln ft √∑ 8/day + 0.5 setup' : 'min 1 day';
-    case 'closets':    return Math.round(c.pr)+' ft perimeter √∑ 50/day';
-    case 'finishing':  return Math.round(c.fl)+' sqft √∑ 600/day + 1 detail';
+    case 'demo':       return Math.round(c.fl)+' sqft ? 150/day';
+    case 'framing':    return Math.round(c.pr)+' ft ? 30/day'+(c.doors?' + '+c.doors+' doors':'');
+    case 'concrete':   return Math.round(c.fl)+' sqft footprint ? 400/day + setup';
+    case 'roofing':    return Math.round(c.fl)+' sqft footprint ? 2000/day + detail';
+    case 'electrical': return (m.elPts||0)+' rough-in pts ? 8/day';
+    case 'plumbing':   return m.plFix+' fixtures ?? 0.75 + 0.5 setup';
+    case 'hvac':       return Math.round(c.fl)+' sqft ? 250/day';
+    case 'lowvolt':    return (m.elPts||0)+' low-volt pts ? 10/day';
+    case 'security':   return (m.elPts||0)+' rough-in pts ? 8/day';
+    case 'comdoor':    return Math.round(c.pr)+' ft perimeter ? 80/day';
+    case 'insulation': return Math.round(c.net)+' sqft ? 400/day';
+    case 'drywall':    return c.dwWall+' sheets ? 15/day + 2 mud';
+    case 'tile':       return Math.round(m.tileSqft||c.fl)+' sqft ? 40/day';
+    case 'flooring':   return Math.round(c.fl)+' sqft ? 250/day';
+    case 'painting':   return Math.round(c.net+c.fl)+' sqft ? 500/day + 1 dry';
+    case 'trim':       return Math.round(c.pr)+' ft ? 40/day'+(c.doors?' + '+c.doors+' doors':'');
+    case 'cabinets':   return m.cabLf>0? m.cabLf+' ln ft ? 8/day + 0.5 setup' : 'min 1 day';
+    case 'closets':    return Math.round(c.pr)+' ft perimeter ? 50/day';
+    case 'finishing':  return Math.round(c.fl)+' sqft ? 600/day + 1 detail';
     default: return '';
   }
 }
@@ -3648,8 +3649,8 @@ function applyAuto(room){
 
 var RF_DEMO_CHK=[
   ["drywall","Drywall / plaster"],
-  ["tile_floor","Tile ‚?? floor"],
-  ["tile_walls","Tile ‚?? walls"],
+  ["tile_floor","Tile ??? floor"],
+  ["tile_walls","Tile ??? walls"],
   ["hardwood","Hardwood / laminate"],
   ["carpet","Carpet"],
   ["cabinetry","Cabinetry / millwork"],
@@ -3981,12 +3982,12 @@ function persistProjectStartDate(projectId, ymd){
   if(curPg==='cal')rCalendar();
   if(curPg==='quote')rQuote();
 }
-function fmtDate(d){return d?d.toLocaleDateString('en-CA',{month:'short',day:'numeric'}):'‚??';}
-function fmtDateFull(d){return d?d.toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'}):'‚??';}
-function fmtDateLong(d){return d?d.toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}):'‚??';}
+function fmtDate(d){return d?d.toLocaleDateString('en-CA',{month:'short',day:'numeric'}):'???';}
+function fmtDateFull(d){return d?d.toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'}):'???';}
+function fmtDateLong(d){return d?d.toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}):'???';}
 
 var curPg="dash",curR=null;
-/** Set when navigating to All rooms ‚?? blocks the same pointer/ghost click from opening a room's trades view. */
+/** Set when navigating to All rooms ??? blocks the same pointer/ghost click from opening a room's trades view. */
 var __rfNavToRoomsAt=0;
 var __rfListPickRoomI=null, __rfAddRoomStayOnList=false;
 var MOB_TAB_ORDER=["dash","proj","quote","clients"];
@@ -4353,7 +4354,7 @@ function rIntake(){
   var pn=escHtml((S.proj&&S.proj.name)?String(S.proj.name):"Project");
   var cli=S.proj&&S.proj.client?String(S.proj.client):"";
   var headRaw='<div class="ph"><div><div class="pt">Project intake</div>'
-    +'<div class="ps">'+pn+(cli?(" ¬∑ "+escHtml(cli)):"")+'</div></div>'
+    +'<div class="ps">'+pn+(cli?(" ? "+escHtml(cli)):"")+'</div></div>'
     +'<button type="button" class="btn bg sm" onclick="gP(\'dash\')">Exit</button></div><div class="pc">';
   var head=headRaw.replace('onclick="gP(\'dash\')"','onclick="__rfIntakeMode=\'full\';gP(\'dash\')"');
 
@@ -4369,7 +4370,7 @@ function rIntake(){
       +'<div class="intake-q">Which rooms are we working on?</div>'
       +'<p class="intake-sub">'
       +(isQuick
-        ?"Select every space for this job. On the next screen you‚??ll open each room to choose trades, then line items and pricing."
+        ?"Select every space for this job. On the next screen you???ll open each room to choose trades, then line items and pricing."
         :"Select every space included in this renovation. You can add or remove rooms later from the sidebar.")
       +'</p>'
       +'<div class="intake-cb-grid">'+grid+'</div>'
@@ -4387,7 +4388,7 @@ function rIntake(){
       var col=TC[tid]||"#888";
       return '<label class="intake-cb'+(has?" on":"")+'" data-itsi="'+si+'" data-itid="'+escAttr(tid)+'" style="border-left:3px solid '+col+'">'
         +'<input type="checkbox" '+(has?"checked":"")+' onchange="intakeTradeSet('+si+',\''+tid+'\',this.checked)"/>'
-        +'<span class="ic">'+(TIC[tid]||"‚?¢")+'</span><span>'+escHtml(String(TN[tid]||tid))+'</span></label>';
+        +'<span class="ic">'+(TIC[tid]||"???")+'</span><span>'+escHtml(String(TN[tid]||tid))+'</span></label>';
     }).join("");
     return '<div class="intake-room-block">'
       +'<div class="intake-room-h"><span class="ic">'+rt.ic+'</span><span class="t">'+rt.n+'</span></div>'
@@ -4421,7 +4422,7 @@ function rNav(){
       +ico+'<span class="ni-l">'+r.n+'</span>'
       +(rt>0?'<span class="ni-b">'+f(rt)+'</span>':'')
       +'</div>'
-      +'<button type="button" class="rnav-del" onclick="event.stopPropagation();delRoom('+i+')" title="Remove room" aria-label="Remove room">‚??</button>'
+      +'<button type="button" class="rnav-del" onclick="event.stopPropagation();delRoom('+i+')" title="Remove room" aria-label="Remove room">???</button>'
       +'</div>';
   });
   document.getElementById("rnav").innerHTML=h;
@@ -4431,7 +4432,7 @@ function uSide(){
   var tot=projTotal(),tax=tot*S.mk.tax/100;
   document.getElementById("sb-tot").textContent=f(tot+tax);
   var n=S.rooms.length,t=S.rooms.reduce(function(s,r){return s+(r.trades||[]).filter(function(t){return tradeCost(t)>0;}).length;},0);
-  document.getElementById("sb-brk").textContent=n+" room"+(n!==1?"s":"")+" ¬∑ "+t+" active";
+  document.getElementById("sb-brk").textContent=n+" room"+(n!==1?"s":"")+" ? "+t+" active";
   var cc=document.getElementById("cl-count");if(cc)cc.textContent=(S.clients||[]).length;
   var ic=document.getElementById("inv-count");if(ic)ic.textContent=(S.invoices||[]).length;
   try{ updateSidebarProjectHeader(); }catch(e){}
@@ -4468,25 +4469,25 @@ function escAttr(s){
 function dashClientName(p){
   if(p.client&&p.client.full_name) return p.client.full_name;
   if(p.client_name&&String(p.client_name).trim()) return String(p.client_name).trim();
-  return "‚??";
+  return "???";
 }
 function dashAddr(p){
   var a=p.address;
   if(a&&String(a).trim()) return String(a).trim();
   if(p.client&&p.client.address&&String(p.client.address).trim()) return String(p.client.address).trim();
-  return "‚??";
+  return "???";
 }
 
 function fmtListDate(iso){
   try{
     var d=new Date(iso);
-    if(isNaN(d.getTime())) return "‚??";
+    if(isNaN(d.getTime())) return "???";
     var dd=String(d.getDate()).padStart(2,"0");
     var mm=String(d.getMonth()+1).padStart(2,"0");
     var yy=String(d.getFullYear()).slice(-2);
     return dd+"-"+mm+"-"+yy;
   }catch(e){
-    return "‚??";
+    return "???";
   }
 }
 function initialsFromName(name){
@@ -4530,8 +4531,8 @@ function rProj(){
     +'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'
     +'<rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/>'
     +'<rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span>'
-    +'<div><div class="pt">Active <em>Projects</em></div><div class="ps">Open a job in the workspace ‚?? same data as the desktop list.</div></div></div></div>'
-    +'<div class="pc pc--proj"><div class="pl-loading">Loading projects‚?¶</div></div>';
+    +'<div><div class="pt">Active <em>Projects</em></div><div class="ps">Open a job in the workspace ??? same data as the desktop list.</div></div></div></div>'
+    +'<div class="pc pc--proj"><div class="pl-loading">Loading projects???</div></div>';
     refreshProjectList().then(function(){ rProj(); });
     return;
   }
@@ -4546,7 +4547,7 @@ function rProj(){
     var isOn=act===String(p.id);
     var qn=p.quote_number?String(p.quote_number):"";
     var line3;
-    if(ad&&ad!=="‚??") line3=escHtml(ad)+(qn?(" ¬∑ "+escHtml(qn)):"");
+    if(ad&&ad!=="???") line3=escHtml(ad)+(qn?(" ? "+escHtml(qn)):"");
     else if(qn) line3=escHtml(qn);
     else line3=escHtml("No address on file");
     var tletter=nm?nm.charAt(0).toUpperCase():"?";
@@ -4561,7 +4562,7 @@ function rProj(){
       +'</div>'
       +'<div class="pl-txt">'
       +'<div class="pl-line1"><span class="pl-name">'+cnH+'</span><span class="pl-date">'+escHtml(fmtListDate(p.updated_at))+'</span></div>'
-      +'<div class="pl-line2">'+nmH+(qn?(" ¬∑ "+escHtml(qn)):"")+'</div>'
+      +'<div class="pl-line2">'+nmH+(qn?(" ? "+escHtml(qn)):"")+'</div>'
       +'<div class="pl-line3">'+line3+'</div>'
       +'</div></div>';
   }).join("");
@@ -4571,7 +4572,7 @@ function rProj(){
     +'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'
     +'<rect x="3" y="3" width="7" height="7" rx="1.25"/><rect x="14" y="3" width="7" height="7" rx="1.25"/>'
     +'<rect x="3" y="14" width="7" height="7" rx="1.25"/><rect x="14" y="14" width="7" height="7" rx="1.25"/></svg></span>'
-    +'<div><div class="pt">Active <em>Projects</em></div><div class="ps">Open a job in the workspace ‚?? same data as the desktop list.</div></div></div></div>'
+    +'<div><div class="pt">Active <em>Projects</em></div><div class="ps">Open a job in the workspace ??? same data as the desktop list.</div></div></div></div>'
     +'<div class="pc pc--proj">'
     +(plist.length===0
       ?'<div class="pl-empty">No projects yet. Create one from <strong>Home</strong> or the sidebar link.</div>'
@@ -4604,7 +4605,7 @@ function rRooms(){
     +'<div class="ph ph--proj">'
     +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">'
     +'<div><div class="pt">All <em>rooms</em></div><div class="ps">'
-    +'Every space in '+pnm+' ‚?? add rooms, then open one to add trades and estimates.</div></div>'
+    +'Every space in '+pnm+' ??? add rooms, then open one to add trades and estimates.</div></div>'
     +'<button type="button" class="btn bg sm" onclick="addRoomMo()" style="flex-shrink:0;margin-top:2px">+ Add room</button>'
     +'</div></div>';
   if(rooms.length===0){
@@ -5133,7 +5134,7 @@ function refreshDashWeather(){
     el.textContent=__rfDashWeatherCache.text;
     return;
   }
-  el.textContent="Loading weather‚?¶";
+  el.textContent="Loading weather???";
   function apply(lat,lon){
     var url="/api/weather?latitude="+encodeURIComponent(lat)+"&longitude="+encodeURIComponent(lon);
     fetch(url,{credentials:"include",cache:"no-store"}).then(function(r){
@@ -5146,7 +5147,7 @@ function refreshDashWeather(){
       var hi=day.temperature_2m_max[0];
       var lo=day.temperature_2m_min[0];
       var t=Math.round(cur.temperature_2m);
-      var line=t+"¬∞C ¬∑ "+rfWmoWeatherPhrase(cur.weather_code)+" ¬∑ High "+Math.round(hi)+"¬∞ / Low "+Math.round(lo)+"¬∞";
+      var line=t+"?C ? "+rfWmoWeatherPhrase(cur.weather_code)+" ? High "+Math.round(hi)+"? / Low "+Math.round(lo)+"?";
       el.textContent=line;
       __rfDashWeatherCache={t:now,text:line,u:"c"};
     }).catch(function(){
@@ -5205,7 +5206,7 @@ function rDash(){
   var el=document.getElementById("p-dash");
   __rfDashJiggleMode=false;
   if(!window.__rfProjectList){
-    el.innerHTML='<div class="pc"><div class="brief-wrap" style="text-align:center;padding:40px 20px;color:var(--tx3)">Loading projects‚?¶</div></div>';
+    el.innerHTML='<div class="pc"><div class="brief-wrap" style="text-align:center;padding:40px 20px;color:var(--tx3)">Loading projects???</div></div>';
     refreshProjectList().then(function(){ rDash(); });
     return;
   }
@@ -5226,9 +5227,9 @@ function rDash(){
     if(st==='overdue'){
       alerts.push({
         type:'urgent',
-        icon:'??®',
-        title:(inv.clientName||'Invoice')+' ‚?? '+inv.num+' is overdue',
-        sub:days+' day'+(days!==1?'s':'')+' past due ¬∑ Balance: '+f(invBal(inv)),
+        icon:'????',
+        title:(inv.clientName||'Invoice')+' ??? '+inv.num+' is overdue',
+        sub:days+' day'+(days!==1?'s':'')+' past due ? Balance: '+f(invBal(inv)),
         btn:'View Invoice',
         fn:'gP(\'inv\');openInv(\''+inv.id+'\')'
       });
@@ -5241,16 +5242,16 @@ function rDash(){
     if((st==='sent'||st==='partial')&&inv.deposit>0&&!inv.depositPaid){
       alerts.push({
         type:'warning',
-        icon:'??∞',
-        title:'Deposit pending ‚?? '+(inv.clientName||inv.num),
-        sub:f(inv.deposit)+' deposit not yet received ¬∑ '+inv.num,
+        icon:'????',
+        title:'Deposit pending ??? '+(inv.clientName||inv.num),
+        sub:f(inv.deposit)+' deposit not yet received ? '+inv.num,
         btn:'View Invoice',
         fn:'gP(\'inv\');openInv(\''+inv.id+'\')'
       });
     }
   });
 
-  // Invoices sent but not yet overdue ‚?? just a heads up
+  // Invoices sent but not yet overdue ??? just a heads up
   invs.forEach(function(inv){
     var st=invStatus(inv);
     var due=invDueDate(inv);
@@ -5259,9 +5260,9 @@ function rDash(){
       if(daysLeft<=2&&daysLeft>0){
         alerts.push({
           type:'info',
-          icon:'‚è∞',
+          icon:'?',
           title:(inv.clientName||inv.num)+' payment due soon',
-          sub:'Due in '+daysLeft+' day'+(daysLeft!==1?'s':'')+' ¬∑ '+f(inv.total),
+          sub:'Due in '+daysLeft+' day'+(daysLeft!==1?'s':'')+' ? '+f(inv.total),
           btn:'View Invoice',
           fn:'gP(\'inv\');openInv(\''+inv.id+'\')'
         });
@@ -5273,7 +5274,7 @@ function rDash(){
   if(n===0){
     alerts.push({
       type:'info',
-      icon:'?è†',
+      icon:'????',
       title:'No rooms added yet',
       sub:'Start by adding rooms to your project',
       btn:'Add Room',
@@ -5297,7 +5298,7 @@ function rDash(){
   var allClear=alerts.length===0?'<div class="brief-all-clear">'
     +'<span class="brief-clear-dot" aria-hidden="true"></span>'
     +'<div><div class="brief-clear-t">You\'re all clear</div>'
-    +'<div class="brief-clear-s">No overdue invoices ¬∑ No pending deposits ¬∑ All on track</div>'
+    +'<div class="brief-clear-s">No overdue invoices ? No pending deposits ? All on track</div>'
     +'</div></div>':'';
 
   // Stats row
@@ -5326,9 +5327,9 @@ function rDash(){
     var descParts=[];
     if(String(cn||'').trim()) descParts.push(String(cn).trim());
     if(String(ad||'').trim()) descParts.push(String(ad).trim());
-    var descText=descParts.length?descParts.join(' ¬∑ '):'‚??';
+    var descText=descParts.length?descParts.join(' ? '):'???';
     var activeHtml;
-    if(da===null) activeHtml='<div class="dash-proj-days dash-proj-days--muted">‚??</div>';
+    if(da===null) activeHtml='<div class="dash-proj-days dash-proj-days--muted">???</div>';
     else if(da===0) activeHtml='<div class="dash-proj-days dash-proj-days--muted">0 days active</div>';
     else activeHtml='<div class="dash-proj-days">'+da+' day'+(da!==1?'s':'')+' active</div>';
     var dueHtml;
@@ -5343,8 +5344,8 @@ function rDash(){
       :('<div class="dash-proj-img" aria-hidden="true"><span class="dash-proj-initial">'+escHtml(tInit)+'</span></div>');
     return '<div class="rc dash-proj dash-proj--clean'+(active?' on':'')+'" data-pid="'+escAttr(p.id)+'" role="button" tabindex="0">'
       +'<div class="dproj-acts" onclick="event.stopPropagation();">'
-      +'<button type="button" class="dproj-fab dproj-fab--arch" title="Archive" aria-label="Archive project" onclick="event.stopPropagation();dashProjectArchive(\''+escAttr(p.id)+'\')">??¶</button>'
-      +'<button type="button" class="dproj-fab dproj-fab--del" title="Delete" aria-label="Delete project" onclick="event.stopPropagation();dashProjectDelete(\''+escAttr(p.id)+'\')">√?</button>'
+      +'<button type="button" class="dproj-fab dproj-fab--arch" title="Archive" aria-label="Archive project" onclick="event.stopPropagation();dashProjectArchive(\''+escAttr(p.id)+'\')">????</button>'
+      +'<button type="button" class="dproj-fab dproj-fab--del" title="Delete" aria-label="Delete project" onclick="event.stopPropagation();dashProjectDelete(\''+escAttr(p.id)+'\')">??</button>'
       +'</div>'
       +imgBlock
       +'<div class="dash-proj-card-body">'
@@ -5375,7 +5376,7 @@ function rDash(){
     +'<div class="brief-header__text">'
     +'<div class="brief-date">'+dateStr+'</div>'
     +'<div class="brief-greeting">'+greeting+'</div>'
-    +'<div class="brief-sub" id="dash-weather" aria-live="polite">Loading weather‚?¶</div>'
+    +'<div class="brief-sub" id="dash-weather" aria-live="polite">Loading weather???</div>'
     +'</div>'
     +'<div class="brief-header__logo">'+dashHeaderRfLogo()+'</div>'
     +'</div></div>'
@@ -5478,8 +5479,8 @@ function elSetCap(ti,val){
 function elCatRow(ti,field,label,val){
   return '<div class="rf-elec-row"><div class="rf-elec-lbl">'+label+'</div>'
     +'<div class="rf-elec-btns">'
-    +'<button type="button" class="fxb" tabindex="-1" onmousedown="event.preventDefault()" onclick="elAdj('+ti+',\''+field+'\',-10)">‚??10</button>'
-    +'<button type="button" class="fxb" tabindex="-1" onmousedown="event.preventDefault()" onclick="elAdj('+ti+',\''+field+'\',-1)">‚??1</button>'
+    +'<button type="button" class="fxb" tabindex="-1" onmousedown="event.preventDefault()" onclick="elAdj('+ti+',\''+field+'\',-10)">???10</button>'
+    +'<button type="button" class="fxb" tabindex="-1" onmousedown="event.preventDefault()" onclick="elAdj('+ti+',\''+field+'\',-1)">???1</button>'
     +'<input class="rf-elec-inp" type="number" min="0" step="1" value="'+val+'" onchange="elSet('+ti+',\''+field+'\',this.value)"/>'
     +'<button type="button" class="fxb" tabindex="-1" onmousedown="event.preventDefault()" onclick="elAdj('+ti+',\''+field+'\',1)">+1</button>'
     +'<button type="button" class="fxb" tabindex="-1" onmousedown="event.preventDefault()" onclick="elAdj('+ti+',\''+field+'\',10)">+10</button>'
@@ -5492,7 +5493,7 @@ function expMepToolBlock(label, bodyHtml, idPx){
     +bodyHtml
     +'</div>';
 }
-/** Prefix for trade calculator DOM ids ‚?? must match `tradeSectionHtml` idPx ('' grid vs 'exp-' expanded overlay) so ids stay unique. */
+/** Prefix for trade calculator DOM ids ??? must match `tradeSectionHtml` idPx ('' grid vs 'exp-' expanded overlay) so ids stay unique. */
 function tradeToolsBlock(room,ti,t,idPx){
   if(idPx===undefined||idPx===null) idPx='';
   var px=String(idPx)+'rf-'+curR+'-'+ti+'-';
@@ -5507,7 +5508,7 @@ function tradeToolsBlock(room,ti,t,idPx){
     var over=tot>cap;
     var barColor=over?'#e85547':'var(--ac)';
     var html='<div class="rf-tool rf-elec">';
-    html+='<div class="rf-tool-h">‚?° Electrician mode ‚?? panel load</div>';
+    html+='<div class="rf-tool-h">??? Electrician mode ??? panel load</div>';
     html+='<div class="rf-elec-cap">Service <select onchange="elSetCap('+ti+',this.value)">';
     html+='<option value="100"'+(cap==100?' selected':'')+'>100A</option>';
     html+='<option value="200"'+(cap==200?' selected':'')+'>200A</option>';
@@ -5532,8 +5533,8 @@ function tradeToolsBlock(room,ti,t,idPx){
     var c0=calcDims(room.d||{})||{};
     var defSq=0;
     if(c0 && c0.fl) defSq=Math.round(c0.fl);
-    var html='<div class="rf-tool"><div class="rf-tool-h">??° Heating / cooling load (rule-of-thumb)</div>';
-    html+='<p class="rf-tool-note">Uses floor size only ‚?? not a full Manual J. Round up when sizing.</p>';
+    var html='<div class="rf-tool"><div class="rf-tool-h">???? Heating / cooling load (rule-of-thumb)</div>';
+    html+='<p class="rf-tool-note">Uses floor size only ??? not a full Manual J. Round up when sizing.</p>';
     html+='<div class="rf-tool-row"><label>Floor area (sqft)</label><input type="number" id="'+px+'hv-sq" step="1" value="'+(defSq||'200')+'"/></div>';
     html+='<button type="button" class="btn bg sm" onclick="calcHvacBtuRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Estimate BTU</button>';
     html+='<div class="rf-tool-out" id="'+px+'hv-btu"></div></div>';
@@ -5541,28 +5542,28 @@ function tradeToolsBlock(room,ti,t,idPx){
   }
   if(tid==='framing'){
     var cF=calcDims(room.d||{})||{};
-    var html='<div class="rf-tool"><div class="rf-tool-h">?™µ Studs @ 16 in OC</div>';
+    var html='<div class="rf-tool"><div class="rf-tool-h">???? Studs @ 16 in OC</div>';
     html+='<div class="rf-tool-row"><label>Wall length (ft)</label><input type="number" id="'+px+'st-wl" step="0.5" value="'+(cF && cF.pr>0?cF.pr:'12')+'"/></div>';
     html+='<button type="button" class="btn bg sm" onclick="calcStud16Run('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Count studs</button>';
     html+='<div class="rf-tool-out" id="'+px+'stud-out"></div></div>';
-    html+='<div class="rf-tool"><div class="rf-tool-h">?™µ LVL beam</div>';
+    html+='<div class="rf-tool"><div class="rf-tool-h">???? LVL beam</div>';
     html+='<div class="rf-tool-row"><label>Span (ft)</label><input type="number" id="'+px+'lvl-s" step="0.5" value="12"/></div>';
     html+='<div class="rf-tool-row"><label>Load (lb/ft)</label><input type="number" id="'+px+'lvl-w" step="1" value="40"/></div>';
     html+='<button type="button" class="btn bg sm" onclick="calcLvlRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Calculate size</button>';
     html+='<div class="rf-tool-out" id="'+px+'lvl-out"></div></div>';
-    html+='<div class="rf-tool"><div class="rf-tool-h">?ß± Load-bearing / wall removal</div>';
+    html+='<div class="rf-tool"><div class="rf-tool-h">???? Load-bearing / wall removal</div>';
     html+='<div class="rf-tool-row"><label>Opening (ft)</label><input type="number" id="'+px+'lb-o" step="0.5" value="8"/></div>';
     html+='<div class="rf-tool-row"><label>Load (lb/ft)</label><input type="number" id="'+px+'lb-w" step="1" value="40"/></div>';
     html+='<button type="button" class="btn bg sm" onclick="calcLbRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Beam & posts</button>';
     html+='<div class="rf-tool-out" id="'+px+'lb-out"></div></div>';
-    html+='<div class="rf-tool"><div class="rf-tool-h">?™? Stairs</div>';
+    html+='<div class="rf-tool"><div class="rf-tool-h">???? Stairs</div>';
     html+='<div class="rf-tool-row"><label>Total rise (in)</label><input type="number" id="'+px+'st-r" step="0.25" value="102"/></div>';
     html+='<button type="button" class="btn bg sm" onclick="calcStairRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Riser & tread</button>';
     html+='<div class="rf-tool-out" id="'+px+'stair-out"></div></div>';
     return expMepToolBlock('Calculators', html, idPx);
   }
   if(tid==='plumbing'){
-    var html='<div class="rf-tool"><div class="rf-tool-h">??ß Drain slope</div>';
+    var html='<div class="rf-tool"><div class="rf-tool-h">???? Drain slope</div>';
     html+='<div class="rf-tool-row"><label>Pipe length (ft)</label><input type="number" id="'+px+'sl-l" step="0.5" value="10"/></div>';
     html+='<div class="rf-tool-row"><label>Vertical drop (in)</label><input type="number" id="'+px+'sl-d" step="0.5" value="2"/></div>';
     html+='<button type="button" class="btn bg sm" onclick="calcSlopeRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Calculate slope</button>';
@@ -5571,8 +5572,8 @@ function tradeToolsBlock(room,ti,t,idPx){
   }
   if(tid==='tile'){
     var tileRoomQ=(room&&room.n)?encodeURIComponent(room.n):'';
-    var tileCalcLink='<div style="margin:0 0 12px 0"><a class="btn bg sm" href="/tile-calculator'+(tileRoomQ?'?room='+tileRoomQ:'')+'" style="text-decoration:none;display:inline-block;font-weight:600">Full tile calculator ‚??</a></div>';
-    var html=tileCalcLink+'<div class="rf-tool"><div class="rf-tool-h">??≤ Tile area + 10% waste</div>';
+    var tileCalcLink='<div style="margin:0 0 12px 0"><a class="btn bg sm" href="/tile-calculator'+(tileRoomQ?'?room='+tileRoomQ:'')+'" style="text-decoration:none;display:inline-block;font-weight:600">Full tile calculator ???</a></div>';
+    var html=tileCalcLink+'<div class="rf-tool"><div class="rf-tool-h">???? Tile area + 10% waste</div>';
     html+='<div class="rf-tool-row"><label>Length (ft)</label><input type="number" id="'+px+'tl-l" step="0.5" value="12"/></div>';
     html+='<div class="rf-tool-row"><label>Width (ft)</label><input type="number" id="'+px+'tl-w" step="0.5" value="10"/></div>';
     html+='<div class="rf-tool-row"><label>Waste (decimal)</label><input type="number" id="'+px+'tl-wf" step="0.05" value="0.1"/></div>';
@@ -5581,7 +5582,7 @@ function tradeToolsBlock(room,ti,t,idPx){
     return expMepToolBlock('Calculator', html, idPx);
   }
   if(tid==='painting'){
-    var html='<div class="rf-tool"><div class="rf-tool-h">??® Paint gallons (rule-of-thumb)</div>';
+    var html='<div class="rf-tool"><div class="rf-tool-h">???? Paint gallons (rule-of-thumb)</div>';
     html+='<div class="rf-tool-row"><label>Length (ft)</label><input type="number" id="'+px+'pt-l" step="0.5" value="12"/></div>';
     html+='<div class="rf-tool-row"><label>Width (ft)</label><input type="number" id="'+px+'pt-w" step="0.5" value="10"/></div>';
     html+='<div class="rf-tool-row"><label>Ceiling height (ft)</label><input type="number" id="'+px+'pt-h" step="0.5" value="8"/></div>';
@@ -5593,7 +5594,7 @@ function tradeToolsBlock(room,ti,t,idPx){
   if(tid==='trim'){
     var c=calcDims(room.d||{})||{};
     var perDef=Math.round(c.pr||0);
-    var html='<div class="rf-tool"><div class="rf-tool-h">??? Crown moulding</div>';
+    var html='<div class="rf-tool"><div class="rf-tool-h">???? Crown moulding</div>';
     html+='<div class="rf-tool-row"><label>Room perimeter (ft)</label><input type="number" id="'+px+'cr-p" step="0.5" value="'+(perDef||'')+'"/></div>';
     html+='<div class="rf-tool-row"><label>Waste factor</label><input type="number" id="'+px+'cr-w" step="0.05" value="1.1"/></div>';
     html+='<button type="button" class="btn bg sm" onclick="calcCrownRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">LF + waste</button>';
@@ -5601,13 +5602,13 @@ function tradeToolsBlock(room,ti,t,idPx){
     return expMepToolBlock('Crown moulding', html, idPx);
   }
   if(tid==='flooring'){
-    var html='<div class="rf-tool"><div class="rf-tool-h">?™µ Flooring order + 10% waste</div>';
+    var html='<div class="rf-tool"><div class="rf-tool-h">???? Flooring order + 10% waste</div>';
     html+='<div class="rf-tool-row"><label>Length (ft)</label><input type="number" id="'+px+'fl-l" step="0.5" value="12"/></div>';
     html+='<div class="rf-tool-row"><label>Width (ft)</label><input type="number" id="'+px+'fl-w" step="0.5" value="10"/></div>';
     html+='<div class="rf-tool-row"><label>Waste (decimal)</label><input type="number" id="'+px+'fl-wf" step="0.05" value="0.1"/></div>';
     html+='<button type="button" class="btn bg sm" onclick="calcFloorWasteRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Sqft to order</button>';
     html+='<div class="rf-tool-out" id="'+px+'fl-ow"></div></div>';
-    html+='<div class="rf-tool"><div class="rf-tool-h">?™µ Deck & fence</div>';
+    html+='<div class="rf-tool"><div class="rf-tool-h">???? Deck & fence</div>';
     html+='<div class="rf-tool-row"><label>Deck area (sqft)</label><input type="number" id="'+px+'dk-a" step="1" value="144"/></div>';
     html+='<div class="rf-tool-row"><label>Board width (in)</label><input type="number" id="'+px+'dk-bw" step="0.25" value="5.5"/></div>';
     html+='<div class="rf-tool-row"><label>Joist spacing (in)</label><input type="number" id="'+px+'dk-j" step="1" value="16"/></div>';
@@ -5618,7 +5619,7 @@ function tradeToolsBlock(room,ti,t,idPx){
     return expMepToolBlock('Calculators', html, idPx);
   }
   if(tid==='insulation'){
-    var html='<div class="rf-tool"><div class="rf-tool-h">??°Ô∏è Insulation R-value</div>';
+    var html='<div class="rf-tool"><div class="rf-tool-h">????? Insulation R-value</div>';
     html+='<div class="rf-tool-row"><label>Climate zone</label><select id="'+px+'in-z"><option value="6">Zone 6 (cold)</option><option value="5">Zone 5</option><option value="4">Zone 4</option></select></div>';
     html+='<div class="rf-tool-row"><label>Surface</label><select id="'+px+'in-s"><option value="wall">Exterior wall</option><option value="ceil">Ceiling / attic</option><option value="floor">Floor over unheated</option></select></div>';
     html+='<div class="rf-tool-row"><label>Area (sqft)</label><input type="number" id="'+px+'in-a" step="1" value="100"/></div>';
@@ -5627,7 +5628,7 @@ function tradeToolsBlock(room,ti,t,idPx){
     return expMepToolBlock('R-value calculator', html, idPx);
   }
   if(tid==='roofing'){
-    var html='<div class="rf-tool"><div class="rf-tool-h">?è† Roofing</div>';
+    var html='<div class="rf-tool"><div class="rf-tool-h">???? Roofing</div>';
     html+='<div class="rf-tool-row"><label>Roof length (ft)</label><input type="number" id="'+px+'rf-l" step="0.5" value="40"/></div>';
     html+='<div class="rf-tool-row"><label>Roof width (ft)</label><input type="number" id="'+px+'rf-w" step="0.5" value="30"/></div>';
     html+='<div class="rf-tool-row"><label>Pitch</label><select id="'+px+'rf-p">';
@@ -5641,7 +5642,7 @@ function tradeToolsBlock(room,ti,t,idPx){
     return html;
   }
   if(tid==='concrete'){
-    var html='<div class="rf-tool"><div class="rf-tool-h">?ß± Concrete</div>';
+    var html='<div class="rf-tool"><div class="rf-tool-h">???? Concrete</div>';
     html+='<div class="rf-tool-row"><label>Pour type</label><select id="'+px+'cf-type" onchange="concSetVis('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">';
     html+='<option value="slab">Slab</option>';
     html+='<option value="walkway">Walkway / pad</option>';
@@ -5661,20 +5662,20 @@ function tradeToolsBlock(room,ti,t,idPx){
     html+='<div id="'+px+'cf-ph" style="display:none"><div class="rf-tool-row"><label>Number of holes</label><input type="number" id="'+px+'cf-ph-n" step="1" value="6"/></div>';
     html+='<div class="rf-tool-row"><label>Hole diameter (in)</label><input type="number" id="'+px+'cf-ph-di" step="0.5" value="10"/></div>';
     html+='<div class="rf-tool-row"><label>Hole depth (ft)</label><input type="number" id="'+px+'cf-ph-dep" step="0.25" value="3"/></div></div>';
-    html+='<p class="rf-tool-note">Also output ready-mix cubic yards needed for a cement truck order. Note that standard cement trucks carry 8‚??10 cubic yards. If the pour requires more than 1 cubic yard, show how many truck loads needed and flag if the pour is under the typical minimum order of 1 cubic yard (suggest bags instead).</p>';
+    html+='<p class="rf-tool-note">Also output ready-mix cubic yards needed for a cement truck order. Note that standard cement trucks carry 8???10 cubic yards. If the pour requires more than 1 cubic yard, show how many truck loads needed and flag if the pour is under the typical minimum order of 1 cubic yard (suggest bags instead).</p>';
     html+='<button type="button" class="btn bg sm" onclick="calcConcRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Calculate volume &amp; bags</button>';
     html+='<div class="rf-tool-out" id="'+px+'cf-out"></div></div>';
     return html;
   }
   if(tid==='drywall'){
-    var html='<div class="rf-tool"><div class="rf-tool-h">‚¨? Sheets from room dimensions</div>';
+    var html='<div class="rf-tool"><div class="rf-tool-h">?? Sheets from room dimensions</div>';
     html+='<p class="rf-tool-note">Matches the same auto drywall sheet count as the room dimension bar (walls + ceiling, ~10% waste).</p>';
     html+='<button type="button" class="btn bg sm" onclick="calcDrySheetFromRoomRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Calculate from this room</button>';
     html+='<div class="rf-tool-out" id="'+px+'dw-sh"></div></div>';
-    html+='<div class="rf-tool"><div class="rf-tool-h">??¶ Bulkhead</div>';
+    html+='<div class="rf-tool"><div class="rf-tool-h">???? Bulkhead</div>';
     html+='<div class="rf-tool-row"><label>Length (ft)</label><input type="number" id="'+px+'bk-l" step="0.25" value="12"/></div>';
     html+='<div class="rf-tool-row"><label>Width / depth (ft)</label><input type="number" id="'+px+'bk-w" step="0.25" value="2"/></div>';
-    html+='<div class="rf-tool-row"><label>Drop ‚?? face height (ft)</label><input type="number" id="'+px+'bk-d" step="0.25" value="1"/></div>';
+    html+='<div class="rf-tool-row"><label>Drop ??? face height (ft)</label><input type="number" id="'+px+'bk-d" step="0.25" value="1"/></div>';
     html+='<div class="rf-tool-row"><label>Drywall layers</label><select id="'+px+'bk-layer"><option value="1">Single layer</option><option value="2">Double layer</option></select></div>';
     html+='<button type="button" class="btn bg sm" onclick="calcBulkRun('+ti+',\''+idPx.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">Calculate materials</button>';
     html+='<div class="rf-tool-out" id="'+px+'bk-out"></div></div>';
@@ -5704,7 +5705,7 @@ function calcLvlRun(ti,idPx){
   var out=document.getElementById(px+'lvl-out');
   if(!out)return;
   if(span<=0||w<=0){out.textContent='Enter span and load.';return;}
-  var hint=span<=8?'1.75" LVL 7¬º‚??9¬Ω"':span<=14?'1.75" LVL 9¬Ω‚??11‚??"':span<=20?'3.5" LVL 11‚??‚??14"':'Engineered ‚?? consult engineer';
+  var hint=span<=8?'1.75" LVL 7????9?"':span<=14?'1.75" LVL 9????11???"':span<=20?'3.5" LVL 11??????14"':'Engineered ??? consult engineer';
   out.innerHTML='<strong>'+hint+'</strong> typical for '+span+' ft @ '+w+' plf. <span class="rf-tool-note">Rule-of-thumb only.</span>';
 }
 function calcLbRun(ti,idPx){
@@ -5714,7 +5715,7 @@ function calcLbRun(ti,idPx){
   var out=document.getElementById(px+'lb-out');
   if(!out)return;
   if(o<=0){out.textContent='Enter opening width.';return;}
-  var beam=o<=8?'(2) LVL 1.75√?11‚??" or built-up 2√?12':o<=12?'(2) LVL 1.75√?14"':o<=16?'(3) LVL 1.75√?14"':'Engineered beam ‚?? engineer required';
+  var beam=o<=8?'(2) LVL 1.75??11???" or built-up 2??12':o<=12?'(2) LVL 1.75??14"':o<=16?'(3) LVL 1.75??14"':'Engineered beam ??? engineer required';
   var posts=2;
   var lab=Math.ceil(o*3)+posts*8;
   out.innerHTML='<strong>Beam:</strong> '+beam+'.<br/><strong>Posts:</strong> '+posts+' (bearing at each end).<br/><strong>Labour hint:</strong> ~'+lab+' hrs (rough estimate).';
@@ -5729,7 +5730,7 @@ function calcStairRun(ti,idPx){
   var riserH=rise/n;
   if(riserH>8.25){n=Math.ceil(rise/7);riserH=rise/n;}
   var tread=10;
-  out.innerHTML='<strong>'+n+' risers</strong> ‚?? riser <strong>'+riserH.toFixed(2)+' in</strong> (aim 7‚??7¬æ").<br/>Suggested tread run <strong>'+tread+' in</strong> (verify local code).';
+  out.innerHTML='<strong>'+n+' risers</strong> ??? riser <strong>'+riserH.toFixed(2)+' in</strong> (aim 7???7?").<br/>Suggested tread run <strong>'+tread+' in</strong> (verify local code).';
 }
 function calcSlopeRun(ti,idPx){
   var px=rfToolPx(ti,idPx);
@@ -5741,7 +5742,7 @@ function calcSlopeRun(ti,idPx){
   var dropFt=dIn/12;
   var pct=(dropFt/L)*100;
   var perFt=dIn/L;
-  out.innerHTML='<strong>Slope:</strong> '+pct.toFixed(2)+'% ‚?? <strong>'+perFt.toFixed(3)+' in</strong> drop per foot.';
+  out.innerHTML='<strong>Slope:</strong> '+pct.toFixed(2)+'% ??? <strong>'+perFt.toFixed(3)+' in</strong> drop per foot.';
 }
 function calcCrownRun(ti,idPx){
   var px=rfToolPx(ti,idPx);
@@ -5761,7 +5762,7 @@ function calcHvacBtuRun(ti,idPx){
   if(sq<=0){ out.textContent='Enter floor area.'; return; }
   var cool=Math.round(sq*25);
   var heat=Math.round(sq*45);
-  out.innerHTML='<strong>~'+cool.toLocaleString()+' BTU</strong> cooling (‚??25 BTU/sqft) ¬∑ <strong>~'+heat.toLocaleString()+' BTU</strong> heating (‚??45 BTU/sqft cold climate rule-of-thumb). <span class="rf-tool-note">Match load calc & local code.</span>';
+  out.innerHTML='<strong>~'+cool.toLocaleString()+' BTU</strong> cooling (???25 BTU/sqft) ? <strong>~'+heat.toLocaleString()+' BTU</strong> heating (???45 BTU/sqft cold climate rule-of-thumb). <span class="rf-tool-note">Match load calc & local code.</span>';
 }
 function calcStud16Run(ti,idPx){
   var px=rfToolPx(ti,idPx);
@@ -5779,7 +5780,7 @@ function calcDrySheetFromRoomRun(ti,idPx){
   var px=rfToolPx(ti,idPx);
   var out=document.getElementById(px+'dw-sh');
   if(!out) return;
-  if(!c || !c.dwWall){ out.textContent='Set room L √? W and height in dimensions (or add walls).'; return; }
+  if(!c || !c.dwWall){ out.textContent='Set room L ?? W and height in dimensions (or add walls).'; return; }
   out.innerHTML='~<strong>'+c.dwWall+'</strong> sheets (from auto drywall estimate: wall+ceiling with ~10% waste).';
 }
 function calcTileWasteRun(ti,idPx){
@@ -5800,7 +5801,7 @@ function calcPaintGalRun(ti,idPx){
   var c=calcDims({l:le,w:w,h:h,doors:0,wins:0});
   if(!c) return;
   var gal=((c.net+c.fl) / 350) * (coats||1);
-  out.innerHTML='~<strong>'+gal.toFixed(1)+' gal</strong> (walls+ceiling @ ~350 sqft/gal, '+coats+' coat(s) ‚?? rule-of-thumb).';
+  out.innerHTML='~<strong>'+gal.toFixed(1)+' gal</strong> (walls+ceiling @ ~350 sqft/gal, '+coats+' coat(s) ??? rule-of-thumb).';
 }
 function calcFloorWasteRun(ti,idPx){
   var px=rfToolPx(ti,idPx);
@@ -5847,7 +5848,7 @@ function calcInsRun(ti,idPx){
   var battR=3.7;
   var thick=Math.ceil(r/battR);
   var bags=a>0?Math.ceil(a/40):0;
-  out.innerHTML='<strong>Target ~R-'+r+'</strong> ('+surf+', zone '+zone+'). ~'+thick+' in batt @ R-'+battR+'/in.'+(a>0?' ~'+bags+' bags for '+a+' sqft (‚??40 sqft/bag R20).':'')+' <span class="rf-tool-note">Match local code.</span>';
+  out.innerHTML='<strong>Target ~R-'+r+'</strong> ('+surf+', zone '+zone+'). ~'+thick+' in batt @ R-'+battR+'/in.'+(a>0?' ~'+bags+' bags for '+a+' sqft (???40 sqft/bag R20).':'')+' <span class="rf-tool-note">Match local code.</span>';
 }
 function roofSlopeFactor(pitchOver12){
   var r=pitchOver12/12;
@@ -5875,13 +5876,13 @@ function calcRoofRun(ti,idPx){
   var ridgeLf=Math.max(L,W);
   var ridgeBundles=Math.ceil(ridgeLf/25);
   var nailsLb=Math.ceil(squares*5);
-  out.innerHTML='<strong>'+squares.toFixed(2)+' squares</strong> roofing (100 sqft/sq) ‚?? pitch <strong>'+pitch+' / 12</strong>, slope factor <strong>'+slopeF.toFixed(3)+'</strong>, waste <strong>'+wastePct+'%</strong><br/>'
+  out.innerHTML='<strong>'+squares.toFixed(2)+' squares</strong> roofing (100 sqft/sq) ??? pitch <strong>'+pitch+' / 12</strong>, slope factor <strong>'+slopeF.toFixed(3)+'</strong>, waste <strong>'+wastePct+'%</strong><br/>'
     +'<strong>'+shBundles+'</strong> shingle bundles (3 bundles per square)<br/>'
     +'<strong>'+undRolls+'</strong> underlayment roll(s) (~1000 sqft/roll)<br/>'
     +'<strong>'+Math.round(dripLf)+' linear ft</strong> drip edge (perimeter 2(L+W))<br/>'
     +'<strong>'+ridgeBundles+'</strong> ridge cap bundle(s) (~25 lf/bundle, ridge est. '+ridgeLf+' ft gable)<br/>'
     +'<strong>~'+nailsLb+' lb</strong> roofing nails (~5 lb/sq rule-of-thumb)<br/>'
-    +'<span class="rf-tool-note">Slope factor adjusts plane area for pitch. Ridge length is approximate ‚?? verify plan.</span>';
+    +'<span class="rf-tool-note">Slope factor adjusts plane area for pitch. Ridge length is approximate ??? verify plan.</span>';
 }
 function concFt3ToYd(ft3){ return ft3/27; }
 function concBagsForFt3(ft3, lb60){
@@ -5913,8 +5914,8 @@ function calcBulkRun(ti,idPx){
   var labourLf=perim;
   var labourHrs=Math.ceil(labourLf*0.35*10)/10;
   out.innerHTML='<strong>Metal track:</strong> top <strong>'+topTrack.toFixed(1)+' lf</strong>, bottom <strong>'+botTrack.toFixed(1)+' lf</strong> (plan perimeter each, U-soffit)<br/>'
-    +'<strong>Drywall:</strong> ~<strong>'+sheets+'</strong> sheet(s) (4√?8, '+layers+' layer'+(layers>1?'s':'')+'; faces + soffit bottom ‚?? '+areaOne.toFixed(1)+' sqft/layer)<br/>'
-    +'<strong>Screws:</strong> ~<strong>'+screws+'</strong> (~'+screwsPerSheet+'/sheet) ‚?? <strong>'+screwBoxes+'</strong> box(es) @ 1000 ct<br/>'
+    +'<strong>Drywall:</strong> ~<strong>'+sheets+'</strong> sheet(s) (4??8, '+layers+' layer'+(layers>1?'s':'')+'; faces + soffit bottom ??? '+areaOne.toFixed(1)+' sqft/layer)<br/>'
+    +'<strong>Screws:</strong> ~<strong>'+screws+'</strong> (~'+screwsPerSheet+'/sheet) ??? <strong>'+screwBoxes+'</strong> box(es) @ 1000 ct<br/>'
     +'<strong>Corner bead:</strong> ~<strong>'+cornerLf.toFixed(1)+' linear ft</strong> (outside corners / exposed edges, estimate)<br/>'
     +'<strong>Labour (planning):</strong> ~<strong>'+labourHrs+'</strong> hrs @ ~0.35 hr/lf of plan perimeter (<strong>'+labourLf.toFixed(1)+' lf</strong>)'
     +'<br/><span class="rf-tool-note">U-shaped soffit (open to wall on one long side). Verify layout and code for fire/layer requirements.</span>';
@@ -5952,11 +5953,11 @@ function calcConcRun(ti,idPx){
     var rFt=(di/2)/12;
     var holeFt3=Math.PI*rFt*rFt*dep;
     ft3=n*holeFt3;
-    perHole='<br/><strong>Per hole:</strong> ~'+holeFt3.toFixed(2)+' cu ft ‚?? ~<strong>'+concBagsForFt3(holeFt3,true)+'</strong> √? 60 lb or ~<strong>'+concBagsForFt3(holeFt3,false)+'</strong> √? 80 lb bags';
+    perHole='<br/><strong>Per hole:</strong> ~'+holeFt3.toFixed(2)+' cu ft ??? ~<strong>'+concBagsForFt3(holeFt3,true)+'</strong> ?? 60 lb or ~<strong>'+concBagsForFt3(holeFt3,false)+'</strong> ?? 80 lb bags';
   }else{
     out.textContent='Select a pour type.';return;
   }
-  if(ft3<=0){out.textContent='Volume is zero ‚?? check inputs.';return;}
+  if(ft3<=0){out.textContent='Volume is zero ??? check inputs.';return;}
   var yd=concFt3ToYd(ft3);
   var b60=concBagsForFt3(ft3,true);
   var b80=concBagsForFt3(ft3,false);
@@ -5964,34 +5965,34 @@ function calcConcRun(ti,idPx){
   var truckHtml='';
   truckHtml+='<br/><strong>Ready-mix:</strong> <strong>'+yd.toFixed(3)+'</strong> cubic yards (same volume for a cement truck order)';
   if(yd>0&&yd<1){
-    truckHtml+='<br/><span class="rf-over">Under ~1 yd</span> ‚?? many plants have a <strong>minimum order near 1 yd</strong>; <strong>premix bags</strong> are often more practical.';
+    truckHtml+='<br/><span class="rf-over">Under ~1 yd</span> ??? many plants have a <strong>minimum order near 1 yd</strong>; <strong>premix bags</strong> are often more practical.';
   }else if(yd>1){
     var loads=Math.ceil(yd/truckYd);
-    truckHtml+='<br/><strong>Truck loads:</strong> ~<strong>'+loads+'</strong> at ~'+truckYd+' yd per load (standard trucks carry <strong>8‚??10 yd</strong>; confirm with supplier).';
+    truckHtml+='<br/><strong>Truck loads:</strong> ~<strong>'+loads+'</strong> at ~'+truckYd+' yd per load (standard trucks carry <strong>8???10 yd</strong>; confirm with supplier).';
   }else{
-    truckHtml+='<br/>~1 yd ‚?? typically <strong>one short load</strong>; confirm minimums and truck size (8‚??10 yd).';
+    truckHtml+='<br/>~1 yd ??? typically <strong>one short load</strong>; confirm minimums and truck size (8???10 yd).';
   }
   out.innerHTML='<strong>'+yd.toFixed(3)+' cubic yards</strong> total volume<br/>'
-    +'<strong>'+b60+'</strong> bags (60 lb, ~0.45 cu ft/bag) &nbsp;¬∑&nbsp; <strong>'+b80+'</strong> bags (80 lb, ~0.60 cu ft/bag)'
+    +'<strong>'+b60+'</strong> bags (60 lb, ~0.45 cu ft/bag) &nbsp;?&nbsp; <strong>'+b80+'</strong> bags (80 lb, ~0.60 cu ft/bag)'
     +perHole
     +truckHtml
     +'<br/><span class="rf-tool-note">Bag yields vary by mix; verify with supplier.</span>';
 }
 
 var TRADE_CAT={demo:"Structure",framing:"Structure",concrete:"Structure",roofing:"Structure",electrical:"Mechanical & power",plumbing:"Mechanical & power",hvac:"Mechanical & power",lowvolt:"Mechanical & power",security:"Mechanical & power",insulation:"Insulation",drywall:"Insulation",comdoor:"Doors, trim & tile",trim:"Doors, trim & tile",tile:"Doors, trim & tile",flooring:"Paint & finals",painting:"Paint & finals",cabinets:"Paint & finals",closets:"Paint & finals",finishing:"Paint & finals"};
-/** Trade header / grid icons ‚?? emoji from `TIC` (same as Add trade modal), not custom SVG. */
+/** Trade header / grid icons ??? emoji from `TIC` (same as Add trade modal), not custom SVG. */
 function tradeIconSvg(id){
   var e=TIC[id]||TIC.demo;
   return '<span class="trade-ic-emoji" style="font-size:1.35em;line-height:1;display:inline-flex;align-items:center;justify-content:center" role="img" aria-hidden="true">'+e+'</span>';
 }
 function _escTrade(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-/** Split leading emoji token from catalog labels (e.g. "‚¨? Drywall 4x8" ‚?? icon + name). */
+/** Split leading emoji token from catalog labels (e.g. "?? Drywall 4x8" ??? icon + name). */
 function lineItemIconName(l,tid){
   l=String(l||'');
   tid=tid||'demo';
   var sp=l.indexOf(' ');
   if(sp>0)return{ic:l.slice(0,sp),name:l.slice(sp+1).trim()||l};
-  return{ic:(TIC[tid]||TIC.demo||'??¶'),name:l};
+  return{ic:(TIC[tid]||TIC.demo||'????'),name:l};
 }
 function materialLineCardHtml(t,ti,it,ii,px,c){
   if(hideRichLabourDuplicate(t,it)) return '';
@@ -5999,7 +6000,7 @@ function materialLineCardHtml(t,ti,it,ii,px,c){
   if(hideElectricalLabourItem(t,it)) return '';
   var autoKey=AM[it.id],autoVal=autoKey&&c[autoKey]!=null?c[autoKey]:null;
   var qty=it.qty||0;
-  var unitStr=_escTrade(it.u)+(autoVal!=null?' ¬∑ auto: '+autoVal:'');
+  var unitStr=_escTrade(it.u)+(autoVal!=null?' ? auto: '+autoVal:'');
   var ln=lineItemIconName(it.l,t.id);
   var dispName=_escTrade(ln.name||it.l);
   return '<div class="tc-card tc-card-mat">'
@@ -6007,12 +6008,12 @@ function materialLineCardHtml(t,ti,it,ii,px,c){
     +'<div class="tc-card-n" data-tcname="'+ti+'-'+ii+'">'+dispName+'</div>'
     +'<div class="tc-card-u" data-tcunit="'+ti+'-'+ii+'">'+unitStr+'</div>'
     +'<div class="tc-card-p tc-card-p--step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjItemPrice('+ti+','+ii+',-0.5)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjItemPrice('+ti+','+ii+',-0.5)">???</button>'
     +'<span class="tc-card-pd">$</span><input type="number" class="tc-card-pinp" data-price-ti="'+ti+'" data-price-ii="'+ii+'" min="0" step="0.5" value="'+it.p+'" oninput="sPrice('+ti+','+ii+',this.value)"/>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjItemPrice('+ti+','+ii+',0.5)">+</button>'
     +'</div>'
     +'<div class="tc-card-q">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjMatQty('+ti+','+ii+',-0.5)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjMatQty('+ti+','+ii+',-0.5)">???</button>'
     +'<input type="number" class="tc-cqm'+(it.wasAuto?' was-auto':'')+'" min="0" step="0.5" data-qty-ti="'+ti+'" data-qty-ii="'+ii+'" value="'+(qty>0?qty:'')+'" oninput="sQty('+ti+','+ii+',this.value)"/>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjMatQty('+ti+','+ii+',0.5)">+</button>'
     +'</div>'
@@ -6043,7 +6044,7 @@ function electricalElecGridRowHtml(t,ti,px,fx,fi,part){
     +'<div class="tc-card-u">per '+_escTrade(fx.u)+'</div>'
     +'<div class="tc-card-fx-p">'+f(fx.p)+'</div>'
     +'<div class="tc-card-q">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjElecPartFx('+ti+',\''+(part==='fix'?'fix':'dev')+'\','+fi+',-1)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjElecPartFx('+ti+',\''+(part==='fix'?'fix':'dev')+'\','+fi+',-1)">???</button>'
     +'<div class="tc-cqc" id="'+px+'efxqc-'+part+'-'+ti+'-'+fi+'">'+qty+'</div>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjElecPartFx('+ti+',\''+(part==='fix'?'fix':'dev')+'\','+fi+',1)">+</button>'
     +'</div></div>';
@@ -6105,7 +6106,7 @@ function tradeSectionHtml(room, ti, idPx, isModal){
       ? ('<a href="/tile-calculator'+(roomQ?'?room='+roomQ:'')+'" class="btn bp sm" style="margin-right:8px;text-decoration:none;display:inline-flex;align-items:center" onclick="event.stopPropagation();" title="Open tile calculator">Tile calculator</a>')
       : '');
     var gTools='<div class="th-act">'+tileGridLink
-      +'<button type="button" class="th-ico th-ico-del" title="Remove trade" aria-label="Remove trade" onclick="event.stopPropagation();delTrade('+ti+')">‚??</button>'
+      +'<button type="button" class="th-ico th-ico-del" title="Remove trade" aria-label="Remove trade" onclick="event.stopPropagation();delTrade('+ti+')">???</button>'
       +'</div>';
     return '<div class="ts ts-'+t.id+' ts-grid-only" data-trade-ti="'+ti+'">'
       +'<div class="th">'
@@ -6137,10 +6138,10 @@ function tradeSectionHtml(room, ti, idPx, isModal){
     +'</div>'
     : '';
   var daysBubble = '<div class="tc-lab-bubble tc-lab-bubble--days">'
-    +'<div class="days-label">‚è± days to completion</div>'
+    +'<div class="days-label">? days to completion</div>'
     +'<div class="days-wrap">'
     +'<div class="days-step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDays('+ti+',-0.5)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDays('+ti+',-0.5)">???</button>'
     +'<input class="days-input'+(!t.daysCustom?' auto':'')+'" type="number" min="0" step="0.5" data-ti="'+ti+'" value="'+(t.days||0)+'" oninput="sDays('+ti+',this.value)"/>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDays('+ti+',0.5)">+</button>'
     +'</div>'
@@ -6175,31 +6176,31 @@ function tradeSectionHtml(room, ti, idPx, isModal){
       +'<div class="tc-card tc-card-lab tc-card-lab--plumb-row" id="'+px+'lab-hourly-'+ti+'" style="'+(labHour?'':'display:none')+'">'
       +'<div class="tc-card-lab__plumb-inner">'
       +'<div class="tc-card-lab__plumb-left">'
-      +'<div class="tc-card-ic">‚è±</div>'
+      +'<div class="tc-card-ic">?</div>'
       +'<div class="tc-card-lab__plumb-titles">'
       +'<div class="tc-card-n">Install labour</div>'
       +'<div class="tc-card-u" data-lab-unit="'+ti+'" id="'+px+'lab-unit-'+ti+'">per hour</div>'
       +'</div></div>'
       +'<div class="tc-card-p tc-card-p--plumb-row tc-card-p--plumb-rate">'
-      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabRate('+ti+',-0.5)">‚??</button>'
+      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabRate('+ti+',-0.5)">???</button>'
       +'<span class="tc-card-pd">$</span><input type="number" class="tc-card-pinp" data-labrate-ti="'+ti+'" min="0" step="0.5" value="'+(L.rate||0)+'" oninput="sLabRate('+ti+',this.value)"/><span class="tc-card-punit">/hr</span>'
       +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabRate('+ti+',0.5)">+</button>'
       +'</div>'
       +'<div class="tc-card-lab__plumb-step">'
-      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabQty('+ti+',-0.5)">‚??</button>'
+      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabQty('+ti+',-0.5)">???</button>'
       +'<input type="number" class="tc-cqm tc-cqm--plumb-lab" min="0" step="0.5" data-labqty-ti="'+ti+'" value="'+(L.qty>0?L.qty:'')+'" oninput="sLabQty('+ti+',this.value)"/>'
       +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabQty('+ti+',0.5)">+</button>'
       +'</div></div></div>'
       +'<div class="tc-card tc-card-lab tc-card-lab--plumb-row tc-card-lab--plumb-job" id="'+px+'lab-job-'+ti+'" style="'+(labHour?'display:none':'')+'">'
       +'<div class="tc-card-lab__plumb-inner tc-card-lab__plumb-inner--job">'
       +'<div class="tc-card-lab__plumb-left">'
-      +'<div class="tc-card-ic">??µ</div>'
+      +'<div class="tc-card-ic">????</div>'
       +'<div class="tc-card-lab__plumb-titles">'
       +'<div class="tc-card-n">Per job</div>'
       +'<div class="tc-card-u">flat price</div>'
       +'</div></div>'
       +'<div class="tc-card-p tc-card-p--plumb-row tc-card-p--plumb-jobp">'
-      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabJobDelta('+ti+',-1)">‚??</button>'
+      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabJobDelta('+ti+',-1)">???</button>'
       +'<span class="tc-card-pd">$</span><input type="number" class="tc-card-pinp" data-labjob-ti="'+ti+'" min="0" step="1" value="'+(L.jobPrice||0)+'" oninput="sLabJob('+ti+',this.value)"/>'
       +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabJobDelta('+ti+',1)">+</button>'
       +'</div>'
@@ -6209,31 +6210,31 @@ function tradeSectionHtml(room, ti, idPx, isModal){
     labCardsGr=
     '<div class="tc-item-grid tc-lab-grid">'
     +'<div class="tc-card tc-card-lab" id="'+px+'lab-hourly-'+ti+'" style="'+(labHour?'':'display:none')+'">'
-    +'<div class="tc-card-ic">‚è±</div>'
+    +'<div class="tc-card-ic">?</div>'
     +'<div class="tc-card-n">Install labour</div>'
     +'<div class="tc-card-u" data-lab-unit="'+ti+'" id="'+px+'lab-unit-'+ti+'">per hour</div>'
     +'<div class="tc-card-p tc-card-p--step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabRate('+ti+',-0.5)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabRate('+ti+',-0.5)">???</button>'
     +'<span class="tc-card-pd">$</span><input type="number" class="tc-card-pinp" data-labrate-ti="'+ti+'" min="0" step="0.5" value="'+(L.rate||0)+'" oninput="sLabRate('+ti+',this.value)"/><span class="tc-card-punit">/hr</span>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabRate('+ti+',0.5)">+</button>'
     +'</div>'
     +'<div class="tc-card-q">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabQty('+ti+',-0.5)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabQty('+ti+',-0.5)">???</button>'
     +'<input type="number" class="tc-cqm" min="0" step="0.5" data-labqty-ti="'+ti+'" value="'+(L.qty>0?L.qty:'')+'" oninput="sLabQty('+ti+',this.value)"/>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabQty('+ti+',0.5)">+</button>'
     +'</div>'
     +'</div>'
     +'<div class="tc-card tc-card-lab" id="'+px+'lab-job-'+ti+'" style="'+(labHour?'display:none':'')+'">'
-    +'<div class="tc-card-ic">??µ</div>'
+    +'<div class="tc-card-ic">????</div>'
     +'<div class="tc-card-n">Per job</div>'
     +'<div class="tc-card-u">flat price</div>'
     +'<div class="tc-card-p tc-card-p--step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabJobDelta('+ti+',-1)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabJobDelta('+ti+',-1)">???</button>'
     +'<span class="tc-card-pd">$</span><input type="number" class="tc-card-pinp" data-labjob-ti="'+ti+'" min="0" step="1" value="'+(L.jobPrice||0)+'" oninput="sLabJob('+ti+',this.value)"/>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjLabJobDelta('+ti+',1)">+</button>'
     +'</div>'
     +'<div class="tc-card-q" style="visibility:hidden" aria-hidden="true">'
-    +'<span class="tc-cqb">‚??</span><span class="tc-cqm">0</span><span class="tc-cqb">+</span>'
+    +'<span class="tc-cqb">???</span><span class="tc-cqm">0</span><span class="tc-cqb">+</span>'
     +'</div>'
     +'</div>'
     +'</div>';
@@ -6272,11 +6273,11 @@ function tradeSectionHtml(room, ti, idPx, isModal){
     +'<span style="font-size:11px;color:var(--tx3);max-width:440px;line-height:1.35">Re-fetch supplier pricing via SerpAPI (manual; uses quota). Opening this trade only loads data from the database.</span>'
     +'</div>'
     +'<div class="rf-catalog-shell" id="'+px+'rfCatalog'+ti+'" data-ti="'+ti+'" data-tid="'+escAttr(t.id)+'">'
-    +'<div style="color:var(--tx3);font-size:13px;padding:8px 0">Loading catalog‚?¶</div>'
+    +'<div style="color:var(--tx3);font-size:13px;padding:8px 0">Loading catalog???</div>'
     +'</div>';
   var expBtn='';
   var tools='<div class="th-act">'+expBtn
-    +'<button type="button" class="th-ico th-ico-del" title="Remove trade" aria-label="Remove trade" onclick="event.stopPropagation();delTrade('+ti+')">‚??</button>'
+    +'<button type="button" class="th-ico th-ico-del" title="Remove trade" aria-label="Remove trade" onclick="event.stopPropagation();delTrade('+ti+')">???</button>'
     +'</div>';
   var labourBlock=labourH;
   if(isPlumbModal){
@@ -6367,37 +6368,37 @@ function buildRoomDimBarHtml(room, idSuffix, opts){
   var wallsRowsHtml=wallsArr.map(function(w,i){
     return '<div class="dim-wall-grid">'
       +'<div class="dim-f"><div class="dim-l">Wall '+(i+1)+' length ft</div><div class="dim-step">'
-      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjWallFieldDelta('+i+',\'l\',-0.5)">‚??</button>'
+      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjWallFieldDelta('+i+',\'l\',-0.5)">???</button>'
       +'<input class="di" type="number" data-dim="wl'+i+'" min="0" step="0.5" value="'+(w&&w.l>0?w.l:'')+'" placeholder="0" oninput="sWallField('+i+',\'l\',this.value)"/>'
       +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjWallFieldDelta('+i+',\'l\',0.5)">+</button></div></div>'
       +'<div class="dim-f"><div class="dim-l">Height ft</div><div class="dim-step">'
-      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjWallFieldDelta('+i+',\'h\',-0.5)">‚??</button>'
+      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjWallFieldDelta('+i+',\'h\',-0.5)">???</button>'
       +'<input class="di" type="number" data-dim="wh'+i+'" min="0" step="0.5" value="'+(w&&w.h>0?w.h:'')+'" placeholder="8" oninput="sWallField('+i+',\'h\',this.value)"/>'
       +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjWallFieldDelta('+i+',\'h\',0.5)">+</button></div></div>'
-      +'<button type="button" class="btn bd-btn sm" style="margin-bottom:1px;height:36px;min-width:36px;padding:0 8px" onclick="removeWallRow('+i+')" title="Remove wall">√?</button>'
+      +'<button type="button" class="btn bd-btn sm" style="margin-bottom:1px;height:36px;min-width:36px;padding:0 8px" onclick="removeWallRow('+i+')" title="Remove wall">??</button>'
       +'</div>';
   }).join("");
   var rectDoorsWins=includeDoorsWins?(
     '<div class="dim-f"><div class="dim-l">Doors</div><div class="dim-step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDimInt(\'doors\',-1)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDimInt(\'doors\',-1)">???</button>'
     +'<input class="di" type="number" data-dim="doors" min="0" step="1" value="'+(d.doors>0?d.doors:'')+'" placeholder="0" oninput="sDim(\'doors\',this.value)"/>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDimInt(\'doors\',1)">+</button></div></div>'
     +'<div class="dim-f"><div class="dim-l">Windows</div><div class="dim-step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDimInt(\'wins\',-1)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDimInt(\'wins\',-1)">???</button>'
     +'<input class="di" type="number" data-dim="wins" min="0" step="1" value="'+(d.wins>0?d.wins:'')+'" placeholder="0" oninput="sDim(\'wins\',this.value)"/>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDimInt(\'wins\',1)">+</button></div></div>'
   ):"";
   var rectGrid='<div class="dim-g">'
     +'<div class="dim-f"><div class="dim-l">Length ft</div><div class="dim-step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'l\',-0.5)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'l\',-0.5)">???</button>'
     +'<input class="di" type="number" data-dim="l" min="0" step="0.5" value="'+(d.l>0?d.l:'')+'" placeholder="0" oninput="sDim(\'l\',this.value)"/>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'l\',0.5)">+</button></div></div>'
     +'<div class="dim-f"><div class="dim-l">Width ft</div><div class="dim-step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'w\',-0.5)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'w\',-0.5)">???</button>'
     +'<input class="di" type="number" data-dim="w" min="0" step="0.5" value="'+(d.w>0?d.w:'')+'" placeholder="0" oninput="sDim(\'w\',this.value)"/>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'w\',0.5)">+</button></div></div>'
     +'<div class="dim-f"><div class="dim-l">Height ft</div><div class="dim-step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'h\',-0.5)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'h\',-0.5)">???</button>'
     +'<input class="di" type="number" data-dim="h" min="0" step="0.5" value="'+(d.h>0?d.h:'')+'" placeholder="8" oninput="sDim(\'h\',this.value)"/>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'h\',0.5)">+</button></div></div>'
     +rectDoorsWins
@@ -6405,18 +6406,18 @@ function buildRoomDimBarHtml(room, idSuffix, opts){
   var wallsBlockWallsEnd=includeDoorsWins?(
     '<div class="dim-g" style="grid-template-columns:1fr 1fr;max-width:420px">'
     +'<div class="dim-f"><div class="dim-l">Doors</div><div class="dim-step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDimInt(\'doors\',-1)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDimInt(\'doors\',-1)">???</button>'
     +'<input class="di" type="number" data-dim="doors" min="0" step="1" value="'+(d.doors>0?d.doors:'')+'" placeholder="0" oninput="sDim(\'doors\',this.value)"/>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDimInt(\'doors\',1)">+</button></div></div>'
     +'<div class="dim-f"><div class="dim-l">Windows</div><div class="dim-step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDimInt(\'wins\',-1)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDimInt(\'wins\',-1)">???</button>'
     +'<input class="di" type="number" data-dim="wins" min="0" step="1" value="'+(d.wins>0?d.wins:'')+'" placeholder="0" oninput="sDim(\'wins\',this.value)"/>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDimInt(\'wins\',1)">+</button></div></div>'
     +'</div>'
   ):"";
   var wallsBlock='<div class="dim-f" style="max-width:min(100%,300px);margin-bottom:12px">'
     +'<div class="dim-l">Floor area (sq ft)</div><div class="dim-step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjFloorArea(-0.5)">‚??</button>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjFloorArea(-0.5)">???</button>'
     +'<input class="di" type="number" data-dim="floor" min="0" step="0.5" value="'+(d.floorArea>0?d.floorArea:'')+'" placeholder="0" oninput="sFloorAreaManual(this.value)"/>'
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjFloorArea(0.5)">+</button></div></div>'
     +'<div class="dim-l" style="margin-bottom:6px">Wall segments</div>'
@@ -6424,7 +6425,7 @@ function buildRoomDimBarHtml(room, idSuffix, opts){
     +'<div class="dim-add-wall"><button type="button" class="btn bg sm" onclick="addWallRow()">+ Add wall</button></div>'
     +wallsBlockWallsEnd;
   var dimHeaderTogRow='<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px">'
-    +'<div class="dim-t" style="margin-bottom:0">??ê Room Dimensions</div>'
+    +'<div class="dim-t" style="margin-bottom:0">???? Room Dimensions</div>'
     +'<div class="dim-bar-togrow" style="display:flex;align-items:center;gap:10px;flex-shrink:0">'
     +'<span style="font-size:11px;color:var(--tx3);font-family:\'DM Mono\',monospace;max-width:140px;line-height:1.35">Auto-apply to trades</span>'
     +'<div class="tog tdim-autosw'+(autoOn?' on':'')+'" onclick="togDimAuto()" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();togDimAuto();}" title="'+(autoOn?'On: dimensions update quantities and trade days':'Off: keep manual quantities and days; calculations below stay visible')+'"></div>'
@@ -6443,7 +6444,7 @@ function buildRoomDimBarHtml(room, idSuffix, opts){
   if(opts&&opts.mobileLayout){
     return '<div class="dim-mob-outer" id="dim-mob-outer">'
       +'<button type="button" class="dim-mob-summary" id="dim-mob-sum" onclick="toggleDimMobPanel(event)" aria-expanded="false" aria-controls="room-dim-mob-panel">'
-      +'<span>Room dimensions</span><span class="dim-mob-ch" aria-hidden="true">‚?º</span></button>'
+      +'<span>Room dimensions</span><span class="dim-mob-ch" aria-hidden="true">???</span></button>'
       +'<div class="dim-mob-panel" id="room-dim-mob-panel" hidden><div class="dim-bar">'+dimBody+'</div></div></div>';
   }
   return '<div class="dim-bar">'+dimHeaderTogRow+dimBody+'</div>';
@@ -6558,8 +6559,8 @@ function buildMTradeOverviewHtml(room){
     var col=TC[t.id]||"#888", tt=tradeCost(t);
     return '<div class="m-ov-ic" data-ti="'+ti+'" onclick="mOverviewIcTap('+ti+')">'
       +'<div class="m-ov-ic-b" style="--m-ov-c:'+col+';">'
-      +'<span class="m-ov-emoji">'+(TIC[t.id]||"‚?¢")+'</span>'
-      +'<button type="button" class="m-ov-x" title="Remove trade" aria-label="Remove trade" onclick="mOverviewIcDel(event,'+ti+')">√?</button>'
+      +'<span class="m-ov-emoji">'+(TIC[t.id]||"???")+'</span>'
+      +'<button type="button" class="m-ov-x" title="Remove trade" aria-label="Remove trade" onclick="mOverviewIcDel(event,'+ti+')">??</button>'
       +"</div>"
       +'<div class="m-ov-lbl">'+_escTrade(t.n)+"</div>"
       +'<div class="m-ov-amt" data-ov-ti="'+ti+'">'+(tt>0?f(tt):"")+"</div>"
@@ -6644,7 +6645,7 @@ function rRoom(){
     +"</div>")
     :'';
 
-  var durSubTxt=autoOn?'Totals from trade days (auto when enabled) ¬∑ edit per trade below':'Manual trade days ¬∑ turn auto-apply on to sync from dimensions';
+  var durSubTxt=autoOn?'Totals from trade days (auto when enabled) ? edit per trade below':'Manual trade days ? turn auto-apply on to sync from dimensions';
   var durH = '<div class="room-dur" id="room-dur-banner" style="'+(dur>0?'':'display:none')+'">'
     +'<div><div class="rd-l">Room Duration</div><div class="rd-v" id="room-dur-val">'+dur+' working days</div></div>'
     +'<div class="rd-s" id="room-dur-sub">'+durSubTxt+'</div>'
@@ -6667,7 +6668,7 @@ function rRoom(){
   var tradesH='<div class="trades-grid">'+colParts.join('')+'</div>'
     +(extra.length?'<div class="trades-orphan"><div class="trade-col-h">Other trades</div>'+extra.join('')+'</div>':'');
   var footer='<div class="sfooter">'
-    +'<div class="sfooter-l" id="room-footer-est">Saved automatically &nbsp;¬∑&nbsp; '+f(rt)+' estimated'+(dur>0?' &nbsp;¬∑&nbsp; '+dur+' days':'')+'</div>'
+    +'<div class="sfooter-l" id="room-footer-est">Saved automatically &nbsp;?&nbsp; '+f(rt)+' estimated'+(dur>0?' &nbsp;?&nbsp; '+dur+' days':'')+'</div>'
     +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
     +'<button type="button" class="btn bp sm" onclick="saveWorkspaceNow()" title="Save workspace to this device now">Save</button>'
     +'<button class="btn bg sm" onclick="gP(\'tl\')">Timeline</button>'
@@ -6685,18 +6686,18 @@ function rRoom(){
   var prEl=document.getElementById("p-room");
   var mepPh=isMepMaxRoom
     ? ('<div class="ph ph--room-prime" style="padding:12px 16px;flex-shrink:0"><div class="ph-room-row" style="align-items:center;gap:10px">'
-    +'<button class="btn bg sm" onclick="gP(\'rooms\')" style="padding:5px 10px;font-size:18px;border:none;background:transparent;color:var(--tx2);cursor:pointer;" aria-label="Back to all rooms">‚?ê</button>'
+    +'<button class="btn bg sm" onclick="gP(\'rooms\')" style="padding:5px 10px;font-size:18px;border:none;background:transparent;color:var(--tx2);cursor:pointer;" aria-label="Back to all rooms">???</button>'
     +'<div class="pt" style="font-size:20px">'+escHtml(room.n)+'</div>'
     +"</div></div>")
     : '';
   prEl.innerHTML=(mepPh
     ? mepPh
     : ('<div class="ph ph--room-prime"><div class="ph-room-row">'
-    +'<button class="btn bg sm" onclick="gP(\'rooms\')" style="padding:5px 10px;font-size:18px;border:none;background:transparent;color:var(--tx2);cursor:pointer;" aria-label="Back to all rooms">‚?ê</button>'
+    +'<button class="btn bg sm" onclick="gP(\'rooms\')" style="padding:5px 10px;font-size:18px;border:none;background:transparent;color:var(--tx2);cursor:pointer;" aria-label="Back to all rooms">???</button>'
     +'<span class="ph-room-ic" style="font-size:24px">'+room.ic+'</span>'
     +'<div class="ph-room-mid">'
     +'<div class="ph-title-line"><div class="pt" style="font-size:22px">'+room.n+'</div>'+phMobTog+"</div>"
-    +'<div class="ps" id="room-ph-est">'+f(rt)+' estimated'+(dur>0?' ¬∑ '+dur+' days':'')+'</div></div>'
+    +'<div class="ps" id="room-ph-est">'+f(rt)+' estimated'+(dur>0?' ? '+dur+' days':'')+'</div></div>'
     +'<button class="btn bd-btn sm" onclick="delRoom('+curR+')">Delete</button></div></div>')
   )
     +'<div class="p-room-body">'
@@ -6750,7 +6751,7 @@ function expandTrade(ti){
   if(!room||!room.trades[ti])return;
   var tr=room.trades[ti];
   if(tr&&tr.id==="demo"){
-    try{ console.log("[RenoFlow] expandTrade: demolition (demo) ‚?? navigating to /trades/demolition", { ti: ti, curR: curR, innerWidth: typeof window!=="undefined"?window.innerWidth:null }); }catch(eLog){}
+    try{ console.log("[RenoFlow] expandTrade: demolition (demo) ??? navigating to /trades/demolition", { ti: ti, curR: curR, innerWidth: typeof window!=="undefined"?window.innerWidth:null }); }catch(eLog){}
     try{ ss(); }catch(e){}
     var pid="";
     try{ pid=localStorage.getItem("rf7_active_project")||""; }catch(e2){}
@@ -6798,9 +6799,9 @@ function addTradeMo(){
     var col=TC[tid]||"#888";
     return '<label class="intake-cb" style="border-left:3px solid '+col+'">'
       +'<input type="checkbox" class="rf-tpick-cb" data-tid="'+escAttr(tid)+'"/>'
-      +'<span class="ic">'+(TIC[tid]||"‚?¢")+"</span><span>"+escHtml(TN[tid]||tid)+"</span></label>";
+      +'<span class="ic">'+(TIC[tid]||"???")+"</span><span>"+escHtml(TN[tid]||tid)+"</span></label>";
   }).join("");
-  showMo("Add trades ‚?? "+room.n,'<p style="font-size:13px;color:var(--tx2);margin:0 0 10px">Select one or more trades, then Save.</p><div class="intake-trade-grid" style="max-height:50vh;overflow-y:auto">'+rows+"</div>",[{l:"Save",fn:"saveAddTradesPick()"}]);
+  showMo("Add trades ??? "+room.n,'<p style="font-size:13px;color:var(--tx2);margin:0 0 10px">Select one or more trades, then Save.</p><div class="intake-trade-grid" style="max-height:50vh;overflow-y:auto">'+rows+"</div>",[{l:"Save",fn:"saveAddTradesPick()"}]);
 }
 function saveAddTradesPick(){
   var room=S.rooms[curR];
@@ -6837,7 +6838,7 @@ function openRoomListTradesModal(ri){
     var col=TC[tid]||"#888";
     return '<label class="intake-cb" style="border-left:3px solid '+col+'">'
       +'<input type="checkbox" class="rf-tpick-cb" data-tid="'+escAttr(tid)+'"/>'
-      +'<span class="ic">'+(TIC[tid]||"‚?¢")+"</span><span>"+escHtml(TN[tid]||tid)+"</span></label>";
+      +'<span class="ic">'+(TIC[tid]||"???")+"</span><span>"+escHtml(TN[tid]||tid)+"</span></label>";
   }).join("");
   __rfListPickRoomI=ri;
   showMo("Trades for "+room.n,'<p style="font-size:13px;color:var(--tx2);margin:0 0 10px">Select one or more trades to add, then Save to open the room.</p><div class="intake-trade-grid" style="max-height:50vh;overflow-y:auto">'+rows+"</div>",[{l:"Save",fn:"applyRoomListTradesPick()"}]);
@@ -6867,7 +6868,7 @@ function toggleDimMobPanel(e){
   p.hidden=!p.hidden;
   b.setAttribute("aria-expanded", p.hidden ? "false" : "true");
   var ch=b.querySelector(".dim-mob-ch");
-  if(ch) ch.textContent=p.hidden ? "‚?º" : "‚?≤";
+  if(ch) ch.textContent=p.hidden ? "???" : "???";
 }
 function togDimAuto(){
   var room=S.rooms[curR];if(!room)return;
@@ -6880,8 +6881,8 @@ function togDimAuto(){
   var sub=document.getElementById("room-dur-sub");
   if(sub){
     sub.textContent=autoOn
-      ?"Totals from trade days (auto when enabled) ¬∑ edit per trade below"
-      :"Manual trade days ¬∑ turn auto-apply on to sync from dimensions";
+      ?"Totals from trade days (auto when enabled) ? edit per trade below"
+      :"Manual trade days ? turn auto-apply on to sync from dimensions";
   }
   dimSyncTradeEconomy();
 }
@@ -7014,7 +7015,7 @@ function syncTradeLineQtyAndTotalsAfterDim(){
         inp.value=it.qty>0?it.qty:"";
         inp.className="tc-cqm"+(it.wasAuto?" was-auto":"");
       });
-      var unitStr=(it.u||"")+(autoVal!=null?' ¬∑ auto: '+autoVal:'');
+      var unitStr=(it.u||"")+(autoVal!=null?' ? auto: '+autoVal:'');
       document.querySelectorAll("#p-room [data-tcname=\""+ti+"-"+ii+"\"]").forEach(function(nm){ nm.textContent=ln.name||it.l; });
       document.querySelectorAll("#p-room [data-tcunit=\""+ti+"-"+ii+"\"]").forEach(function(un){ un.textContent=unitStr; });
     });
@@ -7043,9 +7044,9 @@ function syncRoomHeaderFooterDurations(){
   var room=S.rooms[curR]; if(!room) return;
   var rt=roomTotal(room), dur=roomDurationDays(room);
   var ph=document.getElementById('room-ph-est');
-  if(ph) ph.textContent=f(rt)+' estimated'+(dur>0?' ¬∑ '+dur+' days':'');
+  if(ph) ph.textContent=f(rt)+' estimated'+(dur>0?' ? '+dur+' days':'');
   var fe=document.getElementById('room-footer-est');
-  if(fe) fe.textContent='Saved automatically \u00a0¬∑\u00a0 '+f(rt)+' estimated'+(dur>0?' \u00a0¬∑\u00a0 '+dur+' days':'');
+  if(fe) fe.textContent='Saved automatically \u00a0?\u00a0 '+f(rt)+' estimated'+(dur>0?' \u00a0?\u00a0 '+dur+' days':'');
   var ban=document.getElementById('room-dur-banner');
   var dv=document.getElementById('room-dur-val');
   if(ban&&dv){
@@ -7238,7 +7239,7 @@ function rfMobTabPhBuild(icon, ptHtml, psHtml, below, col){
   return h;
 }
 
-// ‚??‚?? TIMELINE PAGE ‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??
+// ?????? TIMELINE PAGE ????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
 function ensureTimelineDayNotes(){
   if(!S.proj) S.proj=DS().proj;
   if(!S.proj.timelineDayNotes||typeof S.proj.timelineDayNotes!=="object") S.proj.timelineDayNotes={};
@@ -7289,14 +7290,14 @@ function rTimeline(){
 
   if(!hasData){
     el.innerHTML=rfMobTabPhBuild(RF_SVG_TL_IC,'Project <em>Timeline</em>','Auto-generated from your rooms &amp; trades','','')
-      +settings+'<div class="tl-empty"><div class="tl-empty-i">???</div><div>Add rooms with dimensions and quantities to see a timeline</div></div></div></div>';
+      +settings+'<div class="tl-empty"><div class="tl-empty-i">????</div><div>Add rooms with dimensions and quantities to see a timeline</div></div></div></div>';
     requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
     return;
   }
 
   var summary='<div class="tl-summary">'
     +'<div><div class="tl-sl">Start</div><div class="tl-sv">'+(startDate?fmtDateLong(startDate):'Set date')+'</div><div class="tl-ss">'+(startDate?'Day 1':'no start date')+'</div></div>'
-    +'<div><div class="tl-sl">Completion</div><div class="tl-sv">'+(endDate?fmtDateLong(endDate):'‚??')+'</div><div class="tl-ss">estimated</div></div>'
+    +'<div><div class="tl-sl">Completion</div><div class="tl-sv">'+(endDate?fmtDateLong(endDate):'???')+'</div><div class="tl-ss">estimated</div></div>'
     +'<div><div class="tl-sl">Duration</div><div class="tl-sv">'+ps.totalDays+' days</div><div class="tl-ss">working days</div></div>'
     +'<div><div class="tl-sl">Rooms</div><div class="tl-sv">'+ps.roomSchedules.length+'</div><div class="tl-ss">'+(S.proj.parallelRooms?'in parallel':'sequential')+'</div></div>'
     +'</div>';
@@ -7307,7 +7308,7 @@ function rTimeline(){
     var r=rs.room;
     var rStart=getWorkDayCalendarDate(S, rs.startDay);
     var rEnd=getWorkDayCalendarDate(S, rs.endDay);
-    var dateRange = rStart?fmtDate(rStart)+' ‚?? '+fmtDate(rEnd):'';
+    var dateRange = rStart?fmtDate(rStart)+' ??? '+fmtDate(rEnd):'';
     var open = r._tlOpen;
 
     var dayRows = rs.schedule.map(function(day){
@@ -7316,8 +7317,8 @@ function rTimeline(){
       var sche=day.trades.map(function(tr){
         var col=TC[tr.id]||"#888";
         return '<span class="tl-day-sche-it" style="color:'+col+'">'+TIC[tr.id]+' <span class="tl-day-sche-nm">'+escHtml(tr.name)+'</span> <span class="tl-day-sche-sub" style="color:'+col+';opacity:.85">(Day '+tr.dayInTrade+'/'+tr.total+')</span></span>';
-      }).join('<span class="tl-day-sche-sep" aria-hidden="true">¬∑</span>');
-      if(!day.trades.length) sche='<span class="tl-day-sche-sub">‚??</span>';
+      }).join('<span class="tl-day-sche-sep" aria-hidden="true">?</span>');
+      if(!day.trades.length) sche='<span class="tl-day-sche-sub">???</span>';
       var nVal=getTimelineDayNote(day.dayNum);
       return '<div class="tl-day">'
         +'<div class="tl-day-num">Day '+day.dayNum+'</div>'
@@ -7335,7 +7336,7 @@ function rTimeline(){
       +'<div class="tl-rn">'+r.n+'</div>'
       +'<div class="tl-rd">'+dateRange+'</div>'
       +'<div class="tl-rc">'+rs.duration+' days</div>'
-      +'<div class="ta'+(open?' op':'')+'">‚?æ</div>'
+      +'<div class="ta'+(open?' op':'')+'">???</div>'
       +'</div>'
       +'<div class="tl-rb'+(open?' op':'')+'">'+dayRows+'</div>'
       +'</div>';
@@ -7402,7 +7403,7 @@ function buildClientPreview(ps){
   var rows=weekKeys.map(function(k,idx){
     var w=weeks[k];
     var tradesList=Object.keys(w.trades).map(function(tid){return w.trades[tid];}).join(', ');
-    var dateStr = w.startDate ? fmtDate(w.startDate)+' ‚?? '+fmtDate(w.endDate) : '';
+    var dateStr = w.startDate ? fmtDate(w.startDate)+' ??? '+fmtDate(w.endDate) : '';
     return '<div class="tl-week">'
       +'<div class="tl-wk"><span class="tl-wk-name">Week '+(idx+1)+'</span>'+(dateStr?'<br>'+dateStr:'')+'</div>'
       +'<div class="tl-wk-trades">'+tradesList+'</div>'
@@ -7421,7 +7422,7 @@ function buildClientPreview(ps){
     : '';
 
   return '<div class="tl-preview">'
-    +'<div class="tl-preview-h"><div class="tl-preview-t">Client Preview ¬∑ Week Level</div><div class="tl-preview-s">what the client sees on the quote</div></div>'
+    +'<div class="tl-preview-h"><div class="tl-preview-t">Client Preview ? Week Level</div><div class="tl-preview-s">what the client sees on the quote</div></div>'
     +rows
     +dayClientBlock
     +'</div>';
@@ -7531,13 +7532,13 @@ function rCalendar(){
   var monthName=new Date(y,mo-1,1).toLocaleDateString('en-CA',{month:'long',year:'numeric'});
   var list=window.__rfProjectList||[];
   if(!list.length){
-    el.innerHTML=calPageHeaderHtml("Open a project from the list ‚?? the calendar shows each job‚??s dates and timeline trades.")
-      +'<div class="pc pc--proj cal-wrap"><div class="tl-empty"><div class="tl-empty-i">???</div><div>No projects yet</div></div></div>';
+    el.innerHTML=calPageHeaderHtml("Open a project from the list ??? the calendar shows each job???s dates and timeline trades.")
+      +'<div class="pc pc--proj cal-wrap"><div class="tl-empty"><div class="tl-empty-i">????</div><div>No projects yet</div></div></div>';
     requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
     return;
   }
-  el.innerHTML=calPageHeaderHtml("Loading‚?¶")
-    +'<div class="pc pc--proj cal-wrap"><div class="tl-empty">Loading calendar‚?¶</div></div>';
+  el.innerHTML=calPageHeaderHtml("Loading???")
+    +'<div class="pc pc--proj cal-wrap"><div class="tl-empty">Loading calendar???</div></div>';
   requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
   Promise.all(list.map(function(p){
     return getWorkspaceForCalendar(p.id).then(function(snap){
@@ -7559,7 +7560,7 @@ function rCalendar(){
       pickRow='<div class="cal-pick-row"><label for="cal-focus-pid">Project</label><select id="cal-focus-pid" onchange="calFocusProjectChange(this.value)">'
         +bundles.map(function(b){
             return '<option value="'+escAttr(String(b.id))+'"'+(String(b.id)===focusPid?' selected':'')+'>'
-              +escHtml(b.name.length>48?b.name.slice(0,46)+'‚?¶':b.name)+'</option>';
+              +escHtml(b.name.length>48?b.name.slice(0,46)+'???':b.name)+'</option>';
           }).join("")
         +'</select><p class="cal-pick-hint">Select a project, then <strong>tap</strong> days to add to the <strong>schedule</strong> (non-consecutive is OK). <strong>Press and hold</strong> a day to <strong>remove</strong> it. Matches Timeline work-day order. Same client notes as the Timeline appear in each day&rsquo;s cell.</p></div>';
     }
@@ -7574,7 +7575,7 @@ function rCalendar(){
       }else{
         tlSum='<div class="cal-tl-summary">'
           +'<div><span class="cal-tl-sum-l">Start</span><span class="cal-tl-sum-v">'+(sD?escHtml(fmtDateLong(sD)):escHtml("Set date"))+'</span><span class="cal-tl-sum-s">'+(sD?"Day 1":"no start date")+'</span></div>'
-          +'<div><span class="cal-tl-sum-l">Completion</span><span class="cal-tl-sum-v">'+(eD?escHtml(fmtDateLong(eD)):escHtml("‚??"))+'</span><span class="cal-tl-sum-s">estimated</span></div>'
+          +'<div><span class="cal-tl-sum-l">Completion</span><span class="cal-tl-sum-v">'+(eD?escHtml(fmtDateLong(eD)):escHtml("???"))+'</span><span class="cal-tl-sum-s">estimated</span></div>'
           +'<div><span class="cal-tl-sum-l">Duration</span><span class="cal-tl-sum-v">'+String(fps.totalDays)+' days</span><span class="cal-tl-sum-s">working days</span></div>'
           +'<div><span class="cal-tl-sum-l">Rooms</span><span class="cal-tl-sum-v">'+String(fps.roomSchedules.length)+'</span><span class="cal-tl-sum-s">'+(fs.proj&&fs.proj.parallelRooms?"in parallel":"sequential")+'</span></div>'
           +'</div>';
@@ -7589,7 +7590,7 @@ function rCalendar(){
       var ps=projectScheduleForState(snap.rooms, !!snap.proj.parallelRooms);
       if(!ps||ps.totalDays===0) return;
       var col=calColorForPid(b.id);
-      var projShort=b.name.length>18?b.name.slice(0,16)+'‚?¶':b.name;
+      var projShort=b.name.length>18?b.name.slice(0,16)+'???':b.name;
       ps.roomSchedules.forEach(function(rs){
         rs.schedule.forEach(function(day){
           var dDate=getWorkDayCalendarDate(snap, day.dayNum);
@@ -7645,18 +7646,18 @@ function rCalendar(){
     while(cells.length<42) cells.push('<div class="cal-cell cal-out"></div>');
     var wk=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     var wh=wk.map(function(w){return '<div class="cal-dh">'+w+'</div>';}).join('');
-    var headerSub="Auto-generated from your rooms & trades ¬∑ "+String(bundles.length)+" project"+(bundles.length!==1?"s":"")+" ¬∑ "+monthName;
+    var headerSub="Auto-generated from your rooms & trades ? "+String(bundles.length)+" project"+(bundles.length!==1?"s":"")+" ? "+monthName;
     el.innerHTML=calPageHeaderHtml(headerSub)
       +'<div class="pc pc--proj cal-wrap">'
       +'<div class="cal-nav">'
       +'<button type="button" class="btn bp sm" onclick="gP(\'tl\')">Timeline</button>'
-      +'<button type="button" class="btn bg sm" onclick="rCalNavPrev()">‚?ê Month</button>'
+      +'<button type="button" class="btn bg sm" onclick="rCalNavPrev()">??? Month</button>'
       +'<h2>'+escMat(monthName)+'</h2>'
-      +'<button type="button" class="btn bg sm" onclick="rCalNavNext()">Month ‚??</button>'
+      +'<button type="button" class="btn bg sm" onclick="rCalNavNext()">Month ???</button>'
       +'<button type="button" class="btn bp sm" onclick="rCalNavToday()">Today</button>'
       +'</div>'
       +pickRow+tlSum
-      +'<div class="cal-grid-wrap"><div class="cal-grid-h">Calendar ¬∑ work days + notes from Timeline</div><div class="cal-grid">'+wh+cells.join('')+'</div>'
+      +'<div class="cal-grid-wrap"><div class="cal-grid-h">Calendar ? work days + notes from Timeline</div><div class="cal-grid">'+wh+cells.join('')+'</div>'
       +'<p class="cal-legend">The summary matches the Timeline. Each <strong>tap</strong> adds a <strong>work day</strong> to the list (in date order, gaps allowed). <strong>Press and hold</strong> removes a day. <strong>Client notes</strong> from the Timeline (Day 1, 2&hellip;) show at the top of the matching cell. Trades: coloured chips. Max days = your timeline length.</p>'
       +'</div></div>';
     requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
@@ -7772,7 +7773,7 @@ function rShop(){
   var matIconSvg='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 7.5h15v9a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 16.5v-9Z"/><path d="M8.5 7.5V5.25A1.25 1.25 0 0 1 9.75 4h4.5A1.25 1.25 0 0 1 15.5 5.25V7.5"/><line x1="4.5" y1="12" x2="19.5" y2="12"/></svg>';
   var titleHtml=(isRoom&&S.rooms[matListRoomIdx])?escMat(S.rooms[matListRoomIdx].ic+' '+S.rooms[matListRoomIdx].n):'<em>Materials</em>';
   var rc=(S.rooms||[]).length;
-  var sub=isRoom?'This room only':'All rooms ¬∑ '+rc+' room'+(rc!==1?'s':'');
+  var sub=isRoom?'This room only':'All rooms ? '+rc+' room'+(rc!==1?'s':'');
   var empty=!rows.length;
   var pname=S.proj&&S.proj.name?escMat(S.proj.name):'Project';
   el.innerHTML='<div class="ml-page">'
@@ -7782,7 +7783,7 @@ function rShop(){
     +'<div class="ml-ph-left">'
     +'<div class="proj-ph-title-row">'
     +'<span class="ml-ph-icon" aria-hidden="true">'+matIconSvg+'</span>'
-    +'<div><div class="pt">'+titleHtml+'</div><div class="ps">'+escMat(sub)+' ¬∑ '+rows.length+' line'+(rows.length!==1?'s':'')+' ¬∑ '+f(totC)+'</div></div></div>'
+    +'<div><div class="pt">'+titleHtml+'</div><div class="ps">'+escMat(sub)+' ? '+rows.length+' line'+(rows.length!==1?'s':'')+' ? '+f(totC)+'</div></div></div>'
     +'<div class="ml-actions-below">'
     +'<button type="button" class="btn bp sm" onclick="window.print()">Print</button>'
     +'<button type="button" class="btn bg sm" onclick="exportMaterialsCsv()">Export CSV</button>'
@@ -7792,7 +7793,7 @@ function rShop(){
     +'</div></div></div>'
     +'<div class="pc ml-page-body">'
     +'<div id="material-search-react-root" class="no-print" style="margin-bottom:16px"></div>'
-    +(empty?'<div class="ml-empty"><div style="font-size:40px;margin-bottom:12px;opacity:.5">??¶</div><div>No materials to show. Turn off ‚??Hide zero qty‚?ù or enter quantities in trade line items.</div></div>'
+    +(empty?'<div class="ml-empty"><div style="font-size:40px;margin-bottom:12px;opacity:.5">????</div><div>No materials to show. Turn off ???Hide zero qty??? or enter quantities in trade line items.</div></div>'
       :catsHtml
       +'<div class="ml-foot no-print"><span>Grand total</span><strong>'+f(totC)+'</strong></div>')
     +'</div></div>';
@@ -7814,7 +7815,7 @@ function buildQuoteTimeline(){
   var endDate=getWorkDayCalendarDate(S,ps.totalDays);
 
   var datesLine = startDate
-    ? 'Estimated Start: <strong>'+fmtDateLong(startDate)+'</strong> &nbsp;¬∑&nbsp; Estimated Completion: <strong>'+fmtDateLong(endDate)+'</strong>'
+    ? 'Estimated Start: <strong>'+fmtDateLong(startDate)+'</strong> &nbsp;?&nbsp; Estimated Completion: <strong>'+fmtDateLong(endDate)+'</strong>'
     : 'Total duration: <strong>'+ps.totalDays+' working days</strong> (start date to be confirmed)';
 
   var weeks={};
@@ -7844,7 +7845,7 @@ function buildQuoteTimeline(){
   var rows=weekKeys.map(function(k,idx){
     var w=weeks[k];
     var tradesList=Object.keys(w.trades).map(function(tid){return w.trades[tid];}).join(', ');
-    var dateRange = w.startDate ? fmtDate(w.startDate)+' ‚?? '+fmtDate(w.endDate) : '';
+    var dateRange = w.startDate ? fmtDate(w.startDate)+' ??? '+fmtDate(w.endDate) : '';
     return '<div class="q-tl-week">'
       +'<div class="q-tl-wk"><strong>Week '+(idx+1)+'</strong>'+(dateRange?'<br>'+dateRange:'')+'</div>'
       +'<div class="q-tl-wk-trades">'+tradesList+'</div>'
@@ -7859,7 +7860,7 @@ function buildQuoteTimeline(){
     var dt0=dDt0?fmtDate(dDt0):'';
     dayNoteLines.push('<div class="q-tl-dayline">'
       +'<div class="q-tl-dl-num">D'+ddx+'</div>'
-      +'<div class="q-tl-dl-date">'+(dt0||'‚??')+'</div>'
+      +'<div class="q-tl-dl-date">'+(dt0||'???')+'</div>'
       +'<div class="q-tl-dl-note">'+escHtml(tn)+'</div>'
       +'</div>');
   }
@@ -7868,7 +7869,7 @@ function buildQuoteTimeline(){
     : '';
 
   return '<div class="q-timeline">'
-    +'<div class="q-tl-h"><div class="q-tl-t">Project Timeline</div><div class="q-tl-sub">'+ps.totalDays+' working days ¬∑ '+ps.roomSchedules.length+' room'+(ps.roomSchedules.length!==1?'s':'')+'</div></div>'
+    +'<div class="q-tl-h"><div class="q-tl-t">Project Timeline</div><div class="q-tl-sub">'+ps.totalDays+' working days ? '+ps.roomSchedules.length+' room'+(ps.roomSchedules.length!==1?'s':'')+'</div></div>'
     +'<div class="q-tl-dates">'+datesLine+'</div>'
     +dayNotesHtml
     +rows
@@ -7892,7 +7893,7 @@ function rQuote(){
   var qHdrAct='<button type="button" class="btn bp sm" onclick="createInvFromQuote()">Create invoice from quote</button>'
     +'<button type="button" class="btn bg sm" onclick="window.print()">Print</button>'
     +'<button type="button" class="btn bp sm" onclick="openPdf()">Generate PDF</button>';
-  el.innerHTML=rfMobTabPhBuild(RF_SVG_QU_IC,'Quote <em>Preview</em>','#'+S.proj.qnum+' ¬∑ Valid until '+valid,qHdrAct,'')
+  el.innerHTML=rfMobTabPhBuild(RF_SVG_QU_IC,'Quote <em>Preview</em>','#'+S.proj.qnum+' ? Valid until '+valid,qHdrAct,'')
     +'<div class="qp">'
     +'<div class="qt">'+htmlCoBlockFromS()
     +'<div style="text-align:right"><div class="qnum">'+S.proj.qnum+'</div><div class="qdate">'+ds+'</div><div class="qbadge">ESTIMATE</div></div></div>'
@@ -7965,7 +7966,7 @@ function buildPrintQuote(fmt,mkPct){
     rows+='<tr class="rr"><td>'+r.ic+" "+r.n+'</td><td></td><td>'+f(rt)+'</td></tr>';
     (r.trades||[]).filter(function(t){return tTot(t)>0;}).forEach(function(t){
       if(fmt==="trade"){rows+='<tr><td style="padding-left:16px;color:var(--tx3);font-size:12px">'+TIC[t.id]+" "+t.n+'</td><td></td><td style="font-size:12px">'+f(tTot(t))+'</td></tr>';}
-      else{var lv=tLbr(t),mv=tMat(t);if(mv>0)rows+='<tr><td style="padding-left:16px;color:var(--tx3);font-size:12px">'+TIC[t.id]+" "+t.n+" ‚?? Materials"+'</td><td></td><td style="font-size:12px">'+f(mv)+'</td></tr>';if(lv>0)rows+='<tr><td style="padding-left:16px;color:var(--tx3);font-size:12px">'+TIC[t.id]+" "+t.n+" ‚?? Labour"+'</td><td></td><td style="font-size:12px">'+f(lv)+'</td></tr>';}
+      else{var lv=tLbr(t),mv=tMat(t);if(mv>0)rows+='<tr><td style="padding-left:16px;color:var(--tx3);font-size:12px">'+TIC[t.id]+" "+t.n+" ??? Materials"+'</td><td></td><td style="font-size:12px">'+f(mv)+'</td></tr>';if(lv>0)rows+='<tr><td style="padding-left:16px;color:var(--tx3);font-size:12px">'+TIC[t.id]+" "+t.n+" ??? Labour"+'</td><td></td><td style="font-size:12px">'+f(lv)+'</td></tr>';}
     });
   });
 
@@ -7979,7 +7980,7 @@ function buildPrintQuote(fmt,mkPct){
   var qHdrAct2='<button type="button" class="btn bp sm" onclick="createInvFromQuote()">Create invoice from quote</button>'
     +'<button type="button" class="btn bg sm" onclick="window.print()">Print</button>'
     +'<button type="button" class="btn bp sm" onclick="openPdf()">Generate PDF</button>';
-  document.getElementById("p-quote").innerHTML=rfMobTabPhBuild(RF_SVG_QU_IC,'Quote <em>Preview</em>','#'+S.proj.qnum+" ¬∑ "+fmtLabel+" ¬∑ Valid until "+valid,qHdrAct2,"")
+  document.getElementById("p-quote").innerHTML=rfMobTabPhBuild(RF_SVG_QU_IC,'Quote <em>Preview</em>','#'+S.proj.qnum+" ? "+fmtLabel+" ? Valid until "+valid,qHdrAct2,"")
     +'<div class="qp">'
     +'<div class="qt">'+htmlCoBlockFromS()
     +'<div style="text-align:right"><div class="qnum">'+S.proj.qnum+'</div><div class="qdate">'+ds+'</div><div class="qbadge">ESTIMATE</div></div></div>'
@@ -8005,7 +8006,7 @@ function buildPrintQuote(fmt,mkPct){
 function rSett(){
   var el=document.getElementById("p-sett");
   el.innerHTML='<div class="ph"><div style="display:flex;align-items:center;gap:8px">'
-    +'<button onclick="gP(\'dash\')" style="font-size:18px;background:transparent;border:none;color:var(--tx2);cursor:pointer;padding:4px">‚?ê</button>'
+    +'<button onclick="gP(\'dash\')" style="font-size:18px;background:transparent;border:none;color:var(--tx2);cursor:pointer;padding:4px">???</button>'
     +'<div><div class="pt">Settings</div><div class="ps">Saved automatically to this device</div></div></div></div>'
     +'<div class="pc"><div class="sg">'
     +'<div class="ss"><div class="ss-t">Company Info</div>'
@@ -8282,15 +8283,15 @@ function rfEnsureCatLine(t, p) {
       q: 0,
       m: 20,
       sup: rfParseSupplierUnit(p.price),
-      title: p.title || "‚??",
+      title: p.title || "???",
       brand: p.brand || "",
-      priceLabel: p.price != null && p.price !== "" ? String(p.price) : "‚??",
+      priceLabel: p.price != null && p.price !== "" ? String(p.price) : "???",
       thumb: p.thumbnail || "",
     };
   } else {
     var o = t.catPick[id];
     if (o.sup == null || o.sup === 0) o.sup = rfParseSupplierUnit(p.price);
-    if (!o.title) o.title = p.title || "‚??";
+    if (!o.title) o.title = p.title || "???";
     if (o.m == null || isNaN(o.m)) o.m = 20;
   }
 }
@@ -8312,7 +8313,7 @@ function rfCatRowHtml(ti, tradeIdStr, p) {
   var sup = o.sup != null ? o.sup : 0;
   var cup = rfClientUnitDisplay(sup, m);
   var lineTot = q > 0 ? catalogLineClientTotal(sup, q, m) : 0;
-  var supDisp = sup > 0 ? f(sup) + " supplier" : escMat(o.priceLabel || "‚??");
+  var supDisp = sup > 0 ? f(sup) + " supplier" : escMat(o.priceLabel || "???");
   var thumb = p.thumbnail
     ? '<img class="rf-cat-thumb" src="' +
       escAttr(p.thumbnail) +
@@ -8339,10 +8340,10 @@ function rfCatRowHtml(ti, tradeIdStr, p) {
     '<div class="rf-cat-mid">' +
     brandTop +
     '<div class="mat-name">' +
-    escMat(o.title || p.title || "‚??") +
+    escMat(o.title || p.title || "???") +
     "</div>" +
     '<div class="mat-price" style="font-size:11px;color:var(--tx3)">' +
-    escMat(o.priceLabel || p.price || "‚??") +
+    escMat(o.priceLabel || p.price || "???") +
     "</div>" +
     '<div class="rf-cat-mkrow">' +
     '<span class="rf-sup">' +
@@ -8359,7 +8360,7 @@ function rfCatRowHtml(ti, tradeIdStr, p) {
     lineExtra +
     "</div></div>" +
     '<div class="rf-cat-step">' +
-    '<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="rfCatQtyFromBtn(this,-1)">‚??</button>' +
+    '<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="rfCatQtyFromBtn(this,-1)">???</button>' +
     '<input class="rf-cat-q" type="number" min="0" step="1" value="' +
     q +
     '" oninput="rfCatQtyInputFrom(this)"/>' +
@@ -8530,7 +8531,7 @@ function rfCloseLightbox() {
   document.removeEventListener("keydown", rfLightboxKey);
 }
 
-/** Manual SerpAPI refresh for this trade‚??s cached rows (explicit contractor action). */
+/** Manual SerpAPI refresh for this trade???s cached rows (explicit contractor action). */
 function rfCheckPricesForTrade(ti){
   var room=S.rooms[curR];
   if(!room||!room.trades[ti])return;
@@ -8540,7 +8541,7 @@ function rfCheckPricesForTrade(ti){
   var shell=document.querySelector('.rf-catalog-shell[data-ti="'+ti+'"][data-tid="'+escAttr(t.id)+'"]');
   var prev=shell?shell.innerHTML:"";
   if(shell){
-    shell.innerHTML='<div style="color:var(--tx3);font-size:13px;padding:8px 0">Refreshing supplier prices‚?¶ (may take a minute)</div>';
+    shell.innerHTML='<div style="color:var(--tx3);font-size:13px;padding:8px 0">Refreshing supplier prices??? (may take a minute)</div>';
   }
   fetch("/api/cached-products/refresh-from-supplier",{
     method:"POST",
@@ -8580,7 +8581,7 @@ function rfLoadAndRenderCatalogShell(tid, shellEl) {
   }
   var url = "/api/cached-products?trade=" + encodeURIComponent(tradeName);
   shellEl.innerHTML =
-    '<div style="color:var(--tx3)">Loading catalog‚?¶</div>';
+    '<div style="color:var(--tx3)">Loading catalog???</div>';
   fetch(url, { credentials: "include" })
     .then(function (r) {
       return r.json().then(function (j) {
@@ -8626,7 +8627,7 @@ function rfInitAllCatalogShells() {
 function rfHydrateAllCachedProductPanels() {
   rfInitAllCatalogShells();
 }
-// ‚??‚?? INVOICE SYSTEM ‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??
+// ?????? INVOICE SYSTEM ?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
 var curInvId = null;
 var TERMS_DAYS = {receipt:0, net7:7, net30:30, net60:60, net90:90};
 var TERMS_LABELS = {receipt:'On Receipt', net7:'Net 7', net30:'Net 30', net60:'Net 60', net90:'Net 90'};
@@ -8637,13 +8638,13 @@ function todayStr(){
 }
 function fmtInvNum(n){return 'INV-'+String(n).padStart(3,'0');}
 function fmtDispDate(s){
-  if(!s)return'‚??';
+  if(!s)return'???';
   var p=s.split('-');
   var d=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
   return d.toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'});
 }
 function fmtShortDate(s){
-  if(!s)return'‚??';
+  if(!s)return'???';
   var p=s.split('-');
   var d=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
   return d.toLocaleDateString('en-CA',{month:'short',day:'numeric'});
@@ -8668,7 +8669,7 @@ function invDaysOverdue(inv){
   return Math.max(0, Math.floor((today-due)/86400000));
 }
 
-// Compute display status ‚?? never stored
+// Compute display status ??? never stored
 function invStatus(inv){
   if(inv.void) return 'void';
   if(inv.paid) return 'paid';
@@ -8687,7 +8688,7 @@ function invBal(inv){
   return inv.total-(inv.depositPaid?(inv.deposit||0):0);
 }
 
-/** Email on the client record linked to the active project (Clients + ‚??Use for Project‚?ù). */
+/** Email on the client record linked to the active project (Clients + ???Use for Project???). */
 function resolveClientEmailForProject(){
   if(S.proj&&S.proj.clientId){
     var cl=(S.clients||[]).find(function(c){return c.id===S.proj.clientId;});
@@ -8706,7 +8707,7 @@ function buildInvoiceEmailHtml(inv){
   var bal=invBal(inv);
   var days=invDaysOverdue(inv);
   var due=invDueDate(inv);
-  var dueStr=due?fmtDispDate(due.getFullYear()+"-"+String(due.getMonth()+1).padStart(2,"0")+"-"+String(due.getDate()).padStart(2,"0")):"‚??";
+  var dueStr=due?fmtDispDate(due.getFullYear()+"-"+String(due.getMonth()+1).padStart(2,"0")+"-"+String(due.getDate()).padStart(2,"0")):"???";
   var roomRows=(inv.rooms||[]).map(function(r){
     var trades=(r.trades||[]).map(function(t){
       return "<tr><td style=\"padding:8px 6px;border-bottom:1px solid #eee;color:#6a6560;font-size:13px;font-family:sans-serif\">"+escHtml(t.ic)+" "+escHtml(t.n)+"</td><td style=\"padding:8px 6px;border-bottom:1px solid #eee;text-align:right;font-family:monospace;font-size:13px\">"+escHtml(f(t.total))+"</td></tr>";
@@ -8735,7 +8736,7 @@ function buildInvoiceEmailHtml(inv){
     +(inv.clientEmail?"<div style=\"font-size:13px;color:#6a6560;margin-top:4px\">"+escHtml(inv.clientEmail)+"</div>":"")
     +(inv.clientPhone?"<div style=\"font-size:13px;color:#6a6560\">"+escHtml(inv.clientPhone)+"</div>":"")
     +(inv.clientAddr?"<div style=\"font-size:13px;color:#6a6560\">"+escHtml(inv.clientAddr)+"</div>":"")
-    +"<div style=\"margin-top:10px;font-size:12px;color:#9a958e\">Terms: <strong style=\"color:#1a1612\">"+escHtml(TERMS_LABELS[inv.terms||"net7"])+"</strong> &nbsp;¬∑&nbsp; Due: <strong style=\"color:"+(days>0?"#e85547":"#1a1612")+"\">"+escHtml(dueStr)+"</strong></div>"
+    +"<div style=\"margin-top:10px;font-size:12px;color:#9a958e\">Terms: <strong style=\"color:#1a1612\">"+escHtml(TERMS_LABELS[inv.terms||"net7"])+"</strong> &nbsp;?&nbsp; Due: <strong style=\"color:"+(days>0?"#e85547":"#1a1612")+"\">"+escHtml(dueStr)+"</strong></div>"
     +"</div>"
     +(inv.projName?"<div style=\"font-size:12px;color:#6a6560;margin-bottom:16px;padding:8px 12px;background:#f7f4ef;border-radius:6px\">Re: <strong>"+escHtml(inv.projName)+"</strong></div>":"")
     +"<table style=\"width:100%;border-collapse:collapse;margin-bottom:16px\">"
@@ -8745,7 +8746,7 @@ function buildInvoiceEmailHtml(inv){
     +"<div style=\"border-top:2px solid #ccc7be;padding-top:12px\">"
     +"<div style=\"display:flex;justify-content:space-between;padding:4px 0;font-size:13px\"><span style=\"color:#6a6560\">Subtotal</span><span style=\"font-family:monospace\">"+escHtml(f(inv.subtotal))+"</span></div>"
     +"<div style=\"display:flex;justify-content:space-between;padding:4px 0;font-size:13px\"><span style=\"color:#6a6560\">HST ("+escHtml(String(inv.taxRate))+"%)</span><span style=\"font-family:monospace\">"+escHtml(f(inv.tax))+"</span></div>"
-    +(inv.depositPaid?"<div style=\"display:flex;justify-content:space-between;padding:4px 0;font-size:13px\"><span style=\"color:#6a6560\">Deposit Received</span><span style=\"font-family:monospace;color:#28a060\">‚??"+escHtml(f(inv.deposit))+"</span></div>":"")
+    +(inv.depositPaid?"<div style=\"display:flex;justify-content:space-between;padding:4px 0;font-size:13px\"><span style=\"color:#6a6560\">Deposit Received</span><span style=\"font-family:monospace;color:#28a060\">???"+escHtml(f(inv.deposit))+"</span></div>":"")
     +"<div style=\"display:flex;justify-content:space-between;padding:10px 0 0;margin-top:8px;border-top:1px solid #e0dbd4;font-weight:600;font-size:15px\"><span>"+escHtml(totalLabel)+"</span><span style=\"font-family:Georgia,serif;font-size:18px;color:"+balColor+"\">"+escHtml(f(showBal))+"</span></div>"
     +"</div>"
     +(inv.notes?"<div style=\"margin-top:20px;padding-top:16px;border-top:1px solid #e0dbd4;font-size:12px;color:#6a6560;line-height:1.7\"><strong style=\"color:#1a1612\">Terms &amp; Conditions:</strong><br>"+escHtml(inv.notes).replace(/\n/g,"<br>")+"</div>":"")
@@ -8757,11 +8758,11 @@ function sendInvoiceEmail(invId){
   if(inv.void){alert("Cannot email a voided invoice.");return;}
   var to=getInvoiceRecipientEmail(inv);
   if(!to){
-    alert("No client email on file. Add an email for this client in Clients, use ‚??Use for Project‚?ù so the project is linked, or add an email under Edit Details on this invoice.");
+    alert("No client email on file. Add an email for this client in Clients, use ???Use for Project??? so the project is linked, or add an email under Edit Details on this invoice.");
     return;
   }
   if(!inv.clientEmail&&to){inv.clientEmail=to;ss();}
-  var subject="Invoice "+inv.num+" ‚?? "+(S.co.name||"RenoFlow");
+  var subject="Invoice "+inv.num+" ??? "+(S.co.name||"RenoFlow");
   var html=buildInvoiceEmailHtml(inv);
   var payload={to:to,subject:subject,html:html};
   if(S.co&&S.co.email&&String(S.co.email).trim()) payload.replyTo=String(S.co.email).trim();
@@ -8848,7 +8849,7 @@ function rInvList(){
 
   var tableBody='';
   if(invs.length===0){
-    tableBody='<div class="empty"><div class="empty-i" style="font-size:34px;opacity:.4;margin-bottom:10px">?ßæ</div>'
+    tableBody='<div class="empty"><div class="empty-i" style="font-size:34px;opacity:.4;margin-bottom:10px">????</div>'
       +'<div style="font-size:15px;font-weight:500;margin-bottom:6px">No invoices yet</div>'
       +'<div style="font-size:13px;color:var(--tx3)">Create one from your current quote</div></div>';
   } else {
@@ -8858,13 +8859,13 @@ function rInvList(){
       var due=invDueDate(inv);
       var bal=invBal(inv);
       var balCls=inv.paid?'clear':(bal>0?'owing':'clear');
-      var daysCell=days>0?'<span style="color:var(--red);font-weight:600">'+days+'d</span>':'‚??';
-      var dueCell=due?fmtShortDate(due.getFullYear()+'-'+String(due.getMonth()+1).padStart(2,'0')+'-'+String(due.getDate()).padStart(2,'0')):'‚??';
+      var daysCell=days>0?'<span style="color:var(--red);font-weight:600">'+days+'d</span>':'???';
+      var dueCell=due?fmtShortDate(due.getFullYear()+'-'+String(due.getMonth()+1).padStart(2,'0')+'-'+String(due.getDate()).padStart(2,'0')):'???';
 
       // Desktop row
       return '<tr onclick="openInv(\''+inv.id+'\')">'
         +'<td><div class="il-num">'+inv.num+'</div></td>'
-        +'<td><div class="il-client">'+(inv.clientName||'‚??')+'</div>'
+        +'<td><div class="il-client">'+(inv.clientName||'???')+'</div>'
         +'<div class="il-addr">'+(inv.clientAddr||'')+'</div></td>'
         +'<td><div class="il-date">'+(inv.sentDate?fmtShortDate(inv.sentDate):'Not sent')+'</div></td>'
         +'<td><div class="il-terms">'+(TERMS_LABELS[inv.terms||'net7'])+'</div></td>'
@@ -8938,7 +8939,7 @@ function rInvDetail(inv){
     +'<div class="dep-row">'
     +'<div class="dep-amt-wrap"><span>$</span><input type="number" min="0" value="'+(inv.deposit||0)+'" onchange="setInvDeposit(\''+inv.id+'\',this.value)" placeholder="0"/></div>'
     +'<div style="font-size:12px;color:var(--tx3)">deposit amount</div>'
-    +'<button class="dep-paid-btn'+(inv.depositPaid?' paid':'')+'" onclick="togDepositPaid(\''+inv.id+'\')">'+(inv.depositPaid?'‚?? Deposit Received':'Mark Deposit Received')+'</button>'
+    +'<button class="dep-paid-btn'+(inv.depositPaid?' paid':'')+'" onclick="togDepositPaid(\''+inv.id+'\')">'+(inv.depositPaid?'??? Deposit Received':'Mark Deposit Received')+'</button>'
     +'</div>'
     +'<div class="dep-bal">'
     +'<div class="dep-bal-l">'+(st==='paid'?'Fully paid':'Balance owing')+'</div>'
@@ -8953,7 +8954,7 @@ function rInvDetail(inv){
     return '<tr class="rr"><td>'+r.ic+' '+r.n+'</td><td></td><td>'+f(r.total)+'</td></tr>'+trades;
   }).join('');
 
-  var dueStr=due?fmtDispDate(due.getFullYear()+'-'+String(due.getMonth()+1).padStart(2,'0')+'-'+String(due.getDate()).padStart(2,'0')):'‚??';
+  var dueStr=due?fmtDispDate(due.getFullYear()+'-'+String(due.getMonth()+1).padStart(2,'0')+'-'+String(due.getDate()).padStart(2,'0')):'???';
 
   var doc='<div class="inv-doc">'
     +'<div class="qt">'
@@ -8969,7 +8970,7 @@ function rInvDetail(inv){
     +(inv.clientEmail?'<div style="font-size:13px;color:var(--tx2)">'+inv.clientEmail+'</div>':'')
     +(inv.clientPhone?'<div style="font-size:13px;color:var(--tx2)">'+inv.clientPhone+'</div>':'')
     +(inv.clientAddr?'<div style="font-size:13px;color:var(--tx2)">'+inv.clientAddr+'</div>':'')
-    +'<div style="margin-top:8px;font-size:12px;color:var(--tx3)">Terms: <strong style="color:var(--tx)">'+(TERMS_LABELS[inv.terms||'net7'])+'</strong> &nbsp;¬∑&nbsp; Due: <strong style="color:'+(days>0?'var(--red)':'var(--tx)')+'">'+dueStr+'</strong></div>'
+    +'<div style="margin-top:8px;font-size:12px;color:var(--tx3)">Terms: <strong style="color:var(--tx)">'+(TERMS_LABELS[inv.terms||'net7'])+'</strong> &nbsp;?&nbsp; Due: <strong style="color:'+(days>0?'var(--red)':'var(--tx)')+'">'+dueStr+'</strong></div>'
     +'</div>'
     +(inv.projName?'<div style="font-size:12px;color:var(--tx3);margin-bottom:16px;padding:8px 12px;background:var(--sf2);border-radius:6px">Re: <strong>'+inv.projName+'</strong></div>':'')
     +'<table class="qtbl"><thead><tr><th>Description</th><th></th><th style="text-align:right">Amount</th></tr></thead>'
@@ -8977,7 +8978,7 @@ function rInvDetail(inv){
     +'<div class="qtot">'
     +'<div class="qtr"><div class="ql">Subtotal</div><div class="qr">'+f(inv.subtotal)+'</div></div>'
     +'<div class="qtr"><div class="ql">HST ('+inv.taxRate+'%)</div><div class="qr">'+f(inv.tax)+'</div></div>'
-    +(inv.depositPaid?'<div class="qtr"><div class="ql">Deposit Received</div><div class="qr" style="color:var(--grn)">‚??'+f(inv.deposit)+'</div></div>':'')
+    +(inv.depositPaid?'<div class="qtr"><div class="ql">Deposit Received</div><div class="qr" style="color:var(--grn)">???'+f(inv.deposit)+'</div></div>':'')
     +'<div class="qtr gd" style="margin-top:8px;padding-top:10px;border-top:1px solid var(--bd2)"><div class="ql">'+(st==='paid'?'Total (Paid)':'Balance Due')+'</div>'
     +'<div class="qr" style="color:'+(st==='paid'?'var(--grn)':'var(--red)')+'">'+f(st==='paid'?inv.total:bal)+'</div></div>'
     +'</div>'
@@ -8996,9 +8997,9 @@ function rInvDetail(inv){
 
   el.innerHTML='<div class="ph">'
     +'<div style="display:flex;align-items:center;gap:10px">'
-    +'<button onclick="curInvId=null;rInvList()" style="font-size:18px;background:transparent;border:none;color:var(--tx2);cursor:pointer;padding:4px">‚?ê</button>'
+    +'<button onclick="curInvId=null;rInvList()" style="font-size:18px;background:transparent;border:none;color:var(--tx2);cursor:pointer;padding:4px">???</button>'
     +'<div><div class="pt" style="font-size:22px">'+inv.num+'</div>'
-    +'<div class="ps">'+(inv.clientName||'No client')+' ¬∑ '+f(inv.total)+'</div></div>'
+    +'<div class="ps">'+(inv.clientName||'No client')+' ? '+f(inv.total)+'</div></div>'
     +'</div></div>'
     +'<div class="pc">'+statusBar+termsRow+'<div style="height:14px"></div>'+depBox+doc+actions+'</div>';
 }
@@ -9103,7 +9104,7 @@ function saveInvMeta(id){
   ss(); closeMo(); rInvDetail(inv);
 }
 
-// ‚??‚?? CLIENT DATABASE ‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??
+// ?????? CLIENT DATABASE ??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
 
 function rPush(){
   function paint(){
@@ -9119,23 +9120,23 @@ function rPush(){
       +'</label></div>'
       +'<div id="push-newproj-fields">'
       +'<div class="cf-field"><div class="cf-label">Project name</div>'
-      +'<input class="cf-input" id="push-np-name" type="text" placeholder="e.g. Smith ‚?? main bath" /></div>'
+      +'<input class="cf-input" id="push-np-name" type="text" placeholder="e.g. Smith ??? main bath" /></div>'
       +'</div>'
       +'<div id="push-existing-proj-wrap" style="display:none">'
       +'<div class="cf-field"><div class="cf-label">Link to an existing project</div>'
       +'<select class="cf-input" id="push-project">'
-      +'<option value="">‚?? None ‚??</option>'
+      +'<option value="">??? None ???</option>'
       +plist.map(function(p){
           return '<option value="'+escHtml(p.id)+'">'+escHtml(p.name||"Untitled")+'</option>';
         }).join("")
       +'</select>'
-      +'<p style="font-size:11px;color:var(--tx3);margin-top:6px;line-height:1.45">Uncheck ‚??Create a new project‚?ù to attach the intake to a job that already exists.</p>'
+      +'<p style="font-size:11px;color:var(--tx3);margin-top:6px;line-height:1.45">Uncheck ???Create a new project??? to attach the intake to a job that already exists.</p>'
       +'</div></div>'
       +'<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd)">'
       +'<div class="cf-field"><div class="cf-label">Their email (optional)</div>'
       +'<input class="cf-input" id="push-intake-email" type="email" placeholder="Sends the invite if Resend is configured"/></div>'
       +'<div class="cf-field"><div class="cf-label">Their mobile (optional)</div>'
-      +'<input class="cf-input" id="push-intake-phone" type="tel" placeholder="‚??Open SMS with link‚?ù on your phone"/></div>'
+      +'<input class="cf-input" id="push-intake-phone" type="tel" placeholder="???Open SMS with link??? on your phone"/></div>'
       +'<button type="button" class="btn bg sm" onclick="createClientIntakeLink()" style="width:100%;margin-top:4px">Create link &amp; send invite</button>'
       +'</div>'
       +'</div>';
@@ -9152,7 +9153,7 @@ function rPush(){
   else paint();
 }
 
-// ‚??‚?? CLIENT DATABASE ‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??‚??
+// ?????? CLIENT DATABASE ??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
 function clInitials(name){
   var parts=(name||"?").trim().split(/\s+/);
   if(parts.length>=2) return (parts[0][0]+parts[parts.length-1][0]).toUpperCase();
@@ -9178,7 +9179,7 @@ function rClients(){
   var cards="";
   if(clients.length===0){
     cards='<div class="cl-empty">'
-      +'<div class="cl-empty-i">??•</div>'
+      +'<div class="cl-empty-i">????</div>'
       +'<div class="cl-empty-t">No clients yet</div>'
       +'<div class="cl-empty-s">Add your first client to get started</div>'
       +'</div>';
@@ -9190,9 +9191,9 @@ function rClients(){
         +'<div class="cl-card-text">'
         +'<div class="cl-name">'+escHtml(cl.name)+'</div>'
         +'<div class="cl-detail">'
-        +(cl.email?'<span>‚??Ô∏è '+escHtml(cl.email)+'</span>':'')
-        +(cl.phone?'<span>??? '+escHtml(cl.phone)+'</span>':'')
-        +(cl.address?'<span>??ç '+escHtml(cl.address)+'</span>':'')
+        +(cl.email?'<span>???? '+escHtml(cl.email)+'</span>':'')
+        +(cl.phone?'<span>???? '+escHtml(cl.phone)+'</span>':'')
+        +(cl.address?'<span>???? '+escHtml(cl.address)+'</span>':'')
         +(cl.notes?'<span style="color:var(--tx3);font-style:italic">'+escHtml(cl.notes)+'</span>':'')
         +'</div>'
         +'</div>'
@@ -9276,7 +9277,7 @@ function showClientForm(idx, cl){
       +'</label></div>'
       +'<div id="cf-newproj-fields">'
       +'<div class="cf-field"><div class="cf-label">Project name</div>'
-      +'<input class="cf-input" id="cf-np-name" type="text" placeholder="Leave blank to use ‚??Client name ‚?? Job‚?ù" /></div>'
+      +'<input class="cf-input" id="cf-np-name" type="text" placeholder="Leave blank to use ???Client name ??? Job???" /></div>'
       +'<div class="cf-field" id="cf-proj-photo-field">'
       +'<div class="cf-label">Project / site photo (optional)</div>'
       +'<div style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:12px">'
@@ -9284,18 +9285,18 @@ function showClientForm(idx, cl){
       +'<div style="flex:1;min-width:200px">'
       +'<input type="file" class="cf-input" id="cf-proj-photo-file" accept="image/*" onchange="handlePendingProjectCover(this)" style="font-size:13px;max-width:100%"/>'
       +'<div style="margin-top:8px"><button type="button" class="btn bg sm" onclick="clearPendingProjectCover()">Remove project photo</button></div>'
-      +'<p style="font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.45">Separate from the client headshot in <strong>Clients</strong>. This image is the job card / workspace cover ‚?? site, kitchen, floor plan, etc. Stored with the project on this device.</p>'
+      +'<p style="font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.45">Separate from the client headshot in <strong>Clients</strong>. This image is the job card / workspace cover ??? site, kitchen, floor plan, etc. Stored with the project on this device.</p>'
       +'</div></div></div>'
       +'</div>'
       +'<div id="cf-existing-proj-wrap" style="display:none">'
       +'<div class="cf-field"><div class="cf-label">Or link to an existing project</div>'
       +'<select class="cf-input" id="cf-project">'
-      +'<option value="">‚?? None ‚??</option>'
+      +'<option value="">??? None ???</option>'
       +plist.map(function(p){
           return '<option value="'+escHtml(p.id)+'">'+escHtml(p.name||"Untitled")+'</option>';
         }).join("")
       +'</select>'
-      +'<p style="font-size:11px;color:var(--tx3);margin-top:6px;line-height:1.45">Uncheck ‚??Create a new project‚?ù above to attach this client to a job that already exists.</p>'
+      +'<p style="font-size:11px;color:var(--tx3);margin-top:6px;line-height:1.45">Uncheck ???Create a new project??? above to attach this client to a job that already exists.</p>'
       +'</div></div>';
   }
   var body=topBlock
@@ -9396,7 +9397,7 @@ function createClientIntakeLink(){
       +'<input class="cf-input" id="intake-url-copy" readonly type="text" value="'+escHtml(r.url)+'" onclick="this.select()" style="font-size:12px"/></div>';
     if(r.smsHref){
       inner+='<p style="margin-top:12px"><a class="btn bp sm" href="'+String(r.smsHref).replace(/"/g,"&quot;")+'" target="_blank" rel="noopener">Open SMS with link</a></p>'
-        +'<p style="font-size:11px;color:var(--tx3);margin-top:6px">Best on your phone ‚?? opens Messages with the link.</p>';
+        +'<p style="font-size:11px;color:var(--tx3);margin-top:6px">Best on your phone ??? opens Messages with the link.</p>';
     }
     showMo("Customer invite ready",inner,[{l:"Copy link",fn:"copyIntakeUrlField()"}]);
     setTimeout(function(){
@@ -9581,7 +9582,7 @@ function useClient(i){
   ss();uSide();
   showMo("Client Set",
     '<div style="text-align:center;padding:10px 0">'
-    +'<div style="font-size:32px;margin-bottom:8px">‚??</div>'
+    +'<div style="font-size:32px;margin-bottom:8px">???</div>'
     +'<div style="font-size:15px;font-weight:600">'+cl.name+'</div>'
     +'<div style="font-size:13px;color:var(--tx3);margin-top:4px">Set as active project client</div>'
     +'</div>', []);
