@@ -206,14 +206,13 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
             <div
               style={{
                 fontSize: 11,
-                textTransform: "uppercase",
-                letterSpacing: "0.12em",
+                letterSpacing: "0.08em",
                 color: "rgba(255,255,255,0.4)",
                 margin: "0 0 4px",
                 fontWeight: 500,
               }}
             >
-              PROJECT
+              Project Rooms
             </div>
             <h1
               style={{
@@ -241,18 +240,20 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                     .join(" · ") || "—"}
             </p>
             {!loading && data ? (
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div
+                className="mt-3 flex max-w-full flex-nowrap items-center gap-1 overflow-x-auto [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              >
                 <Link
                   href={hubFinalHref(projectId, { pg: "quote" })}
                   prefetch={false}
-                  className="inline-flex min-h-[40px] items-center justify-center rounded-[100px] bg-white px-4 text-[12px] font-semibold text-[#0f2318] no-underline [-webkit-tap-highlight-color:transparent]"
+                  className="inline-flex min-h-[38px] shrink-0 items-center whitespace-nowrap rounded-[100px] bg-white px-2.5 text-[11px] font-semibold leading-tight text-[#0f2318] no-underline [-webkit-tap-highlight-color:transparent]"
                 >
                   View Quote
                 </Link>
                 <Link
                   href={hubFinalHref(projectId, { pg: "tl" })}
                   prefetch={false}
-                  className="inline-flex min-h-[40px] items-center justify-center rounded-[100px] px-4 text-[12px] font-semibold text-white no-underline [-webkit-tap-highlight-color:transparent]"
+                  className="inline-flex min-h-[38px] shrink-0 items-center whitespace-nowrap rounded-[100px] px-2.5 text-[11px] font-semibold leading-tight text-white no-underline [-webkit-tap-highlight-color:transparent]"
                   style={{
                     background: "rgba(255,255,255,0.12)",
                     border: "0.5px solid rgba(255,255,255,0.35)",
@@ -263,7 +264,7 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                 <Link
                   href={hubFinalHref(projectId, { pg: "inv" })}
                   prefetch={false}
-                  className="inline-flex min-h-[40px] items-center justify-center rounded-[100px] px-4 text-[12px] font-semibold text-white no-underline [-webkit-tap-highlight-color:transparent]"
+                  className="inline-flex min-h-[38px] shrink-0 items-center whitespace-nowrap rounded-[100px] px-2.5 text-[11px] font-semibold leading-tight text-white no-underline [-webkit-tap-highlight-color:transparent]"
                   style={{
                     background: "rgba(255,255,255,0.12)",
                     border: "0.5px solid rgba(255,255,255,0.35)",
@@ -274,7 +275,7 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                 <Link
                   href={hubFinalHref(projectId, { pg: "shop" })}
                   prefetch={false}
-                  className="inline-flex min-h-[40px] items-center justify-center rounded-[100px] px-4 text-[12px] font-semibold text-white no-underline [-webkit-tap-highlight-color:transparent]"
+                  className="inline-flex min-h-[38px] shrink-0 items-center whitespace-nowrap rounded-[100px] px-2.5 text-[11px] font-semibold leading-tight text-white no-underline [-webkit-tap-highlight-color:transparent]"
                   style={{
                     background: "rgba(255,255,255,0.12)",
                     border: "0.5px solid rgba(255,255,255,0.35)",
