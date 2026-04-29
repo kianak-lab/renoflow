@@ -2012,6 +2012,84 @@ a.ni{color:inherit;text-decoration:none;}
     background: transparent !important;
     min-height: var(--rf-mob-hdr-h, auto);
   }
+  #p-clients .ml-ph.cl-clients-site-hdr {
+    border-bottom: none !important;
+    background: #0f2318 !important;
+    padding-top: env(safe-area-inset-top, 0px) !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-bottom: 16px !important;
+  }
+  #p-clients .cl-ch-kicker {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0 0 4px;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+  #p-clients .cl-ch-title {
+    font-size: 22px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.2;
+    margin: 0;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+  #p-clients .cl-ch-count {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 4px 0 0;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+  #p-clients .cl-ch-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 0.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 10px 14px;
+    box-sizing: border-box;
+  }
+  #p-clients .cl-ch-search-ic {
+    flex-shrink: 0;
+    display: block;
+  }
+  #p-clients .cl-ch-search-input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 15px;
+    font-family: "Inter", system-ui, sans-serif;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  #p-clients .cl-ch-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+  #p-clients .cl-ch-newbtn {
+    width: 100%;
+    margin-top: 12px;
+    box-sizing: border-box;
+    background: #fff;
+    color: #0f2318;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: "Inter", system-ui, sans-serif;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #p-clients .cl-ch-newbtn:active {
+    opacity: 0.92;
+  }
   #p-quote .qp-sc-site-top{
     margin: 0;
     box-sizing: border-box;
@@ -2158,12 +2236,13 @@ a.ni{color:inherit;text-decoration:none;}
 .rf-lightbox.rf-lb-on{display:flex;}
 .rf-lightbox-img{max-width:96vw;max-height:92vh;object-fit:contain;border-radius:4px;cursor:default;}
 
-/* ?????? CLIENT DB ?????? */
+/* ?????? CLIENT DB (Site Clean cards + shared grid) ?????? */
 .cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
-.cl-card{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:6px 10px;box-shadow:0 1px 4px rgba(0,0,0,.04);cursor:pointer;transition:all .2s;position:relative;}
-.cl-card:hover{border-color:var(--bd2);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.08);}
+#p-clients .cl-card{background:#fff;border:0.5px solid #e0e0e0;border-radius:10px;padding:0;box-shadow:none;cursor:default;transition:border-color .15s;position:relative;}
+#p-clients .cl-card:hover{border-color:#e0e0e0;transform:none;box-shadow:none;}
 .cl-card-top{display:flex;align-items:flex-start;justify-content:space-between;flex-direction:row;gap:6px;margin-bottom:0;}
-.cl-card-text{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;gap:2px;}
+#p-clients .cl-card-top{align-items:flex-start;gap:12px;padding:14px;}
+.cl-card-text{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;gap:4px;}
 .cl-avatar{
   width:calc(40px * 4 / 3);height:calc(40px * 4 / 3);
   border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));
@@ -2172,17 +2251,38 @@ a.ni{color:inherit;text-decoration:none;}
   cursor:pointer;-webkit-tap-highlight-color:transparent;border:none;padding:0;
   box-shadow:0 1px 4px rgba(0,0,0,.1);
 }
+#p-clients .cl-avatar{
+  width:44px;height:44px;font-size:15px;font-weight:600;
+  background:#1a3d28;box-shadow:none;
+}
 .cl-avatar:focus-visible{outline:2px solid var(--ac);outline-offset:2px;}
+#p-clients .cl-avatar:focus-visible{outline-color:#1a3d28;}
 .cl-avatar--photo{background:#e8e8e8;}
 .cl-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .cl-avatar .cl-avatar-tx{position:relative;z-index:0;line-height:1;}
 .cl-photo-input{position:absolute;width:0;height:0;opacity:0;pointer-events:none;left:0;top:0;}
 .cl-name{font-size:15px;font-weight:600;color:var(--tx);margin:0;padding:0;line-height:1.45;}
+#p-clients .cl-name{font-size:14px;font-weight:500;color:#111;}
 .cl-meta{font-size:12px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
 .cl-detail{font-size:12px;color:var(--tx2);margin:0;padding:0;line-height:1.45;}
+#p-clients .cl-detail{display:flex;flex-direction:column;gap:6px;margin-top:2px;}
+#p-clients .cl-detail span+span{margin-top:0;}
 .cl-detail span{display:block;}
 .cl-detail span+span{margin-top:2px}
+#p-clients .cl-line{display:flex;align-items:flex-start;gap:8px;font-size:12px;line-height:1.45;color:#333;}
+#p-clients .cl-line-ic{flex-shrink:0;margin-top:2px;}
+#p-clients .cl-line-tx{flex:1;min-width:0;word-break:break-word;color:#333;}
+#p-clients .cl-line--notes{padding-left:0;}
+#p-clients .cl-line--notes .cl-line-tx{color:#888;font-style:italic;}
 .cl-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;padding-top:4px;border-top:1px solid var(--bd);}
+#p-clients .cl-actions{margin-top:0;padding:8px 14px;border-top:0.5px solid #f0f0f0;gap:8px;justify-content:stretch;}
+#p-clients .cl-act{
+  flex:1 1 28%;min-width:0;border-radius:999px;padding:8px 10px;font-size:12px;font-weight:600;font-family:'Inter',system-ui,sans-serif;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;border:none;line-height:1.25;
+}
+#p-clients .cl-act--edit{background:#0f2318;color:#fff;}
+#p-clients .cl-act--proj{background:#fff;color:#555;border:0.5px solid rgba(0,0,0,0.12);}
+#p-clients .cl-act--del{background:#fff;color:#c0392b;border:0.5px solid #f5c6c6;}
 .cl-crop-h{font-size:12px;color:var(--tx2);line-height:1.45;margin:0 0 10px;}
 .cl-crop-stage{display:flex;flex-direction:column;align-items:center;gap:10px;max-width:100%;}
 .cl-crop-ring{width:100%;max-width:240px;aspect-ratio:1;margin:0 auto;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px var(--ac),0 2px 12px rgba(0,0,0,.12);background:var(--bd2);cursor:grab;touch-action:none;}
@@ -2195,6 +2295,7 @@ a.ni{color:inherit;text-decoration:none;}
 .cl-proj-count{font-size:10px;font-family:'Inter',system-ui,sans-serif;color:var(--ac);background:rgba(90,154,90,.1);padding:2px 7px;border-radius:10px;}
 .cl-empty{text-align:center;padding:60px 20px;color:var(--tx3);}
 .cl-empty-i{font-size:40px;margin-bottom:12px;opacity:.4;}
+.cl-empty-i svg{display:block;margin:0 auto;}
 .cl-empty-t{font-size:16px;font-weight:500;margin-bottom:6px;}
 .cl-empty-s{font-size:13px;}
 
@@ -7251,7 +7352,38 @@ function rfQuotePreviewShell(metaLine, actionsInnerHtml){
     +'</div>'
     +'<div class="pc ml-page-body qp-sc-body">';
 }
-var RF_SVG_CL_IC='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+var RF_SVG_CL_HDR_SEARCH='<svg class="cl-ch-search-ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/><path d="m20 20-3-3" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/></svg>';
+var RF_SVG_CL_LINE_MAIL='<svg class="cl-line-ic" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="#aaa" stroke-width="1.5"/><path d="m3 7 9 6 9-6" fill="none" stroke="#aaa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var RF_SVG_CL_LINE_PHONE='<svg class="cl-line-ic" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="none" stroke="#aaa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+var RF_SVG_CL_LINE_ADDR='<svg class="cl-line-ic" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="none" stroke="#aaa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="none" stroke="#aaa" stroke-width="1.5"/></svg>';
+var RF_SVG_CL_EMPTY='<svg viewBox="0 0 24 24" width="48" height="48" aria-hidden="true" style="opacity:.35"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+function rfClientsHdrBuild(clientCount){
+  var cntStr=clientCount+' client'+(clientCount!==1?'s':'');
+  var qStr=(typeof window.__rfClientsSearchQ==="string")?window.__rfClientsSearchQ:"";
+  return ''
+    +'<div class="ml-page">'
+    +'<div class="ml-ph no-print rf-tab-hdr cl-clients-site-hdr">'
+    +'<div class="cl-ch-kicker">YOUR CONTACTS</div>'
+    +'<div class="cl-ch-title">Clients</div>'
+    +'<div class="cl-ch-count">'+escHtml(cntStr)+'</div>'
+    +'<div class="cl-ch-search" role="search">'+RF_SVG_CL_HDR_SEARCH
+    +'<input type="search" id="cl-search-input" class="cl-ch-search-input" placeholder="Search clients..." value="'+escHtml(qStr)+'" autocomplete="off" oninput="window.__rfClientsSearchQ=this.value;rfClientsApplySearch();"/>'
+    +'</div>'
+    +'<button type="button" class="cl-ch-newbtn" onclick="newClient()">+ New Client</button>'
+    +'</div>'
+    +'<div class="pc ml-page-body">';
+}
+function rfClientsApplySearch(){
+  try{
+    var inp=document.getElementById("cl-search-input");
+    var q=inp?String(inp.value||"").toLowerCase().trim():"";
+    window.__rfClientsSearchQ=inp?String(inp.value||""):"";
+    document.querySelectorAll("#p-clients .cl-card").forEach(function(el){
+      var hay=(el.getAttribute("data-cl-search")||"").toLowerCase();
+      el.style.display=!q||hay.indexOf(q)>=0?"":"none";
+    });
+  }catch(e){}
+}
 function rfMobTabPhBuild(icon, ptHtml, psHtml, below, col){
   var h='';
   h+='<div class="ml-page"><div class="ml-ph no-print rf-tab-hdr">';
@@ -9211,43 +9343,47 @@ function rClients(){
   var cards="";
   if(clients.length===0){
     cards='<div class="cl-empty">'
-      +'<div class="cl-empty-i">????</div>'
+      +'<div class="cl-empty-i">'+RF_SVG_CL_EMPTY+'</div>'
       +'<div class="cl-empty-t">No clients yet</div>'
       +'<div class="cl-empty-s">Add your first client to get started</div>'
       +'</div>';
   } else {
     cards='<div class="cl-grid">'+clients.map(function(cl,i){
       var hasPh=!!(cl.photo&&String(cl.photo).trim());
-      return '<div class="cl-card">'
+      var searchBlob=[cl.name,cl.email,cl.phone,cl.address,cl.notes].filter(function(x){return x!=null&&String(x).trim();}).join(" ");
+      var detail="";
+      if(cl.email) detail+='<span class="cl-line">'+RF_SVG_CL_LINE_MAIL+'<span class="cl-line-tx">'+escHtml(cl.email)+'</span></span>';
+      if(cl.phone) detail+='<span class="cl-line">'+RF_SVG_CL_LINE_PHONE+'<span class="cl-line-tx">'+escHtml(cl.phone)+'</span></span>';
+      if(cl.address) detail+='<span class="cl-line">'+RF_SVG_CL_LINE_ADDR+'<span class="cl-line-tx">'+escHtml(cl.address)+'</span></span>';
+      if(cl.notes) detail+='<span class="cl-line cl-line--notes"><span class="cl-line-tx">'+escHtml(cl.notes)+'</span></span>';
+      return '<div class="cl-card" data-cl-search="'+escHtml(searchBlob)+'">'
         +'<div class="cl-card-top">'
-        +'<div class="cl-card-text">'
-        +'<div class="cl-name">'+escHtml(cl.name)+'</div>'
-        +'<div class="cl-detail">'
-        +(cl.email?'<span>???? '+escHtml(cl.email)+'</span>':'')
-        +(cl.phone?'<span>???? '+escHtml(cl.phone)+'</span>':'')
-        +(cl.address?'<span>???? '+escHtml(cl.address)+'</span>':'')
-        +(cl.notes?'<span style="color:var(--tx3);font-style:italic">'+escHtml(cl.notes)+'</span>':'')
-        +'</div>'
-        +'</div>'
         +'<button type="button" class="cl-avatar'+(hasPh?" cl-avatar--photo":"")+'" title="Add or change photo" aria-label="Add or change client photo" onclick="clAvatarClick(event,'+i+')">'
         +(hasPh
           ?'<img src="'+safeDataUrlForAttr(String(cl.photo))+'" alt=""/>'
           :'<span class="cl-avatar-tx">'+escHtml(clInitials(cl.name))+'</span>')
         +'</button>'
         +'<input type="file" class="cl-photo-input" id="cl-photo-f-'+i+'" accept="image/*" tabindex="-1" aria-hidden="true" onchange="handleClientPhotoFile('+i+',this)"/>'
+        +'<div class="cl-card-text">'
+        +'<div class="cl-name">'+escHtml(cl.name)+'</div>'
+        +'<div class="cl-detail">'+(detail||'')+'</div>'
+        +'</div>'
         +'</div>'
         +'<div class="cl-actions">'
-        +'<button class="btn bp sm" onclick="editClient('+i+')">Edit</button>'
-        +'<button class="btn bg sm" onclick="useClient('+i+')">Use for Project</button>'
-        +'<button class="btn bd-btn sm" onclick="delClient('+i+')">Delete</button>'
+        +'<button type="button" class="cl-act cl-act--edit" onclick="editClient('+i+')">Edit</button>'
+        +'<button type="button" class="cl-act cl-act--proj" onclick="useClient('+i+')">Use for Project</button>'
+        +'<button type="button" class="cl-act cl-act--del" onclick="delClient('+i+')">Delete</button>'
         +'</div>'
         +'</div>';
     }).join('')+'</div>';
   }
 
-  el.innerHTML=rfMobTabPhBuild(RF_SVG_CL_IC,'Client <em>Database</em>',(clients.length)+' client'+(clients.length!==1?'s':''),'<button type="button" class="btn bp sm" onclick="newClient()">+ New Client</button>','')
+  el.innerHTML=rfClientsHdrBuild(clients.length)
     +cards+'</div></div>';
-  requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
+  requestAnimationFrame(function(){
+    rfClientsApplySearch();
+    requestAnimationFrame(rfRecordMaterialsHeaderH);
+  });
 }
 
 function toggleCfProjectMode(){
