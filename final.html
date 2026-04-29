@@ -1348,6 +1348,8 @@ a.ni{color:inherit;text-decoration:none;}
 .ml-empty{text-align:center;padding:48px 20px;color:var(--tx3);}
 .ml-page-body{padding:16px 18px 24px;}
 @media print{
+  .qp-sc-status{display:none!important;}
+  .qp-sc-actions{display:none!important;}
   .sb,.mob-nav,.ml-actions-below .btn,.ml-tog,.ml-ph button{background:transparent!important;}
   .ml-actions-below .btn{display:none!important;}
   #main{margin:0!important;padding:0!important;}
@@ -1500,6 +1502,64 @@ a.ni{color:inherit;text-decoration:none;}
 .q-tl-wk strong{color:var(--tx);}
 .q-tl-wk-trades{flex:1;color:var(--tx2);}
 .q-tl-disc{font-size:10px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;font-style:italic;margin-top:10px;padding-top:8px;border-top:1px solid var(--bd);line-height:1.5;}
+
+/* ========== Site Clean: Quote Preview (#p-quote) ========== */
+.qp-sc-page{background:var(--bg);}
+.qp-sc-site-top{background:#0f2318;color:#fff;}
+.qp-sc-status{display:flex;align-items:center;justify-content:space-between;padding:6px 16px 4px;padding-top:max(6px, env(safe-area-inset-top, 0px));font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,.92);}
+.qp-sc-status-icons{display:flex;align-items:center;gap:6px;}
+.qp-sc-svi{display:block;flex-shrink:0;opacity:.95;}
+.qp-sc-header{padding:8px 16px 16px;border:none;}
+.qp-sc-header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.qp-sc-kicker{font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:4px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+.qp-sc-title{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:22px;font-weight:500;color:#fff;line-height:1.2;}
+.qp-sc-meta{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:13px;color:rgba(255,255,255,.5);margin-top:6px;line-height:1.35;}
+.qp-sc-rbrand{flex-shrink:0;}
+.qp-sc-rsq{display:flex;width:44px;height:44px;border-radius:10px;background:#1a3d28;border:0.5px solid #2a5a3a;align-items:center;justify-content:center;box-sizing:border-box;}
+.qp-sc-rdeg{font-family:'IBM Plex Serif',Georgia,serif;font-size:20px;font-weight:600;color:#4a9a6a;line-height:1;}
+.qp-sc-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;padding-top:2px;}
+.qp-sc-pill{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:12px;font-weight:600;padding:9px 16px;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.qp-sc-pill--primary{background:#fff;color:#0f2318;border-radius:100px;}
+.qp-sc-pill--secondary{background:rgba(255,255,255,.12);color:#fff;border-radius:100px;border:0.5px solid rgba(255,255,255,.35);}
+.qp-sc-body{padding:0 0 28px!important;}
+#p-quote .qp-sc-card{margin:14px auto 0;padding:20px 16px 22px;max-width:660px;border:0.5px solid #e0e0e0;border-radius:10px;background:#fff;box-shadow:none!important;}
+#p-quote .qp-sc-qt{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:18px;padding-bottom:16px;border-bottom:0.5px solid #e0e0e0;}
+#p-quote .qp-sc-card .q-logo-ring{width:44px;height:44px;border-radius:10px;background:#1a3d28;border:0.5px solid #2a5a3a;box-shadow:none;}
+#p-quote .qp-sc-card .q-logo-ring--placeholder .q-logo-ring__mark{font-size:7px;padding:4px;}
+#p-quote .qp-sc-card .qco{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:18px;font-weight:600;color:#111;}
+#p-quote .qp-sc-card .qci{font-size:11px;color:#888;line-height:1.65;margin-top:4px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+.qp-sc-qtright{text-align:right;}
+#p-quote .qp-sc-card .qnum{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:13px;color:#111;}
+#p-quote .qp-sc-card .qdate{font-size:11px;color:#aaa;margin-top:4px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-quote .qp-sc-card .qbadge{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:6px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-family:'IBM Plex Sans',system-ui,sans-serif;background:transparent;color:#111;border:0.5px solid #e0e0e0;}
+.qp-sc-prep{margin-bottom:18px;}
+.qp-sc-prep-label{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:#aaa;margin-bottom:6px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+.qp-sc-prep-name{font-size:14px;font-weight:500;color:#111;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+.qp-sc-prep-addr{font-size:12px;color:#888;margin-top:4px;line-height:1.45;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-quote .qp-sc-tbl{width:100%;border-collapse:collapse;margin-bottom:14px;}
+#p-quote .qp-sc-tbl th{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:#aaa;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:0 8px 10px 0;border-bottom:0.5px solid #e0e0e0;font-weight:500;}
+#p-quote .qp-sc-tbl .qp-sc-th-amt{text-align:right;}
+#p-quote .qp-sc-tbl td{padding:8px 8px 8px 0;border-bottom:0.5px solid #e0e0e0;font-size:13px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-quote .qp-sc-tbl td:last-child{font-family:'IBM Plex Mono',ui-monospace,monospace;color:#111;text-align:right;}
+#p-quote .qp-sc-tbl .rr td{font-weight:500;color:#111;padding-top:12px;}
+#p-quote .qp-sc-tbl .qp-sc-li-sub{padding-left:14px;font-size:11px;color:#aaa;font-weight:400;}
+#p-quote .qp-sc-qtot{border-top:none;padding-top:8px;}
+#p-quote .qp-sc-qtot .qtr .ql{font-size:13px;color:#888;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-quote .qp-sc-qtot .qtr .qr{font-family:'IBM Plex Mono',ui-monospace,monospace;color:#111;}
+#p-quote .qp-sc-qtot-total{margin-top:10px;padding-top:12px;border-top:0.5px solid #e0e0e0;}
+#p-quote .qp-sc-qtot-total .ql{font-size:15px;font-weight:500;color:#111;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-quote .qp-sc-qtot-total .qr{font-size:18px;font-weight:500;color:#2d7a2d;font-family:'IBM Plex Mono',ui-monospace,monospace;}
+.qp-sc-empty{text-align:center;padding:24px 12px;color:#aaa;font-size:13px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-quote .qp-sc-card .q-timeline{margin-top:20px;padding-top:16px;border-top:0.5px solid #e0e0e0;border-bottom:none;}
+#p-quote .qp-sc-card .q-tl-h{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-bottom:10px;}
+#p-quote .qp-sc-card .q-tl-t{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:14px;font-weight:500;color:#111;}
+#p-quote .qp-sc-card .q-tl-sub{font-size:11px;color:#888;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+.qp-sc-terms{margin-top:18px;padding-top:14px;border-top:0.5px solid #e0e0e0;font-size:12px;color:#888;line-height:1.65;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+.qp-sc-terms strong{color:#111;font-weight:600;}
+.qp-sc-sigs{margin-top:22px;padding-top:18px;border-top:0.5px solid #e0e0e0;display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.qp-sc-sig-h{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#aaa;margin-bottom:10px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+.qp-sc-sig-line{border-top:0.5px solid #e0e0e0;padding-top:8px;}
+.qp-sc-sig-sub{font-size:10px;color:#888;font-family:'IBM Plex Sans',system-ui,sans-serif;}
 
 .sg{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
 .ss{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
@@ -1903,7 +1963,6 @@ a.ni{color:inherit;text-decoration:none;}
   #p-cal .proj-ph-title-row,
   #p-shop .ml-ph-hero .proj-ph-title-row,
   #p-tl .ml-ph-hero .proj-ph-title-row,
-  #p-quote .ml-ph-hero .proj-ph-title-row,
   #p-clients .ml-ph-hero .proj-ph-title-row {
     display: flex;
     align-items: flex-start;
@@ -1913,7 +1972,6 @@ a.ni{color:inherit;text-decoration:none;}
   #p-cal .proj-ph-icon,
   #p-shop .ml-ph-hero .ml-ph-icon,
   #p-tl .ml-ph-hero .ml-ph-icon,
-  #p-quote .ml-ph-hero .ml-ph-icon,
   #p-clients .ml-ph-hero .ml-ph-icon {
     flex-shrink: 0;
     color: var(--ac);
@@ -1925,7 +1983,6 @@ a.ni{color:inherit;text-decoration:none;}
   #p-cal .proj-ph-icon svg,
   #p-shop .ml-ph-hero .ml-ph-icon svg,
   #p-tl .ml-ph-hero .ml-ph-icon svg,
-  #p-quote .ml-ph-hero .ml-ph-icon svg,
   #p-clients .ml-ph-hero .ml-ph-icon svg {
     width: 24px;
     height: 24px;
@@ -1935,7 +1992,6 @@ a.ni{color:inherit;text-decoration:none;}
   #p-cal .proj-ph-title-row .pt,
   #p-shop .ml-ph-hero .pt,
   #p-tl .ml-ph-hero .pt,
-  #p-quote .ml-ph-hero .pt,
   #p-clients .ml-ph-hero .pt {
     font-size: 22px;
   }
@@ -1948,13 +2004,20 @@ a.ni{color:inherit;text-decoration:none;}
   #p-rooms .ph--proj,
   #p-shop .ml-ph,
   #p-tl .ml-ph,
-  #p-quote .ml-ph,
   #p-clients .ml-ph {
     border-bottom: 1px solid #d9d9d9 !important;
     margin: 0;
     box-sizing: border-box;
     padding: max(10px, env(safe-area-inset-top, 0px)) 20px 14px !important;
     background: transparent !important;
+    min-height: var(--rf-mob-hdr-h, auto);
+  }
+  #p-quote .qp-sc-site-top{
+    margin: 0;
+    box-sizing: border-box;
+    padding-bottom: 0 !important;
+    border-bottom: none !important;
+    background: #0f2318 !important;
     min-height: var(--rf-mob-hdr-h, auto);
   }
   #p-shop .ml-page,
@@ -1965,25 +2028,24 @@ a.ni{color:inherit;text-decoration:none;}
   }
   #p-shop .ml-page > .ml-page-body,
   #p-tl .ml-page > .ml-page-body,
-  #p-quote .ml-page > .ml-page-body,
   #p-clients .ml-page > .ml-page-body {
     padding: 8px 20px 28px;
   }
+  #p-quote .ml-page > .ml-page-body.qp-sc-body{
+    padding: 8px 0 28px !important;
+  }
   #p-shop .ml-actions-below,
   #p-tl .ml-actions-below,
-  #p-quote .ml-actions-below,
   #p-clients .ml-actions-below {
     padding-left: 34px;
   }
   #p-tl .ml-actions-below,
-  #p-quote .ml-actions-below,
   #p-clients .ml-actions-below {
     min-height: 2.75rem;
     align-content: flex-start;
   }
   #p-shop .ml-actions-below .btn.sm,
   #p-tl .ml-actions-below .btn.sm,
-  #p-quote .ml-actions-below .btn.sm,
   #p-clients .ml-actions-below .btn.sm {
     padding: 5px 10px;
     font-size: 12px;
@@ -7153,6 +7215,42 @@ function sNote(ti,v){S.rooms[curR].trades[ti].note=v;ss();}
 
 var RF_SVG_TL_IC='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>';
 var RF_SVG_QU_IC='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>';
+/** Decorative status icons (Site Clean quote preview header); not real OS status. */
+var RF_QP_STATUS_ICONS='<svg width="17" height="11" viewBox="0 0 17 11" aria-hidden="true" class="qp-sc-svi"><path fill="#fff" d="M1 8h2v3H1zm3 2h2v1H4zm3 2h2v-1H7zm3 3h2v-4h-2zm3 4h2v-8h-2z"/></svg>'
++'<svg width="15" height="11" viewBox="0 0 15 11" aria-hidden="true" class="qp-sc-svi"><path fill="#fff" d="M7.5 1C10.3 3.2 12 5.7 12 9H3c0-3.3 1.7-5.8 4.5-8zm0 2.5C6 5.6 5 7.2 5 9h5c0-1.8-1-3.4-2.5-5.5z"/></svg>'
++'<svg width="23" height="11" viewBox="0 0 23 11" aria-hidden="true" class="qp-sc-svi qp-sc-svi--bat"><rect x="19.5" y="3" width="1.2" height="5" rx=".4" fill="#fff"/><rect x="2" y="2.5" width="16.5" height="6" rx="1.5" fill="none" stroke="#fff" stroke-width="1"/><rect x="3.5" y="4" width="11" height="3.5" rx=".6" fill="#fff"/></svg>';
+/** Site Clean quote preview: dark header + status strip; opens ml-page / ml-page-body (caller closes). */
+function rfQuotePreviewShell(metaLine, actionsInnerHtml){
+  var tStr="";
+  try{
+    var d=new Date();
+    var h=d.getHours(), mi=d.getMinutes();
+    var am=h>=12?"PM":"AM";
+    var hr=h%12;if(hr===0)hr=12;
+    tStr=hr+":"+(mi<10?"0":"")+mi+" "+am;
+  }catch(e){}
+  var metaEsc=typeof escHtml==="function"?escHtml(metaLine):metaLine;
+  return ''
+    +'<div class="ml-page qp-sc-page">'
+    +'<div class="qp-sc-site-top rf-tab-hdr">'
+    +'<div class="qp-sc-status no-print" aria-hidden="true">'
+      +'<span class="qp-sc-time">'+(typeof escHtml==="function"?escHtml(tStr):tStr)+'</span>'
+      +'<span class="qp-sc-status-icons">'+RF_QP_STATUS_ICONS+'</span>'
+    +'</div>'
+    +'<header class="qp-sc-header">'
+    +'<div class="qp-sc-header-row">'
+      +'<div class="qp-sc-header-text">'
+        +'<div class="qp-sc-kicker">ESTIMATE</div>'
+        +'<div class="qp-sc-title">Quote Preview</div>'
+        +'<div class="qp-sc-meta">'+metaEsc+'</div>'
+      +'</div>'
+      +'<div class="qp-sc-rbrand" aria-hidden="true"><span class="qp-sc-rsq"><span class="qp-sc-rdeg">R&#176;</span></span></div>'
+    +'</div>'
+    +'<div class="qp-sc-actions">'+actionsInnerHtml+'</div>'
+    +'</header>'
+    +'</div>'
+    +'<div class="pc ml-page-body qp-sc-body">';
+}
 var RF_SVG_CL_IC='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
 function rfMobTabPhBuild(icon, ptHtml, psHtml, below, col){
   var h='';
@@ -7622,7 +7720,7 @@ function exportMaterialsCsv(){
 function rfRecordMaterialsHeaderH(){
   try{
     if(typeof window.innerWidth!=="number"||window.innerWidth>767)return;
-    var map={shop:"#p-shop .ml-ph",tl:"#p-tl .ml-ph",quote:"#p-quote .ml-ph",clients:"#p-clients .ml-ph",cal:"#p-cal .ph.ph--proj",proj:"#p-proj .ph.ph--proj",rooms:"#p-rooms .ph.ph--proj"};
+    var map={shop:"#p-shop .ml-ph",tl:"#p-tl .ml-ph",quote:"#p-quote .qp-sc-site-top",clients:"#p-clients .ml-ph",cal:"#p-cal .ph.ph--proj",proj:"#p-proj .ph.ph--proj",rooms:"#p-rooms .ph.ph--proj"};
     var id=typeof curPg==="string"?map[curPg]:"";
     if(!id)return;
     var m=document.querySelector(id);
@@ -7743,7 +7841,7 @@ function buildQuoteTimeline(){
   var endDate=getWorkDayCalendarDate(S,ps.totalDays);
 
   var datesLine = startDate
-    ? 'Estimated Start: <strong>'+fmtDateLong(startDate)+'</strong> &nbsp;?&nbsp; Estimated Completion: <strong>'+fmtDateLong(endDate)+'</strong>'
+    ? 'Estimated Start: <strong>'+fmtDateLong(startDate)+'</strong> \u00a0\u00b7\u00a0 Estimated Completion: <strong>'+fmtDateLong(endDate)+'</strong>'
     : 'Total duration: <strong>'+ps.totalDays+' working days</strong> (start date to be confirmed)';
 
   var weeks={};
@@ -7797,7 +7895,7 @@ function buildQuoteTimeline(){
     : '';
 
   return '<div class="q-timeline">'
-    +'<div class="q-tl-h"><div class="q-tl-t">Project Timeline</div><div class="q-tl-sub">'+ps.totalDays+' working days ? '+ps.roomSchedules.length+' room'+(ps.roomSchedules.length!==1?'s':'')+'</div></div>'
+    +'<div class="q-tl-h"><div class="q-tl-t">Project Timeline</div><div class="q-tl-sub">'+ps.totalDays+' working days \u00B7 '+ps.roomSchedules.length+' room'+(ps.roomSchedules.length!==1?'s':'')+'</div></div>'
     +'<div class="q-tl-dates">'+datesLine+'</div>'
     +dayNotesHtml
     +rows
@@ -7810,32 +7908,35 @@ function rQuote(){
   var sub=projTotal(),tax=sub*S.mk.tax/100,tot=sub+tax;
   var ds=new Date().toLocaleDateString("en-CA",{year:"numeric",month:"long",day:"numeric"});
   var valid=new Date(Date.now()+30*864e5).toLocaleDateString("en-CA",{month:"long",day:"numeric",year:"numeric"});
+  var metaLine="#"+S.proj.qnum+" \u00B7 Valid until "+valid;
   var rows=S.rooms.map(function(r){
     var rt=roomTotal(r);if(rt===0)return"";
     var tr=(r.trades||[]).filter(function(t){return tradeCost(t)>0;}).map(function(t){
-      return '<tr><td style="padding-left:16px;color:var(--tx3);font-size:12px">'+TIC[t.id]+' '+t.n+'</td><td></td><td style="font-size:12px">'+f(tradeCost(t))+'</td></tr>';
+      return '<tr><td class="qp-sc-li-sub" colspan="2">'+TIC[t.id]+' '+t.n+'</td><td class="qp-sc-li-amt">'+f(tradeCost(t))+'</td></tr>';
     }).join("");
-    return '<tr class="rr"><td>'+r.ic+' '+r.n+'</td><td></td><td>'+f(rt)+'</td></tr>'+tr;
+    return '<tr class="rr"><td>'+r.ic+' '+r.n+'</td><td></td><td class="qp-sc-li-amt">'+f(rt)+'</td></tr>'+tr;
   }).join("");
   var timelineSection = buildQuoteTimeline();
-  var qHdrAct='<button type="button" class="btn bp sm" onclick="createInvFromQuote()">Create invoice from quote</button>'
-    +'<button type="button" class="btn bg sm" onclick="window.print()">Print</button>'
-    +'<button type="button" class="btn bp sm" onclick="openPdf()">Generate PDF</button>';
-  el.innerHTML=rfMobTabPhBuild(RF_SVG_QU_IC,'Quote <em>Preview</em>','#'+S.proj.qnum+' ? Valid until '+valid,qHdrAct,'')
-    +'<div class="qp">'
-    +'<div class="qt">'+htmlCoBlockFromS()
-    +'<div style="text-align:right"><div class="qnum">'+S.proj.qnum+'</div><div class="qdate">'+ds+'</div><div class="qbadge">ESTIMATE</div></div></div>'
-    +'<div style="margin-bottom:20px">'
-    +'<div style="font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px">Prepared For</div>'
-    +'<div style="font-size:15px;font-weight:500">'+(S.proj.client||"Client Name")+'</div>'
-    +'<div style="font-size:13px;color:var(--tx2)">'+(S.proj.addr||"Project Address")+'</div></div>'
-    +'<table class="qtbl"><thead><tr><th>Description</th><th></th><th style="text-align:right">Amount</th></tr></thead>'
-    +'<tbody>'+(rows||'<tr><td colspan="3" style="text-align:center;color:var(--tx3);padding:20px">No rooms estimated yet</td></tr>')+'</tbody></table>'
-    +'<div class="qtot"><div class="qtr"><div class="ql">Subtotal</div><div class="qr">'+f(sub)+'</div></div>'
+  var qActs='<button type="button" class="qp-sc-pill qp-sc-pill--primary" onclick="openPdf()">Generate PDF</button>'
+    +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="createInvFromQuote()">Create Invoice</button>'
+    +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="window.print()">Print</button>';
+  var cNm=typeof escHtml==="function"?escHtml(S.proj.client||"Client Name"):(S.proj.client||"Client Name");
+  var cAd=typeof escHtml==="function"?escHtml(S.proj.addr||"Project Address"):(S.proj.addr||"Project Address");
+  el.innerHTML=rfQuotePreviewShell(metaLine,qActs)
+    +'<div class="qp qp-sc-card">'
+    +'<div class="qt qp-sc-qt">'+htmlCoBlockFromS()
+    +'<div class="qp-sc-qtright"><div class="qnum">'+S.proj.qnum+'</div><div class="qdate">'+ds+'</div><div class="qbadge">ESTIMATE</div></div></div>'
+    +'<div class="qp-sc-prep">'
+    +'<div class="qp-sc-prep-label">Prepared for</div>'
+    +'<div class="qp-sc-prep-name">'+cNm+'</div>'
+    +'<div class="qp-sc-prep-addr">'+cAd+'</div></div>'
+    +'<table class="qtbl qp-sc-tbl"><thead><tr><th>Description</th><th></th><th class="qp-sc-th-amt">Amount</th></tr></thead>'
+    +'<tbody>'+(rows||'<tr><td colspan="3" class="qp-sc-empty">No rooms estimated yet</td></tr>')+'</tbody></table>'
+    +'<div class="qtot qp-sc-qtot"><div class="qtr"><div class="ql">Subtotal</div><div class="qr">'+f(sub)+'</div></div>'
     +'<div class="qtr"><div class="ql">Tax ('+S.mk.tax+'%)</div><div class="qr">'+f(tax)+'</div></div>'
-    +'<div class="qtr gd" style="margin-top:8px;padding-top:10px;border-top:1px solid var(--bd2)"><div class="ql">Total</div><div class="qr">'+f(tot)+'</div></div></div>'
+    +'<div class="qtr gd qp-sc-qtot-total"><div class="ql">Total</div><div class="qr">'+f(tot)+'</div></div></div>'
     +timelineSection
-    +(S.proj.notes?'<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--bd);font-size:12px;color:var(--tx3);line-height:1.7"><strong style="color:var(--tx2)">Terms:</strong><br>'+S.proj.notes+'</div>':'')
+    +(S.proj.notes?'<div class="qp-sc-terms"><strong>Terms:</strong><br>'+S.proj.notes+'</div>':'')
     +'</div></div></div>';
   requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
 }
@@ -7887,14 +7988,14 @@ function buildPrintQuote(fmt,mkPct){
   S.rooms.forEach(function(r){
     var rt=(r.trades||[]).reduce(function(s,t){return s+tTot(t);},0);
     if(rt===0)return;
-    if(fmt==="labour"){var lv=(r.trades||[]).reduce(function(s,t){return s+tLbr(t);},0);sub+=lv;rows+='<tr class="rr"><td>'+r.ic+" "+r.n+'</td><td></td><td>'+f(lv)+'</td></tr>';return;}
-    if(fmt==="material"){var mv=(r.trades||[]).reduce(function(s,t){return s+tMat(t);},0);sub+=mv;rows+='<tr class="rr"><td>'+r.ic+" "+r.n+'</td><td></td><td>'+f(mv)+'</td></tr>';return;}
-    if(fmt==="total"){sub+=rt;rows+='<tr class="rr"><td>'+r.ic+" "+r.n+'</td><td></td><td>'+f(rt)+'</td></tr>';return;}
+    if(fmt==="labour"){var lv=(r.trades||[]).reduce(function(s,t){return s+tLbr(t);},0);sub+=lv;rows+='<tr class="rr"><td>'+r.ic+" "+r.n+'</td><td></td><td class="qp-sc-li-amt">'+f(lv)+'</td></tr>';return;}
+    if(fmt==="material"){var mv=(r.trades||[]).reduce(function(s,t){return s+tMat(t);},0);sub+=mv;rows+='<tr class="rr"><td>'+r.ic+" "+r.n+'</td><td></td><td class="qp-sc-li-amt">'+f(mv)+'</td></tr>';return;}
+    if(fmt==="total"){sub+=rt;rows+='<tr class="rr"><td>'+r.ic+" "+r.n+'</td><td></td><td class="qp-sc-li-amt">'+f(rt)+'</td></tr>';return;}
     sub+=rt;
-    rows+='<tr class="rr"><td>'+r.ic+" "+r.n+'</td><td></td><td>'+f(rt)+'</td></tr>';
+    rows+='<tr class="rr"><td>'+r.ic+" "+r.n+'</td><td></td><td class="qp-sc-li-amt">'+f(rt)+'</td></tr>';
     (r.trades||[]).filter(function(t){return tTot(t)>0;}).forEach(function(t){
-      if(fmt==="trade"){rows+='<tr><td style="padding-left:16px;color:var(--tx3);font-size:12px">'+TIC[t.id]+" "+t.n+'</td><td></td><td style="font-size:12px">'+f(tTot(t))+'</td></tr>';}
-      else{var lv=tLbr(t),mv=tMat(t);if(mv>0)rows+='<tr><td style="padding-left:16px;color:var(--tx3);font-size:12px">'+TIC[t.id]+" "+t.n+" ??? Materials"+'</td><td></td><td style="font-size:12px">'+f(mv)+'</td></tr>';if(lv>0)rows+='<tr><td style="padding-left:16px;color:var(--tx3);font-size:12px">'+TIC[t.id]+" "+t.n+" ??? Labour"+'</td><td></td><td style="font-size:12px">'+f(lv)+'</td></tr>';}
+      if(fmt==="trade"){rows+='<tr><td class="qp-sc-li-sub" colspan="2">'+TIC[t.id]+" "+t.n+'</td><td class="qp-sc-li-amt">'+f(tTot(t))+'</td></tr>';}
+      else{var lv=tLbr(t),mv=tMat(t);if(mv>0)rows+='<tr><td class="qp-sc-li-sub" colspan="2">'+TIC[t.id]+" "+t.n+" \u00B7 Materials"+'</td><td class="qp-sc-li-amt">'+f(mv)+'</td></tr>';if(lv>0)rows+='<tr><td class="qp-sc-li-sub" colspan="2">'+TIC[t.id]+" "+t.n+" \u00B7 Labour"+'</td><td class="qp-sc-li-amt">'+f(lv)+'</td></tr>';}
     });
   });
 
@@ -7905,28 +8006,31 @@ function buildPrintQuote(fmt,mkPct){
   var fmtLabel={full:"Full Breakdown",total:"Total Only",labour:"Labour Only",material:"Material Only",trade:"Trade Summary"}[fmt];
   var timelineSection = buildQuoteTimeline();
 
-  var qHdrAct2='<button type="button" class="btn bp sm" onclick="createInvFromQuote()">Create invoice from quote</button>'
-    +'<button type="button" class="btn bg sm" onclick="window.print()">Print</button>'
-    +'<button type="button" class="btn bp sm" onclick="openPdf()">Generate PDF</button>';
-  document.getElementById("p-quote").innerHTML=rfMobTabPhBuild(RF_SVG_QU_IC,'Quote <em>Preview</em>','#'+S.proj.qnum+" ? "+fmtLabel+" ? Valid until "+valid,qHdrAct2,"")
-    +'<div class="qp">'
-    +'<div class="qt">'+htmlCoBlockFromS()
-    +'<div style="text-align:right"><div class="qnum">'+S.proj.qnum+'</div><div class="qdate">'+ds+'</div><div class="qbadge">ESTIMATE</div></div></div>'
-    +'<div style="margin-bottom:20px">'
-    +'<div style="font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px">Prepared For</div>'
-    +'<div style="font-size:15px;font-weight:500">'+(S.proj.client||"Client Name")+'</div>'
-    +'<div style="font-size:13px;color:var(--tx2)">'+(S.proj.addr||"Project Address")+'</div></div>'
-    +'<table class="qtbl"><thead><tr><th>Description</th><th></th><th style="text-align:right">Amount</th></tr></thead>'
-    +'<tbody>'+(rows||'<tr><td colspan="3" style="text-align:center;color:var(--tx3);padding:20px">No rooms estimated yet</td></tr>')+'</tbody></table>'
-    +'<div class="qtot">'
-    +'<div class="qtr"><div class="ql">Subtotal</div><div class="qr">'+f(sub)+'</div></div>'
+  var metaPdf="#"+S.proj.qnum+" \u00B7 "+fmtLabel+" \u00B7 Valid until "+valid;
+  var qActs2='<button type="button" class="qp-sc-pill qp-sc-pill--primary" onclick="openPdf()">Generate PDF</button>'
+    +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="createInvFromQuote()">Create Invoice</button>'
+    +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="window.print()">Print</button>';
+  var cNmP=typeof escHtml==="function"?escHtml(S.proj.client||"Client Name"):(S.proj.client||"Client Name");
+  var cAdP=typeof escHtml==="function"?escHtml(S.proj.addr||"Project Address"):(S.proj.addr||"Project Address");
+  var coNmSig=typeof escHtml==="function"?escHtml(S.co.name||""):(S.co.name||"");
+  document.getElementById("p-quote").innerHTML=rfQuotePreviewShell(metaPdf,qActs2)
+    +'<div class="qp qp-sc-card">'
+    +'<div class="qt qp-sc-qt">'+htmlCoBlockFromS()
+    +'<div class="qp-sc-qtright"><div class="qnum">'+S.proj.qnum+'</div><div class="qdate">'+ds+'</div><div class="qbadge">ESTIMATE</div></div></div>'
+    +'<div class="qp-sc-prep">'
+    +'<div class="qp-sc-prep-label">Prepared for</div>'
+    +'<div class="qp-sc-prep-name">'+cNmP+'</div>'
+    +'<div class="qp-sc-prep-addr">'+cAdP+'</div></div>'
+    +'<table class="qtbl qp-sc-tbl"><thead><tr><th>Description</th><th></th><th class="qp-sc-th-amt">Amount</th></tr></thead>'
+    +'<tbody>'+(rows||'<tr><td colspan="3" class="qp-sc-empty">No rooms estimated yet</td></tr>')+'</tbody></table>'
+    +'<div class="qtot qp-sc-qtot"><div class="qtr"><div class="ql">Subtotal</div><div class="qr">'+f(sub)+'</div></div>'
     +(tax>0?'<div class="qtr"><div class="ql">Tax ('+S.mk.tax+'%)</div><div class="qr">'+f(tax)+'</div></div>':"")
-    +'<div class="qtr gd" style="margin-top:8px;padding-top:10px;border-top:1px solid var(--bd2)"><div class="ql">Total</div><div class="qr">'+f(tot)+'</div></div></div>'
+    +'<div class="qtr gd qp-sc-qtot-total"><div class="ql">Total</div><div class="qr">'+f(tot)+'</div></div></div>'
     +timelineSection
-    +(S.proj.notes?'<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--bd);font-size:12px;color:var(--tx3);line-height:1.7"><strong style="color:var(--tx2)">Terms:</strong><br>'+S.proj.notes+'</div>':'')
-    +'<div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--bd);display:grid;grid-template-columns:1fr 1fr;gap:20px;">'
-    +'<div><div style="font-size:10px;color:var(--tx3);margin-bottom:22px">CLIENT SIGNATURE</div><div style="border-top:1px solid var(--bd2);padding-top:6px;font-size:10px;color:var(--tx3)">Signature &amp; Date</div></div>'
-    +'<div><div style="font-size:10px;color:var(--tx3);margin-bottom:22px">AUTHORIZED BY</div><div style="border-top:1px solid var(--bd2);padding-top:6px;font-size:10px;color:var(--tx3)">'+S.co.name+'</div></div>'
+    +(S.proj.notes?'<div class="qp-sc-terms"><strong>Terms:</strong><br>'+S.proj.notes+'</div>':'')
+    +'<div class="qp-sc-sigs">'
+    +'<div><div class="qp-sc-sig-h">CLIENT SIGNATURE</div><div class="qp-sc-sig-line"><span class="qp-sc-sig-sub">Signature &amp; Date</span></div></div>'
+    +'<div><div class="qp-sc-sig-h">AUTHORIZED BY</div><div class="qp-sc-sig-line"><span class="qp-sc-sig-sub">'+coNmSig+'</span></div></div>'
     +'</div></div></div></div>';
   requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
 }
