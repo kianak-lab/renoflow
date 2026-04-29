@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, {
   useCallback,
   useEffect,
@@ -10,6 +11,7 @@ import React, {
   useState,
 } from "react";
 import { INTAKE_TRADE_IDS, TN } from "@/lib/final-catalog";
+import { hydrateProjectWorkspaceFromApi } from "@/lib/hydrate-project-workspace";
 
 type TradeRow = {
   id: string;
@@ -191,9 +193,12 @@ export default function RoomDetailClient({
   const [addTradeOpen, setAddTradeOpen] = useState(false);
   const [pick, setPick] = useState<Record<string, boolean>>({});
   const [savingTrades, setSavingTrades] = useState(false);
+  const [openingTradeId, setOpeningTradeId] = useState<string | null>(null);
 
   const headerRef = useRef<HTMLElement>(null);
   const [mobHeaderSpacer, setMobHeaderSpacer] = useState(0);
+
+  const router = useRouter();
 
   const monoStyle = { fontFamily: "var(--rf-plex-mono)" } as const;
 
@@ -347,6 +352,33 @@ export default function RoomDetailClient({
     return [r, c].filter(Boolean).join(" · ");
   }, [data]);
 
+  const openTradeNavigate = useCallback(
+    async (t: TradeRow) => {
+      setOpeningTradeId(t.id);
+      setError(null);
+      try {
+        await hydrateProjectWorkspaceFromApi(projectId);
+        if (t.trade_id === "demo") {
+          const q = new URLSearchParams();
+          q.set("pid", projectId);
+          q.set("dbRoomId", roomId);
+          router.push(`/trades/demolition?${q.toString()}`);
+        } else {
+          const q = new URLSearchParams();
+          q.set("project", projectId);
+          q.set("room", roomId);
+          q.set("trade", t.trade_id);
+          router.push(`/final?${q.toString()}`);
+        }
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Could not open trade.");
+      } finally {
+        setOpeningTradeId(null);
+      }
+    },
+    [projectId, roomId, router],
+  );
+
   return (
     <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden">
       <header
@@ -441,10 +473,6 @@ export default function RoomDetailClient({
                 {data.trades.map((t) => {
                   const vis = tradeVisual(t.trade_id);
                   const St = statusDotStyle(t.status);
-                  const openHref =
-                    t.trade_id === "demo"
-                      ? demolitionHref(projectId, roomId)
-                      : finalHref(projectId, { room: roomId, trade: t.trade_id });
                   const Icon = vis.Icon;
                   return (
                     <div
@@ -516,14 +544,21 @@ export default function RoomDetailClient({
                         >
                           Labour
                         </Link>
-                        <Link
-                          href={openHref}
-                          prefetch={false}
-                          className="inline-flex min-h-[36px] flex-[1.15] items-center justify-center gap-1 rounded-[100px] bg-[#0f2318] px-3 text-[11px] font-medium text-white no-underline [-webkit-tap-highlight-color:transparent]"
+                        <button
+                          type="button"
+                          disabled={openingTradeId === t.id}
+                          onClick={() => void openTradeNavigate(t)}
+                          className="inline-flex min-h-[36px] flex-[1.15] items-center justify-center gap-1 rounded-[100px] bg-[#0f2318] px-3 text-[11px] font-medium text-white [-webkit-tap-highlight-color:transparent] disabled:opacity-60"
                           style={{ flex: "1.15 1 96px" }}
                         >
-                          Open <span aria-hidden>→</span>
-                        </Link>
+                          {openingTradeId === t.id ? (
+                            "…"
+                          ) : (
+                            <>
+                              Open <span aria-hidden>→</span>
+                            </>
+                          )}
+                        </button>
                       </div>
                     </div>
                   );

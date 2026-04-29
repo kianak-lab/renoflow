@@ -165,7 +165,7 @@ type TradeShape = {
   }>;
 };
 
-type WorkspaceShape = {
+export type WorkspaceShape = {
   rooms?: Array<{
     n?: string;
     ic?: string;
