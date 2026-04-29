@@ -291,7 +291,7 @@ export default function ProjectsManager() {
     };
   }, [fabOpen]);
 
-  /** Lock document scroll on this screen so iOS rubber-band does not move the shell / tab bar. */
+  /** Lock document scroll while this screen is open so the bottom navigation stays visually fixed on iOS/PWA. */
   useEffect(() => {
     const html = document.documentElement;
     const body = document.body;
@@ -364,7 +364,7 @@ export default function ProjectsManager() {
       </header>
 
       <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-none pb-4 md:pb-6">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-none pb-[calc(88px+max(0px,env(safe-area-inset-bottom,0px)))] md:pb-6">
         <div
           className="flex gap-1.5 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           style={{ padding: "12px 14px", gap: 6 }}
@@ -554,16 +554,17 @@ export default function ProjectsManager() {
           onClick={() => setFabOpen(false)}
           aria-hidden={!fabOpen}
         />
+      </div>
 
-        <nav
-          className="relative z-[10100] flex shrink-0 flex-row items-center justify-between border-t bg-white md:hidden"
-          style={{
-            borderTop: "0.5px solid #e0e0e0",
-            padding: `10px 4px max(8px, env(safe-area-inset-bottom, 0px))`,
-            boxShadow: "none",
-          }}
-          aria-label="Main"
-        >
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-[10100] flex flex-row items-center justify-between border-t bg-white [transform:translateZ(0)] md:hidden"
+        style={{
+          borderTop: "0.5px solid #e0e0e0",
+          padding: `10px 4px max(8px, env(safe-area-inset-bottom, 0px))`,
+          boxShadow: "none",
+        }}
+        aria-label="Bottom navigation"
+      >
           <Link
             href="/final"
             prefetch={false}
@@ -774,8 +775,7 @@ export default function ProjectsManager() {
             </span>
             <span className="max-w-full truncate text-[9px] font-medium uppercase tracking-wide">Clients</span>
           </Link>
-        </nav>
-      </div>
+      </nav>
 
       {editing ? (
         <div
