@@ -9540,7 +9540,7 @@ function useClient(i){
     +'</div>', []);
 }
 
-initFromServer();
+if (typeof window.addEventListener === "function") {
   window.addEventListener("resize", function(){
     if(typeof curPg==="string") syncMobDashStatusBarBg(curPg);
   }, {passive:true});
@@ -9551,7 +9551,6 @@ initFromServer();
   }, {passive:true});
 }
 syncMobDashStatusBarBg(typeof curPg==="string"?curPg:"dash");
-
 initFromServer();
 </script>
 </body>
