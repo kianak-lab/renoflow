@@ -78,6 +78,7 @@ export const metadata: Metadata = {
   },
 };
 
+/** env(safe-area-inset-*) on iOS requires viewport-fit=cover (emitted as viewport meta). */
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
