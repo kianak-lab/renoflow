@@ -331,7 +331,7 @@ export default function ProjectsManager() {
       ro.disconnect();
       mq.removeEventListener("change", apply);
     };
-  }, []);
+  }, [loading, projects.length]);
 
   return (
     <div
@@ -340,28 +340,70 @@ export default function ProjectsManager() {
     >
       <header
         ref={headerRef}
-        className="shrink-0 text-white max-md:fixed max-md:left-0 max-md:right-0 max-md:top-0 max-md:z-[100] md:relative"
+        className="shrink-0 max-md:fixed max-md:left-0 max-md:right-0 max-md:top-0 max-md:z-[100] md:relative"
         style={{
           background: "#0f2318",
           paddingTop: "env(safe-area-inset-top, 0px)",
+          paddingLeft: 16,
+          paddingRight: 16,
+          paddingBottom: 16,
+          boxSizing: "border-box",
           zIndex: 100,
+          fontFamily: "'IBM Plex Sans', system-ui, -apple-system, sans-serif",
         }}
       >
-        <div className="px-3.5 pb-3 pt-0.5" style={{ paddingLeft: 14, paddingRight: 14 }}>
-          <h1 className="text-[22px] font-medium leading-tight tracking-tight text-white">
+        <div className="w-full">
+          <div
+            style={{
+              fontSize: 11,
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+              color: "rgba(255,255,255,0.4)",
+              margin: "0 0 4px",
+              fontWeight: 500,
+            }}
+          >
+            YOUR PROJECTS
+          </div>
+          <h1
+            style={{
+              fontSize: 22,
+              fontWeight: 500,
+              color: "#fff",
+              lineHeight: 1.2,
+              margin: 0,
+            }}
+          >
             Projects
           </h1>
-        </div>
-
-        <div className="px-3.5 pb-4" style={{ paddingLeft: 14, paddingRight: 14 }}>
-          <label className="relative block">
-            <span
-              className="pointer-events-none absolute bottom-0 left-3 top-0 flex w-[18px] items-center justify-start text-white/50"
-              aria-hidden
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" className="shrink-0">
-                <circle cx="11" cy="11" r="7" />
-                <path d="M20 20l-4.3-4.3" />
+          <p
+            style={{
+              fontSize: 13,
+              color: "rgba(255,255,255,0.4)",
+              margin: "4px 0 0",
+              lineHeight: 1.35,
+            }}
+          >
+            {loading ? "…" : `${projects.length} ${projects.length === 1 ? "project" : "projects"}`}
+          </p>
+          <div
+            role="search"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              marginTop: 14,
+              background: "rgba(255,255,255,0.1)",
+              border: "0.5px solid rgba(255,255,255,0.15)",
+              borderRadius: 10,
+              padding: "10px 14px",
+              boxSizing: "border-box",
+            }}
+          >
+            <span style={{ flexShrink: 0, display: "flex" }} aria-hidden>
+              <svg width={18} height={18} viewBox="0 0 24 24" aria-hidden>
+                <circle cx={11} cy={11} r={7} fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth={2} />
+                <path d="m20 20-3-3" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth={2} strokeLinecap="round" />
               </svg>
             </span>
             <input
@@ -369,19 +411,15 @@ export default function ProjectsManager() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search projects, clients..."
-              className="w-full rounded-[10px] pr-3.5 text-[15px] text-white outline-none placeholder:text-white/40"
+              autoComplete="off"
+              className="min-h-0 border-none bg-transparent text-[15px] text-white outline-none placeholder:text-[rgba(255,255,255,0.4)]"
               style={{
-                background: "rgba(255,255,255,0.1)",
-                border: "0.5px solid rgba(255,255,255,0.15)",
-                paddingTop: 10,
-                paddingBottom: 10,
-                paddingLeft: 12 + 18 + 10,
-                paddingRight: 14,
-                minHeight: 44,
-                boxSizing: "border-box",
+                flex: 1,
+                minWidth: 0,
+                fontFamily: "inherit",
               }}
             />
-          </label>
+          </div>
         </div>
       </header>
 
@@ -389,7 +427,12 @@ export default function ProjectsManager() {
         className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
         style={{ marginTop: mobHeaderSpacer }}
       >
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-none pb-[calc(16px+env(safe-area-inset-bottom,34px))] md:pb-6">
+        <div
+          className="min-h-0 flex-1 overflow-y-auto overscroll-y-none md:pb-6"
+          style={{
+            paddingBottom: "calc(88px + max(8px, env(safe-area-inset-bottom, 0px)))",
+          }}
+        >
         <div
           className="flex gap-1.5 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           style={{ padding: "12px 14px", gap: 6 }}
@@ -416,13 +459,6 @@ export default function ProjectsManager() {
         </div>
 
         <div className="px-3.5" style={{ paddingLeft: 14, paddingRight: 14 }}>
-          <p
-            className="mb-2.5 font-semibold uppercase text-[#888]"
-            style={{ fontSize: 10, letterSpacing: "0.12em" }}
-          >
-            {loading ? "…" : `${filtered.length} ${filtered.length === 1 ? "project" : "projects"}`}
-          </p>
-
           {error ? (
             <div
               className="mb-3 rounded-[10px] p-4 text-[14px] text-[#111]"
@@ -582,48 +618,91 @@ export default function ProjectsManager() {
       </div>
 
       <nav
-        className="fixed left-0 right-0 z-[10100] flex w-full flex-row items-end justify-between border-t bg-white md:hidden"
+        className="fixed bottom-0 left-0 right-0 z-[10100] flex md:hidden"
         style={{
-          bottom: 0,
-          left: 0,
-          right: 0,
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: 0,
+          boxSizing: "border-box",
+          width: "100%",
+          flexDirection: "row",
+          background: "#ffffff",
           borderTop: "0.5px solid #e0e0e0",
-          paddingTop: 28,
-          paddingLeft: 4,
-          paddingRight: 4,
-          paddingBottom: "env(safe-area-inset-bottom, 34px)",
+          padding: "12px 4px max(34px, env(safe-area-inset-bottom, 34px))",
           boxShadow: "none",
+          touchAction: "manipulation",
         }}
         aria-label="Bottom navigation"
       >
-          <Link
-            href="/final"
-            prefetch={false}
-            className="flex min-h-[44px] flex-1 flex-col items-center justify-end gap-0.5 bg-transparent px-0.5 pb-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
+        <Link
+          href="/final"
+          prefetch={false}
+          className="flex flex-1 flex-col items-center justify-center bg-transparent no-underline [-webkit-tap-highlight-color:transparent]"
+          style={{
+            minHeight: 44,
+            minWidth: 0,
+            gap: 3,
+            padding: "0 2px 8px",
+            margin: 0,
+            border: "none",
+            color: "#aaa",
+            fontFamily: "'IBM Plex Sans', system-ui, sans-serif",
+          }}
+        >
+          <span className="flex h-[28px] w-[28px] items-center justify-center text-current" aria-hidden>
+            <svg viewBox="0 0 24 24" width={22} height={22} fill="none" stroke="currentColor" strokeWidth={1.35} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-9.5z" />
+            </svg>
+          </span>
+          <span
+            className="max-w-full truncate uppercase"
+            style={{
+              fontSize: 9,
+              fontWeight: 500,
+              letterSpacing: "0.05em",
+              lineHeight: 1.15,
+            }}
           >
-            <span className="flex h-7 w-7 items-center justify-center text-current" aria-hidden>
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-9.5z" />
-              </svg>
-            </span>
-            <span className="max-w-full truncate text-[9px] font-medium uppercase tracking-wide">Home</span>
-          </Link>
+            Home
+          </span>
+        </Link>
 
-          <div className="flex min-h-[44px] flex-1 flex-col items-center justify-end gap-0.5 text-[#0f2318]">
-            <span className="flex h-7 w-7 items-center justify-center text-current" aria-hidden>
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="7" height="7" rx="1.25" />
-                <rect x="14" y="3" width="7" height="7" rx="1.25" />
-                <rect x="3" y="14" width="7" height="7" rx="1.25" />
-                <rect x="14" y="14" width="7" height="7" rx="1.25" />
-              </svg>
-            </span>
-            <span className="max-w-full truncate text-[9px] font-semibold uppercase tracking-wide text-[#0f2318]">
-              Projects
-            </span>
-          </div>
+        <div
+          className="flex flex-1 flex-col items-center justify-center text-[#0f2318]"
+          style={{
+            minHeight: 44,
+            minWidth: 0,
+            gap: 3,
+            padding: "0 2px 8px",
+            margin: 0,
+            fontFamily: "'IBM Plex Sans', system-ui, sans-serif",
+          }}
+        >
+          <span className="flex h-[28px] w-[28px] items-center justify-center text-current" aria-hidden>
+            <svg viewBox="0 0 24 24" width={22} height={22} fill="none" stroke="currentColor" strokeWidth={1.35} strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.25" />
+              <rect x="14" y="3" width="7" height="7" rx="1.25" />
+              <rect x="3" y="14" width="7" height="7" rx="1.25" />
+              <rect x="14" y="14" width="7" height="7" rx="1.25" />
+            </svg>
+          </span>
+          <span
+            className="max-w-full truncate uppercase text-[#0f2318]"
+            style={{
+              fontSize: 9,
+              fontWeight: 600,
+              letterSpacing: "0.05em",
+              lineHeight: 1.15,
+            }}
+          >
+            Projects
+          </span>
+        </div>
 
-          <div className="relative z-[12] flex min-w-0 flex-1 flex-col items-center justify-center">
+        <div
+          className="relative z-[12] flex min-w-0 flex-1 flex-col items-center justify-center"
+          style={{ paddingBottom: 2, marginTop: -28 }}
+        >
             <div
               className="absolute bottom-full left-1/2 z-10 -translate-x-1/2"
               style={{
@@ -751,25 +830,38 @@ export default function ProjectsManager() {
 
             <button
               type="button"
-              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#0f2318] text-white shadow-[0_4px_16px_rgba(15,35,24,0.35)] transition [-webkit-tap-highlight-color:transparent]"
+              className="flex shrink-0 items-center justify-center rounded-full bg-[#0f2318] text-white [-webkit-tap-highlight-color:transparent]"
               style={{
+                width: 56,
+                height: 56,
                 border: "3px solid #fff",
+                boxShadow: "0 4px 16px rgba(15,35,24,0.35)",
+                padding: 0,
+                cursor: "pointer",
                 transform: fabOpen ? "rotate(45deg)" : undefined,
-                transition: "transform .35s cubic-bezier(.34,1.56,.64,1)",
+                transition: "transform 0.2s ease",
               }}
               aria-expanded={fabOpen}
               aria-haspopup="true"
               aria-label="New job"
               onClick={() => setFabOpen((o) => !o)}
             >
-              <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden>
-                <line x1="12" y1="5" x2="12" y2="19" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
-                <line x1="5" y1="12" x2="19" y2="12" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+              <svg viewBox="0 0 24 24" width={24} height={24} aria-hidden>
+                <line x1="12" y1="5" x2="12" y2="19" stroke="#fff" strokeWidth={2} strokeLinecap="round" />
+                <line x1="5" y1="12" x2="19" y2="12" stroke="#fff" strokeWidth={2} strokeLinecap="round" />
               </svg>
             </button>
             <span
-              className="mt-1.5 text-center text-[9px] font-semibold uppercase tracking-wide text-[#0f2318]"
-              style={{ letterSpacing: "0.05em" }}
+              className="text-center uppercase text-[#0f2318]"
+              style={{
+                marginTop: 6,
+                fontSize: 9,
+                fontWeight: 600,
+                letterSpacing: "0.05em",
+                fontFamily: "'IBM Plex Sans', system-ui, sans-serif",
+                maxWidth: 72,
+                lineHeight: 1.15,
+              }}
               aria-hidden
             >
               New Job
@@ -779,32 +871,72 @@ export default function ProjectsManager() {
           <Link
             href="/final"
             prefetch={false}
-            className="flex min-h-[44px] flex-1 flex-col items-center justify-end gap-0.5 bg-transparent px-0.5 pb-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
+            className="flex flex-1 flex-col items-center justify-center bg-transparent no-underline [-webkit-tap-highlight-color:transparent]"
+            style={{
+              minHeight: 44,
+              minWidth: 0,
+              gap: 3,
+              padding: "0 2px 8px",
+              margin: 0,
+              border: "none",
+              color: "#aaa",
+              fontFamily: "'IBM Plex Sans', system-ui, sans-serif",
+            }}
           >
-            <span className="flex h-7 w-7 items-center justify-center text-current" aria-hidden>
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+            <span className="flex h-[28px] w-[28px] items-center justify-center text-current" aria-hidden>
+              <svg viewBox="0 0 24 24" width={22} height={22} fill="none" stroke="currentColor" strokeWidth={1.35} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M7 3h7l5 5v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z" />
                 <line x1="9" y1="9" x2="15" y2="9" />
                 <line x1="9" y1="13" x2="15" y2="13" />
                 <line x1="9" y1="17" x2="12" y2="17" />
               </svg>
             </span>
-            <span className="max-w-full truncate text-[9px] font-medium uppercase tracking-wide">Quote</span>
+            <span
+              className="max-w-full truncate uppercase"
+              style={{
+                fontSize: 9,
+                fontWeight: 500,
+                letterSpacing: "0.05em",
+                lineHeight: 1.15,
+              }}
+            >
+              Quote
+            </span>
           </Link>
 
           <Link
             href="/final"
             prefetch={false}
-            className="flex min-h-[44px] flex-1 flex-col items-center justify-end gap-0.5 bg-transparent px-0.5 pb-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
+            className="flex flex-1 flex-col items-center justify-center bg-transparent no-underline [-webkit-tap-highlight-color:transparent]"
+            style={{
+              minHeight: 44,
+              minWidth: 0,
+              gap: 3,
+              padding: "0 2px 8px",
+              margin: 0,
+              border: "none",
+              color: "#aaa",
+              fontFamily: "'IBM Plex Sans', system-ui, sans-serif",
+            }}
           >
-            <span className="flex h-7 w-7 items-center justify-center text-current" aria-hidden>
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+            <span className="flex h-[28px] w-[28px] items-center justify-center text-current" aria-hidden>
+              <svg viewBox="0 0 24 24" width={22} height={22} fill="none" stroke="currentColor" strokeWidth={1.35} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
                 <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
               </svg>
             </span>
-            <span className="max-w-full truncate text-[9px] font-medium uppercase tracking-wide">Clients</span>
+            <span
+              className="max-w-full truncate uppercase"
+              style={{
+                fontSize: 9,
+                fontWeight: 500,
+                letterSpacing: "0.05em",
+                lineHeight: 1.15,
+              }}
+            >
+              Clients
+            </span>
           </Link>
       </nav>
 

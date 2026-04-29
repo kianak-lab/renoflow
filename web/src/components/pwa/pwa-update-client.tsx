@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const POLL_MS = 60_000;
 
@@ -13,6 +14,7 @@ function readServerBaseline(): string {
 }
 
 export function PwaUpdateClient() {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const waitingRef = useRef<ServiceWorker | null>(null);
   const baselineRef = useRef(readServerBaseline());
@@ -151,6 +153,8 @@ export function PwaUpdateClient() {
     }
     window.location.reload();
   }, []);
+
+  if (pathname === "/projects") return null;
 
   if (!visible) return null;
 
