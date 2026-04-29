@@ -337,6 +337,12 @@ export default function DemolitionTradeApp() {
 
   function back() {
     if (projectId) persistLocal(dRef.current);
+    const pid = pidParam?.trim() ?? "";
+    const dbRoom = dbRoomIdParam?.trim() ?? "";
+    if (pid && dbRoom) {
+      router.push(`/project/${encodeURIComponent(pid)}/room/${encodeURIComponent(dbRoom)}`);
+      return;
+    }
     router.push("/final");
   }
 
@@ -436,6 +442,18 @@ export default function DemolitionTradeApp() {
     });
   }
 
+  const headerSubtitle = useMemo(() => {
+    const name = (roomName ?? "").trim() || "Room";
+    const sqRounded = sqFt > 0 ? Math.round(sqFt) : 0;
+    if (sqRounded > 0) {
+      return `Structure · ${name} · ${sqRounded} sq ft`;
+    }
+    if (ceilingFt > 0) {
+      return `Structure · ${name} · ${ceilingFt} ft ceiling`;
+    }
+    return `Structure · ${name}`;
+  }, [roomName, sqFt, ceilingFt]);
+
   const workerSlotLabel = (w: DemoWorker, idx: number) =>
     w.name.trim() || `Worker ${idx + 1}`;
 
@@ -473,10 +491,7 @@ export default function DemolitionTradeApp() {
             <h1 className="text-[15px] font-medium leading-tight" style={{ color: SITE.ink }}>
               Demolition
             </h1>
-            <p className="mt-0.5 text-[13px] leading-snug text-[#888]">
-              Structure · {roomName}
-              {sqFt > 0 ? ` · ${sqFt} sq ft` : ceilingFt > 0 ? ` · ${ceilingFt} ft ceiling` : ""}
-            </p>
+            <p className="mt-0.5 text-[13px] leading-snug text-[#888]">{headerSubtitle}</p>
           </div>
         </div>
       </header>

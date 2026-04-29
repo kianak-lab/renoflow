@@ -35,7 +35,7 @@ export function floorSqFtFromDims(d: RoomDims | Record<string, unknown> | undefi
   const len = numFrom(o, ["L", "l", "len", "length"]);
   const wid = numFrom(o, ["W", "w", "wid", "width"]);
   if (len > 0 && wid > 0) return Math.round(len * wid * 10) / 10;
-  const fl = numFrom(o, ["fl", "sqft", "sqFt", "area"]);
+  const fl = numFrom(o, ["floorArea", "floor_area", "fl", "sqft", "sqFt", "area"]);
   return fl > 0 ? fl : 0;
 }
 
