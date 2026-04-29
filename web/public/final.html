@@ -235,7 +235,14 @@ a.ni{color:inherit;text-decoration:none;}
 /* Same technique as /trades/demolition: viewport-fit=cover; safe-area only on bleed (no extra rem, avoids double inset) */
 #p-dash .dash-header-bleed{margin-left:-32px;margin-right:-32px;padding-left:32px;padding-right:32px;padding-top:env(safe-area-inset-top, 0px);background:#0f2318;box-sizing:border-box;}
 @media (max-width:767px){
-  #p-dash .dash-header-bleed{margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px;padding-top:env(safe-area-inset-top, 0px);background:#0f2318;}
+  #p-dash .dash-header-bleed{
+    position:fixed;top:0;left:0;right:0;z-index:100;width:100%;
+    margin-left:0!important;margin-right:0!important;
+    padding-left:20px;padding-right:20px;padding-top:env(safe-area-inset-top, 0px);
+    background:#0f2318;box-sizing:border-box;
+  }
+  /* Reserve space: safe-area + brief-header (16+18 pad) + 80px logo row + text column buffer */
+  #p-dash{padding-top:calc(env(safe-area-inset-top, 0px) + 148px);}
 }
 #p-dash .dash-header-bleed .brief-header{background:transparent;border:none;border-radius:0;box-shadow:none;padding:16px 0 18px;margin:0;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;}
 #p-dash .dash-header-bleed .brief-date{font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,.72);font-family:'IBM Plex Sans',system-ui,sans-serif;font-weight:500;opacity:1;}
@@ -1618,17 +1625,16 @@ a.ni{color:inherit;text-decoration:none;}
     flex:1;
     min-height:0;
     min-width:0;
-    padding-bottom:calc(88px + max(8px, env(safe-area-inset-bottom, 0px)));
+    padding-bottom:calc(88px + env(safe-area-inset-bottom, 34px));
   }
   /* Dashboard safe area: handled only by #p-dash .dash-header-bleed (matches demolition trade header pattern). */
-  /* bottom uses --rf-nav-bottom set from visualViewport so the bar tracks the visible viewport on iOS Safari / PWA */
   #mob-nav.mob-nav--siteclean{
     display:flex !important;
     position:fixed;
     left:0;
     right:0;
+    bottom:0;
     width:100%;
-    bottom:var(--rf-nav-bottom, 0px);
     z-index:10100;
     box-sizing:border-box;
     flex-direction:row;
@@ -1637,7 +1643,7 @@ a.ni{color:inherit;text-decoration:none;}
     gap:0;
     background:#ffffff;
     border-top:0.5px solid #e0e0e0;
-    padding:28px 4px env(safe-area-inset-bottom, 0px);
+    padding:28px 4px env(safe-area-inset-bottom, 34px);
     box-shadow:none;
     -webkit-backdrop-filter:none;
     backdrop-filter:none;
@@ -9604,34 +9610,6 @@ if(typeof window.addEventListener==="function"){
   }, {passive:true});
 }
 syncMobDashStatusBarBg(typeof curPg==="string"?curPg:"dash");
-
-/** Align fixed bottom nav to visual viewport (iOS browser chrome / PWA). */
-(function rfSyncBottomNavInset(){
-  var root=document.documentElement;
-  function sync(){
-    try{
-      if(!window.matchMedia("(max-width:767px)").matches){
-        root.style.removeProperty("--rf-nav-bottom");
-        return;
-      }
-      var vv=window.visualViewport;
-      if(!vv){
-        root.style.removeProperty("--rf-nav-bottom");
-        return;
-      }
-      var lh=window.innerHeight||document.documentElement.clientHeight||0;
-      var inset=Math.max(0,lh-vv.height-vv.offsetTop);
-      root.style.setProperty("--rf-nav-bottom",inset+"px");
-    }catch(e){}
-  }
-  sync();
-  if(window.visualViewport){
-    window.visualViewport.addEventListener("resize",sync,{passive:true});
-    window.visualViewport.addEventListener("scroll",sync,{passive:true});
-  }
-  window.addEventListener("resize",sync,{passive:true});
-  window.addEventListener("orientationchange",function(){ setTimeout(sync,160);},{passive:true});
-})();
 
 initFromServer();
 </script>

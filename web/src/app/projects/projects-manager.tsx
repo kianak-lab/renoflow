@@ -5,7 +5,9 @@ import Link from "next/link";
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -313,35 +315,21 @@ export default function ProjectsManager() {
     };
   }, []);
 
-  useEffect(() => {
-    const root = document.documentElement;
-    const sync = () => {
-      if (typeof window.matchMedia !== "function" || !window.matchMedia("(max-width: 767px)").matches) {
-        root.style.removeProperty("--rf-nav-bottom");
-        return;
-      }
-      const vv = window.visualViewport;
-      if (!vv) {
-        root.style.removeProperty("--rf-nav-bottom");
-        return;
-      }
-      const lh = window.innerHeight || document.documentElement.clientHeight || 0;
-      const inset = Math.max(0, lh - vv.height - vv.offsetTop);
-      root.style.setProperty("--rf-nav-bottom", `${inset}px`);
-    };
-    sync();
-    const vv = window.visualViewport;
-    vv?.addEventListener("resize", sync);
-    vv?.addEventListener("scroll", sync);
-    window.addEventListener("resize", sync);
-    const onOrient = () => window.setTimeout(sync, 160);
-    window.addEventListener("orientationchange", onOrient);
+  const headerRef = useRef<HTMLElement>(null);
+  const [mobHeaderSpacer, setMobHeaderSpacer] = useState(0);
+
+  useLayoutEffect(() => {
+    const el = headerRef.current;
+    if (!el || typeof window.matchMedia !== "function") return;
+    const mq = window.matchMedia("(max-width: 767px)");
+    const apply = () => setMobHeaderSpacer(mq.matches ? el.offsetHeight : 0);
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    mq.addEventListener("change", apply);
+    apply();
     return () => {
-      vv?.removeEventListener("resize", sync);
-      vv?.removeEventListener("scroll", sync);
-      window.removeEventListener("resize", sync);
-      window.removeEventListener("orientationchange", onOrient);
-      root.style.removeProperty("--rf-nav-bottom");
+      ro.disconnect();
+      mq.removeEventListener("change", apply);
     };
   }, []);
 
@@ -351,7 +339,8 @@ export default function ProjectsManager() {
       style={{ fontFamily: "inherit" }}
     >
       <header
-        className="shrink-0 text-white"
+        ref={headerRef}
+        className="shrink-0 text-white max-md:fixed max-md:left-0 max-md:right-0 max-md:top-0 max-md:z-[100] md:relative"
         style={{
           background: "#0f2318",
           paddingTop: "env(safe-area-inset-top, 0px)",
@@ -395,8 +384,11 @@ export default function ProjectsManager() {
         </div>
       </header>
 
-      <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-none pb-[calc(88px+max(0px,env(safe-area-inset-bottom,0px)))] md:pb-6">
+      <div
+        className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
+        style={{ marginTop: mobHeaderSpacer }}
+      >
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-none pb-[calc(88px+env(safe-area-inset-bottom,34px))] md:pb-6">
         <div
           className="flex gap-1.5 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           style={{ padding: "12px 14px", gap: 6 }}
@@ -591,12 +583,14 @@ export default function ProjectsManager() {
       <nav
         className="fixed left-0 right-0 z-[10100] flex w-full flex-row items-end justify-between border-t bg-white md:hidden"
         style={{
-          bottom: "var(--rf-nav-bottom, 0px)",
+          bottom: 0,
+          left: 0,
+          right: 0,
           borderTop: "0.5px solid #e0e0e0",
           paddingTop: 28,
           paddingLeft: 4,
           paddingRight: 4,
-          paddingBottom: "env(safe-area-inset-bottom, 0px)",
+          paddingBottom: "env(safe-area-inset-bottom, 34px)",
           boxShadow: "none",
         }}
         aria-label="Bottom navigation"
