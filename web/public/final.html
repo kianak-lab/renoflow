@@ -242,7 +242,7 @@ a.ni{color:inherit;text-decoration:none;}
 #p-dash .dash-header-bleed .brief-greeting{font-size:22px;font-weight:500;color:#fff;margin-top:6px;line-height:1.2;font-family:'IBM Plex Sans',system-ui,sans-serif;letter-spacing:-0.02em;}
 #p-dash .dash-header-bleed .brief-sub{font-size:13px;color:rgba(255,255,255,.72);margin-top:6px;line-height:1.35;opacity:1;font-weight:400;min-height:1.35em;}
 #p-dash .dash-rf-logo-btn{appearance:none;border:none;background:transparent;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;min-width:80px;min-height:80px;display:flex;align-items:center;justify-content:center;}
-#p-dash .dash-rf-logo-square{display:flex;align-items:center;justify-content:center;width:80px;height:80px;border-radius:50%;background:#1a3d28;border:0.5px solid rgba(42,90,58,.85);box-sizing:border-box;overflow:hidden;flex-shrink:0;box-shadow:0 0 0 3px #fff;}
+#p-dash .dash-rf-logo-square{display:flex;align-items:center;justify-content:center;width:80px;height:80px;border-radius:50%;background:#1a3d28;border:0.5px solid rgba(42,90,58,.85);box-sizing:border-box;overflow:hidden;flex-shrink:0;box-shadow:0 0 0 1px #fff;}
 #p-dash .dash-rf-logo-square--photo{padding:0;background:#1a3d28;}
 #p-dash .dash-rf-logo-img{width:100%;height:100%;object-fit:contain;object-position:center;display:block;}
 #p-dash .dash-rf-logo-mark{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:11px;font-weight:600;color:#4a9a6a;line-height:1.2;text-align:center;padding:4px 8px;text-transform:none;letter-spacing:0.02em;max-width:100%;}
@@ -1468,7 +1468,10 @@ a.ni{color:inherit;text-decoration:none;}
 .qp{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:32px;max-width:660px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
 .qt{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid var(--bd2);}
 .q-qt-left{display:flex;align-items:flex-start;gap:14px;flex:1;min-width:0}
-.q-logo-ring{flex-shrink:0;width:56px;height:56px;border-radius:50%;border:2px solid #fff;box-sizing:border-box;background:#f4f4f4;padding:0;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 4px rgba(0,0,0,.06)}
+.q-logo-ring{flex-shrink:0;width:56px;height:56px;border-radius:50%;border:1px solid #fff;box-sizing:border-box;background:#f4f4f4;padding:0;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 0.5px rgba(0,0,0,.08),0 1px 3px rgba(0,0,0,.05)}
+.q-logo-ring--photo{background:#f4f4f4}
+.q-logo-ring--placeholder{background:#1a3d28;border:0.5px solid rgba(42,90,58,.85);box-shadow:0 0 0 1px rgba(255,255,255,.9)}
+.q-logo-ring__mark{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:8px;font-weight:600;color:#4a9a6a;line-height:1.15;text-align:center;padding:4px 6px;display:block}
 .q-logo-ring img{width:100%;height:100%;object-fit:cover;object-position:center;vertical-align:middle}
 .dash-circ-sett{width:64px;height:64px;min-width:64px;min-height:64px;border-radius:50%;border:2px solid #fff;background:#f4f4f4;box-sizing:border-box;padding:0;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:opacity .15s,box-shadow .15s;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 1px 4px rgba(0,0,0,.08)}
 .dash-circ-sett:hover{opacity:.95;box-shadow:0 0 0 1px rgba(0,0,0,.14),0 2px 8px rgba(0,0,0,.1)}
@@ -5012,20 +5015,27 @@ function safeDataUrlForAttr(u){
   if(!u) return "";
   return String(u).replace(/"/g,"%22");
 }
+/** Company logo ring for quotes/invoices: always shown; placeholder when no image. */
+function rfQuoteLogoHtml(dataUrl){
+  var u=dataUrl?String(dataUrl).trim():"";
+  if(u){
+    return '<div class="q-logo-ring q-logo-ring--photo" aria-hidden="true"><img src="'+safeDataUrlForAttr(u)+'" alt=""/></div>';
+  }
+  return '<div class="q-logo-ring q-logo-ring--placeholder" aria-hidden="true"><span class="q-logo-ring__mark">your logo</span></div>';
+}
 function htmlCoBlockFromS(){
-  var u=companyLogoDataUrl();
-  var logo=u?('<div class="q-logo-ring" aria-hidden="true"><img src="'+safeDataUrlForAttr(u)+'" alt=""/></div>'):"";
-  if(typeof escHtml!=="function") return '<div class="q-qt-left"><div><div class="qco">'+S.co.name+'</div><div class="qci"></div></div></div>';
+  var logo=rfQuoteLogoHtml(companyLogoDataUrl());
+  if(typeof escHtml!=="function") return '<div class="q-qt-left">'+logo+'<div><div class="qco">'+S.co.name+'</div><div class="qci"></div></div></div>';
   var name=escHtml(S.co.name||"Your Company");
   var c=(S.co.addr?escHtml(S.co.addr)+"<br>":"")+(S.co.phone?escHtml(S.co.phone)+"<br>":"")+(S.co.email?escHtml(S.co.email)+"<br>":"")+(S.co.lic?"Lic: "+escHtml(S.co.lic):"");
   return '<div class="q-qt-left">'+logo+'<div><div class="qco">'+name+'</div><div class="qci">'+c+"</div></div></div>";
 }
 function htmlCoBlockFromInv(inv){
   inv=inv||{};
-  var u=inv.coLogo?String(inv.coLogo).trim():"";
-  var logo=u?('<div class="q-logo-ring" aria-hidden="true"><img src="'+safeDataUrlForAttr(u)+'" alt=""/></div>'):"";
+  var raw=(inv.coLogo&&String(inv.coLogo).trim())||companyLogoDataUrl()||"";
+  var logo=rfQuoteLogoHtml(raw);
   if(typeof escHtml!=="function"){
-    return '<div class="q-qt-left"><div><div class="qco">'+(inv.coName||"Your Company")+"</div><div class=\"qci\"></div></div></div>";
+    return '<div class="q-qt-left">'+logo+'<div><div class="qco">'+(inv.coName||"Your Company")+"</div><div class=\"qci\"></div></div></div>";
   }
   var name=escHtml(inv.coName||"Your Company");
   var c=(inv.coAddr?escHtml(inv.coAddr)+"<br>":"")+(inv.coPhone?escHtml(inv.coPhone)+"<br>":"")+(inv.coEmail?escHtml(inv.coEmail)+"<br>":"")+(inv.coLic?"Lic: "+escHtml(inv.coLic):"");
