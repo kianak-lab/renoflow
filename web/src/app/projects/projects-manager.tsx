@@ -315,7 +315,7 @@ export default function ProjectsManager() {
 
   return (
     <div
-      className="flex max-h-[100svh] min-h-0 flex-col overflow-hidden [height:100svh]"
+      className="flex min-h-0 w-full flex-1 flex-col overflow-hidden"
       style={{ fontFamily: "inherit" }}
     >
       <header
@@ -557,10 +557,10 @@ export default function ProjectsManager() {
       </div>
 
       <nav
-        className="fixed bottom-0 left-0 right-0 z-[10100] flex flex-row items-center justify-between border-t bg-white [transform:translateZ(0)] md:hidden"
+        className="fixed bottom-0 left-0 right-0 z-[10100] flex flex-row items-end justify-between border-t bg-white [transform:translateZ(0)] md:hidden"
         style={{
           borderTop: "0.5px solid #e0e0e0",
-          padding: `10px 4px max(8px, env(safe-area-inset-bottom, 0px))`,
+          padding: `28px 4px max(8px, env(safe-area-inset-bottom, 0px))`,
           boxShadow: "none",
         }}
         aria-label="Bottom navigation"
@@ -568,7 +568,7 @@ export default function ProjectsManager() {
           <Link
             href="/final"
             prefetch={false}
-            className="flex min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 bg-transparent px-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
+            className="flex min-h-[44px] flex-1 flex-col items-center justify-end gap-0.5 bg-transparent px-0.5 pb-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
           >
             <span className="flex h-7 w-7 items-center justify-center text-current" aria-hidden>
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
@@ -578,7 +578,7 @@ export default function ProjectsManager() {
             <span className="max-w-full truncate text-[9px] font-medium uppercase tracking-wide">Home</span>
           </Link>
 
-          <div className="flex min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 text-[#0f2318]">
+          <div className="flex min-h-[44px] flex-1 flex-col items-center justify-end gap-0.5 text-[#0f2318]">
             <span className="flex h-7 w-7 items-center justify-center text-current" aria-hidden>
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="7" height="7" rx="1.25" />
@@ -737,7 +737,7 @@ export default function ProjectsManager() {
               </svg>
             </button>
             <span
-              className="mt-1 text-center text-[9px] font-semibold uppercase tracking-wide text-[#0f2318]"
+              className="mt-1.5 text-center text-[9px] font-semibold uppercase tracking-wide text-[#0f2318]"
               style={{ letterSpacing: "0.05em" }}
               aria-hidden
             >
@@ -748,7 +748,7 @@ export default function ProjectsManager() {
           <Link
             href="/final"
             prefetch={false}
-            className="flex min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 bg-transparent px-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
+            className="flex min-h-[44px] flex-1 flex-col items-center justify-end gap-0.5 bg-transparent px-0.5 pb-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
           >
             <span className="flex h-7 w-7 items-center justify-center text-current" aria-hidden>
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
@@ -764,7 +764,7 @@ export default function ProjectsManager() {
           <Link
             href="/final"
             prefetch={false}
-            className="flex min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 bg-transparent px-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
+            className="flex min-h-[44px] flex-1 flex-col items-center justify-end gap-0.5 bg-transparent px-0.5 pb-0.5 text-[#aaa] no-underline [-webkit-tap-highlight-color:transparent]"
           >
             <span className="flex h-7 w-7 items-center justify-center text-current" aria-hidden>
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">

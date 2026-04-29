@@ -1601,17 +1601,15 @@ a.ni{color:inherit;text-decoration:none;}
 }
 #mob-nav{display:none;}
 @media (max-width: 767px) {
-  /* Lock the app shell on mobile web/PWA so rubber-band scroll does not move the bottom navigation. */
+  /* Reduce rubber-band on the document; keep height like desktop #shell (100vh / 100dvh) so fixed bottom nav sits flush. */
   html,body{
     overflow:hidden;
     overscroll-behavior:none;
-    height:100%;
-    max-height:100svh;
   }
   #shell{
     flex-direction:column;
-    height:100svh;
-    max-height:100svh;
+    height:100vh;
+    max-height:100dvh;
     min-height:0;
   }
   .mob-topnav{display:none !important;}
@@ -1632,12 +1630,12 @@ a.ni{color:inherit;text-decoration:none;}
     z-index:10100;
     box-sizing:border-box;
     flex-direction:row;
-    align-items:center;
+    align-items:flex-end;
     justify-content:space-between;
     gap:0;
     background:#ffffff;
     border-top:0.5px solid #e0e0e0;
-    padding:10px 4px max(8px, env(safe-area-inset-bottom, 0px));
+    padding:28px 4px max(8px, env(safe-area-inset-bottom, 0px));
     box-shadow:none;
     -webkit-backdrop-filter:none;
     backdrop-filter:none;
@@ -1653,7 +1651,7 @@ a.ni{color:inherit;text-decoration:none;}
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:center;
+    justify-content:flex-end;
     gap:2px;
     padding:0 2px 2px;
     margin:0;
@@ -1705,8 +1703,8 @@ a.ni{color:inherit;text-decoration:none;}
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:center;
-    margin-top:0;
+    justify-content:flex-start;
+    margin-top:-28px;
     padding-bottom:2px;
     position:relative;
     z-index:12;
