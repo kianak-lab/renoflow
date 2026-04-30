@@ -406,8 +406,9 @@ alter table public.profiles add column if not exists tax_id text;
 alter table public.profiles add column if not exists selected_trades jsonb not null default '[]'::jsonb;
 alter table public.profiles add column if not exists default_labour_mode text;
 alter table public.profiles add column if not exists default_labour_rate numeric(12, 2);
-alter table public.profiles add column if not exists currency text;
-alter table public.profiles add column if not exists measurement_units text;
+alter table public.profiles
+  add column if not exists currency text default 'CAD',
+  add column if not exists measurement_units text default 'imperial';
 
 create or replace view public.user_profiles as
   select p.*, p.id as user_id from public.profiles p;
