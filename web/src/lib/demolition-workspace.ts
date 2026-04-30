@@ -80,6 +80,8 @@ export type DemolitionV3State = {
   dumpster: boolean;
   daysCustom: boolean;
   scheduleTradeEnabled: boolean;
+  /** When true, per-day timeline descriptions are merged into the estimate timeline (explicit user action). */
+  timelineDescriptionsOnQuote: boolean;
   timelineTotalDays: number;
   timelineDayDescriptions: string[];
 };
@@ -139,6 +141,7 @@ export const DEMOLITION_DEFAULT_STATE: DemolitionV3State = {
   dumpster: false,
   daysCustom: true,
   scheduleTradeEnabled: false,
+  timelineDescriptionsOnQuote: false,
   timelineTotalDays: 1,
   timelineDayDescriptions: [""],
 };
@@ -319,6 +322,8 @@ function normalizeDemolitionState(raw: Partial<DemolitionV3State>): DemolitionV3
   if (typeof raw.wasteDisposalAmount === "number")
     base.wasteDisposalAmount = Math.max(0, raw.wasteDisposalAmount);
   if (typeof raw.scheduleTradeEnabled === "boolean") base.scheduleTradeEnabled = raw.scheduleTradeEnabled;
+  if (typeof raw.timelineDescriptionsOnQuote === "boolean")
+    base.timelineDescriptionsOnQuote = raw.timelineDescriptionsOnQuote;
   if (typeof raw.timelineTotalDays === "number") base.timelineTotalDays = Math.max(1, raw.timelineTotalDays);
 
   let migratedClientSum = 0;
@@ -471,8 +476,10 @@ export function sanitizeDemolitionForQuoteRfBlob(d: DemolitionV3State): Demoliti
   let timelineTotalDays = d.timelineTotalDays;
   let timelineDayDescriptions = d.timelineDayDescriptions;
   let scheduleTradeEnabled = d.scheduleTradeEnabled;
+  let timelineDescriptionsOnQuote = !!d.timelineDescriptionsOnQuote;
   if (!d.scheduleTradeEnabled) {
     scheduleTradeEnabled = false;
+    timelineDescriptionsOnQuote = false;
     timelineTotalDays = 1;
     timelineDayDescriptions = [""];
   }
@@ -482,6 +489,7 @@ export function sanitizeDemolitionForQuoteRfBlob(d: DemolitionV3State): Demoliti
     workers,
     workerExpenseEnabled: false,
     scheduleTradeEnabled,
+    timelineDescriptionsOnQuote,
     timelineTotalDays,
     timelineDayDescriptions,
     clientLabourCharge: clientLabourBilled(d),

@@ -8173,7 +8173,7 @@ function rShop(){
   });
 }
 
-/** Map global schedule day index ? client text from demolition trades with "Schedule this trade" on. */
+/** Map global schedule day index ? client text from demolition when user chose ?Push timeline to quote?. */
 function rfDemoTimelineDayNotesFromSchedule(ps){
   var map={};
   if(!ps||!ps.roomSchedules) return map;
@@ -8185,7 +8185,7 @@ function rfDemoTimelineDayNotesFromSchedule(ps){
     }
     if(!demoTrade||!demoTrade.rfDemolition||typeof demoTrade.rfDemolition!=="object") return;
     var rd=demoTrade.rfDemolition;
-    if(!rd.scheduleTradeEnabled) return;
+    if(!rd.scheduleTradeEnabled||!rd.timelineDescriptionsOnQuote) return;
     var descs=rd.timelineDayDescriptions;
     if(!Array.isArray(descs)||!descs.length) return;
     var ord=0;
@@ -8211,7 +8211,7 @@ function rfDemoTimelineDayNotesFromSchedule(ps){
       seen[s]=1;
       parts.push(s);
     });
-    out[k]=parts.join(" ? ");
+    out[k]=parts.join(" \u00B7 ");
   });
   return out;
 }
@@ -8267,7 +8267,7 @@ function buildQuoteTimeline(){
     var tn=String(getTimelineDayNote(ddx)||'').trim();
     var dn=String(demoDayNotes[String(ddx)]||'').trim();
     var line='';
-    if(tn&&dn) line=tn===dn?tn:tn+' ? '+dn;
+    if(tn&&dn) line=tn===dn?tn:tn+' \u2014 '+dn;
     else line=tn||dn;
     if(!line) continue;
     var dDt0=getWorkDayCalendarDate(S, ddx);

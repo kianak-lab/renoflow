@@ -353,6 +353,15 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
     router.push(`/final?project=${encodeURIComponent(projectId)}&pg=quote`);
   }, [projectId, persistLocal, persistRemote, router, ri, ti, dbRoomIdParam, room]);
 
+  const pushTimelineToQuote = useCallback(() => {
+    if (!projectId || !dRef.current.scheduleTradeEnabled) return;
+    const base = { ...dRef.current, timelineDescriptionsOnQuote: true, v: 3 as const };
+    const next = { ...base, clientLabourCharge: clientLabourBilled(base) };
+    persistLocal(next);
+    void persistRemote(next);
+    setD(next);
+  }, [projectId, persistLocal, persistRemote]);
+
   const debouncedLocal = useDebouncedFn(persistLocal, 280);
   const debouncedRemote = useDebouncedFn(
     useCallback((next: DemolitionV3State) => void persistRemote(next), [persistRemote]),
@@ -1324,7 +1333,12 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
                 </div>
                 <SiteSwitch
                   on={d.scheduleTradeEnabled}
-                  onChange={(scheduleTradeEnabled) => update({ scheduleTradeEnabled })}
+                  onChange={(scheduleTradeEnabled) =>
+                    update({
+                      scheduleTradeEnabled,
+                      ...(!scheduleTradeEnabled ? { timelineDescriptionsOnQuote: false } : {}),
+                    })
+                  }
                 />
               </div>
               {d.scheduleTradeEnabled ? (
@@ -1365,6 +1379,24 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
                   >
                     Push to Calendar
                   </button>
+                  <p className="text-[12px] leading-snug text-[#888]">
+                    Day-by-day notes are not added to the estimate automatically. Use the button below when you
+                    want them on the quote timeline (the estimate must have timeline/include timeline on).
+                  </p>
+                  <button
+                    type="button"
+                    disabled={!projectId}
+                    onClick={() => pushTimelineToQuote()}
+                    className={`min-h-[48px] w-full text-[14px] font-semibold text-white ${bubbleRounded} touch-manipulation disabled:opacity-45`}
+                    style={{ background: SITE.ink }}
+                  >
+                    Push to quote
+                  </button>
+                  {d.timelineDescriptionsOnQuote ? (
+                    <p className="text-center text-[12px] font-medium" style={{ color: SITE.green }}>
+                      Timeline notes are set to show on the estimate
+                    </p>
+                  ) : null}
                 </div>
               ) : null}
             </div>
