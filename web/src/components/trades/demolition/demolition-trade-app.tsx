@@ -13,7 +13,6 @@ import {
 import {
   ceilingFtFromDims,
   floorSqFtFromDims,
-  formatMoney,
   parsePrice,
 } from "@/lib/demolition-calculations";
 import {
@@ -34,6 +33,8 @@ import {
   readActiveProjectId,
   saveWorkspace,
 } from "@/lib/demolition-workspace";
+import { useProfile } from "@/hooks/useProfile";
+import { sqFtToSqM } from "@/lib/measurement-profile";
 
 const plexSans = IBM_Plex_Sans({
   subsets: ["latin"],
@@ -99,6 +100,7 @@ export type DemolitionTradeAppProps = {
 export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) {
   const { initialPid = "", initialDbRoomId = "" } = props;
   const router = useRouter();
+  const { formatMoney, formatArea, formatLen, measurementUnits } = useProfile();
   const sp = useSearchParams();
   /** Fallback when Next.js client router hasn't surfaced query strings yet (common after SPA navigation). */
   const [locPid, setLocPid] = useState("");
@@ -420,6 +422,33 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
   const marginPct = clientTotal > 0 ? Math.round((profit / clientTotal) * 1000) / 10 : 0;
   const clientRatePerSq = sqFt > 0 ? Math.round((clientTotal / sqFt) * 100) / 100 : 0;
 
+  const profitPerAreaDisplay = useMemo(() => {
+    if (sqFt <= 0) return 0;
+    if (measurementUnits === "metric") {
+      const sqm = sqFtToSqM(sqFt);
+      return sqm > 0 ? Math.round((profit / sqm) * 100) / 100 : 0;
+    }
+    return profitPerSq;
+  }, [sqFt, measurementUnits, profit, profitPerSq]);
+
+  const clientRatePerAreaDisplay = useMemo(() => {
+    if (sqFt <= 0) return 0;
+    if (measurementUnits === "metric") {
+      const sqm = sqFtToSqM(sqFt);
+      return sqm > 0 ? Math.round((clientTotal / sqm) * 100) / 100 : 0;
+    }
+    return clientRatePerSq;
+  }, [sqFt, measurementUnits, clientTotal, clientRatePerSq]);
+
+  const demoTypicalCopy = useMemo(() => {
+    if (measurementUnits === "metric") {
+      const lo = Math.round((2 / 0.09290304) * 100) / 100;
+      const hi = Math.round((7 / 0.09290304) * 100) / 100;
+      return `Interior demo typically ${formatMoney(lo)}–${formatMoney(hi)}/m². Your rate: ${formatMoney(clientRatePerAreaDisplay)}/m²`;
+    }
+    return `Interior demo typically ${formatMoney(2)}–${formatMoney(7)}/sq ft. Your rate: ${formatMoney(clientRatePerSq)}/sq ft`;
+  }, [measurementUnits, formatMoney, clientRatePerAreaDisplay, clientRatePerSq]);
+
   const filteredProducts = useMemo(() => {
     const q = materialSearch.trim().toLowerCase();
     if (!q) return products;
@@ -568,15 +597,14 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
 
   const headerSubtitle = useMemo(() => {
     const name = (roomName ?? "").trim() || "Room";
-    const sqRounded = sqFt > 0 ? Math.round(sqFt) : 0;
-    if (sqRounded > 0) {
-      return `Structure · ${name} · ${sqRounded} sq ft`;
+    if (sqFt > 0) {
+      return `Structure · ${name} · ${formatArea(sqFt)}`;
     }
     if (ceilingFt > 0) {
-      return `Structure · ${name} · ${ceilingFt} ft ceiling`;
+      return `Structure · ${name} · ${formatLen(ceilingFt)} ceiling`;
     }
     return `Structure · ${name}`;
-  }, [roomName, sqFt, ceilingFt]);
+  }, [roomName, sqFt, ceilingFt, formatArea, formatLen]);
 
   const workerSlotLabel = (w: DemoWorker, idx: number) =>
     w.name.trim() || `Worker ${idx + 1}`;
@@ -704,7 +732,7 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
 
               {d.labourCostMode === "job" ? (
                 <label className="mt-3 block">
-                  <span className="text-[13px] text-neutral-800">Labour charge — flat per job (USD)</span>
+                  <span className="text-[13px] text-neutral-800">Labour charge — flat per job</span>
                   <div
                     className={`mt-1 border bg-white ${bubbleRounded}`}
                     style={{ border: `0.5px solid ${SITE.border}` }}
@@ -731,7 +759,7 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
                     />
                   </div>
                   <label className="block">
-                    <span className="text-[13px] text-neutral-800">Client rate per day (USD)</span>
+                    <span className="text-[13px] text-neutral-800">Client rate per day</span>
                     <div
                       className={`mt-1 border bg-white ${bubbleRounded}`}
                       style={{ border: `0.5px solid ${SITE.border}` }}
@@ -778,7 +806,7 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
                     </div>
                   </label>
                   <label className="block">
-                    <span className="text-[13px] text-neutral-800">Client rate per hour (USD)</span>
+                    <span className="text-[13px] text-neutral-800">Client rate per hour</span>
                     <div
                       className={`mt-1 border bg-white ${bubbleRounded}`}
                       style={{ border: `0.5px solid ${SITE.border}` }}
@@ -844,9 +872,7 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
                     const hourlyCol = (
                       <div key="hourly" className="flex min-w-0 flex-col">
                         <div className={workerGridLabelSlotCls}>
-                          <div className={`${sectionLabelCls} leading-tight`}>
-                            Hourly rate (USD)
-                          </div>
+                          <div className={`${sectionLabelCls} leading-tight`}>Hourly rate</div>
                         </div>
                         <div
                           className={`mt-1 border bg-white ${bubbleRounded}`}
@@ -869,9 +895,7 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
                     const dayCol = (
                       <div key="day" className="flex min-w-0 flex-col">
                         <div className={workerGridLabelSlotCls}>
-                          <div className={`${sectionLabelCls} leading-tight`}>
-                            Day rate (USD)
-                          </div>
+                          <div className={`${sectionLabelCls} leading-tight`}>Day rate</div>
                         </div>
                         <div
                           className={`mt-1 border bg-white ${bubbleRounded}`}
@@ -1293,8 +1317,8 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
               {totalsProfitOpen ? (
                 <div className={`border-t px-[14px] pb-[14px] pt-2`} style={{ borderColor: SITE.border }}>
                   <div className="flex justify-between gap-2 py-1" style={{ color: "#422006" }}>
-                    <span>Profit / sq ft</span>
-                    <span className={`font-semibold ${monoNum}`}>{formatMoney(profitPerSq)}</span>
+                    <span>{measurementUnits === "metric" ? "Profit / m²" : "Profit / sq ft"}</span>
+                    <span className={`font-semibold ${monoNum}`}>{formatMoney(profitPerAreaDisplay)}</span>
                   </div>
                   <div className="flex justify-between gap-2 py-1" style={{ color: "#422006" }}>
                     <span>Profit / hr (crew hours)</span>
@@ -1305,7 +1329,7 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
                     <span className={`font-semibold ${monoNum}`}>{marginPct}%</span>
                   </div>
                   <p className="mt-2 text-[13px] leading-snug" style={{ color: "#422006" }}>
-                    Interior demo typically $2–$7/sq ft. Your rate: {formatMoney(clientRatePerSq)}/sq ft
+                    {demoTypicalCopy}
                   </p>
                 </div>
               ) : null}

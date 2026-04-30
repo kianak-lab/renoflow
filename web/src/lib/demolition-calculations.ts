@@ -1,15 +1,5 @@
 /** Pure helpers for Demolition trade (V3 UI). */
 
-export function formatMoney(n: number): string {
-  const x = Math.round(n * 100) / 100;
-  return new Intl.NumberFormat("en-CA", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: x % 1 === 0 ? 0 : 2,
-    maximumFractionDigits: 2,
-  }).format(x);
-}
-
 export function parsePrice(p: string | number | null | undefined): number {
   if (p == null) return 0;
   if (typeof p === "number" && !Number.isNaN(p)) return p;

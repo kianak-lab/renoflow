@@ -3604,7 +3604,126 @@ function saveRoomToSupabase(room, roomIndex){
   }
 }
 
-function f(n){return "$"+Math.round(n).toLocaleString();}
+var __RF_FT_PER_M=3.280839895;
+function rfIsMetricDims(){ return window.__rfMeasureUnits==="metric"; }
+function rfFmtMoneyNum(n){
+  n=Math.round(Number(n)||0);
+  var code=(window.__rfCurrencyCode==="USD")?"USD":"CAD";
+  var prefix=code==="USD"?"USD $":"CAD $";
+  return prefix+n.toLocaleString();
+}
+function f(n){return rfFmtMoneyNum(n);}
+function rfFmtAreaFromSqftFl(sq){
+  sq=Number(sq)||0;
+  if(rfIsMetricDims()) return (Math.round(sq*0.09290304*10)/10)+" m\xb2";
+  return Math.round(sq)+" sq ft";
+}
+function rfFmtLenFromFtVal(ft){
+  ft=Number(ft)||0;
+  if(rfIsMetricDims()) return (Math.round(ft/__RF_FT_PER_M*100)/100)+" m";
+  return Math.round(ft)+" ft";
+}
+function rfDimAdjHalfStepFt(){
+  return rfIsMetricDims()?0.05*__RF_FT_PER_M:0.5;
+}
+function rfFloorAreaStepSqft(){
+  return rfIsMetricDims()?0.05*10.763910416709722:0.5;
+}
+function rfUiLenToStoredFt(raw){
+  var v=parseFloat(raw);
+  if(isNaN(v)||v<0) return 0;
+  return rfIsMetricDims()?v*__RF_FT_PER_M:v;
+}
+function rfStoredFtToUiLenStr(ft){
+  ft=parseFloat(ft)||0;
+  if(ft<=0) return '';
+  if(rfIsMetricDims()) return String(Math.round(ft/__RF_FT_PER_M*100)/100);
+  var r=Math.round(ft*2)/2;
+  return r>0?String(r):'';
+}
+function rfUiAreaToStoredSqft(raw){
+  var v=parseFloat(raw);
+  if(isNaN(v)||v<0) return 0;
+  return rfIsMetricDims()?v*10.763910416709722:v;
+}
+function rfStoredSqftToUiAreaStr(sq){
+  sq=parseFloat(sq)||0;
+  if(sq<=0) return '';
+  if(rfIsMetricDims()) return String(Math.round(sq/10.763910416709722*100)/100);
+  return String(Math.round(sq*2)/2);
+}
+function getSelectableTradeIds(){
+  var all=INTAKE_TRADE_IDS;
+  var sel=window.__rfProfileTradeIds;
+  if(!sel||!sel.length) return all.slice();
+  var set={}, out=[], i;
+  for(i=0;i<sel.length;i++) set[String(sel[i])]=1;
+  for(i=0;i<all.length;i++) if(set[all[i]]) out.push(all[i]);
+  return out.length?out:all.slice();
+}
+function rfApplyProfileEnvelope(env){
+  if(!env||!env.profile) return;
+  var p=env.profile;
+  window.__rfCurrencyCode=(String(p.currency||"").toUpperCase()==="USD")?"USD":"CAD";
+  window.__rfMeasureUnits=(String(p.measurement_units||"").toLowerCase()==="metric")?"metric":"imperial";
+  var nm=String(p.full_name||"").trim().split(/\s+/)[0];
+  window.__rfContractorFirstName=nm||"";
+  window.__rfTaxIdLabel=(env.tax_id_label==="EIN")?"EIN":"BN";
+  var trades=p.selected_trades;
+  window.__rfProfileTradeIds=Array.isArray(trades)&&trades.length?trades.slice():null;
+  if(typeof env.tax_percent==="number"&&S&&S.mk) S.mk.tax=env.tax_percent;
+  if(S&&S.co){
+    if(p.company_name!=null&&String(p.company_name).trim()) S.co.name=String(p.company_name).trim();
+    if(p.company_phone!=null) S.co.phone=String(p.company_phone);
+    if(p.company_logo_url!=null&&String(p.company_logo_url).trim()) S.co.logo=String(p.company_logo_url).trim();
+    var addrParts=[];
+    if(p.company_address!=null&&String(p.company_address).trim()) addrParts.push(String(p.company_address).trim());
+    var cityLn=[];
+    if(p.company_city!=null&&String(p.company_city).trim()) cityLn.push(String(p.company_city).trim());
+    if(p.company_postal!=null&&String(p.company_postal).trim()) cityLn.push(String(p.company_postal).trim());
+    if(cityLn.length) addrParts.push(cityLn.join(" "));
+    if(addrParts.length) S.co.addr=addrParts.join(", ");
+    if(p.tax_id!=null&&String(p.tax_id).trim()) S.co.lic=String(p.tax_id).trim();
+  }
+  try{
+    localStorage.setItem("rf7_co",JSON.stringify({
+      name:S.co.name||"",
+      phone:S.co.phone||"",
+      email:S.co.email||"",
+      lic:S.co.lic||"",
+      addr:S.co.addr||"",
+      logo:S.co.logo||""
+    }));
+  }catch(e1){}
+  try{ localStorage.setItem("rf_profile_cache_v1",JSON.stringify(env)); }catch(e2){}
+}
+function rfBootstrapServerProfile(){
+  try{
+    var raw=localStorage.getItem("rf_profile_cache_v1");
+    if(raw){
+      var env=JSON.parse(raw);
+      if(env&&env.profile) rfApplyProfileEnvelope(env);
+    }
+  }catch(e){}
+  fetch("/api/profile/me",{credentials:"same-origin",cache:"no-store"})
+    .then(function(r){return r.ok?r.json():null})
+    .then(function(env){
+      if(!env||!env.profile) return;
+      rfApplyProfileEnvelope(env);
+      try{
+        if(typeof ss==="function") ss();
+        if(typeof uSide==="function") uSide();
+        if(typeof rNav==="function") rNav();
+        if(typeof curPg==="string"){
+          if(curPg==="dash"&&typeof rDash==="function") rDash();
+          if(curPg==="quote"&&typeof rQuote==="function") rQuote();
+          if(curPg==="inv"&&typeof rInv==="function") rInv();
+          if(curPg==="sett"&&typeof rSett==="function") rSett();
+          if(curPg==="shop"&&typeof rShop==="function") rShop();
+        }
+      }catch(e3){}
+    }).catch(function(){});
+}
 function ic(it){return(it.p||0)*(it.qty||0)*(1+S.mk.mat/100);}
 function ensureCatPick(t){
   if(!t||typeof t!=="object") return;
@@ -4653,7 +4772,10 @@ function rIntake(){
   var blocks=intakeSlots.map(function(ri, si){
     var rt=RT[ri];
     if(!rt) return "";
-    var tgrid=INTAKE_TRADE_IDS.map(function(tid){
+    var allowed=getSelectableTradeIds();
+    var roomTids=(rt.trades||[]).filter(function(tid){ return allowed.indexOf(tid)>=0; });
+    var pickIds=roomTids.length?roomTids:allowed.slice();
+    var tgrid=pickIds.map(function(tid){
       var has=(intakeTrades[si]||[]).indexOf(tid)>=0;
       var col=TC[tid]||"#888";
       return '<label class="intake-cb'+(has?" on":"")+'" data-itsi="'+si+'" data-itid="'+escAttr(tid)+'" style="border-left:3px solid '+col+'">'
@@ -5354,7 +5476,8 @@ function htmlCoBlockFromS(){
   var logo=rfQuoteLogoHtml(companyLogoDataUrl());
   if(typeof escHtml!=="function") return '<div class="q-qt-left">'+logo+'<div><div class="qco">'+S.co.name+'</div><div class="qci"></div></div></div>';
   var name=escHtml(S.co.name||"Your Company");
-  var c=(S.co.addr?escHtml(S.co.addr)+"<br>":"")+(S.co.phone?escHtml(S.co.phone)+"<br>":"")+(S.co.email?escHtml(S.co.email)+"<br>":"")+(S.co.lic?"Lic: "+escHtml(S.co.lic):"");
+  var licLbl=(window.__rfTaxIdLabel==="EIN")?"EIN":"BN";
+  var c=(S.co.addr?escHtml(S.co.addr)+"<br>":"")+(S.co.phone?escHtml(S.co.phone)+"<br>":"")+(S.co.email?escHtml(S.co.email)+"<br>":"")+(S.co.lic?licLbl+": "+escHtml(S.co.lic):"");
   return '<div class="q-qt-left">'+logo+'<div><div class="qco">'+name+'</div><div class="qci">'+c+"</div></div></div>";
 }
 function htmlCoBlockFromInv(inv){
@@ -5365,7 +5488,8 @@ function htmlCoBlockFromInv(inv){
     return '<div class="q-qt-left">'+logo+'<div><div class="qco">'+(inv.coName||"Your Company")+"</div><div class=\"qci\"></div></div></div>";
   }
   var name=escHtml(inv.coName||"Your Company");
-  var c=(inv.coAddr?escHtml(inv.coAddr)+"<br>":"")+(inv.coPhone?escHtml(inv.coPhone)+"<br>":"")+(inv.coEmail?escHtml(inv.coEmail)+"<br>":"")+(inv.coLic?"Lic: "+escHtml(inv.coLic):"");
+  var licLblInv=(window.__rfTaxIdLabel==="EIN")?"EIN":"BN";
+  var c=(inv.coAddr?escHtml(inv.coAddr)+"<br>":"")+(inv.coPhone?escHtml(inv.coPhone)+"<br>":"")+(inv.coEmail?escHtml(inv.coEmail)+"<br>":"")+(inv.coLic?licLblInv+": "+escHtml(inv.coLic):"");
   return '<div class="q-qt-left">'+logo+'<div><div class="qco">'+name+'</div><div class="qci">'+c+"</div></div></div>";
 }
 function dashHeaderRfLogo(){
@@ -5378,7 +5502,7 @@ function dashHeaderRfLogo(){
   }else{
     inner='<span class="dash-rf-logo-mark">your logo</span>';
   }
-  return '<button type="button" class="dash-rf-logo-btn" onclick="gP(\'sett\')" title="Company settings" aria-label="Open company settings"><span class="'+sq+'">'+inner+'</span></button>';
+  return '<button type="button" class="dash-rf-logo-btn" onclick="window.location.href=\'/settings\'" title="Settings" aria-label="Open settings"><span class="'+sq+'">'+inner+'</span></button>';
 }
 var __rfDashWeatherCache={t:0,text:"",u:""};
 function rfWmoWeatherPhrase(code){
@@ -5491,6 +5615,11 @@ function rDash(){
   var now=new Date();
   var hour=now.getHours();
   var greeting=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
+  var greetFirst="";
+  if(typeof window.__rfContractorFirstName==="string"){
+    var gf=window.__rfContractorFirstName.trim();
+    if(gf) greetFirst=", "+escHtml(gf);
+  }
   var dateStr=now.toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric'});
 
   // Compute alerts from real data
@@ -5651,7 +5780,7 @@ function rDash(){
     +'<div class="dash-header-bleed"><div class="brief-header">'
     +'<div class="brief-header__text">'
     +'<div class="brief-date">'+dateStr+'</div>'
-    +'<div class="brief-greeting">'+greeting+'</div>'
+    +'<div class="brief-greeting">'+greeting+greetFirst+'</div>'
     +'<div class="brief-sub" id="dash-weather" aria-live="polite">Loading weather\u2026</div>'
     +'</div>'
     +'<div class="brief-header__logo">'+dashHeaderRfLogo()+'</div>'
@@ -6619,16 +6748,16 @@ function tradeSectionHtml(room, ti, idPx, isModal){
 function dimPillsInnerHtml(c, pillSet){
   pillSet=pillSet||"full";
   if(pillSet==="mep"){
-    return '<div class="pill"><div class="pill-l">Floor</div><div class="pill-v">'+Math.round(c.fl)+' sqft</div></div>'
-      +'<div class="pill"><div class="pill-l">Net Wall</div><div class="pill-v">'+Math.round(c.net)+' sqft</div></div>'
-      +'<div class="pill"><div class="pill-l">Perimeter</div><div class="pill-v">'+Math.round(c.pr)+' ft</div></div>';
+    return '<div class="pill"><div class="pill-l">Floor</div><div class="pill-v">'+rfFmtAreaFromSqftFl(c.fl)+'</div></div>'
+      +'<div class="pill"><div class="pill-l">Net Wall</div><div class="pill-v">'+rfFmtAreaFromSqftFl(c.net)+'</div></div>'
+      +'<div class="pill"><div class="pill-l">Perimeter</div><div class="pill-v">'+rfFmtLenFromFtVal(c.pr)+'</div></div>';
   }
-  return '<div class="pill"><div class="pill-l">Floor</div><div class="pill-v">'+Math.round(c.fl)+' sqft</div></div>'
-    +'<div class="pill"><div class="pill-l">Net Wall</div><div class="pill-v">'+Math.round(c.net)+' sqft</div></div>'
-    +'<div class="pill"><div class="pill-l">Perimeter</div><div class="pill-v">'+Math.round(c.pr)+' ft</div></div>'
+  return '<div class="pill"><div class="pill-l">Floor</div><div class="pill-v">'+rfFmtAreaFromSqftFl(c.fl)+'</div></div>'
+    +'<div class="pill"><div class="pill-l">Net Wall</div><div class="pill-v">'+rfFmtAreaFromSqftFl(c.net)+'</div></div>'
+    +'<div class="pill"><div class="pill-l">Perimeter</div><div class="pill-v">'+rfFmtLenFromFtVal(c.pr)+'</div></div>'
     +'<div class="pill"><div class="pill-l">Studs</div><div class="pill-v">'+c.studs+' ea</div></div>'
     +'<div class="pill"><div class="pill-l">Drywall</div><div class="pill-v">'+c.dwWall+' sheets</div></div>'
-    +'<div class="pill"><div class="pill-l">Flooring</div><div class="pill-v">'+c.floor+' sqft</div></div>';
+    +'<div class="pill"><div class="pill-l">Flooring</div><div class="pill-v">'+rfFmtAreaFromSqftFl(c.floor)+'</div></div>';
 }
 function buildRoomDimBarHtml(room, idSuffix, opts){
   opts=opts||{};
@@ -6641,16 +6770,23 @@ function buildRoomDimBarHtml(room, idSuffix, opts){
   var autoOn=roomDimAutoOn(room);
   var dimM=(d.dimMode==="walls")?"walls":"rect";
   var wallsArr=(dimM==="walls"&&Array.isArray(d.walls))?d.walls:[];
+  var wallLenLbl=rfIsMetricDims()?"Wall length (m)":"Wall length (ft)";
+  var wallHtLbl=rfIsMetricDims()?"Wall height (m)":"Height (ft)";
+  var rectLenLbl=rfIsMetricDims()?"Length (m)":"Length (ft)";
+  var rectWidLbl=rfIsMetricDims()?"Width (m)":"Width (ft)";
+  var rectHtLbl=rfIsMetricDims()?"Height (m)":"Height (ft)";
+  var floorAreaLbl=rfIsMetricDims()?"Floor area (m\xb2)":"Floor area (sq ft)";
+  var numStep=rfIsMetricDims()?"0.01":"0.5";
   var wallsRowsHtml=wallsArr.map(function(w,i){
     return '<div class="dim-wall-grid">'
-      +'<div class="dim-f"><div class="dim-l">Wall '+(i+1)+' length ft</div><div class="dim-step">'
-      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjWallFieldDelta('+i+',\'l\',-0.5)">???</button>'
-      +'<input class="di" type="number" data-dim="wl'+i+'" min="0" step="0.5" value="'+(w&&w.l>0?w.l:'')+'" placeholder="0" oninput="sWallField('+i+',\'l\',this.value)"/>'
-      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjWallFieldDelta('+i+',\'l\',0.5)">+</button></div></div>'
-      +'<div class="dim-f"><div class="dim-l">Height ft</div><div class="dim-step">'
-      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjWallFieldDelta('+i+',\'h\',-0.5)">???</button>'
-      +'<input class="di" type="number" data-dim="wh'+i+'" min="0" step="0.5" value="'+(w&&w.h>0?w.h:'')+'" placeholder="8" oninput="sWallField('+i+',\'h\',this.value)"/>'
-      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjWallFieldDelta('+i+',\'h\',0.5)">+</button></div></div>'
+      +'<div class="dim-f"><div class="dim-l">Wall '+(i+1)+" "+wallLenLbl+'</div><div class="dim-step">'
+      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjWallFieldDelta('+i+',\'l\',-1)">???</button>'
+      +'<input class="di" type="number" data-dim="wl'+i+'" min="0" step="'+numStep+'" value="'+rfStoredFtToUiLenStr(w&&w.l)+'" placeholder="0" oninput="sWallField('+i+',\'l\',this.value)"/>'
+      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjWallFieldDelta('+i+',\'l\',1)">+</button></div></div>'
+      +'<div class="dim-f"><div class="dim-l">'+wallHtLbl+'</div><div class="dim-step">'
+      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjWallFieldDelta('+i+',\'h\',-1)">???</button>'
+      +'<input class="di" type="number" data-dim="wh'+i+'" min="0" step="'+numStep+'" value="'+rfStoredFtToUiLenStr(w&&w.h)+'" placeholder="8" oninput="sWallField('+i+',\'h\',this.value)"/>'
+      +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjWallFieldDelta('+i+',\'h\',1)">+</button></div></div>'
       +'<button type="button" class="btn bd-btn sm" style="margin-bottom:1px;height:36px;min-width:36px;padding:0 8px" onclick="removeWallRow('+i+')" title="Remove wall">??</button>'
       +'</div>';
   }).join("");
@@ -6665,18 +6801,18 @@ function buildRoomDimBarHtml(room, idSuffix, opts){
     +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDimInt(\'wins\',1)">+</button></div></div>'
   ):"";
   var rectGrid='<div class="dim-g">'
-    +'<div class="dim-f"><div class="dim-l">Length ft</div><div class="dim-step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'l\',-0.5)">???</button>'
-    +'<input class="di" type="number" data-dim="l" min="0" step="0.5" value="'+(d.l>0?d.l:'')+'" placeholder="0" oninput="sDim(\'l\',this.value)"/>'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'l\',0.5)">+</button></div></div>'
-    +'<div class="dim-f"><div class="dim-l">Width ft</div><div class="dim-step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'w\',-0.5)">???</button>'
-    +'<input class="di" type="number" data-dim="w" min="0" step="0.5" value="'+(d.w>0?d.w:'')+'" placeholder="0" oninput="sDim(\'w\',this.value)"/>'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'w\',0.5)">+</button></div></div>'
-    +'<div class="dim-f"><div class="dim-l">Height ft</div><div class="dim-step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'h\',-0.5)">???</button>'
-    +'<input class="di" type="number" data-dim="h" min="0" step="0.5" value="'+(d.h>0?d.h:'')+'" placeholder="8" oninput="sDim(\'h\',this.value)"/>'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'h\',0.5)">+</button></div></div>'
+    +'<div class="dim-f"><div class="dim-l">'+rectLenLbl+'</div><div class="dim-step">'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'l\',-1)">???</button>'
+    +'<input class="di" type="number" data-dim="l" min="0" step="'+numStep+'" value="'+rfStoredFtToUiLenStr(d.l)+'" placeholder="0" oninput="sDim(\'l\',this.value)"/>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'l\',1)">+</button></div></div>'
+    +'<div class="dim-f"><div class="dim-l">'+rectWidLbl+'</div><div class="dim-step">'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'w\',-1)">???</button>'
+    +'<input class="di" type="number" data-dim="w" min="0" step="'+numStep+'" value="'+rfStoredFtToUiLenStr(d.w)+'" placeholder="0" oninput="sDim(\'w\',this.value)"/>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'w\',1)">+</button></div></div>'
+    +'<div class="dim-f"><div class="dim-l">'+rectHtLbl+'</div><div class="dim-step">'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'h\',-1)">???</button>'
+    +'<input class="di" type="number" data-dim="h" min="0" step="'+numStep+'" value="'+rfStoredFtToUiLenStr(d.h)+'" placeholder="8" oninput="sDim(\'h\',this.value)"/>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjDim(\'h\',1)">+</button></div></div>'
     +rectDoorsWins
     +'</div>';
   var wallsBlockWallsEnd=includeDoorsWins?(
@@ -6692,10 +6828,10 @@ function buildRoomDimBarHtml(room, idSuffix, opts){
     +'</div>'
   ):"";
   var wallsBlock='<div class="dim-f" style="max-width:min(100%,300px);margin-bottom:12px">'
-    +'<div class="dim-l">Floor area (sq ft)</div><div class="dim-step">'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjFloorArea(-0.5)">???</button>'
-    +'<input class="di" type="number" data-dim="floor" min="0" step="0.5" value="'+(d.floorArea>0?d.floorArea:'')+'" placeholder="0" oninput="sFloorAreaManual(this.value)"/>'
-    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjFloorArea(0.5)">+</button></div></div>'
+    +'<div class="dim-l">'+floorAreaLbl+'</div><div class="dim-step">'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjFloorArea(-1)">???</button>'
+    +'<input class="di" type="number" data-dim="floor" min="0" step="'+numStep+'" value="'+rfStoredSqftToUiAreaStr(d.floorArea)+'" placeholder="0" oninput="sFloorAreaManual(this.value)"/>'
+    +'<button type="button" class="tc-cqb" tabindex="-1" onmousedown="event.preventDefault()" onclick="adjFloorArea(1)">+</button></div></div>'
     +'<div class="dim-l" style="margin-bottom:6px">Wall segments</div>'
     +wallsRowsHtml
     +'<div class="dim-add-wall"><button type="button" class="btn bg sm" onclick="addWallRow()">+ Add wall</button></div>'
@@ -7066,7 +7202,7 @@ function tradeObjectFromTid(tid, opt){
 function addTradeMo(){
   var room=S.rooms[curR];
   if(!room)return;
-  var opts=INTAKE_TRADE_IDS.filter(function(tid){ return tradeIndexById(room,tid)<0; });
+  var opts=getSelectableTradeIds().filter(function(tid){ return tradeIndexById(room,tid)<0; });
   if(!opts.length){
     try{alert("All trades are already in this room.");}catch(e){}
     return;
@@ -7107,11 +7243,7 @@ function openRoomListTradesModal(ri){
   if(__rfNavToRoomsAt && Date.now()-__rfNavToRoomsAt<450) return;
   var room=S.rooms[ri];
   if(!room) return;
-  var opts=INTAKE_TRADE_IDS.filter(function(tid){ return tradeIndexById(room,tid)<0; });
-  if(!opts.length){
-    gRoom(ri);
-    return;
-  }
+  var opts=getSelectableTradeIds().filter(function(tid){ return tradeIndexById(room,tid)<0; });
   var rows=opts.map(function(tid){
     var col=TC[tid]||"#888";
     return '<label class="intake-cb" style="border-left:3px solid '+col+'">'
@@ -7167,16 +7299,22 @@ function togDimAuto(){
 }
 function sDim(k,v){
   var room=S.rooms[curR];if(!room.d)room.d={};
-  room.d[k]=parseFloat(v)||0;applyAuto(room);ss();uSide();rNav();
+  if(k==="doors"||k==="wins") room.d[k]=parseInt(v,10)||0;
+  else room.d[k]=rfUiLenToStoredFt(v);
+  applyAuto(room);ss();uSide();rNav();
   dimSyncTradeEconomy();
 }
-function adjDim(k,delta){
+function adjDim(k,dir){
   if(k!=="l"&&k!=="w"&&k!=="h")return;
   var room=S.rooms[curR];if(!room.d)room.d={};
-  var v=Math.max(0,Math.round(((parseFloat(room.d[k])||0)+delta)*2)/2);
+  var step=rfDimAdjHalfStepFt();
+  var cur=parseFloat(room.d[k])||0;
+  var v=Math.max(0,cur+dir*step);
+  if(!rfIsMetricDims()) v=Math.round(v*2)/2;
+  else v=Math.round(v*100)/100;
   room.d[k]=v;
   applyAuto(room);ss();uSide();rNav();
-  document.querySelectorAll('input[data-dim="'+k+'"]').forEach(function(inp){inp.value=v>0?v:'';});
+  document.querySelectorAll('input[data-dim="'+k+'"]').forEach(function(inp){inp.value=rfStoredFtToUiLenStr(v);});
   dimSyncTradeEconomy();
 }
 function adjDimInt(k,delta){
@@ -7194,22 +7332,28 @@ function adjWallFieldDelta(wi,key,delta){
   var row=room.d.walls[wi];if(!row)return;
   var walls=room.d.walls;
   var prBefore=walls.reduce(function(s,w){return s+(parseFloat(w.l)||0);},0);
-  var v=Math.max(0,Math.round(((parseFloat(row[key])||0)+delta)*2)/2);
+  var step=rfDimAdjHalfStepFt();
+  var v=Math.max(0,(parseFloat(row[key])||0)+delta*step);
+  if(!rfIsMetricDims()) v=Math.round(v*2)/2;
+  else v=Math.round(v*100)/100;
   row[key]=v;
   var prAfter=walls.reduce(function(s,w){return s+(parseFloat(w.l)||0);},0);
   if(prBefore<=0 && prAfter>0) releaseDimMappedLocksForAuto(room);
   applyAuto(room);ss();uSide();rNav();
   var dimKey=key==="l"?"wl"+wi:"wh"+wi;
-  document.querySelectorAll('input[data-dim="'+dimKey+'"]').forEach(function(inp){inp.value=v>0?v:'';});
+  document.querySelectorAll('input[data-dim="'+dimKey+'"]').forEach(function(inp){inp.value=rfStoredFtToUiLenStr(v);});
   dimSyncTradeEconomy();
 }
 function adjFloorArea(delta){
   var room=S.rooms[curR];if(!room)return;
   if(!room.d)room.d={};
-  var v=Math.max(0,Math.round(((parseFloat(room.d.floorArea)||0)+delta)*2)/2);
+  var step=rfFloorAreaStepSqft();
+  var v=Math.max(0,(parseFloat(room.d.floorArea)||0)+delta*step);
+  if(!rfIsMetricDims()) v=Math.round(v*2)/2;
+  else v=Math.round(v*100)/100;
   room.d.floorArea=v;
   applyAuto(room);ss();uSide();rNav();
-  document.querySelectorAll('input[data-dim="floor"]').forEach(function(inp){inp.value=v>0?v:'';});
+  document.querySelectorAll('input[data-dim="floor"]').forEach(function(inp){inp.value=rfStoredSqftToUiAreaStr(v);});
   dimSyncTradeEconomy();
 }
 function setDimMode(mode){
@@ -7242,7 +7386,7 @@ function sWallField(wi,key,raw){
   var row=room.d.walls[wi];if(!row)return;
   var walls=room.d.walls;
   var prBefore=walls.reduce(function(s,w){return s+(parseFloat(w.l)||0);},0);
-  row[key]=parseFloat(raw)||0;
+  row[key]=rfUiLenToStoredFt(raw);
   var prAfter=walls.reduce(function(s,w){return s+(parseFloat(w.l)||0);},0);
   if(prBefore<=0 && prAfter>0) releaseDimMappedLocksForAuto(room);
   applyAuto(room);ss();uSide();rNav();
@@ -7251,7 +7395,7 @@ function sWallField(wi,key,raw){
 function sFloorAreaManual(v){
   var room=S.rooms[curR];if(!room)return;
   if(!room.d)room.d={};
-  room.d.floorArea=parseFloat(v)||0;
+  room.d.floorArea=rfUiAreaToStoredSqft(v);
   applyAuto(room);ss();uSide();rNav();
   dimSyncTradeEconomy();
 }
@@ -10033,6 +10177,7 @@ if (typeof window.addEventListener === "function") {
   }, {passive:true});
 }
 syncMobDashStatusBarBg(typeof curPg==="string"?curPg:"dash");
+rfBootstrapServerProfile();
 initFromServer();
 </script>
 </body>

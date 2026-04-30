@@ -3,7 +3,8 @@
 import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { formatMoney, parsePrice } from "@/lib/demolition-calculations";
+import { parsePrice } from "@/lib/demolition-calculations";
+import { useProfile } from "@/hooks/useProfile";
 import {
   type CachedProductRow,
   getDemolitionStateFromTrade,
@@ -59,6 +60,7 @@ export type DemolitionMaterialsListAppProps = {
 };
 
 export default function DemolitionMaterialsListApp(props: DemolitionMaterialsListAppProps = {}) {
+  const { formatMoney } = useProfile();
   const {
     initialPid = "",
     initialDbRoomId = "",

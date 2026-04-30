@@ -10,6 +10,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useProfile } from "@/hooks/useProfile";
 import { INTAKE_TRADE_IDS, TN } from "@/lib/final-catalog";
 import { hydrateProjectWorkspaceFromApi } from "@/lib/hydrate-project-workspace";
 
@@ -47,15 +48,6 @@ type RoomPayload = {
   trades: TradeRow[];
   room_total: number;
 };
-
-function fmtMoney(n: number): string {
-  return new Intl.NumberFormat("en-CA", {
-    style: "currency",
-    currency: "CAD",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(n);
-}
 
 function tradeVisual(slug: string): {
   bg: string;
@@ -168,6 +160,7 @@ export default function RoomDetailClient({
   projectId: string;
   roomId: string;
 }) {
+  const { formatMoney } = useProfile();
   const [data, setData] = useState<RoomPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -544,7 +537,7 @@ export default function RoomDetailClient({
                         </div>
                         <div className="shrink-0 text-right">
                           <div className="text-[14px] font-medium text-[#111]" style={monoStyle}>
-                            {fmtMoney(t.estimated_total)}
+                            {formatMoney(t.estimated_total)}
                           </div>
                           <div className="mt-0.5 text-[11px] text-[#aaa]">{t.days} days</div>
                         </div>

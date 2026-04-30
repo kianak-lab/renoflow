@@ -2,6 +2,8 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useProfile } from "@/hooks/useProfile";
+import { sqFtToSqM } from "@/lib/measurement-profile";
 import {
   buildResolvedMaterialRows,
   type CalcSnapshot,
@@ -66,10 +68,10 @@ const doorPrices: Record<string, Record<string, [number, number]>> = {
   semi: { swing: [900, 1800], sliding: [1100, 2200], bifold: [1000, 2000] },
   framed: { swing: [400, 900], sliding: [600, 1200], bifold: [500, 1100] },
 };
-const doorInstall: Record<string, string> = {
-  frameless: "$350–600",
-  semi: "$250–400",
-  framed: "$150–300",
+const doorInstallRange: Record<DoorType, [number, number]> = {
+  frameless: [350, 600],
+  semi: [250, 400],
+  framed: [150, 300],
 };
 
 type TabId = "walls" | "floor" | "ceiling" | "substrate" | "door" | "list";
@@ -82,9 +84,6 @@ function tilesForArea(sqIn: number, tw: number, th: number, joint: number) {
 }
 function sqInToSqFt(sqin: number) {
   return sqin / 144;
-}
-function fmt(n: number) {
-  return n.toLocaleString("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 });
 }
 
 const floorSubLabels: Record<FloorSub, string> = {
@@ -123,6 +122,16 @@ function TileCalculatorView() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const roomName = searchParams.get("room") || "Room";
+  const { formatMoney, measurementUnits } = useProfile();
+
+  const areaUi = (sqFt: number) =>
+    measurementUnits === "metric"
+      ? { val: sqFtToSqM(sqFt).toFixed(1), unit: "m²" }
+      : { val: sqFt.toFixed(1), unit: "sq ft" };
+  const lenUi = (ft: number) =>
+    measurementUnits === "metric"
+      ? { val: (ft * 0.3048).toFixed(1), unit: "m" }
+      : { val: String(ft), unit: "ft" };
 
   const [tab, setTab] = useState<TabId>("walls");
   const [tileW, setTileW] = useState(3);
@@ -300,16 +309,17 @@ function TileCalculatorView() {
   const doorCalc = useMemo(() => {
     const sqFt = (doorW * doorH) / 144;
     const [lo, hi] = doorPrices[doorType][doorConfig];
+    const [iLo, iHi] = doorInstallRange[doorType];
     return {
       sqFt: sqFt.toFixed(1),
-      lo: fmt(lo),
-      hi: fmt(hi),
+      lo: formatMoney(lo),
+      hi: formatMoney(hi),
       loN: lo,
       hiN: hi,
-      install: doorInstall[doorType],
+      install: `${formatMoney(iLo)}–${formatMoney(iHi)}`,
       label: `${doorType.charAt(0).toUpperCase() + doorType.slice(1)} ${doorConfig}`,
     };
-  }, [doorW, doorH, doorType, doorConfig]);
+  }, [doorW, doorH, doorType, doorConfig, formatMoney]);
 
   /** Rough supply total: glass door mid-range + modelled material allowances */
   const totalSupplyCad = useMemo(() => {
@@ -529,10 +539,12 @@ function TileCalculatorView() {
           <div className="section-title">Wall Totals</div>
           <div className="card">
             <div className="result-row">
-              <div className="result-label">Total wall sq ft</div>
+              <div className="result-label">
+                {measurementUnits === "metric" ? "Wall surface area" : "Total wall sq ft"}
+              </div>
               <div>
-                <span className="result-val">{calc.wallSqFt.toFixed(1)}</span>
-                <span className="result-unit">sq ft</span>
+                <span className="result-val">{areaUi(calc.wallSqFt).val}</span>
+                <span className="result-unit">{areaUi(calc.wallSqFt).unit}</span>
               </div>
             </div>
             <div className="result-row">
@@ -552,10 +564,12 @@ function TileCalculatorView() {
               </div>
             </div>
             <div className="result-row">
-              <div className="result-label">Schluter linear ft</div>
+              <div className="result-label">
+                {measurementUnits === "metric" ? "Schluter perimeter length" : "Schluter linear ft"}
+              </div>
               <div>
-                <span className="result-val">{calc.schluterFt}</span>
-                <span className="result-unit">ft</span>
+                <span className="result-val">{lenUi(calc.schluterFt).val}</span>
+                <span className="result-unit">{lenUi(calc.schluterFt).unit}</span>
               </div>
             </div>
           </div>
@@ -650,10 +664,12 @@ function TileCalculatorView() {
           <div className="section-title">Floor Totals</div>
           <div className="card">
             <div className="result-row">
-              <div className="result-label">Floor sq ft</div>
+              <div className="result-label">
+                {measurementUnits === "metric" ? "Floor area" : "Floor sq ft"}
+              </div>
               <div>
-                <span className="result-val">{calc.flSqFt.toFixed(1)}</span>
-                <span className="result-unit">sq ft</span>
+                <span className="result-val">{areaUi(calc.flSqFt).val}</span>
+                <span className="result-unit">{areaUi(calc.flSqFt).unit}</span>
               </div>
             </div>
             <div className="result-row">
@@ -665,10 +681,12 @@ function TileCalculatorView() {
             </div>
             {hasHeat && (
               <div className="result-row heatRowFlex" id="heatRow">
-                <div className="result-label">Heat mat sq ft</div>
+                <div className="result-label">
+                  {measurementUnits === "metric" ? "Heat mat area" : "Heat mat sq ft"}
+                </div>
                 <div>
-                  <span className="result-val">{calc.flSqFt.toFixed(1)}</span>
-                  <span className="result-unit">sq ft</span>
+                  <span className="result-val">{areaUi(calc.flSqFt).val}</span>
+                  <span className="result-unit">{areaUi(calc.flSqFt).unit}</span>
                 </div>
               </div>
             )}
@@ -744,10 +762,12 @@ function TileCalculatorView() {
               <div className="gap" />
               <div className="card">
                 <div className="result-row">
-                  <div className="result-label">Ceiling sq ft</div>
+                  <div className="result-label">
+                    {measurementUnits === "metric" ? "Ceiling area" : "Ceiling sq ft"}
+                  </div>
                   <div>
-                    <span className="result-val">{calc.ceilSqFt.toFixed(1)}</span>
-                    <span className="result-unit">sq ft</span>
+                    <span className="result-val">{areaUi(calc.ceilSqFt).val}</span>
+                    <span className="result-unit">{areaUi(calc.ceilSqFt).unit}</span>
                   </div>
                 </div>
                 <div className="result-row">
@@ -891,10 +911,12 @@ function TileCalculatorView() {
           <div className="section-title">Glass Door Estimate</div>
           <div className="card">
             <div className="result-row">
-              <div className="result-label">Glass sq ft</div>
+              <div className="result-label">
+                {measurementUnits === "metric" ? "Glass area" : "Glass sq ft"}
+              </div>
               <div>
-                <span className="result-val">{doorCalc.sqFt}</span>
-                <span className="result-unit">sq ft</span>
+                <span className="result-val">{areaUi(parseFloat(doorCalc.sqFt) || 0).val}</span>
+                <span className="result-unit">{areaUi(parseFloat(doorCalc.sqFt) || 0).unit}</span>
               </div>
             </div>
             <div className="result-row">
@@ -990,7 +1012,7 @@ function TileCalculatorView() {
           <div className="total-wrap">
             <div className="total-label">Total estimate</div>
             <div className="total-val" id="grandTotal">
-              {fmt(totalSupplyCad)}
+              {formatMoney(totalSupplyCad)}
             </div>
           </div>
           <button type="button" className="push-btn" onClick={onPushQuote}>

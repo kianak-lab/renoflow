@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useProfile } from "@/hooks/useProfile";
 import {
   useCallback,
   useEffect,
@@ -39,15 +40,6 @@ type HubPayload = {
   rooms: HubRoom[];
 };
 
-function fmtMoney(n: number): string {
-  return new Intl.NumberFormat("en-CA", {
-    style: "currency",
-    currency: "CAD",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(n);
-}
-
 function hubFinalHref(projectId: string, query?: Record<string, string>): string {
   const sp = new URLSearchParams();
   sp.set("project", projectId);
@@ -83,6 +75,7 @@ async function compressImageFileToJpegDataUrl(file: File, maxSide = 720, quality
 }
 
 export default function ProjectHubClient({ projectId }: { projectId: string }) {
+  const { formatMoney } = useProfile();
   const [data, setData] = useState<HubPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -392,13 +385,13 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                   <div className="flex justify-between gap-3 text-[13px]">
                     <span className="text-[#888]">Project value</span>
                     <span className="font-medium text-[#2d7a2d]" style={monoStyle}>
-                      {fmtMoney(data.stats.projectValue)}
+                      {formatMoney(data.stats.projectValue)}
                     </span>
                   </div>
                   <div className="mt-2 flex justify-between gap-3 text-[13px]">
                     <span className="text-[#888]">Outstanding</span>
                     <span className="font-medium text-[#c0392b]" style={monoStyle}>
-                      {fmtMoney(data.stats.outstanding)}
+                      {formatMoney(data.stats.outstanding)}
                     </span>
                   </div>
                   <div className="mt-2 flex justify-between gap-3 text-[13px]">
@@ -504,7 +497,7 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                         ) : null}
                       </div>
                       <div className="shrink-0 text-right text-[13px] font-medium text-[#111]" style={monoStyle}>
-                        {fmtMoney(room.estimatedTotal)}
+                        {formatMoney(room.estimatedTotal)}
                       </div>
                     </div>
                     <div

@@ -50,7 +50,8 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/trades") ||
     pathname.startsWith("/projects") ||
     pathname.startsWith("/project") ||
-    pathname.startsWith("/onboarding");
+    pathname.startsWith("/onboarding") ||
+    pathname.startsWith("/settings");
   if (needsAppGate) {
     if (!(await hasSession(request))) {
       const login = new URL("/login", getRequestOrigin(request));
@@ -87,6 +88,12 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname.startsWith("/api/client-intake/link")) {
+    if (!(await hasSession(request))) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+  }
+
+  if (pathname.startsWith("/api/profile")) {
     if (!(await hasSession(request))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

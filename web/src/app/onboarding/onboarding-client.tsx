@@ -8,6 +8,7 @@ import {
   type OnboardingCountry,
 } from "@/lib/onboarding-constants";
 import { shouldResetOnboardingOnEachVisit } from "@/lib/onboarding-env";
+import { DEFAULT_TRADE_IDS, TRADE_GROUPS } from "@/lib/onboarding-trade-groups";
 
 const PRIMARY = "#0f2318";
 const SOFT_BG = "#f0faf2";
@@ -22,68 +23,6 @@ const MAX_LOGO_BYTES = 5 * 1024 * 1024;
 type MeasurementUnits = "imperial" | "metric";
 
 type Props = { nextHref: string };
-
-/** Exact 18 trades, grouped — ids match RenoFlow catalog / onboarding API */
-const TRADE_GROUPS: {
-  category: string;
-  trades: { id: string; label: string }[];
-}[] = [
-  {
-    category: "Structure",
-    trades: [
-      { id: "demo", label: "Demolition" },
-      { id: "framing", label: "Framing / Bulkhead" },
-      { id: "concrete", label: "Concrete" },
-      { id: "roofing", label: "Roofing" },
-    ],
-  },
-  {
-    category: "Mechanical",
-    trades: [
-      { id: "electrical", label: "Electrical" },
-      { id: "plumbing", label: "Plumbing" },
-      { id: "hvac", label: "HVAC" },
-      {
-        id: "low-voltage",
-        label: "Low Voltage / Security / Commercial Door Hardware",
-      },
-    ],
-  },
-  {
-    category: "Shell",
-    trades: [
-      { id: "insulation", label: "Insulation" },
-      { id: "drywall", label: "Drywall / Taping" },
-    ],
-  },
-  {
-    category: "Finish",
-    trades: [
-      { id: "tile", label: "Tile" },
-      { id: "flooring", label: "Flooring" },
-      { id: "painting", label: "Painting / Finishing" },
-      { id: "doors-trim", label: "Doors / Trim / Millwork" },
-      { id: "cabinets", label: "Cabinets & Tops" },
-      { id: "closets", label: "Closets" },
-    ],
-  },
-  {
-    category: "Exterior",
-    trades: [
-      { id: "landscaping", label: "Landscaping / Deck / Fence / Sheds" },
-      { id: "cleaning", label: "Cleaning" },
-    ],
-  },
-];
-
-const DEFAULT_TRADE_IDS = new Set([
-  "demo",
-  "framing",
-  "electrical",
-  "plumbing",
-  "drywall",
-  "painting",
-]);
 
 function progressPercent(phase: number): number {
   if (phase <= 0) return 0;
