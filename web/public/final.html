@@ -2877,6 +2877,14 @@ function persistCurrentWorkspaceNow(){
     localStorage.setItem("rf7_ws_"+id,JSON.stringify(S));
   }catch(e){}
 }
+/** Same localStorage target as ss(), writes immediately (used after invoice create). */
+function persistFullWorkspaceSync(){
+  try{ persistCoProfileNow(); }catch(e0){}
+  try{
+    var key=(S.proj&&S.proj.dbProjectId)?("rf7_ws_"+S.proj.dbProjectId):"rf7";
+    localStorage.setItem(key,JSON.stringify(S));
+  }catch(e){}
+}
 /** Load all clients from the server into S.clients (local project blobs often omit clients). */
 function refreshClientsFromServer(){
   return fetch("/api/clients",{credentials:"include"})
@@ -9466,7 +9474,7 @@ function buildInvFromQuote(){
     id:'inv_'+Date.now(), num:fmtInvNum(num),
     clientName:S.proj.client||'', clientEmail:'', clientPhone:'', clientAddr:S.proj.addr||'',
     projName:S.proj.name||'',
-    terms:'net7', createdDate:todayStr(), sentDate:null,
+    terms:'net7', createdDate:todayStr(), sentDate:todayStr(),
     paid:false, void:false,
     deposit:Math.round(sub*0.5), depositPaid:false,
     subtotal:sub, taxRate:S.mk.tax, tax:tax, total:sub+tax,
@@ -9477,7 +9485,10 @@ function buildInvFromQuote(){
     var cl=(S.clients||[]).find(function(c){return c.id===S.proj.clientId;});
     if(cl){inv.clientEmail=cl.email||'';inv.clientPhone=cl.phone||'';}
   }
-  S.invoices.push(inv); ss(); uSide();
+  S.invoices.push(inv);
+  persistFullWorkspaceSync();
+  ss();
+  uSide();
   return inv;
 }
 
@@ -9713,6 +9724,7 @@ function rInvDetail(inv){
 
 function createInvFromQuote(){
   if(!S.rooms.length||!projTotal()){alert('Add rooms with quantities to your quote first.');return;}
+  try{ saveWorkspaceNow(); }catch(e){}
   var inv=buildInvFromQuote();
   curInvId=inv.id;
   gP('inv');
