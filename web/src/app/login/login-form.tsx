@@ -14,6 +14,7 @@ import {
   authLabelClass,
   authPrimaryBtnClass,
 } from "@/components/auth/auth-form-styles";
+import { syncRenoflowSessionAfterSupabaseAuth } from "@/lib/auth/sync-renoflow-session";
 
 const SUPABASE_AUTH_CALLBACK_URL =
   "https://www.renoflowapp.com/api/auth/callback";
@@ -36,17 +37,6 @@ function safeNextPath(next: string | null): string {
   return "/";
 }
 
-async function syncRenoflowSession(): Promise<void> {
-  const res = await fetch("/api/auth/sync-session", {
-    method: "POST",
-    credentials: "include",
-  });
-  const data = (await res.json().catch(() => ({}))) as { error?: string };
-  if (!res.ok) {
-    throw new Error(data.error || "Could not establish app session.");
-  }
-}
-
 export default function LoginForm({ error, errorMessage }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -64,7 +54,7 @@ export default function LoginForm({ error, errorMessage }: Props) {
         password,
       });
       if (signErr) throw new Error(signErr.message);
-      await syncRenoflowSession();
+      await syncRenoflowSessionAfterSupabaseAuth();
       const params = new URLSearchParams(window.location.search);
       window.location.assign(safeNextPath(params.get("next")));
     } catch (err: unknown) {

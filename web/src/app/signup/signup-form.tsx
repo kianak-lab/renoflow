@@ -13,20 +13,10 @@ import {
   authLabelClass,
   authPrimaryBtnClass,
 } from "@/components/auth/auth-form-styles";
+import { syncRenoflowSessionAfterSupabaseAuth } from "@/lib/auth/sync-renoflow-session";
 
 const SUPABASE_AUTH_CALLBACK_URL =
   "https://www.renoflowapp.com/api/auth/callback";
-
-async function syncRenoflowSession(): Promise<void> {
-  const res = await fetch("/api/auth/sync-session", {
-    method: "POST",
-    credentials: "include",
-  });
-  const data = (await res.json().catch(() => ({}))) as { error?: string };
-  if (!res.ok) {
-    throw new Error(data.error || "Could not establish app session.");
-  }
-}
 
 export default function SignupForm() {
   const [email, setEmail] = useState("");
@@ -49,7 +39,7 @@ export default function SignupForm() {
       });
       if (signErr) throw new Error(signErr.message);
       if (data.session) {
-        await syncRenoflowSession();
+        await syncRenoflowSessionAfterSupabaseAuth();
         window.location.assign("/");
         return;
       }
