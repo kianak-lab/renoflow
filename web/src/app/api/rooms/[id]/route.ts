@@ -21,6 +21,7 @@ type TradePatch = {
     unit_price: number;
     quantity: number;
   }>;
+  calendar_slots?: Array<{ date: string; duration?: string; notes?: string }>;
 };
 
 type PatchBody = {
@@ -30,6 +31,22 @@ type PatchBody = {
   dimensions?: Record<string, unknown>;
   trades?: TradePatch[];
 };
+
+function normalizeCalendarSlots(raw: unknown): Array<{ date: string; duration: string; notes: string }> {
+  if (!Array.isArray(raw)) return [];
+  const out: Array<{ date: string; duration: string; notes: string }> = [];
+  for (const x of raw) {
+    if (!x || typeof x !== "object") continue;
+    const row = x as Record<string, unknown>;
+    const date = String(row.date ?? "").trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+    let duration = String(row.duration ?? "full").toLowerCase();
+    if (duration !== "am" && duration !== "pm") duration = "full";
+    const notes = String(row.notes ?? "").slice(0, 4000);
+    out.push({ date, duration, notes });
+  }
+  return out;
+}
 
 function num(v: unknown, fallback = 0): number {
   if (typeof v === "number" && !Number.isNaN(v)) return v;
@@ -230,7 +247,9 @@ export async function PATCH(
     const days = num(patch.days, 0);
     const daysCustom = patch.daysCustom === true;
 
-    const rowPayload = {
+    const calendarSlots = normalizeCalendarSlots(patch.calendar_slots);
+
+    const rowPayload: Record<string, unknown> = {
       room_id: roomId,
       trade_id: slug,
       display_name: TN[slug] ?? slug,
@@ -239,6 +258,7 @@ export async function PATCH(
       days,
       days_custom: daysCustom,
       sort_order: i,
+      calendar_slots: calendarSlots,
     };
 
     const { error: upRtErr } = await supabase

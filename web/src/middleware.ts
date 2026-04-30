@@ -24,6 +24,9 @@ function isPublicPath(pathname: string) {
   if (pathname.startsWith("/api/auth/callback")) return true;
   if (pathname.startsWith("/auth/callback")) return true;
   if (pathname.startsWith("/client-intake")) return true;
+  if (pathname.startsWith("/cal")) return true;
+  if (pathname.startsWith("/api/public/")) return true;
+  if (pathname.startsWith("/api/calendar/google/callback")) return true;
   return false;
 }
 

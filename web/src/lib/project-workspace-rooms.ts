@@ -170,6 +170,24 @@ export async function fetchRoomsForFinalApp(
       const demoUnpack = slug === "demo" ? unpackDemolitionNote(rawNote) : null;
       const noteOut = demoUnpack ? "" : rawNote;
 
+      const rawCal = rt.calendar_slots;
+      const calendarSlots: Array<{ date: string; duration: string; notes: string }> = [];
+      if (Array.isArray(rawCal)) {
+        for (const x of rawCal) {
+          if (!x || typeof x !== "object") continue;
+          const o = x as Record<string, unknown>;
+          const date = String(o.date ?? "").trim();
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+          let duration = String(o.duration ?? "full").toLowerCase();
+          if (duration !== "am" && duration !== "pm") duration = "full";
+          calendarSlots.push({
+            date,
+            duration,
+            notes: String(o.notes ?? "").slice(0, 4000),
+          });
+        }
+      }
+
       trades.push({
         id: slug,
         n: TN[slug] ?? slug,
@@ -179,6 +197,7 @@ export async function fetchRoomsForFinalApp(
         days: num(rt, ["days"]),
         daysCustom: bool(rt, ["days_custom", "daysCustom"]),
         items: tradeItems,
+        calendarSlots,
         ...(demoUnpack
           ? {
               rfDemolition: demoUnpack,

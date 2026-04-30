@@ -1364,6 +1364,53 @@ a.ni{color:inherit;text-decoration:none;}
 .tl-toggle-lbl{font-size:13px;font-weight:500;}
 .tl-toggle-sub{font-size:11px;color:var(--tx3);font-family:'Inter',system-ui,sans-serif;}
 
+.tl-tab-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.tl-tab{display:inline-flex;align-items:center;padding:8px 14px;border-radius:999px;border:1px solid var(--bd2);background:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',system-ui,sans-serif;color:var(--tx);}
+.tl-tab.on{background:#0f2318;color:#fff;border-color:#0f2318;}
+.tl-cal-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.tl-cal-nav-mid{text-align:center;flex:1;min-width:140px;}
+.tl-cal-nav-mid h2{margin:0;font-size:18px;font-weight:600;font-family:'Inter',system-ui,sans-serif;}
+.tl-cal-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px;font-size:11px;color:var(--tx3);text-align:center;font-family:'Inter',system-ui,sans-serif;}
+.tl-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.tl-cal-cell{aspect-ratio:1;min-height:44px;border-radius:8px;border:1px solid var(--bd2);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:4px 2px;cursor:pointer;position:relative;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+.tl-cal-cell.out{visibility:hidden;pointer-events:none;border:none;background:transparent!important;}
+.tl-cal-cell.today{background:#f0faf2!important;color:#1b5e20;font-weight:600;}
+.tl-cal-cell.sel{outline:2px solid #0f2318;outline-offset:1px;}
+.tl-cal-dn{font-size:13px;line-height:1.2;font-family:'Inter',system-ui,sans-serif;}
+.tl-cal-dots{margin-top:auto;display:flex;gap:3px;justify-content:center;flex-wrap:wrap;padding-bottom:2px;}
+.tl-cal-dot{width:5px;height:5px;border-radius:50%;}
+.tl-cal-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin:12px 0 16px;font-size:11px;font-family:'Inter',system-ui,sans-serif;color:var(--tx2);}
+.tl-cal-leg{display:flex;align-items:center;gap:6px;}
+.tl-cal-leg-swatch{width:14px;height:14px;border-radius:4px;border:1px solid rgba(0,0,0,.08);}
+.tl-cal-warn{background:#fffbe6;border:1px solid #ffe566;color:#5c4a00;padding:10px 12px;border-radius:8px;margin-bottom:14px;font-size:13px;font-family:'Inter',system-ui,sans-serif;}
+.tl-cal-panel{margin-top:16px;padding:16px;background:#fff;border:1px solid var(--bd);border-radius:var(--r);}
+.tl-cal-panel-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.tl-cal-panel-h h3{margin:0;font-size:16px;font-family:'Inter',system-ui,sans-serif;}
+.tl-cal-clear{background:none;border:none;color:#c62828;font-weight:600;cursor:pointer;font-size:13px;font-family:'Inter',system-ui,sans-serif;}
+.tl-cal-trade-block{border-top:1px solid var(--bd);padding:12px 0;}
+.tl-cal-trade-block:first-of-type{border-top:none;padding-top:0;}
+.tl-cal-dur-row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0;}
+.tl-cal-dur{display:inline-flex;padding:6px 12px;border-radius:999px;border:1px solid var(--bd2);background:#fff;font-size:12px;cursor:pointer;font-family:'Inter',system-ui,sans-serif;}
+.tl-cal-dur.on{background:#0f2318;color:#fff;border-color:#0f2318;}
+.tl-cal-notes{width:100%;min-height:72px;resize:vertical;padding:8px 10px;border:0.5px solid #e0e0e0;border-radius:8px;font-family:'Inter',system-ui,sans-serif;font-size:13px;box-sizing:border-box;}
+.tl-cal-notes-h{font-size:11px;color:var(--tx3);margin-top:4px;font-family:'Inter',system-ui,sans-serif;}
+.rf-cal-push-mo{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:12000;display:none;align-items:flex-end;justify-content:center;padding:0;box-sizing:border-box;}
+.rf-cal-push-mo.show{display:flex;}
+.rf-cal-push-in{width:100%;max-width:520px;max-height:92vh;overflow:auto;background:#faf9f5;border-radius:16px 16px 0 0;padding:18px 18px 24px;box-shadow:0 -4px 24px rgba(0,0,0,.12);}
+.rf-cal-push-in h2{margin:0 0 14px;font-size:18px;}
+.rf-cal-sec{margin-bottom:20px;}
+.rf-cal-sec-l{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--tx3);margin-bottom:8px;font-family:'Inter',system-ui,sans-serif;}
+.rf-cal-card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:10px;font-family:'Inter',system-ui,sans-serif;font-size:14px;}
+.rf-cal-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);}
+.rf-cal-row:last-child{border-bottom:none;}
+.rf-cal-ava{width:36px;height:36px;border-radius:50%;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+.rf-cal-tog{margin-left:auto;width:40px;height:22px;border-radius:999px;background:#ccc;position:relative;cursor:pointer;}
+.rf-cal-tog.on{background:var(--grn);}
+.rf-cal-tog i{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s;}
+.rf-cal-tog.on i{transform:translateX(18px);}
+.rf-cal-url-row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;}
+.rf-cal-url-row input{flex:1;min-width:0;padding:8px 10px;border:1px solid var(--bd2);border-radius:8px;font-size:12px;}
+
 .tl-summary{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:18px;margin-bottom:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
 .tl-summary > div{min-width:0;}
 .tl-sl{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-family:'Inter',system-ui,sans-serif;}
@@ -2649,6 +2696,8 @@ a.ni{color:inherit;text-decoration:none;}
 "use strict";
 
 var TC={"demo":"#FFE000","framing":"#e87747","concrete":"#78909c","roofing":"#5c7a8a","electrical":"#e8c547","plumbing":"#47a0e8","hvac":"#8847e8","low-voltage":"#5c6bc0","insulation":"#47e8c5","drywall":"#e847a0","tile":"#a0e847","flooring":"#e8a047","painting":"#47e8a0","doors-trim":"#e88847","cabinets":"#7047e8","closets":"#8b7355","landscaping":"#558b2f","cleaning":"#78909c"};
+/** Site-clean timeline calendar cell backgrounds (per product spec). */
+var RF_CAL_CELL_BG={"demo":"#fff8e1","plumbing":"#e3f2fd","electrical":"#fff3e0","tile":"#f3e5f5","framing":"#f5f5f5"};
 var TN={"demo":"Demolition","framing":"Framing / Bulkhead","concrete":"Concrete","roofing":"Roofing","electrical":"Electrical","plumbing":"Plumbing","hvac":"HVAC","low-voltage":"Low Voltage / Security / Commercial Door Hardware","insulation":"Insulation","drywall":"Drywall / Taping","tile":"Tile","flooring":"Flooring","painting":"Painting / Finishing","doors-trim":"Doors / Trim / Millwork","cabinets":"Cabinets & Tops","closets":"Closets","landscaping":"Landscaping / Deck / Fence / Sheds","cleaning":"Cleaning"};
 var TIC={"demo":"\u{1F528}","framing":"\u{1FAB5}","concrete":"\u{1FAA8}","roofing":"\u{1F3E0}","electrical":"\u{26A1}","plumbing":"\u{1F4A7}","hvac":"\u{1F300}","low-voltage":"\u{1F50C}","insulation":"\u{1F9F1}","drywall":"\u{2B1C}","tile":"\u{1F7E9}","flooring":"\u{1F532}","painting":"\u{1F3A8}","doors-trim":"\u{1F6AA}","cabinets":"\u{1F5C4}","closets":"\u{1F45A}","landscaping":"\u{1F333}","cleaning":"\u{1F9F9}"};
 /* Legacy line-item seed empty ??? materials use supplier catalog (cached_products). */
@@ -2736,7 +2785,7 @@ var SEQ=['demo','framing','concrete','roofing','ROUGHIN','insulation','drywall',
 var ROUGHIN=['electrical','plumbing','hvac','low-voltage'];
 
 function DS(){return{
-  proj:{name:"My Renovation",client:"",clientId:"",addr:"",qnum:"Q-001",notes:"All prices include labour and materials. HST extra. 50% deposit required.",startDate:"",deadlineDate:"",parallelRooms:false,includeTimeline:true,dbProjectId:"",cover:"",timelineDayNotes:{},scheduledYmds:[]},
+  proj:{name:"My Renovation",client:"",clientId:"",addr:"",qnum:"Q-001",notes:"All prices include labour and materials. HST extra. 50% deposit required.",startDate:"",deadlineDate:"",parallelRooms:false,includeTimeline:true,dbProjectId:"",cover:"",timelineDayNotes:{},scheduledYmds:[],calendarSlug:"",calendarRecipients:[],calendarMyGoogleEnabled:false},
   co:{name:"Your Company",phone:"",email:"",lic:"",addr:"",logo:""},
   mk:{mat:20,tax:13},
   rooms:[],ck:{},clients:[],invoices:[],quotes:[],invNum:1,matHideZero:true
@@ -2770,6 +2819,9 @@ function migrate(d){
   if(d.proj.cover===undefined)d.proj.cover="";
   if(!d.proj.timelineDayNotes||typeof d.proj.timelineDayNotes!=="object")d.proj.timelineDayNotes={};
   if(!Array.isArray(d.proj.scheduledYmds))d.proj.scheduledYmds=[];
+  if(d.proj.calendarSlug===undefined)d.proj.calendarSlug="";
+  if(!Array.isArray(d.proj.calendarRecipients))d.proj.calendarRecipients=[];
+  if(d.proj.calendarMyGoogleEnabled===undefined)d.proj.calendarMyGoogleEnabled=false;
   try{ applyGlobalCoProfileToData(d); }catch(e){}
   (d.rooms||[]).forEach(function(r){
     if(r.thumb===undefined)r.thumb="";
@@ -2785,6 +2837,7 @@ function migrate(d){
       }
       if(t.days===undefined)t.days=0;
       if(t.daysCustom===undefined)t.daysCustom=false;
+      if(!Array.isArray(t.calendarSlots))t.calendarSlots=[];
       if(t.id==="demo" && t.note && String(t.note).indexOf("RF_DEMOLITION_V1\n")===0){
         try{ t.rfDemolition=JSON.parse(String(t.note).slice("RF_DEMOLITION_V1\n".length)); }catch(e){}
       }
@@ -3015,6 +3068,7 @@ function mergeRoomFromServer(localRoom, serverRoom){
       lt.materialsBillToClient=lt.rfDemolition.materialsBillToClient;
     if(st.note!==undefined&&(!lt.note||!String(lt.note).trim())) lt.note=st.note;
     if(!lt.daysCustom&&st.days!==undefined) lt.days=st.days;
+    if(Array.isArray(st.calendarSlots)) lt.calendarSlots=st.calendarSlots.map(function(x){ return {date:String(x.date||''),duration:String(x.duration||'full'),notes:String(x.notes||'')}; });
   });
 }
 
@@ -3070,6 +3124,9 @@ function mergeServerWorkspace(payload, opts){
     if(p.includeTimeline!==undefined)S.proj.includeTimeline=p.includeTimeline;
     if(p.clientId!==undefined)S.proj.clientId=p.clientId;
     if(p.timelineDayNotes!==undefined&&typeof p.timelineDayNotes==="object")S.proj.timelineDayNotes=p.timelineDayNotes;
+    if(p.calendarSlug!==undefined)S.proj.calendarSlug=p.calendarSlug;
+    if(p.calendarRecipients!==undefined&&Array.isArray(p.calendarRecipients))S.proj.calendarRecipients=p.calendarRecipients;
+    if(p.calendarMyGoogleEnabled!==undefined)S.proj.calendarMyGoogleEnabled=!!p.calendarMyGoogleEnabled;
   }
   if(payload.rooms&&payload.rooms.length){
     if(hadLocal){
@@ -3598,6 +3655,9 @@ function syncRoomToSupabase(roomIndex){
       open:!!t.open,
       days:t.days||0,
       daysCustom:!!t.daysCustom,
+      calendar_slots:Array.isArray(t.calendarSlots)?t.calendarSlots.map(function(s){
+        return {date:String(s.date||""),duration:String(s.duration||"full"),notes:String(s.notes||"")};
+      }):[],
       items:(t.items||[]).map(function(it){
         return {id:it.id,qty:it.qty||0,p:it.p,wasAuto:!!it.wasAuto};
       })
@@ -4441,7 +4501,9 @@ function snapshotFromWorkspacePayload(payload){
     if(p.includeTimeline!==undefined)snap.proj.includeTimeline=p.includeTimeline;
     if(p.clientId!==undefined)snap.proj.clientId=p.clientId;
     if(p.timelineDayNotes!==undefined&&typeof p.timelineDayNotes==="object")snap.proj.timelineDayNotes=p.timelineDayNotes;
-    if(p.scheduledYmds!==undefined&&Array.isArray(p.scheduledYmds))snap.proj.scheduledYmds=p.scheduledYmds;
+    if(p.calendarSlug!==undefined)snap.proj.calendarSlug=p.calendarSlug;
+    if(p.calendarRecipients!==undefined&&Array.isArray(p.calendarRecipients))snap.proj.calendarRecipients=p.calendarRecipients;
+    if(p.calendarMyGoogleEnabled!==undefined)snap.proj.calendarMyGoogleEnabled=!!p.calendarMyGoogleEnabled;
   }
   if(payload.rooms)snap.rooms=payload.rooms;
   return migrate(snap);
@@ -7850,6 +7912,204 @@ function pruneTimelineDayNotes(maxDay){
     if(!n||n>m) delete S.proj.timelineDayNotes[x];
   });
 }
+function setTlTab(tab){
+  window.__rfTlTab=(tab==='calendar')?'calendar':'timeline';
+  rTimeline();
+}
+function rfTradeCalRemaining(t){
+  if(!t)return 0;
+  var need=Math.max(0,parseInt(t.days,10)||0);
+  var n=Array.isArray(t.calendarSlots)?t.calendarSlots.length:0;
+  return Math.max(0,need-n);
+}
+function rfCalCellBgColor(tradeIds){
+  var ids=[];
+  (tradeIds||[]).forEach(function(id){
+    id=String(id||"").trim();
+    if(id&&ids.indexOf(id)<0)ids.push(id);
+  });
+  if(!ids.length)return"#ffffff";
+  if(ids.length===1)return RF_CAL_CELL_BG[ids[0]]||"#ffffff";
+  var a=RF_CAL_CELL_BG[ids[0]]||"#ffffff";
+  var b=RF_CAL_CELL_BG[ids[1]]||"#ffffff";
+  return "linear-gradient(135deg,"+a+" 0%,"+a+" 50%,"+b+" 50%,"+b+" 100%)";
+}
+function rfYmdOnCalendarTrades(ymd){
+  var out=[];
+  (S.rooms||[]).forEach(function(room,ri){
+    (room.trades||[]).forEach(function(t,ti){
+      if(!t||!Array.isArray(t.calendarSlots))return;
+      t.calendarSlots.forEach(function(s){
+        if(String(s.date)===ymd) out.push({ri:ri,ti:ti,t:t,slot:s});
+      });
+    });
+  });
+  return out;
+}
+function rfTradeIdsOnYmd(ymd){
+  var ids=[];
+  rfYmdOnCalendarTrades(ymd).forEach(function(x){
+    var id=x.t&&x.t.id;
+    if(id&&ids.indexOf(id)<0)ids.push(id);
+  });
+  return ids;
+}
+function rfCountUnscheduledDays(){
+  var n=0;
+  (S.rooms||[]).forEach(function(room){
+    (room.trades||[]).forEach(function(t){
+      n+=rfTradeCalRemaining(t);
+    });
+  });
+  return n;
+}
+function rfTlCalParseMonth(){
+  var vm=window.__rfTlCalMonth;
+  if(vm&&/^\d{4}-\d{2}$/.test(vm)){
+    var p=vm.split("-");
+    return {y:parseInt(p[0],10),m:parseInt(p[1],10)};
+  }
+  var sd=S.proj&&S.proj.startDate;
+  if(sd&&/^\d{4}-\d{2}-\d{2}$/.test(sd)){
+    var q=sd.split("-");
+    return {y:parseInt(q[0],10),m:parseInt(q[1],10)};
+  }
+  var d=new Date();
+  return {y:d.getFullYear(),m:d.getMonth()+1};
+}
+function rfTlCalNavPrev(){var o=rfTlCalParseMonth();var d=new Date(o.y,o.m-1,1);d.setMonth(d.getMonth()-1);window.__rfTlCalMonth=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");rTimeline();}
+function rfTlCalNavNext(){var o=rfTlCalParseMonth();var d=new Date(o.y,o.m-1,1);d.setMonth(d.getMonth()+1);window.__rfTlCalMonth=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");rTimeline();}
+function rfTlCalNavToday(){var d=new Date();window.__rfTlCalMonth=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");rTimeline();}
+function rfTlCalTapDay(ymd){
+  if(!ymd||!/^\d{4}-\d{2}-\d{2}$/.test(ymd))return;
+  var cur=window.__rfTlSelYmd;
+  if(cur===ymd) window.__rfTlSelYmd=null;
+  else window.__rfTlSelYmd=ymd;
+  rTimeline();
+}
+function rfTlFindSlot(ri,ti,ymd){
+  var room=S.rooms[ri];if(!room||!room.trades||!room.trades[ti])return null;
+  var t=room.trades[ti];
+  if(!Array.isArray(t.calendarSlots))return null;
+  for(var i=0;i<t.calendarSlots.length;i++) if(String(t.calendarSlots[i].date)===ymd) return t.calendarSlots[i];
+  return null;
+}
+function rfTlEnsureSlot(ri,ti,ymd){
+  var t=S.rooms[ri].trades[ti];
+  if(!t)return null;
+  if(!Array.isArray(t.calendarSlots))t.calendarSlots=[];
+  var sl=rfTlFindSlot(ri,ti,ymd);
+  if(!sl){ sl={date:ymd,duration:"full",notes:""}; t.calendarSlots.push(sl); }
+  return sl;
+}
+function rfAfterCalChange(){
+  ss();
+  flushAllRoomsTradesToSupabase().catch(function(e){ console.warn(e); });
+  rTimeline();
+}
+function rfTlRemoveTradeFromDay(ri,ti,ymd,skipSync){
+  var t=S.rooms[ri].trades[ti];
+  if(!t||!Array.isArray(t.calendarSlots))return;
+  t.calendarSlots=t.calendarSlots.filter(function(s){ return String(s.date)!==ymd; });
+  if(!skipSync) rfAfterCalChange();
+}
+function rfTlSetDur(ri,ti,ymd,dur){
+  var t=S.rooms[ri].trades[ti];
+  if(!t)return;
+  var had=!!rfTlFindSlot(ri,ti,ymd);
+  if(!had&&rfTradeCalRemaining(t)<=0)return;
+  var sl=rfTlEnsureSlot(ri,ti,ymd);
+  if(sl){ sl.duration=(dur==='am'||dur==='pm')?dur:'full'; rfAfterCalChange(); }
+}
+function rfTlSetNotes(ri,ti,ymd,v){
+  var had=!!rfTlFindSlot(ri,ti,ymd);
+  if(!had&&rfTradeCalRemaining(S.rooms[ri].trades[ti])<=0)return;
+  var sl=rfTlEnsureSlot(ri,ti,ymd);
+  if(sl){ sl.notes=String(v||"").slice(0,2000); rfAfterCalChange(); }
+}
+function rfTlClearDay(ymd){
+  (S.rooms||[]).forEach(function(room,ri){
+    (room.trades||[]).forEach(function(t,ti){ rfTlRemoveTradeFromDay(ri,ti,ymd,true); });
+  });
+  window.__rfTlSelYmd=null;
+  rfAfterCalChange();
+}
+function buildTimelineCalendarLegendHtml(){
+  var pairs=[['demo','Demolition'],['plumbing','Plumbing'],['electrical','Electrical'],['tile','Tile'],['framing','Framing']];
+  return '<div class="tl-cal-legend">'+pairs.map(function(p){
+    var id=p[0], nm=p[1];
+    return '<span class="tl-cal-leg"><span class="tl-cal-leg-swatch" style="background:'+(RF_CAL_CELL_BG[id]||'#fff')+'"></span>'+escHtml(nm)+'</span>';
+  }).join('')+'<span class="tl-cal-leg"><span class="tl-cal-leg-swatch" style="background:#fff;border:1px solid #ddd"></span>Other</span></div>';
+}
+function buildTimelineCalDayPanelHtml(){
+  var ymd=window.__rfTlSelYmd;
+  if(!ymd||!/^\d{4}-\d{2}-\d{2}$/.test(ymd)) return '';
+  var dObj=new Date(parseInt(ymd.slice(0,4),10),parseInt(ymd.slice(5,7),10)-1,parseInt(ymd.slice(8),10));
+  var label=dObj.toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  var head='<div class="tl-cal-panel-h"><h3>'+escHtml(label)+'</h3><button type="button" class="tl-cal-clear" onclick="rfTlClearDay(\''+ymd+'\')">Clear day</button></div>';
+  var blocks=[];
+  (S.rooms||[]).forEach(function(room,ri){
+    var rnm=room.n||'Room';
+    (room.trades||[]).forEach(function(t,ti){
+      if(!t||!t.id)return;
+      var ex=rfTlFindSlot(ri,ti,ymd);
+      if(rem<=0&&!ex) return;
+      var dotCol=TC[t.id]||'#666';
+      var nm=TN[t.id]||t.n||t.id;
+      var sl=ex||{duration:'full',notes:''};
+      var dur=sl.duration||'full';
+      blocks.push('<div class="tl-cal-trade-block">'
+        +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="tl-cal-dot" style="background:'+dotCol+'"></span><strong>'+escHtml(nm)+'</strong><span style="font-size:12px;color:var(--tx3)">??? '+escHtml(rnm)+' ??? '+rem+' left</span></div>'
+        +'<div class="tl-cal-dur-row">'
+        +'<button type="button" class="tl-cal-dur'+(dur==='full'?' on':'')+'" onclick="rfTlSetDur('+ri+','+ti+',\''+ymd+'\',\'full\')">Full day</button>'
+        +'<button type="button" class="tl-cal-dur'+(dur==='am'?' on':'')+'" onclick="rfTlSetDur('+ri+','+ti+',\''+ymd+'\',\'am\')">AM only</button>'
+        +'<button type="button" class="tl-cal-dur'+(dur==='pm'?' on':'')+'" onclick="rfTlSetDur('+ri+','+ti+',\''+ymd+'\',\'pm\')">PM only</button>'
+        +(ex?'<button type="button" class="btn bp sm" onclick="rfTlRemoveTradeFromDay('+ri+','+ti+',\''+ymd+'\')">Remove</button>':'')
+        +'</div>'
+        +'<textarea class="tl-cal-notes" placeholder="What\'s happening today? (appears in calendar event)" oninput="rfTlSetNotes('+ri+','+ti+',\''+ymd+'\',this.value)">'+escHtml(String(sl.notes||''))+'</textarea>'
+        +'<div class="tl-cal-notes-h">This appears in the calendar event description</div>'
+        +'</div>');
+    });
+  });
+  if(!blocks.length) return head+'<p style="color:var(--tx3);font-size:14px">Nothing to assign for this day (all trades scheduled or add room trades first).</p>';
+  return head+blocks.join('');
+}
+function buildTimelineCalendarMarkup(forceEmpty){
+  var o=rfTlCalParseMonth();
+  var y=o.y, mo=o.m;
+  window.__rfTlCalMonth=String(y)+'-'+String(mo).padStart(2,'0');
+  var monthName=new Date(y,mo-1,1).toLocaleDateString('en-CA',{month:'long',year:'numeric'});
+  var un=forceEmpty?0:rfCountUnscheduledDays();
+  var warn=un>0?('<div class="tl-cal-warn"><strong>'+un+'</strong> trade-day'+(un!==1?'s':'')+' still unscheduled.</div>'):'';
+  var monthDays=new Date(y,mo,0).getDate();
+  var d0=new Date(y,mo-1,1).getDay();
+  var today=new Date();
+  var sel=window.__rfTlSelYmd||'';
+  var cells=[];
+  var di;
+  for(di=0;di<d0;di++) cells.push('<div class="tl-cal-cell out"></div>');
+  for(di=1;di<=monthDays;di++){
+    var ymdStr=y+'-'+String(mo).padStart(2,'0')+'-'+String(di).padStart(2,'0');
+    var isToday=today.getFullYear()===y&&today.getMonth()===mo-1&&today.getDate()===di;
+    var ids=forceEmpty?[]:rfTradeIdsOnYmd(ymdStr);
+    var bg=rfCalCellBgColor(ids);
+    var dots='';
+    if(ids.length){
+      dots='<div class="tl-cal-dots">';
+      ids.slice(0,5).forEach(function(tid){
+        dots+='<span class="tl-cal-dot" style="background:'+(TC[tid]||'#666')+'"></span>';
+      });
+      dots+='</div>';
+    }
+    var ccls='tl-cal-cell'+(isToday?' today':'')+(sel===ymdStr?' sel':'');
+    cells.push('<div class="'+ccls+'" style="background:'+bg+'" role="button" tabindex="0" data-ymd="'+ymdStr+'" onclick="rfTlCalTapDay(\''+ymdStr+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();rfTlCalTapDay(\''+ymdStr+'\');}"><div class="tl-cal-dn">'+di+'</div>'+dots+'</div>');
+  }
+  while(cells.length%7!==0) cells.push('<div class="tl-cal-cell out"></div>');
+  var dow='<div class="tl-cal-dow"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>';
+  var nav='<div class="tl-cal-nav"><button type="button" class="btn bg sm" onclick="rfTlCalNavPrev()" aria-label="Previous month">&larr;</button><div class="tl-cal-nav-mid"><h2>'+escHtml(monthName)+'</h2></div><button type="button" class="btn bg sm" onclick="rfTlCalNavNext()" aria-label="Next month">&rarr;</button><button type="button" class="btn bp sm" onclick="rfTlCalNavToday()">Today</button></div>';
+  var panel=buildTimelineCalDayPanelHtml();
+  return buildTimelineCalendarLegendHtml()+warn+nav+dow+'<div class="tl-cal-grid">'+cells.join('')+'</div>'+(panel?'<div class="tl-cal-panel">'+panel+'</div>':'');
+}
 function rTimeline(){
   var el=document.getElementById("p-tl");
   var ps=projectSchedule();
@@ -7857,6 +8117,13 @@ function rTimeline(){
   var startStr = S.proj.startDate || '';
   var startDate = getWorkDayCalendarDate(S, 1);
   var endDate   = hasData ? getWorkDayCalendarDate(S, ps.totalDays) : null;
+
+  var tlTab=window.__rfTlTab||'timeline';
+  var tabRow='<div class="tl-tab-row">'
+    +'<button type="button" class="tl-tab'+(tlTab==='timeline'?' on':'')+'" onclick="setTlTab(\'timeline\')">Timeline</button>'
+    +'<button type="button" class="tl-tab'+(tlTab==='calendar'?' on':'')+'" onclick="setTlTab(\'calendar\')">Calendar</button>'
+    +'<button type="button" class="btn bp sm" onclick="rfCalPushOpen()" style="margin-left:auto">Push Calendar</button>'
+    +'</div>';
 
   var settings = '<div class="tl-settings">'
     +'<div class="tl-grid">'
@@ -7868,14 +8135,24 @@ function rTimeline(){
     +'<div><div class="tl-toggle-lbl">'+(S.proj.parallelRooms?'Parallel':'Sequential')+'</div>'
     +'<div class="tl-toggle-sub">'+(S.proj.parallelRooms?'all rooms at once':'one room after another')+'</div></div>'
     +'</div></div>'
-    +'<div class="tl-field"><div class="tl-fl">Schedule view</div>'
-    +'<div class="tl-fv"><button type="button" class="btn bg sm" onclick="pushTimelineToCalendar()" style="width:100%;max-width:280px">View on schedule (calendar)</button></div>'
-    +'<div class="tl-toggle-sub" style="margin-top:6px">Opens the multi-project calendar focused on your start month.</div></div>'
+    +'<div class="tl-field"><div class="tl-fl">Multi-job calendar</div>'
+    +'<div class="tl-fv"><button type="button" class="btn bg sm" onclick="pushTimelineToCalendar()">Open account schedule</button></div>'
+    +'<div class="tl-toggle-sub" style="margin-top:6px">Month grid with all saved projects.</div></div>'
     +'</div></div>';
 
   if(!hasData){
+    var calEmpty=buildTimelineCalendarMarkup(true);
+    var emptyList='<div class="tl-empty"><div class="tl-empty-i">????</div><div>Add rooms with dimensions and quantities to see a timeline</div></div>';
     el.innerHTML=rfMobTabPhBuild(RF_SVG_TL_IC,'Project <em>Timeline</em>','Auto-generated from your rooms &amp; trades','','')
-      +settings+'<div class="tl-empty"><div class="tl-empty-i">????</div><div>Add rooms with dimensions and quantities to see a timeline</div></div></div></div>';
+      +tabRow+settings+(tlTab==='calendar'?calEmpty:emptyList)+'</div></div>';
+    requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
+    return;
+  }
+
+  if(tlTab==='calendar'){
+    el.innerHTML=rfMobTabPhBuild(RF_SVG_TL_IC,'Project <em>Timeline</em>','Auto-generated from your rooms &amp; trades',
+      '<button type="button" class="btn bp sm" onclick="gP(\'quote\')">View Quote</button>','')
+      +tabRow+settings+buildTimelineCalendarMarkup(false)+'</div></div>';
     requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
     return;
   }
@@ -7931,7 +8208,7 @@ function rTimeline(){
 
   el.innerHTML=rfMobTabPhBuild(RF_SVG_TL_IC,'Project <em>Timeline</em>','Auto-generated from your rooms &amp; trades',
     '<button type="button" class="btn bp sm" onclick="gP(\'quote\')">View Quote</button>','')
-    +settings+summary+rooms+clientPreview+'</div></div>';
+    +tabRow+settings+summary+rooms+clientPreview+'</div></div>';
   requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
 }
 
@@ -7944,6 +8221,225 @@ function togTlRoom(ri){
 function sStartDate(v){S.proj.scheduledYmds=[];S.proj.startDate=v;ss();rTimeline();if(curPg==='cal')rCalendar();if(curPg==='quote')rQuote();}
 function togParallel(){S.proj.parallelRooms=!S.proj.parallelRooms;ss();rTimeline();if(curPg==='cal')rCalendar();}
 /** From Timeline: jump to Schedule (calendar) on the month of the project start (or today). */
+function rfCalCollectPushEvents(){
+  var ev=[];
+  var proj=S.proj.name||'Project';
+  var addr=S.proj.addr||'';
+  (S.rooms||[]).forEach(function(room){
+    (room.trades||[]).forEach(function(t){
+      if(!t||!Array.isArray(t.calendarSlots))return;
+      t.calendarSlots.forEach(function(s){
+        if(!s||!/^\d{4}-\d{2}-\d{2}$/.test(String(s.date)))return;
+        ev.push({
+          date:String(s.date),
+          tradeName:TN[t.id]||t.n||t.id,
+          projectName:proj,
+          duration:String(s.duration||'full'),
+          notes:String(s.notes||''),
+          roomName:room.n||'',
+          location:addr
+        });
+      });
+    });
+  });
+  return ev;
+}
+function rfCalPublicBase(){
+  try{
+    var u=new URL(window.location.href);
+    return u.origin;
+  }catch(e){
+    return 'https://www.renoflowapp.com';
+  }
+}
+function rfCalPushClose(){
+  var el=document.getElementById('rf-cal-push-mo');
+  if(el){ el.classList.remove('show'); el.setAttribute('aria-hidden','true'); }
+}
+function rfCalTogMyGoogle(){
+  S.proj.calendarMyGoogleEnabled=!S.proj.calendarMyGoogleEnabled;
+  ss();
+  patchProjectMeta({ calendar_my_google_enabled: S.proj.calendarMyGoogleEnabled });
+  rfCalPushRefreshBody();
+}
+function rfCalTogRecipient(i,on){
+  if(!Array.isArray(S.proj.calendarRecipients))return;
+  on=(on===true||on==='true');
+  var row=S.proj.calendarRecipients[i|0];
+  if(row) row.enabled=on;
+  ss();
+  patchProjectMeta({ calendar_recipients: S.proj.calendarRecipients });
+  rfCalPushRefreshBody();
+}
+function rfCalAddPerson(){
+  var n=prompt('Name');if(n==null)return;
+  var em=prompt('Email');if(em==null||!em.trim())return;
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(em).trim())){ try{alert('Valid email required.');}catch(e){} return; }
+  if(!Array.isArray(S.proj.calendarRecipients))S.proj.calendarRecipients=[];
+  S.proj.calendarRecipients.push({name:String(n).trim()||'Guest',email:String(em).trim().toLowerCase(),role:'Sub',enabled:true});
+  ss();
+  patchProjectMeta({ calendar_recipients: S.proj.calendarRecipients });
+  rfCalPushRefreshBody();
+}
+function rfCalPushRefreshBody(){
+  var slug=String(S.proj.calendarSlug||'').trim();
+  fetch('/api/calendar/google/status',{credentials:'include'})
+    .then(function(r){ return r.json().then(function(j){ return {ok:r.ok,j:j}; }); })
+    .then(function(o){
+      if(o.ok) rfCalPushRender(slug,o.j);
+    }).catch(function(){});
+}
+function rfCalPushRender(slug,st){
+  var body=document.getElementById('rf-cal-push-body');
+  if(!body)return;
+  var base=rfCalPublicBase();
+  var url=slug?(base+'/cal/'+encodeURIComponent(slug)):'(save slug first)';
+  var g=st&&st.connected;
+  var ge=st&&st.email;
+  var oc=st&&st.oauthConfigured;
+  var myOn=!!S.proj.calendarMyGoogleEnabled;
+  var evs=rfCalCollectPushEvents();
+  var rc=S.proj.calendarRecipients||[];
+  var rows='';
+  if(S.proj.clientId&&S.clients){
+    var cl=S.clients.find(function(c){ return c.id===S.proj.clientId; });
+    if(cl){
+      var en=true;
+      var sub=rc.find(function(x){ return x.email===cl.email; });
+      if(sub) en=sub.enabled!==false;
+      rows+= '<div class="rf-cal-row"><div class="rf-cal-ava">'+(String(cl.name||'?').trim().slice(0,2).toUpperCase())+'</div><div style="flex:1;min-width:0"><div style="font-weight:600">'+escHtml(cl.name||'Client')+'</div><div style="font-size:12px;color:var(--tx3)">Client ??? '+escHtml(cl.email||'???')+'</div></div>'
+        +'<div class="rf-cal-tog'+(en?' on':'')+'" onclick="rfCalTogClientRow('+"'"+escAttr(String(cl.email||''))+"'"+','+(en?'false':'true')+')"><i></i></div></div>';
+    }
+  }
+  rc.forEach(function(p,i){
+    if(!p||!p.email)return;
+    var on=p.enabled!==false;
+    rows+='<div class="rf-cal-row"><div class="rf-cal-ava">'+(String(p.name||'?').trim().slice(0,2).toUpperCase())+'</div><div style="flex:1;min-width:0"><div style="font-weight:600">'+escHtml(p.name)+'</div><div style="font-size:12px;color:var(--tx3)">'+escHtml(p.role||'Sub')+' ??? '+escHtml(p.email)+'</div></div>'
+      +'<div class="rf-cal-tog'+(on?' on':'')+'" onclick="rfCalTogRecipient('+i+','+(on?'false':'true')+')"><i></i></div></div>';
+  });
+  body.innerHTML='<h2>Push &amp; share calendar</h2>'
+    +'<div class="rf-cal-sec"><div class="rf-cal-sec-l">MY CALENDAR</div><div class="rf-cal-card">'
+    +(oc?(
+      '<div style="display:flex;align-items:center;gap:10px"><span style="font-size:22px" aria-hidden="true">?????</span><div style="flex:1"><div style="font-weight:600">My Google Calendar</div><div style="font-size:12px;color:var(--tx3)">'+(g&&ge?escHtml(ge):'Not connected')+'</div></div>'
+      +(g?('<span style="color:#2e7d32;font-weight:600;font-size:12px">Connected</span>'):('<a href="/api/calendar/google/start" style="font-weight:600;color:var(--ac)">Connect Google</a>'))
+      +'</div><div style="display:flex;align-items:center;gap:10px;margin-top:10px"><span style="font-size:13px">Sync to my calendar</span><div class="rf-cal-tog'+(myOn?' on':'')+'" onclick="rfCalTogMyGoogle()"><i></i></div></div>'
+    ):('<p style="margin:0;font-size:13px;color:var(--tx3)">Google Calendar API is not configured on this server (see deploy docs).</p>'))
+    +'</div></div>'
+    +'<div class="rf-cal-sec"><div class="rf-cal-sec-l">SEND INVITES TO</div><div class="rf-cal-card">'+rows
+    +'<button type="button" class="btn bp sm" style="width:100%;margin-top:8px" onclick="rfCalAddPerson()">+ Add person</button></div></div>'
+    +'<div class="rf-cal-sec"><div class="rf-cal-sec-l">SHAREABLE LINK</div><div class="rf-cal-card">'
+    +'<p style="margin:0 0 8px;font-size:13px;color:var(--tx3)">Anyone with this link can view the schedule. Works with Google, Apple, and Outlook.</p>'
+    +'<div class="rf-cal-url-row"><input type="text" readonly value="'+escAttr(url)+'"/>'
+    +'<button type="button" class="btn bg sm" onclick="rfCalCopyShare()">Copy</button></div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">'
+    +'<button type="button" class="btn bg sm" onclick="rfCalShareSms()">Send by text</button>'
+    +'<button type="button" class="btn bg sm" onclick="rfCalShareEmail()">Email</button>'
+    +'<button type="button" class="btn bg sm" onclick="rfCalDlIcs()">Download .ics</button>'
+    +'</div></div>'
+    +'<button type="button" class="btn bp" style="width:100%;margin-top:14px" onclick="rfCalPushAll()">Push to all selected ???</button>'
+    +'<button type="button" class="btn bg sm" style="width:100%;margin-top:8px" onclick="rfCalPreviewPublic()">Preview what they\'ll see</button>'
+    +'<p style="margin-top:10px;font-size:12px;color:var(--tx3)">'+String(evs.length)+' on-calendar trade day(s) ready. Client row uses linked client email when available.</p>'
+    +'<button type="button" class="btn bg sm" style="margin-top:10px" onclick="rfCalPushClose()">Close</button>';
+}
+function rfCalTogClientRow(email,on){
+  on=(on===true||on==='true');
+  if(!email||!Array.isArray(S.proj.calendarRecipients))S.proj.calendarRecipients=[];
+  var ix=S.proj.calendarRecipients.findIndex(function(x){ return x&&String(x.email).toLowerCase()===String(email).toLowerCase(); });
+  if(ix>=0) S.proj.calendarRecipients[ix].enabled=on;
+  else S.proj.calendarRecipients.push({name:'Client',email:email,role:'Client',enabled:on});
+  ss();
+  patchProjectMeta({ calendar_recipients: S.proj.calendarRecipients });
+  rfCalPushRefreshBody();
+}
+function rfCalCopyShare(){
+  var slug=String(S.proj.calendarSlug||'').trim();
+  var u=rfCalPublicBase()+'/cal/'+slug;
+  try{
+    navigator.clipboard.writeText(u).then(function(){ try{alert('Copied');}catch(e){} });
+  }catch(e){
+    try{alert(u);}catch(x){}
+  }
+}
+function rfCalShareSms(){
+  var slug=String(S.proj.calendarSlug||'').trim();
+  var u=rfCalPublicBase()+'/cal/'+slug;
+  window.location.href='sms:?body='+encodeURIComponent('Schedule: '+u);
+}
+function rfCalShareEmail(){
+  var slug=String(S.proj.calendarSlug||'').trim();
+  var u=rfCalPublicBase()+'/cal/'+slug;
+  window.location.href='mailto:?subject='+encodeURIComponent('Project schedule')+'&body='+encodeURIComponent('View the schedule:\n'+u);
+}
+function rfCalDlIcs(){
+  var slug=String(S.proj.calendarSlug||'').trim();
+  if(!slug)return;
+  window.open('/api/public/calendar/'+encodeURIComponent(slug)+'/ics','_blank');
+}
+function rfCalPreviewPublic(){
+  var slug=String(S.proj.calendarSlug||'').trim();
+  if(!slug)return;
+  window.open('/cal/'+encodeURIComponent(slug),'_blank');
+}
+function rfCalPushAll(){
+  var evs=rfCalCollectPushEvents();
+  if(!evs.length){ try{alert('Assign trades on the Calendar tab first.');}catch(e){} return; }
+  var emails=[];
+  if(S.proj.clientId&&S.clients){
+    var cl=S.clients.find(function(c){ return c.id===S.proj.clientId; });
+    if(cl&&cl.email){
+      var sub=(S.proj.calendarRecipients||[]).find(function(x){ return x&&String(x.email).toLowerCase()===String(cl.email).toLowerCase(); });
+      if(!sub||sub.enabled!==false) emails.push(String(cl.email).trim());
+    }
+  }
+  (S.proj.calendarRecipients||[]).forEach(function(p){ if(p&&p.email&&p.enabled!==false) emails.push(String(p.email).trim()); });
+  var uniq={};
+  emails=emails.filter(function(e){ var k=e.toLowerCase(); if(uniq[k]) return false; uniq[k]=1; return true; });
+  fetch('/api/calendar/google/push',{
+    method:'POST',
+    credentials:'include',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      pushToMyCalendar:!!S.proj.calendarMyGoogleEnabled,
+      attendees:emails,
+      events:evs
+    })
+  })
+  .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error||('HTTP '+r.status)); return j; }); })
+  .then(function(j){
+    try{alert('Created '+String(j.created||0)+' calendar event(s).');}catch(e){}
+    rfCalPushClose();
+  })
+  .catch(function(e){ try{alert(e&&e.message?e.message:String(e));}catch(x){} });
+}
+function rfCalPushOpen(){
+  var pid=S.proj&&S.proj.dbProjectId;
+  if(!pid){ try{alert('Save this job online first.');}catch(e){} return; }
+  var wrap=document.getElementById('rf-cal-push-mo');
+  if(!wrap){
+    wrap=document.createElement('div');
+    wrap.id='rf-cal-push-mo';
+    wrap.className='rf-cal-push-mo';
+    wrap.setAttribute('aria-hidden','true');
+    wrap.innerHTML='<div class="rf-cal-push-in" onclick="event.stopPropagation()"><div id="rf-cal-push-body"></div></div>';
+    document.body.appendChild(wrap);
+    wrap.addEventListener('click',function(e){ if(e.target===wrap) rfCalPushClose(); });
+  }
+  wrap.classList.add('show');
+  wrap.setAttribute('aria-hidden','false');
+  document.getElementById('rf-cal-push-body').innerHTML='<div style="padding:20px;text-align:center">Loading???</div>';
+  fetch('/api/projects/'+encodeURIComponent(pid)+'/ensure-calendar-slug',{method:'POST',credentials:'include'})
+    .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error||('HTTP '+r.status)); return j; }); })
+    .then(function(j){
+      var slug=String(j.slug||'').trim();
+      S.proj.calendarSlug=slug;
+      ss();
+      return fetch('/api/calendar/google/status',{credentials:'include'}).then(function(r){ return r.json().then(function(s){ if(!r.ok) throw new Error(s.error||'HTTP'); return s; }); })
+        .then(function(st){ rfCalPushRender(slug,st); });
+    })
+    .catch(function(e){
+      document.getElementById('rf-cal-push-body').innerHTML='<p style="color:#c62828">'+escHtml(e&&e.message?e.message:String(e))+'</p><button type="button" class="btn bg" onclick="rfCalPushClose()">Close</button>';
+    });
+}
 function pushTimelineToCalendar(){
   var s=S.proj&&S.proj.startDate;
   if(S.proj&&S.proj.scheduledYmds&&S.proj.scheduledYmds[0]) s=S.proj.scheduledYmds[0];

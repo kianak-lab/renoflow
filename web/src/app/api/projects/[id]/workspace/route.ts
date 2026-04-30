@@ -85,6 +85,7 @@ function mapInvoiceRow(row: Record<string, unknown>) {
 function projectPatch(row: Record<string, unknown>) {
   const includeTimeline =
     row.include_timeline === false || row.include_timeline === null ? false : true;
+  const calRec = row.calendar_recipients;
   return {
     dbProjectId: str(row, ["id"]),
     name: str(row, ["name"], "My Renovation"),
@@ -97,6 +98,9 @@ function projectPatch(row: Record<string, unknown>) {
     parallelRooms: bool(row, ["parallel_rooms", "parallelRooms"]),
     includeTimeline,
     clientId: str(row, ["client_id", "clientId"], ""),
+    calendarSlug: str(row, ["calendar_slug", "calendarSlug"], ""),
+    calendarRecipients: Array.isArray(calRec) ? calRec : [],
+    calendarMyGoogleEnabled: bool(row, ["calendar_my_google_enabled", "calendarMyGoogleEnabled"]),
   };
 }
 

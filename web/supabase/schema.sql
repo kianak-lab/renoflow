@@ -410,5 +410,20 @@ alter table public.profiles
   add column if not exists currency text default 'CAD',
   add column if not exists measurement_units text default 'imperial';
 
+-- Timeline calendar (see migrations/006_timeline_calendar.sql)
+alter table public.project_room_trades
+  add column if not exists calendar_slots jsonb not null default '[]'::jsonb;
+alter table public.projects add column if not exists calendar_slug text;
+alter table public.projects
+  add column if not exists calendar_recipients jsonb not null default '[]'::jsonb;
+alter table public.projects
+  add column if not exists calendar_my_google_enabled boolean not null default false;
+create unique index if not exists projects_calendar_slug_key
+  on public.projects (calendar_slug)
+  where calendar_slug is not null and length(trim(calendar_slug)) > 0;
+alter table public.profiles
+  add column if not exists google_calendar_refresh_token text,
+  add column if not exists google_calendar_email text;
+
 create or replace view public.user_profiles as
   select p.*, p.id as user_id from public.profiles p;

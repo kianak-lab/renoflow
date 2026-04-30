@@ -18,6 +18,9 @@ type PatchBody = {
   start_date?: string | null;
   /** Soft-hide project from active lists */
   archived?: boolean;
+  calendar_slug?: string | null;
+  calendar_recipients?: unknown;
+  calendar_my_google_enabled?: boolean;
 };
 
 export async function PATCH(
@@ -148,6 +151,31 @@ export async function PATCH(
     patch.archived = Boolean(body.archived);
   }
 
+  if (body.calendar_slug !== undefined) {
+    const v = body.calendar_slug === null ? "" : String(body.calendar_slug ?? "").trim();
+    patch.calendar_slug = v && v.length ? v : null;
+  }
+  if (body.calendar_recipients !== undefined) {
+    const raw = body.calendar_recipients;
+    if (!Array.isArray(raw)) {
+      return NextResponse.json({ error: "calendar_recipients must be an array." }, { status: 400 });
+    }
+    const norm = raw.map((entry) => {
+      if (!entry || typeof entry !== "object") return null;
+      const e = entry as Record<string, unknown>;
+      return {
+        name: String(e.name ?? "").trim() || "Guest",
+        email: String(e.email ?? "").trim().toLowerCase(),
+        role: String(e.role ?? "").trim() || "recipient",
+        enabled: e.enabled !== false,
+      };
+    }).filter((x): x is NonNullable<typeof x> => Boolean(x && x.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(x.email)));
+    patch.calendar_recipients = norm;
+  }
+  if (body.calendar_my_google_enabled !== undefined) {
+    patch.calendar_my_google_enabled = Boolean(body.calendar_my_google_enabled);
+  }
+
   if (Object.keys(patch).length === 0) {
     return NextResponse.json({ error: "No fields to update." }, { status: 400 });
   }
@@ -190,6 +218,16 @@ export async function PATCH(
     delete noDates.deadline_date;
     delete noDates.start_date;
     res = await attempt(noDates);
+    updated = res.data as Record<string, unknown> | null;
+    upErr = res.error;
+  }
+
+  if (upErr && isSupabaseSchemaMismatch(upErr)) {
+    const noCal = { ...patch };
+    delete noCal.calendar_slug;
+    delete noCal.calendar_recipients;
+    delete noCal.calendar_my_google_enabled;
+    res = await attempt(noCal);
     updated = res.data as Record<string, unknown> | null;
     upErr = res.error;
   }
