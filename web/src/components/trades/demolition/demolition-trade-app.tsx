@@ -336,8 +336,22 @@ export default function DemolitionTradeApp(props: DemolitionTradeAppProps = {}) 
     } catch {
       /* quota / private mode */
     }
+    const dbRoomIdSnap =
+      dbRoomIdParam || String((room as { dbRoomId?: string } | null)?.dbRoomId ?? "");
+    try {
+      sessionStorage.setItem(
+        "rf_quote_return",
+        JSON.stringify({
+          ri,
+          ti,
+          ...(dbRoomIdSnap ? { dbRoomId: dbRoomIdSnap } : {}),
+        }),
+      );
+    } catch {
+      /* private mode / quota */
+    }
     router.push(`/final?project=${encodeURIComponent(projectId)}&pg=quote`);
-  }, [projectId, persistLocal, persistRemote, router]);
+  }, [projectId, persistLocal, persistRemote, router, ri, ti, dbRoomIdParam, room]);
 
   const debouncedLocal = useDebouncedFn(persistLocal, 280);
   const debouncedRemote = useDebouncedFn(
