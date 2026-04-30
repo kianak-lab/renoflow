@@ -60,7 +60,10 @@ export async function POST() {
     );
   }
 
-  await ensureProfileForUser(user);
+  const profile = await ensureProfileForUser(user);
+  if (!profile.ok) {
+    return NextResponse.json({ error: profile.error }, { status: 500 });
+  }
   const token = await createSessionToken(secret, user.id);
   attachRenoflowSessionToResponse(res, token);
   return res;

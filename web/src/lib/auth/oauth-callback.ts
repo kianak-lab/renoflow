@@ -105,7 +105,15 @@ export async function runOAuthCallback(request: NextRequest): Promise<NextRespon
     );
   }
 
-  await ensureProfileForUser(user);
+  const profile = await ensureProfileForUser(user);
+  if (!profile.ok) {
+    return NextResponse.redirect(
+      new URL(
+        "/login?error=auth&msg=" + encodeURIComponent(profile.error),
+        origin,
+      ),
+    );
+  }
   const token = await createSessionToken(secret, user.id);
   attachRenoflowSessionToResponse(redirect, token);
 
