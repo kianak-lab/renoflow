@@ -9460,6 +9460,21 @@ function sendInvoiceEmail(invId){
   });
 }
 
+/** Invoice already created for this project/quote (reuse instead of duplicating). */
+function findInvForCurrentQuote(){
+  var pid=String((S.proj&&S.proj.dbProjectId)||'').trim();
+  var qn=String((S.proj&&S.proj.qnum)||'').trim();
+  var list=S.invoices||[];
+  if(pid){
+    var byProj=list.find(function(inv){return inv&&String(inv.dbProjectId||'')===pid;});
+    if(byProj) return byProj;
+  }
+  if(qn){
+    return list.find(function(inv){return inv&&String(inv.num||'')===qn;})||null;
+  }
+  return null;
+}
+
 // Build invoice from current quote snapshot
 function buildInvFromQuote(){
   var sub=projTotal(), tax=sub*S.mk.tax/100;
@@ -9469,9 +9484,17 @@ function buildInvFromQuote(){
         .map(function(t){return{n:t.n,ic:TIC[t.id],total:tradeCost(t)};})
     };
   }).filter(function(r){return r.total>0;});
-  var num=S.invNum||1; S.invNum=num+1;
+  var qn=String(S.proj.qnum||'').trim();
+  var numStr;
+  if(qn){
+    numStr=qn;
+  }else{
+    var num=S.invNum||1; S.invNum=num+1;
+    numStr=fmtInvNum(num);
+  }
   var inv={
-    id:'inv_'+Date.now(), num:fmtInvNum(num),
+    id:'inv_'+Date.now(), num:numStr,
+    dbProjectId:String(S.proj.dbProjectId||''),
     clientName:S.proj.client||'', clientEmail:'', clientPhone:'', clientAddr:S.proj.addr||'',
     projName:S.proj.name||'',
     terms:'net7', createdDate:todayStr(), sentDate:todayStr(),
@@ -9725,6 +9748,24 @@ function rInvDetail(inv){
 function createInvFromQuote(){
   if(!S.rooms.length||!projTotal()){alert('Add rooms with quantities to your quote first.');return;}
   try{ saveWorkspaceNow(); }catch(e){}
+  var existing=findInvForCurrentQuote();
+  if(existing){
+    var qn=String(S.proj.qnum||'').trim();
+    if(qn){
+      var n0=String(existing.num||'');
+      if(n0!==qn){
+        var clash=(S.invoices||[]).some(function(i){return i.id!==existing.id&&String(i.num||'')===qn;});
+        if(!clash) existing.num=qn;
+      }
+    }
+    if(S.proj&&S.proj.dbProjectId&&!String(existing.dbProjectId||'').trim())
+      existing.dbProjectId=String(S.proj.dbProjectId);
+    curInvId=existing.id;
+    persistFullWorkspaceSync();
+    uSide();
+    gP('inv');
+    return;
+  }
   var inv=buildInvFromQuote();
   curInvId=inv.id;
   gP('inv');
