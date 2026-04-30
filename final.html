@@ -5837,7 +5837,7 @@ function rDash(){
     +'<div class="brief-quick-btns">'
     +'<button type="button" class="qa-pill qa-pill--primary" onclick="startAddJobFromQuickActions()">+ Add Job</button>'
     +'<button type="button" class="qa-pill qa-pill--secondary" onclick="gP(\'quote\')">View Quote</button>'
-    +'<button type="button" class="qa-pill qa-pill--secondary" onclick="gP(\'inv\')">Invoices</button>'
+    +'<button type="button" class="qa-pill qa-pill--secondary" onclick="goInvoicesList()">Invoice</button>'
     +'<button type="button" class="qa-pill qa-pill--secondary" onclick="gP(\'clients\')">Clients</button>'
     +'</div></div>';
 
@@ -9488,6 +9488,12 @@ function rInv(){
     curInvId=null;
   }
   rInvList();
+}
+
+/** Open invoice list from dashboard quick actions (always show ledger, not stale detail). */
+function goInvoicesList(){
+  curInvId=null;
+  gP('inv');
 }
 
 function rInvList(){
