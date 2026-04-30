@@ -29,7 +29,7 @@ export async function ensureProfileForUser(user: User): Promise<EnsureProfileRes
       : null) ||
     null;
 
-  const { error } = await supabase.from("profiles").upsert(
+  const { data, error } = await supabase.from("profiles").upsert(
     {
       id: user.id,
       full_name: fullName ?? null,
@@ -43,7 +43,12 @@ export async function ensureProfileForUser(user: User): Promise<EnsureProfileRes
   );
 
   if (error) {
-    console.error("[ensureProfileForUser]", error.code, error.message, error.details);
+    console.error("[ensureProfileForUser] full error:", JSON.stringify(error));
+    console.error("[ensureProfileForUser] error code:", error?.code);
+    console.error("[ensureProfileForUser] error message:", error?.message);
+    console.error("[ensureProfileForUser] error details:", error?.details);
+    console.error("[ensureProfileForUser] error hint:", error?.hint);
+    console.error("[ensureProfileForUser] response data:", data);
     return {
       ok: false,
       error: error.message || "Could not save your profile. Try again or contact support.",
