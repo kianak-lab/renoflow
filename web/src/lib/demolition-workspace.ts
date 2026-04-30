@@ -127,7 +127,7 @@ export const DEMOLITION_DEFAULT_STATE: DemolitionV3State = {
   myCostDailyRate: 200,
   myCostHourlyHours: 0,
   myCostHourlyRate: 25,
-  workerExpenseEnabled: true,
+  workerExpenseEnabled: false,
   workers: [DEFAULT_WORKER()],
   wasteDisposalEnabled: false,
   wasteDisposalAmount: 0,
@@ -315,8 +315,8 @@ function normalizeDemolitionState(raw: Partial<DemolitionV3State>): DemolitionV3
   if (typeof raw.workerExpenseEnabled === "boolean") {
     base.workerExpenseEnabled = raw.workerExpenseEnabled;
   } else {
-    /* Notes saved before this flag default to expanded workers (old UI always showed crew). */
-    base.workerExpenseEnabled = true;
+    /* Missing field: use catalogue default (Worker expense starts collapsed). */
+    base.workerExpenseEnabled = DEMOLITION_DEFAULT_STATE.workerExpenseEnabled;
   }
   if (typeof raw.wasteDisposalEnabled === "boolean") base.wasteDisposalEnabled = raw.wasteDisposalEnabled;
   if (typeof raw.wasteDisposalAmount === "number")
