@@ -71,7 +71,9 @@ export async function GET(_request: Request, context: RouteCtx) {
 
   const { data: proj, error: pErr } = await supabase
     .from("projects")
-    .select("*")
+    .select(
+      "id,name,client_name,client_id,address,quote_number,start_date,created_at",
+    )
     .eq("id", projectId)
     .eq("user_id", auth.uid)
     .maybeSingle();
@@ -96,7 +98,10 @@ export async function GET(_request: Request, context: RouteCtx) {
 
   let invoices: Record<string, unknown>[] = [];
   try {
-    const invRes = await supabase.from("invoices").select("*").eq("project_id", projectId);
+    const invRes = await supabase
+      .from("invoices")
+      .select("total_amount,paid,void")
+      .eq("project_id", projectId);
     if (!invRes.error) invoices = (invRes.data ?? []) as Record<string, unknown>[];
   } catch {
     invoices = [];
@@ -114,7 +119,7 @@ export async function GET(_request: Request, context: RouteCtx) {
 
   const { data: roomRows, error: roomErr } = await supabase
     .from("project_rooms")
-    .select("*")
+    .select("id,name,icon,sort_order,dimensions")
     .eq("project_id", projectId)
     .order("sort_order", { ascending: true });
 
@@ -127,7 +132,7 @@ export async function GET(_request: Request, context: RouteCtx) {
   if (roomIds.length > 0) {
     const { data: tr, error: trErr } = await supabase
       .from("project_room_trades")
-      .select("*")
+      .select("id,room_id,trade_id,display_name,sort_order")
       .in("room_id", roomIds)
       .order("sort_order", { ascending: true });
     if (trErr) return NextResponse.json({ error: trErr.message }, { status: 500 });

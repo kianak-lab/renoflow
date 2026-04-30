@@ -313,7 +313,7 @@ export default function ProjectHubClient({ projectId }: { projectId: string }) {
                   View Quote
                 </Link>
                 <Link
-                  href={hubFinalHref(projectId, { pg: "tl" })}
+                  href={`/project/${encodeURIComponent(projectId)}/timeline`}
                   prefetch={false}
                   className="inline-flex min-h-[38px] shrink-0 items-center whitespace-nowrap rounded-[100px] px-2.5 text-[11px] font-semibold leading-tight text-white no-underline [-webkit-tap-highlight-color:transparent]"
                   style={{

@@ -743,7 +743,13 @@ export default function DashboardShell({
                       <button
                         className="btn bg sm"
                         type="button"
-                        onClick={() => router.push("/final?pg=tl")}
+                        onClick={() =>
+                          router.push(
+                            activeProject
+                              ? `/project/${encodeURIComponent(activeProject.id)}/timeline`
+                              : "/final?pg=tl",
+                          )
+                        }
                       >
                         Timeline
                       </button>
