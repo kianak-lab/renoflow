@@ -1511,33 +1511,96 @@ a.ni{color:inherit;text-decoration:none;}
 .qp-sc-pill--primary{background:#fff;color:#0f2318;border-radius:100px;}
 .qp-sc-pill--secondary{background:rgba(255,255,255,.12);color:#fff;border-radius:100px;border:0.5px solid rgba(255,255,255,.35);}
 .qp-sc-body{padding:0 0 28px!important;}
-#p-quote .qp-sc-card{margin:14px auto 0;padding:20px 16px 22px;max-width:660px;border:0.5px solid #e0e0e0;border-radius:10px;background:#fff;box-shadow:none!important;}
-#p-quote .qp-sc-qt{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:18px;padding-bottom:16px;border-bottom:0.5px solid #e0e0e0;}
-#p-quote .qp-sc-card .q-logo-ring{width:44px;height:44px;border-radius:10px;background:#1a3d28;border:0.5px solid #2a5a3a;box-shadow:none;}
-#p-quote .qp-sc-card .q-logo-ring--placeholder .q-logo-ring__mark{font-size:7px;padding:4px;}
-#p-quote .qp-sc-card .qco{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:18px;font-weight:600;color:#111;}
-#p-quote .qp-sc-card .qci{font-size:11px;color:#888;line-height:1.65;margin-top:4px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-quote .qp-sc-card,
+#p-inv .qp-sc-card{margin:14px auto 0;padding:20px 16px 22px;max-width:660px;border:0.5px solid #e0e0e0;border-radius:10px;background:#fff;box-shadow:none!important;}
+#p-quote .qp-sc-qt,
+#p-inv .qp-sc-qt{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:18px;padding-bottom:16px;border-bottom:0.5px solid #e0e0e0;}
+#p-quote .qp-sc-card .q-logo-ring,
+#p-inv .qp-sc-card .q-logo-ring{width:44px;height:44px;border-radius:10px;background:#1a3d28;border:0.5px solid #2a5a3a;box-shadow:none;}
+#p-quote .qp-sc-card .q-logo-ring--placeholder .q-logo-ring__mark,
+#p-inv .qp-sc-card .q-logo-ring--placeholder .q-logo-ring__mark{font-size:7px;padding:4px;}
+#p-quote .qp-sc-card .qco,
+#p-inv .qp-sc-card .qco{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:18px;font-weight:600;color:#111;}
+#p-quote .qp-sc-card .qci,
+#p-inv .qp-sc-card .qci{font-size:11px;color:#888;line-height:1.65;margin-top:4px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
 .qp-sc-qtright{text-align:right;}
-#p-quote .qp-sc-card .qnum{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:13px;color:#111;}
-#p-quote .qp-sc-card .qdate{font-size:11px;color:#aaa;margin-top:4px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
-#p-quote .qp-sc-card .qbadge{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:6px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-family:'IBM Plex Sans',system-ui,sans-serif;background:transparent;color:#111;border:0.5px solid #e0e0e0;}
+#p-quote .qp-sc-card .qnum,
+#p-inv .qp-sc-card .qnum{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:13px;color:#111;}
+#p-quote .qp-sc-card .qdate,
+#p-inv .qp-sc-card .qdate{font-size:11px;color:#aaa;margin-top:4px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-quote .qp-sc-card .qbadge,
+#p-inv .qp-sc-card .qbadge{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:6px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-family:'IBM Plex Sans',system-ui,sans-serif;background:transparent;color:#111;border:0.5px solid #e0e0e0;}
+#p-inv .inv-sc-badge{margin-top:8px;padding:3px 10px;border-radius:6px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-family:'IBM Plex Sans',system-ui,sans-serif;font-weight:600;border:0.5px solid transparent;display:inline-block;}
+#p-inv .inv-sc-badge--paid{color:#2d7a2d;border-color:#2d7a2d;background:rgba(45,122,45,.08);}
+#p-inv .inv-sc-badge--partial{color:#c77d0a;border-color:#f5a623;background:rgba(245,166,35,.12);}
+#p-inv .inv-sc-badge--unpaid{color:#c0392b;border-color:#c0392b;background:rgba(192,57,43,.06);}
+#p-inv .inv-sc-badge--draft{color:#888;border-color:#e0e0e0;background:transparent;}
+#p-inv .inv-sc-badge--void{color:#999;border-color:#e0e0e0;background:#f5f5f5;text-decoration:line-through;}
+#p-inv .inv-sc-back{align-self:flex-start;margin:0 4px 0 -4px;padding:4px 10px 4px 0;background:transparent;border:none;color:rgba(255,255,255,.65);font-size:20px;line-height:1;cursor:pointer;-webkit-tap-highlight-color:transparent;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-inv .qp-sc-header-text{flex:1;min-width:0;}
+#p-inv .inv-sc-terms-strip{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0 auto 8px;padding:0 16px;max-width:660px;}
+#p-inv .inv-sc-terms-strip span{font-size:11px;color:#888;font-family:'IBM Plex Sans',system-ui,sans-serif;text-transform:uppercase;letter-spacing:0.12em;}
+#p-inv .inv-sc-terms-strip select{background:#fff;border:0.5px solid #e0e0e0;border-radius:8px;padding:6px 10px;font-size:13px;color:#111;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-inv .inv-sc-deposit{margin:16px 0;padding:14px 0 0;border-top:0.5px solid #e0e0e0;}
+#p-inv .inv-sc-dep-rows{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px;}
+#p-inv .inv-sc-dep-amt-wrap{display:flex;align-items:center;gap:6px;border:0.5px solid #e0e0e0;border-radius:8px;padding:6px 10px;background:#fff;}
+#p-inv .inv-sc-dep-amt-wrap span{font-size:14px;color:#888;font-family:'IBM Plex Mono',ui-monospace,monospace;}
+#p-inv .inv-sc-dep-amt-wrap input{background:transparent;border:none;outline:none;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:15px;color:#111;width:100px;}
+#p-inv .inv-sc-dep-paid{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:12px;font-weight:600;padding:9px 14px;border-radius:100px;border:0.5px solid #e0e0e0;background:#fff;color:#111;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+#p-inv .inv-sc-dep-paid.on{background:#2d7a2d;border-color:#2d7a2d;color:#fff;}
+#p-inv .inv-sc-dep-received-meta{margin-top:12px;font-size:12px;color:#888;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-inv .inv-sc-dep-received-amt{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:16px;font-weight:500;color:#2d7a2d;margin-top:4px;}
+#p-inv .inv-sc-qtot-balance .ql{font-size:15px;font-weight:500;color:#111;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-inv .inv-sc-qtot-balance .qr{font-size:18px;font-weight:500;font-family:'IBM Plex Mono',ui-monospace,monospace;}
+#p-inv .inv-sc-qtot-balance--unpaid .qr{color:#c0392b;}
+#p-inv .inv-sc-qtot-balance--paid .qr{color:#2d7a2d;}
+#p-inv .inv-sc-qtot-balance--partial .qr{color:#f5a623;}
+#p-inv .inv-sc-pay-hist{margin-top:18px;padding-top:16px;border-top:0.5px solid #e0e0e0;}
+#p-inv .inv-sc-pay-row{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:0.5px solid #e0e0e0;font-size:13px;font-family:'IBM Plex Sans',system-ui,sans-serif;color:#888;}
+#p-inv .inv-sc-pay-row:last-child{border-bottom:none;}
+#p-inv .inv-sc-pay-amt{font-family:'IBM Plex Mono',ui-monospace,monospace;color:#2d7a2d;}
+#p-inv .inv-sc-record-pay{width:100%;margin-top:14px;padding:12px 16px;border:none;border-radius:100px;background:#0f2318;color:#fff;font-size:14px;font-weight:600;font-family:'IBM Plex Sans',system-ui,sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+#p-inv .inv-sc-record-pay:disabled{opacity:.45;cursor:not-allowed;}
+#p-inv .inv-sc-foot{display:flex;flex-wrap:wrap;gap:8px;margin:16px auto 0;padding:0 16px;max-width:660px;justify-content:flex-start;}
+#p-inv .inv-sc-foot .btn{font-family:'IBM Plex Sans',system-ui,sans-serif;border-radius:100px;}
+#p-inv .inv-list-ph .qp-sc-actions{margin-top:12px;}
+#p-inv .inv-stats{margin:0 auto 16px;max-width:660px;padding:0 16px;box-sizing:border-box;}
+#p-inv .inv-stat{box-shadow:none!important;border:0.5px solid #e0e0e0;border-radius:10px;background:#fff;}
+#p-inv .inv-stat-l{letter-spacing:0.12em;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-inv .inv-stat-v{font-family:'IBM Plex Mono',ui-monospace,monospace;}
+#p-inv .inv-table-wrap{box-shadow:none!important;border:0.5px solid #e0e0e0;border-radius:10px;background:#fff;}
+#p-inv .inv-ledger tbody tr:hover{background:#f9f9f9;}
+#p-inv .inv-sc-qtot-balance--void .qr{color:#999!important;}
 .qp-sc-prep{margin-bottom:18px;}
 .qp-sc-prep-label{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:#aaa;margin-bottom:6px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
 .qp-sc-prep-name{font-size:14px;font-weight:500;color:#111;font-family:'IBM Plex Sans',system-ui,sans-serif;}
 .qp-sc-prep-addr{font-size:12px;color:#888;margin-top:4px;line-height:1.45;font-family:'IBM Plex Sans',system-ui,sans-serif;}
-#p-quote .qp-sc-tbl{width:100%;border-collapse:collapse;margin-bottom:14px;}
-#p-quote .qp-sc-tbl th{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:#aaa;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:0 8px 10px 0;border-bottom:0.5px solid #e0e0e0;font-weight:500;}
-#p-quote .qp-sc-tbl .qp-sc-th-amt{text-align:right;}
-#p-quote .qp-sc-tbl td{padding:8px 8px 8px 0;border-bottom:0.5px solid #e0e0e0;font-size:13px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
-#p-quote .qp-sc-tbl td:last-child{font-family:'IBM Plex Mono',ui-monospace,monospace;color:#111;text-align:right;}
-#p-quote .qp-sc-tbl .rr td{font-weight:500;color:#111;padding-top:12px;}
-#p-quote .qp-sc-tbl .qp-sc-li-sub{padding-left:14px;font-size:11px;color:#aaa;font-weight:400;}
-#p-quote .qp-sc-qtot{border-top:none;padding-top:8px;}
-#p-quote .qp-sc-qtot .qtr .ql{font-size:13px;color:#888;font-family:'IBM Plex Sans',system-ui,sans-serif;}
-#p-quote .qp-sc-qtot .qtr .qr{font-family:'IBM Plex Mono',ui-monospace,monospace;color:#111;}
-#p-quote .qp-sc-qtot-total{margin-top:10px;padding-top:12px;border-top:0.5px solid #e0e0e0;}
-#p-quote .qp-sc-qtot-total .ql{font-size:15px;font-weight:500;color:#111;font-family:'IBM Plex Sans',system-ui,sans-serif;}
-#p-quote .qp-sc-qtot-total .qr{font-size:18px;font-weight:500;color:#2d7a2d;font-family:'IBM Plex Mono',ui-monospace,monospace;}
+#p-quote .qp-sc-tbl,
+#p-inv .qp-sc-tbl{width:100%;border-collapse:collapse;margin-bottom:14px;}
+#p-quote .qp-sc-tbl th,
+#p-inv .qp-sc-tbl th{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:#aaa;font-family:'IBM Plex Sans',system-ui,sans-serif;padding:0 8px 10px 0;border-bottom:0.5px solid #e0e0e0;font-weight:500;}
+#p-quote .qp-sc-tbl .qp-sc-th-amt,
+#p-inv .qp-sc-tbl .qp-sc-th-amt{text-align:right;}
+#p-quote .qp-sc-tbl td,
+#p-inv .qp-sc-tbl td{padding:8px 8px 8px 0;border-bottom:0.5px solid #e0e0e0;font-size:13px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-quote .qp-sc-tbl td:last-child,
+#p-inv .qp-sc-tbl td:last-child{font-family:'IBM Plex Mono',ui-monospace,monospace;color:#111;text-align:right;}
+#p-quote .qp-sc-tbl .rr td,
+#p-inv .qp-sc-tbl .rr td{font-weight:500;color:#111;padding-top:12px;}
+#p-quote .qp-sc-tbl .qp-sc-li-sub,
+#p-inv .qp-sc-tbl .qp-sc-li-sub{padding-left:14px;font-size:11px;color:#aaa;font-weight:400;}
+#p-quote .qp-sc-qtot,
+#p-inv .qp-sc-qtot{border-top:none;padding-top:8px;}
+#p-quote .qp-sc-qtot .qtr .ql,
+#p-inv .qp-sc-qtot .qtr .ql{font-size:13px;color:#888;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-quote .qp-sc-qtot .qtr .qr,
+#p-inv .qp-sc-qtot .qtr .qr{font-family:'IBM Plex Mono',ui-monospace,monospace;color:#111;}
+#p-quote .qp-sc-qtot-total,
+#p-inv .qp-sc-qtot-total{margin-top:10px;padding-top:12px;border-top:0.5px solid #e0e0e0;}
+#p-quote .qp-sc-qtot-total .ql,
+#p-inv .qp-sc-qtot-total .ql{font-size:15px;font-weight:500;color:#111;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+#p-quote .qp-sc-qtot-total .qr,
+#p-inv .qp-sc-qtot-total .qr{font-size:18px;font-weight:500;color:#2d7a2d;font-family:'IBM Plex Mono',ui-monospace,monospace;}
 .qp-sc-empty{text-align:center;padding:24px 12px;color:#aaa;font-size:13px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
 #p-quote .qp-sc-card .q-timeline{margin-top:20px;padding-top:16px;border-top:0.5px solid #e0e0e0;border-bottom:none;}
 #p-quote .qp-sc-card .q-tl-h{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-bottom:10px;}
@@ -1604,7 +1667,7 @@ a.ni{color:inherit;text-decoration:none;}
 .empty-i{font-size:34px;margin-bottom:10px;opacity:.4;}
 
 @media print{
-  #sb,#mob-nav,#mob-topnav,#sind,.ph button,.sfooter,#pdf-mo,.inv-status-bar,.dep-box,.inv-actions,.cal-nav button,.ts-exp-bg{display:none!important;}
+  #sb,#mob-nav,#mob-topnav,#sind,.ph button,.sfooter,#pdf-mo,.inv-status-bar,.dep-box,.inv-actions,.inv-sc-foot,#p-inv .inv-sc-terms-strip,#p-inv .qp-sc-actions,.cal-nav button,.ts-exp-bg{display:none!important;}
   .no-print{display:none!important;}
   #shell{display:block!important;}
   body{background:#fff!important;}
@@ -2079,7 +2142,8 @@ a.ni{color:inherit;text-decoration:none;}
   #p-clients .cl-ch-newbtn:active {
     opacity: 0.92;
   }
-  #p-quote .qp-sc-site-top{
+  #p-quote .qp-sc-site-top,
+  #p-inv .qp-sc-site-top{
     margin: 0;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px) !important;
@@ -2091,6 +2155,7 @@ a.ni{color:inherit;text-decoration:none;}
   #p-shop .ml-page,
   #p-tl .ml-page,
   #p-quote .ml-page,
+  #p-inv .ml-page,
   #p-clients .ml-page {
     background: transparent;
   }
@@ -2099,7 +2164,8 @@ a.ni{color:inherit;text-decoration:none;}
   #p-clients .ml-page > .ml-page-body {
     padding: 8px 20px 28px;
   }
-  #p-quote .ml-page > .ml-page-body.qp-sc-body{
+  #p-quote .ml-page > .ml-page-body.qp-sc-body,
+  #p-inv .ml-page > .ml-page-body.qp-sc-body{
     padding: 8px 0 28px !important;
   }
   #p-shop .ml-actions-below,
@@ -4588,6 +4654,7 @@ function showPg(pg){
   if(pg==="clients")rClients();
   if(pg==="push")rPush();
   if(pg==="sett")rSett();
+  if(pg==="inv"){ try{ requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); }); }catch(e){} }
   if(isMobTabLayout()&&pg==="rooms"){
     document.querySelectorAll(".mn[data-pg]").forEach(function(n){ n.classList.remove("on"); });
     var mnProj=document.querySelector(".mn[data-pg='proj']");
@@ -8204,7 +8271,7 @@ function exportMaterialsCsv(){
 function rfRecordMaterialsHeaderH(){
   try{
     if(typeof window.innerWidth!=="number"||window.innerWidth>767)return;
-    var map={shop:"#p-shop .ml-ph",tl:"#p-tl .ml-ph",quote:"#p-quote .qp-sc-site-top",clients:"#p-clients .ml-ph",cal:"#p-cal .ph.ph--proj",proj:"#p-proj .ph.ph--proj",rooms:"#p-rooms .ph.ph--proj"};
+    var map={shop:"#p-shop .ml-ph",tl:"#p-tl .ml-ph",quote:"#p-quote .qp-sc-site-top",inv:"#p-inv .qp-sc-site-top",clients:"#p-clients .ml-ph",cal:"#p-cal .ph.ph--proj",proj:"#p-proj .ph.ph--proj",rooms:"#p-rooms .ph.ph--proj"};
     var id=typeof curPg==="string"?map[curPg]:"";
     if(!id)return;
     var m=document.querySelector(id);
@@ -8223,7 +8290,7 @@ if(typeof window!=="undefined"&&!window.__rfMobHdrBound){
         if(typeof window.innerWidth!=="number")return;
         if(window.innerWidth>767){
           if(document.documentElement.style.removeProperty) document.documentElement.style.removeProperty("--rf-mob-hdr-h");
-        }else if(typeof curPg==="string"&&{shop:1,tl:1,quote:1,clients:1,cal:1,proj:1,rooms:1}[curPg]) rfRecordMaterialsHeaderH();
+        }else if(typeof curPg==="string"&&{shop:1,tl:1,quote:1,inv:1,clients:1,cal:1,proj:1,rooms:1}[curPg]) rfRecordMaterialsHeaderH();
       }catch(e){}
     },120);
   });
@@ -9257,6 +9324,28 @@ var INV_STATUS_LABELS={draft:'Draft',sent:'Sent',partial:'Partial',overdue:'Over
 
 function invStatusClass(st){return 'inv-status-'+(st||'draft');}
 
+function invScBadgeWrap(st){
+  var cls="inv-sc-badge";
+  var txt="UNPAID";
+  if(st==="paid"){ cls+=" inv-sc-badge--paid"; txt="PAID"; }
+  else if(st==="partial"){ cls+=" inv-sc-badge--partial"; txt="PARTIAL"; }
+  else if(st==="void"){ cls+=" inv-sc-badge--void"; txt="VOID"; }
+  else if(st==="draft"){ cls+=" inv-sc-badge--draft"; txt="DRAFT"; }
+  else { cls+=" inv-sc-badge--unpaid"; txt="UNPAID"; }
+  return '<span class="'+cls+'">'+txt+'</span>';
+}
+
+function invRecordPaymentClick(id){
+  var inv=(S.invoices||[]).find(function(x){return x.id===id;});
+  if(!inv||inv.void||inv.paid)return;
+  var st=invStatus(inv);
+  if(st==="draft"){
+    try{ alert("Mark the invoice as sent before recording payment."); }catch(e){}
+    return;
+  }
+  markInvPaid(id);
+}
+
 function invBal(inv){
   if(inv.paid) return 0;
   return inv.total-(inv.depositPaid?(inv.deposit||0):0);
@@ -9405,7 +9494,6 @@ function rInvList(){
   var el=document.getElementById('p-inv');
   var invs=S.invoices||[];
 
-  // Summary stats
   var outstanding=0, overdueTot=0, collected=0;
   invs.forEach(function(inv){
     var st=invStatus(inv);
@@ -9416,16 +9504,16 @@ function rInvList(){
   });
 
   var stats='<div class="inv-stats">'
-    +'<div class="inv-stat"><div class="inv-stat-l">Outstanding</div><div class="inv-stat-v" style="color:var(--ac)">'+f(outstanding)+'</div></div>'
-    +'<div class="inv-stat"><div class="inv-stat-l">Overdue</div><div class="inv-stat-v" style="color:var(--red)">'+f(overdueTot)+'</div></div>'
-    +'<div class="inv-stat"><div class="inv-stat-l">Collected</div><div class="inv-stat-v" style="color:var(--grn)">'+f(collected)+'</div></div>'
+    +'<div class="inv-stat"><div class="inv-stat-l">Outstanding</div><div class="inv-stat-v" style="color:#2d7a2d">'+f(outstanding)+'</div></div>'
+    +'<div class="inv-stat"><div class="inv-stat-l">Overdue</div><div class="inv-stat-v" style="color:#c0392b">'+f(overdueTot)+'</div></div>'
+    +'<div class="inv-stat"><div class="inv-stat-l">Collected</div><div class="inv-stat-v" style="color:#2d7a2d">'+f(collected)+'</div></div>'
     +'</div>';
 
   var tableBody='';
   if(invs.length===0){
-    tableBody='<div class="empty"><div class="empty-i" style="font-size:34px;opacity:.4;margin-bottom:10px">????</div>'
-      +'<div style="font-size:15px;font-weight:500;margin-bottom:6px">No invoices yet</div>'
-      +'<div style="font-size:13px;color:var(--tx3)">Create one from your current quote</div></div>';
+    tableBody='<div class="qp-sc-empty" style="margin:14px 16px 0;max-width:660px">'
+      +'<div style="font-size:15px;font-weight:500;margin-bottom:6px;color:#111">No invoices yet</div>'
+      +'<div style="font-size:13px;color:#aaa">Create one from your current quote or add a blank invoice.</div></div>';
   } else {
     var rows=invs.slice().reverse().map(function(inv){
       var st=invStatus(inv);
@@ -9433,13 +9521,12 @@ function rInvList(){
       var due=invDueDate(inv);
       var bal=invBal(inv);
       var balCls=inv.paid?'clear':(bal>0?'owing':'clear');
-      var daysCell=days>0?'<span style="color:var(--red);font-weight:600">'+days+'d</span>':'???';
-      var dueCell=due?fmtShortDate(due.getFullYear()+'-'+String(due.getMonth()+1).padStart(2,'0')+'-'+String(due.getDate()).padStart(2,'0')):'???';
+      var daysCell=days>0?'<span style="color:#c0392b;font-weight:600">'+days+'d</span>':'—';
+      var dueCell=due?fmtShortDate(due.getFullYear()+'-'+String(due.getMonth()+1).padStart(2,'0')+'-'+String(due.getDate()).padStart(2,'0')):'—';
 
-      // Desktop row
       return '<tr onclick="openInv(\''+inv.id+'\')">'
         +'<td><div class="il-num">'+inv.num+'</div></td>'
-        +'<td><div class="il-client">'+(inv.clientName||'???')+'</div>'
+        +'<td><div class="il-client">'+(inv.clientName||'—')+'</div>'
         +'<div class="il-addr">'+(inv.clientAddr||'')+'</div></td>'
         +'<td><div class="il-date">'+(inv.sentDate?fmtShortDate(inv.sentDate):'Not sent')+'</div></td>'
         +'<td><div class="il-terms">'+(TERMS_LABELS[inv.terms||'net7'])+'</div></td>'
@@ -9451,7 +9538,7 @@ function rInvList(){
         +'</tr>';
     }).join('');
 
-    tableBody='<div class="inv-table-wrap"><table class="inv-ledger">'
+    tableBody='<div class="inv-table-wrap" style="margin:0 16px;max-width:660px"><table class="inv-ledger">'
       +'<thead><tr>'
       +'<th>#</th><th>Client</th><th>Sent</th><th>Terms</th><th>Due</th>'
       +'<th class="r">Overdue</th><th class="r">Total</th><th class="r">Balance</th><th>Status</th>'
@@ -9460,13 +9547,19 @@ function rInvList(){
       +'</table></div>';
   }
 
-  el.innerHTML='<div class="ph">'
-    +'<div><div class="pt">Invoices</div><div class="ps">'+invs.length+' invoice'+(invs.length!==1?'s':'')+'</div></div>'
-    +'<div style="display:flex;gap:8px">'
-    +(projTotal()>0?'<button class="btn bp sm" onclick="createInvFromQuote()">+ From Quote</button>':'')
-    +'<button class="btn bg sm" onclick="createInvBlank()">+ Blank</button>'
+  el.innerHTML='<div class="ml-page qp-sc-page">'
+    +'<div class="qp-sc-site-top rf-tab-hdr inv-list-ph">'
+    +'<header class="qp-sc-header">'
+    +'<div class="qp-sc-header-row"><div class="qp-sc-header-text">'
+    +'<div class="qp-sc-kicker">BILLING</div>'
+    +'<div class="qp-sc-title">Invoices</div>'
+    +'<div class="qp-sc-meta">'+invs.length+' invoice'+(invs.length!==1?'s':'')+'</div>'
     +'</div></div>'
-    +'<div class="pc">'+stats+tableBody+'</div>';
+    +'<div class="qp-sc-actions">'
+    +(projTotal()>0?'<button type="button" class="qp-sc-pill qp-sc-pill--primary" onclick="createInvFromQuote()">+ From quote</button>':'')
+    +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="createInvBlank()">+ Blank</button>'
+    +'</div></header></div>'
+    +'<div class="pc ml-page-body qp-sc-body">'+stats+tableBody+'</div></div>';
 }
 
 function openInv(id){curInvId=id;rInv();}
@@ -9478,104 +9571,138 @@ function rInvDetail(inv){
   var days=invDaysOverdue(inv);
   var due=invDueDate(inv);
 
-  // Status bar with context-appropriate actions
   var actionBtns='';
   if(st==='draft'){
-    actionBtns='<button class="btn bp sm" onclick="markInvSent(\''+inv.id+'\')">Mark as Sent</button>';
+    actionBtns='<button type="button" class="btn bp sm" onclick="markInvSent(\''+inv.id+'\')">Mark as sent</button>';
   } else if(st==='sent'||st==='partial'||st==='overdue'){
-    actionBtns='<button class="btn bp sm" onclick="markInvPaid(\''+inv.id+'\')">Mark as Paid</button>'
-      +'<button class="btn bg sm" onclick="markInvVoid(\''+inv.id+'\')">Void</button>';
+    actionBtns='<button type="button" class="btn bp sm" onclick="markInvPaid(\''+inv.id+'\')">Mark as paid</button>'
+      +'<button type="button" class="btn bg sm" onclick="markInvVoid(\''+inv.id+'\')">Void</button>';
   } else if(st==='paid'){
-    actionBtns='<button class="btn bg sm" onclick="unmarkInvPaid(\''+inv.id+'\')">Undo Paid</button>';
+    actionBtns='<button type="button" class="btn bg sm" onclick="unmarkInvPaid(\''+inv.id+'\')">Undo paid</button>';
   } else if(st==='void'){
-    actionBtns='<button class="btn bg sm" onclick="unmarkInvVoid(\''+inv.id+'\')">Restore</button>';
+    actionBtns='<button type="button" class="btn bg sm" onclick="unmarkInvVoid(\''+inv.id+'\')">Restore</button>';
   }
 
-  var statusInfo='<span class="inv-badge '+invStatusClass(st)+'" style="font-size:13px;padding:5px 14px">'+INV_STATUS_LABELS[st]+'</span>'
-    +(days>0?' <span style="font-size:12px;color:var(--red);font-family:\'DM Mono\',monospace;font-weight:600">'+days+' days overdue</span>':'')
-    +(due&&st!=='draft'?' <span style="font-size:12px;color:var(--tx3);font-family:\'DM Mono\',monospace">Due: '+fmtDispDate(due.getFullYear()+'-'+String(due.getMonth()+1).padStart(2,'0')+'-'+String(due.getDate()).padStart(2,'0'))+'</span>':'');
+  var termsStrip='<div class="inv-sc-terms-strip"><span>Payment terms</span>'
+    +'<select onchange="setInvTerms(\''+inv.id+'\',this.value)"'+(st!=='draft'?' disabled':'')+'>'
+    +Object.keys(TERMS_LABELS).map(function(k){return '<option value="'+k+'"'+(inv.terms===k?' selected':'')+'>'+TERMS_LABELS[k]+'</option>';}).join('')
+    +'</select></div>';
 
-  var statusBar='<div class="inv-status-bar">'
-    +'<div style="flex:1;display:flex;align-items:center;gap:10px;flex-wrap:wrap">'+statusInfo+'</div>'
-    +'<div class="inv-action-btns">'+actionBtns+'</div>'
-    +'</div>';
+  var invIssued=fmtDispDate(inv.sentDate?inv.sentDate:inv.createdDate);
+  var dueMeta=due&&!inv.void?fmtDispDate(due.getFullYear()+'-'+String(due.getMonth()+1).padStart(2,'0')+'-'+String(due.getDate()).padStart(2,'0')):'\u2014';
+  var metaLines='Invoice date: '+invIssued+'<br/>Due date: '+dueMeta
+    +(days>0?' \u00B7 <span style="color:#ffb4b4;font-weight:500">'+(days+' days overdue')+'</span>':'');
 
-  // Terms selector (only editable if draft)
-  var termsRow='<div style="display:flex;align-items:center;gap:8px;margin-top:10px">'
-    +'<span style="font-size:11px;color:var(--tx3);font-family:\'DM Mono\',monospace;text-transform:uppercase;letter-spacing:1px">Payment Terms:</span>'
-    +'<select style="background:#fff;border:1px solid var(--bd2);border-radius:5px;padding:4px 8px;font-size:13px;color:var(--tx);outline:none;" onchange="setInvTerms(\''+inv.id+'\',this.value)"'+(st!=='draft'?' disabled':'')+'>'+Object.keys(TERMS_LABELS).map(function(k){return '<option value="'+k+'"'+(inv.terms===k?' selected':'')+'>'+TERMS_LABELS[k]+'</option>';}).join('')
-    +'</select>'
-    +'</div>';
-
-  // Deposit box
-  var depBox='<div class="dep-box">'
-    +'<div class="dep-title">Deposit & Balance</div>'
-    +'<div class="dep-row">'
-    +'<div class="dep-amt-wrap"><span>$</span><input type="number" min="0" value="'+(inv.deposit||0)+'" onchange="setInvDeposit(\''+inv.id+'\',this.value)" placeholder="0"/></div>'
-    +'<div style="font-size:12px;color:var(--tx3)">deposit amount</div>'
-    +'<button class="dep-paid-btn'+(inv.depositPaid?' paid':'')+'" onclick="togDepositPaid(\''+inv.id+'\')">'+(inv.depositPaid?'??? Deposit Received':'Mark Deposit Received')+'</button>'
-    +'</div>'
-    +'<div class="dep-bal">'
-    +'<div class="dep-bal-l">'+(st==='paid'?'Fully paid':'Balance owing')+'</div>'
-    +'<div class="dep-bal-v '+(st==='paid'?'clear':(bal>0?'owing':'clear'))+'">'+f(st==='paid'?0:bal)+'</div>'
-    +'</div></div>';
-
-  // Invoice document
   var roomRows=(inv.rooms||[]).map(function(r){
     var trades=(r.trades||[]).map(function(t){
-      return '<tr><td style="padding-left:16px;color:var(--tx3);font-size:12px">'+t.ic+' '+t.n+'</td><td></td><td style="font-size:12px">'+f(t.total)+'</td></tr>';
+      return '<tr><td class="qp-sc-li-sub" colspan="2">'+t.ic+' '+t.n+'</td><td class="qp-sc-li-amt">'+f(t.total)+'</td></tr>';
     }).join('');
-    return '<tr class="rr"><td>'+r.ic+' '+r.n+'</td><td></td><td>'+f(r.total)+'</td></tr>'+trades;
+    return '<tr class="rr"><td>'+r.ic+' '+r.n+'</td><td></td><td class="qp-sc-li-amt">'+f(r.total)+'</td></tr>'+trades;
   }).join('');
 
-  var dueStr=due?fmtDispDate(due.getFullYear()+'-'+String(due.getMonth()+1).padStart(2,'0')+'-'+String(due.getDate()).padStart(2,'0')):'???';
+  var depSection='<div class="inv-sc-deposit">'
+    +'<div class="qp-sc-prep-label">Deposit</div>'
+    +'<div class="inv-sc-dep-rows">'
+    +'<div class="inv-sc-dep-amt-wrap"><span>$</span><input type="number" min="0" step="any" value="'+(inv.deposit||0)+'" onchange="setInvDeposit(\''+inv.id+'\',this.value)" placeholder="0"/></div>'
+    +'<button type="button" class="inv-sc-dep-paid'+(inv.depositPaid?' on':'')+'" onclick="togDepositPaid(\''+inv.id+'\')">'+(inv.depositPaid?'Deposit received':'Mark deposit received')+'</button>'
+    +'</div>'
+    +(inv.depositPaid?('<div><div class="qp-sc-prep-label" style="margin-top:14px">Deposit received</div>'
+      +'<div class="inv-sc-dep-received-amt">'+f(inv.deposit)+'</div>'
+      +'<div class="inv-sc-dep-received-meta">'+fmtDispDate(inv.sentDate||inv.createdDate)+'</div></div>'):'')
+    +'</div>';
 
-  var doc='<div class="inv-doc">'
-    +'<div class="qt">'
+  var balRowMod='inv-sc-qtot-balance qtr';
+  if(inv.void) balRowMod+=' inv-sc-qtot-balance--void';
+  else if(st==='paid') balRowMod+=' inv-sc-qtot-balance--paid';
+  else if(st==='partial') balRowMod+=' inv-sc-qtot-balance--partial';
+  else balRowMod+=' inv-sc-qtot-balance--unpaid';
+
+  var balQl=inv.void?'Void':(st==='paid'?'Paid in full':'Balance owing');
+  var balQr=inv.void?'\u2014':(st==='paid'?f(inv.total):f(bal));
+
+  var payRows=[];
+  if(!inv.void){
+    var depDt=inv.sentDate||inv.createdDate;
+    if(inv.depositPaid && (inv.deposit||0)>0){
+      payRows.push('<div class="inv-sc-pay-row"><span>'+fmtDispDate(depDt)+' \u00B7 Deposit</span><span class="inv-sc-pay-amt">'+f(inv.deposit)+'</span></div>');
+    }
+    if(inv.paid){
+      var depAm=inv.depositPaid?(inv.deposit||0):0;
+      var rem=Math.round((inv.total-depAm)*100)/100;
+      if(rem>0.009){
+        payRows.push('<div class="inv-sc-pay-row"><span>'+fmtDispDate(inv.sentDate||inv.createdDate)+' \u00B7 Payment</span><span class="inv-sc-pay-amt">'+f(rem)+'</span></div>');
+      } else if(!inv.depositPaid){
+        payRows.push('<div class="inv-sc-pay-row"><span>'+fmtDispDate(inv.sentDate||inv.createdDate)+' \u00B7 Payment</span><span class="inv-sc-pay-amt">'+f(inv.total)+'</span></div>');
+      }
+    }
+  }
+  var payHistBody=payRows.length?payRows.join(''):'<div class="inv-sc-pay-row" style="border:none;color:#aaa;font-size:12px">No payments recorded yet.</div>';
+  var canRec=!inv.void&&!inv.paid&&(st==='sent'||st==='partial'||st==='overdue');
+  var payHist='<div class="inv-sc-pay-hist"><div class="qp-sc-prep-label">Payment history</div>'+payHistBody
+    +'<button type="button" class="inv-sc-record-pay"'+(canRec?'':' disabled')+' onclick="invRecordPaymentClick(\''+inv.id+'\')">Record Payment</button></div>';
+
+  var addrBits=[];
+  if(inv.clientAddr) addrBits.push(inv.clientAddr);
+  if(inv.clientEmail) addrBits.push(inv.clientEmail);
+  if(inv.clientPhone) addrBits.push(inv.clientPhone);
+  var addrHtml=addrBits.map(function(x){return '<div class="qp-sc-prep-addr">'+x+'</div>';}).join('');
+
+  var doc='<div class="qp qp-sc-card inv-doc">'
+    +'<div class="qt qp-sc-qt">'
     +htmlCoBlockFromInv(inv)
-    +'<div style="text-align:right">'
+    +'<div class="qp-sc-qtright">'
     +'<div class="qnum">'+inv.num+'</div>'
     +'<div class="qdate">'+(inv.sentDate?fmtDispDate(inv.sentDate):fmtDispDate(inv.createdDate))+'</div>'
-    +'<div class="qbadge" style="background:var(--ac);color:#fff">INVOICE</div>'
+    +invScBadgeWrap(st)
     +'</div></div>'
-    +'<div style="margin-bottom:20px">'
-    +'<div style="font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px">Billed To</div>'
-    +'<div style="font-size:15px;font-weight:500">'+(inv.clientName||'Client Name')+'</div>'
-    +(inv.clientEmail?'<div style="font-size:13px;color:var(--tx2)">'+inv.clientEmail+'</div>':'')
-    +(inv.clientPhone?'<div style="font-size:13px;color:var(--tx2)">'+inv.clientPhone+'</div>':'')
-    +(inv.clientAddr?'<div style="font-size:13px;color:var(--tx2)">'+inv.clientAddr+'</div>':'')
-    +'<div style="margin-top:8px;font-size:12px;color:var(--tx3)">Terms: <strong style="color:var(--tx)">'+(TERMS_LABELS[inv.terms||'net7'])+'</strong> &nbsp;?&nbsp; Due: <strong style="color:'+(days>0?'var(--red)':'var(--tx)')+'">'+dueStr+'</strong></div>'
+    +'<div class="qp-sc-prep">'
+    +'<div class="qp-sc-prep-label">Billed to</div>'
+    +'<div class="qp-sc-prep-name">'+(inv.clientName||'Client name')+'</div>'
+    +addrHtml
     +'</div>'
-    +(inv.projName?'<div style="font-size:12px;color:var(--tx3);margin-bottom:16px;padding:8px 12px;background:var(--sf2);border-radius:6px">Re: <strong>'+inv.projName+'</strong></div>':'')
-    +'<table class="qtbl"><thead><tr><th>Description</th><th></th><th style="text-align:right">Amount</th></tr></thead>'
-    +'<tbody>'+(roomRows||'<tr><td colspan="3" style="text-align:center;color:var(--tx3);padding:20px">No line items</td></tr>')+'</tbody></table>'
-    +'<div class="qtot">'
+    +(inv.projName?'<div class="qp-sc-terms" style="margin-top:0;padding-top:0;border-top:none;margin-bottom:14px"><strong>Project:</strong> '+inv.projName+'</div>':'')
+    +'<table class="qtbl qp-sc-tbl"><thead><tr><th>Description</th><th></th><th class="qp-sc-th-amt">Amount</th></tr></thead>'
+    +'<tbody>'+(roomRows||'<tr><td colspan="3" class="qp-sc-empty">No line items</td></tr>')+'</tbody></table>'
+    +depSection
+    +'<div class="qtot qp-sc-qtot">'
     +'<div class="qtr"><div class="ql">Subtotal</div><div class="qr">'+f(inv.subtotal)+'</div></div>'
-    +'<div class="qtr"><div class="ql">HST ('+inv.taxRate+'%)</div><div class="qr">'+f(inv.tax)+'</div></div>'
-    +(inv.depositPaid?'<div class="qtr"><div class="ql">Deposit Received</div><div class="qr" style="color:var(--grn)">???'+f(inv.deposit)+'</div></div>':'')
-    +'<div class="qtr gd" style="margin-top:8px;padding-top:10px;border-top:1px solid var(--bd2)"><div class="ql">'+(st==='paid'?'Total (Paid)':'Balance Due')+'</div>'
-    +'<div class="qr" style="color:'+(st==='paid'?'var(--grn)':'var(--red)')+'">'+f(st==='paid'?inv.total:bal)+'</div></div>'
+    +'<div class="qtr"><div class="ql">Tax ('+inv.taxRate+'%)</div><div class="qr">'+f(inv.tax)+'</div></div>'
+    +(inv.depositPaid?'<div class="qtr"><div class="ql">Deposit received</div><div class="qr" style="color:#2d7a2d">'+f(inv.deposit)+'</div></div>':'')
+    +'<div class="'+balRowMod+'" style="margin-top:10px;padding-top:12px;border-top:0.5px solid #e0e0e0"><div class="ql">'+balQl+'</div>'
+    +'<div class="qr">'+balQr+'</div></div>'
     +'</div>'
-    +(inv.notes?'<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--bd);font-size:12px;color:var(--tx3);line-height:1.7"><strong style="color:var(--tx2)">Terms &amp; Conditions:</strong><br>'+inv.notes+'</div>':'')
+    +payHist
+    +(inv.notes?'<div class="qp-sc-terms"><strong>Terms &amp; conditions:</strong><br>'+inv.notes+'</div>':'')
     +'</div>';
 
   var emailTo=getInvoiceRecipientEmail(inv);
   var canEmail=!inv.void&&!!emailTo;
-  var emailTitle=canEmail?('Send to '+emailTo):'Add a client email in Clients (link the project) or under Edit Details';
-  var actions='<div class="inv-actions" style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">'
-    +'<button type="button" class="btn bp sm" onclick="sendInvoiceEmail(\''+inv.id+'\')"'+(canEmail?'':' disabled style="opacity:.45;cursor:not-allowed"')+' title="'+emailTitle.replace(/"/g,'&quot;')+'">Email to client</button>'
-    +'<button class="btn bg sm" onclick="window.print()">Print / PDF</button>'
-    +'<button class="btn bg sm" onclick="editInvMeta(\''+inv.id+'\')">Edit Details</button>'
-    +'<button class="btn bd-btn sm" onclick="deleteInv(\''+inv.id+'\')">Delete</button>'
-    +'</div>';
+  var emailTitle=canEmail?('Send to '+emailTo):'Add a client email in Clients (link the project) or under Edit details';
 
-  el.innerHTML='<div class="ph">'
-    +'<div style="display:flex;align-items:center;gap:10px">'
-    +'<button onclick="curInvId=null;rInvList()" style="font-size:18px;background:transparent;border:none;color:var(--tx2);cursor:pointer;padding:4px">???</button>'
-    +'<div><div class="pt" style="font-size:22px">'+inv.num+'</div>'
-    +'<div class="ps">'+(inv.clientName||'No client')+' ? '+f(inv.total)+'</div></div>'
+  var footActions='<div class="inv-sc-foot">'+actionBtns
+    +'<button type="button" class="btn bg sm" onclick="editInvMeta(\''+inv.id+'\')">Edit details</button>'
+    +'<button type="button" class="btn bd-btn sm" onclick="deleteInv(\''+inv.id+'\')">Delete</button></div>';
+
+  el.innerHTML='<div class="ml-page qp-sc-page">'
+    +'<div class="qp-sc-site-top rf-tab-hdr">'
+    +'<header class="qp-sc-header">'
+    +'<div class="qp-sc-header-row">'
+    +'<button type="button" class="inv-sc-back" onclick="curInvId=null;rInvList()" aria-label="Back to invoices">\u2190</button>'
+    +'<div class="qp-sc-header-text">'
+    +'<div class="qp-sc-kicker">Invoice</div>'
+    +'<div class="qp-sc-title">Invoice '+inv.num+'</div>'
+    +'<div class="qp-sc-meta">'+metaLines+'</div>'
     +'</div></div>'
-    +'<div class="pc">'+statusBar+termsRow+'<div style="height:14px"></div>'+depBox+doc+actions+'</div>';
+    +'<div class="qp-sc-actions">'
+    +'<button type="button" class="qp-sc-pill qp-sc-pill--primary" onclick="window.print()">Generate PDF</button>'
+    +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="sendInvoiceEmail(\''+inv.id+'\')"'+(canEmail?'':' disabled style="opacity:.45;cursor:not-allowed"')+' title="'+emailTitle.replace(/"/g,'&quot;')+'">Send to Client</button>'
+    +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="invRecordPaymentClick(\''+inv.id+'\')"'+(canRec?'':' disabled style="opacity:.45;cursor:not-allowed"')+'>Record Payment</button>'
+    +'</div></header></div>'
+    +'<div class="pc ml-page-body qp-sc-body">'
+    +termsStrip
+    +doc
+    +footActions
+    +'</div></div>';
 }
 
 function createInvFromQuote(){
