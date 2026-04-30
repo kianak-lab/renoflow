@@ -38,6 +38,40 @@ function tradeIdToSlug(tradeId: unknown): string {
   return "demo";
 }
 
+/** `final.html` quote math uses `trade.catPick`; rebuild from demolition note + DB material lines. */
+function buildDemoCatPickFromUnpack(
+  demoUnpack: NonNullable<ReturnType<typeof unpackDemolitionNote>>,
+  tradeItems: Array<{ id?: string; l?: string; p?: number }>,
+): Record<
+  string,
+  { q: number; m: number; sup: number; title: string; brand: string; priceLabel: string; thumb: string }
+> {
+  const catPick: Record<
+    string,
+    { q: number; m: number; sup: number; title: string; brand: string; priceLabel: string; thumb: string }
+  > = {};
+  const mq = demoUnpack.materialQty ?? {};
+  const markup = Math.max(0, Number(demoUnpack.clientMaterialsMarkupPct) || 0);
+  for (const [pidRaw, qRaw] of Object.entries(mq)) {
+    const pid = String(pidRaw);
+    const qty = Math.max(0, Number(qRaw) || 0);
+    if (qty <= 0) continue;
+    const match = tradeItems.find((x) => String(x.id ?? "") === pid);
+    const sup =
+      typeof match?.p === "number" && !Number.isNaN(match.p) ? Math.max(0, match.p) : 0;
+    catPick[pid] = {
+      q: qty,
+      m: markup,
+      sup,
+      title: typeof match?.l === "string" ? match.l : "—",
+      brand: "",
+      priceLabel: sup > 0 ? String(sup) : "—",
+      thumb: "",
+    };
+  }
+  return catPick;
+}
+
 /** Builds `final.html`-shaped `rooms[]` from Supabase `project_rooms` / `project_room_trades` / `project_trade_items`. */
 export async function fetchRoomsForFinalApp(
   supabase: SupabaseClient,
@@ -149,6 +183,7 @@ export async function fetchRoomsForFinalApp(
           ? {
               rfDemolition: demoUnpack,
               materialsBillToClient: demoUnpack.materialsBillToClient !== false,
+              catPick: buildDemoCatPickFromUnpack(demoUnpack, tradeItems),
             }
           : {}),
       });

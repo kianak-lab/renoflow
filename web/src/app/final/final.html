@@ -3557,6 +3557,41 @@ function ensureCatPick(t){
   if(!t||typeof t!=="object") return;
   if(!t.catPick||typeof t.catPick!=="object") t.catPick={};
 }
+/** Quote totals use `catPick`; API/demo note often only had `rfDemolition.materialQty`. Rebuild picks so materials bill correctly. */
+function demoHydrateCatPickFromRfDemolition(t){
+  if(!t||t.id!=="demo") return;
+  var st=t.rfDemolition;
+  if(!st||typeof st!=="object") return;
+  if(typeof t.materialsBillToClient!=="boolean" && typeof st.materialsBillToClient==="boolean")
+    t.materialsBillToClient=st.materialsBillToClient;
+  var mq=st.materialQty;
+  if(!mq||typeof mq!=="object") return;
+  var mk=(typeof st.clientMaterialsMarkupPct==="number"&&!isNaN(st.clientMaterialsMarkupPct))?Math.max(0,st.clientMaterialsMarkupPct):20;
+  var prev=(t.catPick&&typeof t.catPick==="object")?t.catPick:{};
+  var next={};
+  Object.keys(mq).forEach(function(pid){
+    var qty=Math.max(0,parseFloat(mq[pid])||0);
+    if(qty<=0) return;
+    var rowPrev=prev[pid]||{};
+    var sup=(rowPrev.sup!=null&&!isNaN(parseFloat(rowPrev.sup)))?parseFloat(rowPrev.sup):0;
+    if(sup<=0&&(t.items&&t.items.length)){
+      for(var ix=0;ix<t.items.length;ix++){
+        var it=t.items[ix];
+        if(it&&String(it.id)===String(pid)){ sup=parseFloat(it.p)||0; break; }
+      }
+    }
+    next[pid]={
+      q:qty,
+      m:mk,
+      sup:Math.max(0,sup),
+      title:(typeof rowPrev.title==="string"&&rowPrev.title)?rowPrev.title:"",
+      brand:(typeof rowPrev.brand==="string"&&rowPrev.brand)?rowPrev.brand:"",
+      priceLabel:(typeof rowPrev.priceLabel==="string"&&rowPrev.priceLabel)?rowPrev.priceLabel:(sup>0?String(sup):"\u2014"),
+      thumb:(typeof rowPrev.thumb==="string"&&rowPrev.thumb)?rowPrev.thumb:""
+    };
+  });
+  t.catPick=next;
+}
 function rfParseSupplierUnit(priceText){
   if(!priceText||priceText==="???") return 0;
   var m=String(priceText).match(/(\d+(?:\.\d+)?)/);
@@ -3579,6 +3614,7 @@ function demoTradeMaterialsOnClientQuote(t){
 }
 function catalogClientTotal(t,globalMkOverride){
   ensureCatPick(t);
+  if(t&&t.id==="demo") demoHydrateCatPickFromRfDemolition(t);
   if(!t.catPick) return 0;
   if(t.id==="demo" && !demoTradeMaterialsOnClientQuote(t)) return 0;
   var g=globalMkOverride!=null?globalMkOverride:(S.mk&&S.mk.mat)||0;
