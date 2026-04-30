@@ -3986,6 +3986,7 @@ function rfDemoHasTimelineWork(t){
   try{
     var st=t.rfDemolition;
     if(st&&typeof st==="object"){
+      if(st.scheduleTradeEnabled && (parseInt(st.timelineTotalDays,10)||0)>0) return true;
       var w=st.workers;
       if(Array.isArray(w)&&w.some(function(x){ return (x.days||0)>0; })) return true;
       var ch=st.checklist;
@@ -8172,10 +8173,54 @@ function rShop(){
   });
 }
 
+/** Map global schedule day index ? client text from demolition trades with "Schedule this trade" on. */
+function rfDemoTimelineDayNotesFromSchedule(ps){
+  var map={};
+  if(!ps||!ps.roomSchedules) return map;
+  ps.roomSchedules.forEach(function(rs){
+    var trades=rs.room.trades||[];
+    var demoTrade=null;
+    for(var ti=0;ti<trades.length;ti++){
+      if(trades[ti].id==="demo"){ demoTrade=trades[ti]; break; }
+    }
+    if(!demoTrade||!demoTrade.rfDemolition||typeof demoTrade.rfDemolition!=="object") return;
+    var rd=demoTrade.rfDemolition;
+    if(!rd.scheduleTradeEnabled) return;
+    var descs=rd.timelineDayDescriptions;
+    if(!Array.isArray(descs)||!descs.length) return;
+    var ord=0;
+    rs.schedule.forEach(function(day){
+      var hasDemo=false;
+      for(var di=0;di<day.trades.length;di++){
+        if(day.trades[di].id==="demo"){ hasDemo=true; break; }
+      }
+      if(!hasDemo||ord>=descs.length) return;
+      var note=String(descs[ord]||"").trim();
+      ord++;
+      if(!note) return;
+      var k=String(day.dayNum);
+      if(!map[k]) map[k]=[];
+      map[k].push(note);
+    });
+  });
+  var out={};
+  Object.keys(map).forEach(function(k){
+    var seen={}, parts=[];
+    map[k].forEach(function(s){
+      if(seen[s]) return;
+      seen[s]=1;
+      parts.push(s);
+    });
+    out[k]=parts.join(" ? ");
+  });
+  return out;
+}
+
 function buildQuoteTimeline(){
   if(!S.proj.includeTimeline) return '';
   var ps=projectSchedule();
   if(ps.totalDays===0) return '';
+  var demoDayNotes=rfDemoTimelineDayNotesFromSchedule(ps);
   var startDate=getWorkDayCalendarDate(S,1);
   var endDate=getWorkDayCalendarDate(S,ps.totalDays);
 
@@ -8220,13 +8265,17 @@ function buildQuoteTimeline(){
   var dayNoteLines=[];
   for(var ddx=1; ddx<=ps.totalDays; ddx++){
     var tn=String(getTimelineDayNote(ddx)||'').trim();
-    if(!tn) continue;
+    var dn=String(demoDayNotes[String(ddx)]||'').trim();
+    var line='';
+    if(tn&&dn) line=tn===dn?tn:tn+' ? '+dn;
+    else line=tn||dn;
+    if(!line) continue;
     var dDt0=getWorkDayCalendarDate(S, ddx);
     var dt0=dDt0?fmtDate(dDt0):'';
     dayNoteLines.push('<div class="q-tl-dayline">'
       +'<div class="q-tl-dl-num">D'+ddx+'</div>'
       +'<div class="q-tl-dl-date">'+(dt0||'???')+'</div>'
-      +'<div class="q-tl-dl-note">'+escHtml(tn)+'</div>'
+      +'<div class="q-tl-dl-note">'+escHtml(line)+'</div>'
       +'</div>');
   }
   var dayNotesHtml=dayNoteLines.length
