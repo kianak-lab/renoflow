@@ -7,6 +7,7 @@ export type EnsureProfileResult =
 
 /**
  * Ensures a public.profiles row exists for a new auth user (OAuth or email signup).
+ * Inserts only columns that exist on every DB (avoids stale PostgREST schema cache / missing optional columns).
  * Uses upsert with ignoreDuplicates so a duplicate is not an error (race with a DB trigger or double callback).
  */
 export async function ensureProfileForUser(user: User): Promise<EnsureProfileResult> {
@@ -31,8 +32,12 @@ export async function ensureProfileForUser(user: User): Promise<EnsureProfileRes
   const { error } = await supabase.from("profiles").upsert(
     {
       id: user.id,
-      full_name: fullName,
+      full_name: fullName ?? null,
       company_email: user.email ?? null,
+      onboarding_completed: false,
+      selected_trades: [],
+      default_markup_percent: 20,
+      default_tax_percent: 13,
     },
     { onConflict: "id", ignoreDuplicates: true },
   );
