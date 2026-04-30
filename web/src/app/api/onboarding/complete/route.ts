@@ -16,14 +16,27 @@ type Body = {
   company_postal: string;
   tax_id: string;
   selected_trades: string[];
-  default_labour_mode: "hourly" | "per_job";
-  default_labour_rate: number;
+  /** Optional; defaults to existing profile or hourly + 85 for backwards compatibility. */
+  default_labour_mode?: "hourly" | "per_job";
+  default_labour_rate?: number;
+  first_name?: string;
+  last_name?: string;
+  phone?: string;
+  measurement_units?: "imperial" | "metric";
+  currency?: "CAD" | "USD";
 };
 
 function num(v: unknown, fallback: number): number {
   if (typeof v === "number" && Number.isFinite(v)) return v;
   if (typeof v === "string" && v.trim() !== "" && !Number.isNaN(Number(v))) return Number(v);
   return fallback;
+}
+
+function combineFullName(first: string, last: string): string | null {
+  const f = first.trim();
+  const l = last.trim();
+  const combined = `${f} ${l}`.trim();
+  return combined.length ? combined : null;
 }
 
 export async function POST(request: Request) {
@@ -49,12 +62,35 @@ export async function POST(request: Request) {
   const r = regionFromSelection(country, region);
   const tax = r ? r.taxPercent : 0;
   const trades = Array.isArray(body.selected_trades) ? body.selected_trades.map(String) : [];
-  const mode = body.default_labour_mode === "per_job" ? "per_job" : "hourly";
-  const rate = num(body.default_labour_rate, 0);
 
   const prev = await getProfileByUserId(auth.uid);
   const p = prev.ok ? prev.row : null;
   const newLogo = body.company_logo_data?.trim();
+
+  const mode =
+    body.default_labour_mode === "per_job"
+      ? "per_job"
+      : body.default_labour_mode === "hourly"
+        ? "hourly"
+        : p?.default_labour_mode === "per_job"
+          ? "per_job"
+          : "hourly";
+
+  const rate =
+    body.default_labour_rate !== undefined && body.default_labour_rate !== null
+      ? num(body.default_labour_rate, 85)
+      : num(p?.default_labour_rate, 85);
+
+  const fullName = combineFullName(String(body.first_name ?? ""), String(body.last_name ?? ""));
+  const phone = String(body.phone ?? "").trim() || null;
+  const units = body.measurement_units === "metric" ? "metric" : "imperial";
+  const currency =
+    body.currency === "CAD" || body.currency === "USD"
+      ? body.currency
+      : country === "CA"
+        ? "CAD"
+        : "USD";
+
   const row = {
     company_name: name,
     company_logo_url: newLogo || p?.company_logo_url || null,
@@ -70,6 +106,10 @@ export async function POST(request: Request) {
     default_tax_percent: tax,
     default_markup_percent: p?.default_markup_percent ?? 20,
     onboarding_completed: true,
+    full_name: fullName ?? p?.full_name ?? null,
+    company_phone: phone ?? p?.company_phone ?? null,
+    currency,
+    measurement_units: units,
   };
   const u = await upsertProfile(auth.uid, row);
   if (!u.ok) {
