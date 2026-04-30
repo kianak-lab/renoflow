@@ -14,10 +14,9 @@ import {
   authLabelClass,
   authPrimaryBtnClass,
 } from "@/components/auth/auth-form-styles";
-import {
-  buildOAuthRedirectTo,
-  logOAuthRedirectTo,
-} from "@/lib/auth-public-origin";
+
+const SUPABASE_AUTH_CALLBACK_URL =
+  "https://www.renoflowapp.com/api/auth/callback";
 
 type Props = {
   error?: string;
@@ -80,19 +79,9 @@ export default function LoginForm({ error, errorMessage }: Props) {
     setLoading(true);
     try {
       const supabase = createClient();
-      const params = new URLSearchParams(window.location.search);
-      const next = safeNextPath(params.get("next"));
-      const redirectTo = buildOAuthRedirectTo(next);
-      logOAuthRedirectTo(redirectTo, "login Google");
-      console.log("[RenoFlow auth:login Google] pre signInWithOAuth", {
-        redirectTo,
-        windowOrigin: window.location.origin,
-        NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL ?? "(undefined)",
-        NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL ?? "(undefined)",
-      });
       const { error: oErr } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo },
+        options: { redirectTo: SUPABASE_AUTH_CALLBACK_URL },
       });
       if (oErr) throw new Error(oErr.message);
     } catch (err: unknown) {

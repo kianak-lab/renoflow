@@ -3,10 +3,9 @@
 import Link from "next/link";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import {
-  buildOAuthRedirectTo,
-  logOAuthRedirectTo,
-} from "@/lib/auth-public-origin";
+
+const SUPABASE_AUTH_RECOVERY_CALLBACK_URL =
+  "https://www.renoflowapp.com/api/auth/callback?type=recovery";
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
@@ -21,10 +20,8 @@ export default function ForgotPasswordForm() {
     setLoading(true);
     try {
       const supabase = createClient();
-      const redirectTo = buildOAuthRedirectTo("/");
-      logOAuthRedirectTo(redirectTo, "forgot password");
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo,
+        redirectTo: SUPABASE_AUTH_RECOVERY_CALLBACK_URL,
       });
       if (error) throw new Error(error.message);
       setMessage("If an account exists for that email, we sent a reset link.");
