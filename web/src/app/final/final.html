@@ -1496,6 +1496,53 @@ a.ni{color:inherit;text-decoration:none;}
 .tl-wk-name{font-weight:600;color:var(--tx);}
 .tl-wk-trades{flex:1;font-size:13px;color:var(--tx2);}
 
+/* Site Clean — Project Timeline (#p-tl) */
+#p-tl .tl-sc-page{min-height:100%;background:var(--bg);}
+.tl-sc-head{background:#0f2318;color:#fff;padding:calc(12px + env(safe-area-inset-top,0px)) 18px 18px;}
+.tl-sc-head-sub{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,.55);margin:0 0 8px;}
+.tl-sc-head-title{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:22px;font-weight:500;line-height:1.2;margin:0 0 14px;letter-spacing:-0.02em;color:#fff;}
+.tl-sc-actions{display:flex;flex-wrap:wrap;gap:8px;}
+.tl-sc-pill{appearance:none;border:0.5px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:12px;font-weight:600;padding:8px 14px;border-radius:100px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.tl-sc-pill:active{opacity:.88;}
+.tl-sc-body{padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));}
+.tl-sc-tab-row{margin-top:4px;}
+.tl-sc-filters{margin:16px 0 14px;}
+.tl-sc-filter-scroll{display:flex;flex-direction:row;flex-wrap:nowrap;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;}
+.tl-sc-filter-scroll::-webkit-scrollbar{display:none;}
+.tl-sc-filter-pill{flex-shrink:0;appearance:none;border:0.5px solid var(--bd2);background:#fff;color:var(--tx2);font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:12px;font-weight:600;padding:8px 16px;border-radius:100px;cursor:pointer;white-space:nowrap;}
+.tl-sc-filter-pill.on{background:#0f2318;color:#fff;border-color:#0f2318;}
+.tl-sc-settings.tl-settings{margin-top:0;}
+.tl-sc-sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#fff;border:0.5px solid #e0e0e0;border-radius:12px;overflow:hidden;margin-bottom:18px;}
+.tl-sc-sum-cell{padding:14px 16px;border:0.5px solid #e0e0e0;margin:-0.5px;font-family:'IBM Plex Sans',system-ui,sans-serif;}
+.tl-sc-sum-lab{font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--tx3);font-weight:600;margin-bottom:6px;}
+.tl-sc-sum-val{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:18px;font-weight:500;color:var(--tx);line-height:1.25;word-break:break-word;}
+.tl-sc-sum-sub{font-size:11px;color:var(--tx3);margin-top:4px;}
+.tl-sc-week-block{margin-bottom:20px;}
+.tl-sc-week-h{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--tx3);margin:0 0 10px;padding-bottom:6px;border-bottom:0.5px solid #e0e0e0;}
+.tl-sc-trade-card{background:#fff;border:0.5px solid #e0e0e0;border-radius:12px;padding:14px 16px;margin-bottom:10px;}
+.tl-sc-trade-top{display:flex;align-items:flex-start;gap:12px;}
+.tl-sc-trade-ic{font-size:22px;line-height:1;flex-shrink:0;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--sf2);}
+.tl-sc-trade-meta{flex:1;min-width:0;}
+.tl-sc-trade-name{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:15px;font-weight:600;color:var(--tx);line-height:1.25;}
+.tl-sc-trade-sub{font-size:12px;color:var(--tx2);margin-top:4px;line-height:1.35;}
+.tl-sc-trade-dur{font-size:11px;color:var(--tx3);margin-top:4px;font-family:'IBM Plex Mono',ui-monospace,monospace;}
+.tl-sc-status-col{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
+.tl-sc-status-dot{width:10px;height:10px;border-radius:50%;}
+.tl-sc-status-dot--complete{background:#2e7d32;}
+.tl-sc-status-dot--active{background:#ed6c02;}
+.tl-sc-status-dot--pending{background:#bdbdbd;}
+.tl-sc-status-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--tx3);}
+.tl-sc-bar{height:4px;background:#eee;border-radius:4px;margin-top:12px;overflow:hidden;}
+.tl-sc-bar-fill{height:100%;border-radius:4px;transition:width .2s ease;}
+.tl-sc-bar-fill--complete{background:#2e7d32;}
+.tl-sc-bar-fill--active{background:#ed6c02;}
+.tl-sc-bar-fill--pending{background:#bdbdbd;}
+.tl-sc-notes{margin-top:16px;padding:14px;background:#fff;border:0.5px solid #e0e0e0;border-radius:12px;}
+.tl-sc-notes-h{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:12px;font-weight:600;margin-bottom:10px;color:var(--tx);}
+.tl-sc-push{width:100%;margin-top:20px;appearance:none;border:none;background:#0f2318;color:#fff;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:15px;font-weight:600;padding:16px 18px;border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.tl-sc-push:active{opacity:.92;}
+@media print{.tl-sc-head,.tl-sc-actions,.tl-sc-filters,.tl-sc-filter-pill,.tl-sc-push,.tl-sc-tab-row{display:none!important;}}
+
 .qp{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:32px;max-width:660px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
 .qt{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:2px solid var(--bd2);}
 .q-qt-left{display:flex;align-items:flex-start;gap:14px;flex:1;min-width:0}
@@ -7944,6 +7991,236 @@ function setTlTab(tab){
   window.__rfTlTab=(tab==='calendar')?'calendar':'timeline';
   rTimeline();
 }
+
+function rfTlScrollToEditDates(){
+  var e=document.querySelector('.tl-sc-settings');
+  if(e) try{ e.scrollIntoView({behavior:'smooth',block:'start'}); }catch(x){ e.scrollIntoView(); }
+  var inp=document.querySelector('.tl-sc-settings input[type=date]');
+  if(inp) try{ inp.focus(); }catch(x){}
+}
+function rfTlSetFilter(k){
+  window.__rfTlFilter=String(k||'all');
+  rTimeline();
+}
+function rfTlSiteCleanHeaderHtml(projNameEsc){
+  return '<div class="tl-sc-head">'
+    +'<div class="tl-sc-head-sub">PROJECT TIMELINE</div>'
+    +'<div class="tl-sc-head-title">'+projNameEsc+'</div>'
+    +'<div class="tl-sc-actions">'
+    +'<button type="button" class="tl-sc-pill" onclick="openPdf()">Export PDF</button>'
+    +'<button type="button" class="tl-sc-pill" onclick="rfCalPushOpen()">Share</button>'
+    +'<button type="button" class="tl-sc-pill" onclick="rfTlScrollToEditDates()">Edit Dates</button>'
+    +'</div></div>';
+}
+function rfTlFilterRowHtml(cur){
+  var opts=[['all','All'],['week','This Week'],['nextweek','Next Week'],['trade','By Trade'],['room','By Room']];
+  var h='<div class="tl-sc-filters"><div class="tl-sc-filter-scroll">';
+  opts.forEach(function(o){
+    h+='<button type="button" class="tl-sc-filter-pill'+(cur===o[0]?' on':'')+'" onclick="rfTlSetFilter(\''+o[0]+'\')">'+o[1]+'</button>';
+  });
+  h+='</div></div>';
+  return h;
+}
+function rfTlTradeProgressFromTrade(t){
+  var need=Math.max(0,parseInt(t&&t.days,10)||0);
+  var n=Array.isArray(t&&t.calendarSlots)?t.calendarSlots.length:0;
+  var pct=need?Math.min(100,Math.round(100*n/need)):(n>0?100:0);
+  var st='pending';
+  if(pct>=100) st='complete';
+  else if(pct>0) st='active';
+  return {pct:pct,status:st,need:need,nSlots:n};
+}
+/** Monday 00:00 of week containing d */
+function rfTlWeekMonday(d){
+  var x=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  var day=x.getDay();
+  var diff=(day===0)?-6:1-day;
+  x.setDate(x.getDate()+diff);
+  x.setHours(0,0,0,0);
+  return x;
+}
+function rfTlRangesOverlap(a0,a1,b0,b1){
+  if(!a0||!a1||!b0||!b1) return true;
+  return a0.getTime()<=b1.getTime() && a1.getTime()>=b0.getTime();
+}
+function rfTlThisNextWeekBounds(){
+  var today=new Date();
+  today.setHours(12,0,0,0);
+  var mon=rfTlWeekMonday(today);
+  var sun=new Date(mon);
+  sun.setDate(sun.getDate()+6);
+  sun.setHours(23,59,59,999);
+  var nmon=new Date(mon);
+  nmon.setDate(nmon.getDate()+7);
+  var nsun=new Date(nmon);
+  nsun.setDate(nsun.getDate()+6);
+  nsun.setHours(23,59,59,999);
+  return {this0:mon,this1:sun,next0:nmon,next1:nsun};
+}
+function rfTlCollectTradeItems(ps){
+  var acc=[];
+  ps.roomSchedules.forEach(function(rs){
+    var room=rs.room;
+    var byTid={};
+    rs.schedule.forEach(function(day){
+      day.trades.forEach(function(td){
+        var tid=String(td.id||'');
+        if(!tid) return;
+        var u=(byTid[tid]=byTid[tid]||{tid:tid,minD:day.dayNum,maxD:day.dayNum});
+        u.minD=Math.min(u.minD,day.dayNum);
+        u.maxD=Math.max(u.maxD,day.dayNum);
+      });
+    });
+    Object.keys(byTid).forEach(function(tid){
+      var u=byTid[tid];
+      var t=(room.trades||[]).find(function(x){ return String(x.id)===tid; });
+      var trade=t||{id:tid,days:Math.max(1,u.maxD-u.minD+1),calendarSlots:[]};
+      var d1=getWorkDayCalendarDate(S,u.minD);
+      var d2=getWorkDayCalendarDate(S,u.maxD);
+      var startDate=getWorkDayCalendarDate(S,1);
+      var wkKey=0;
+      if(startDate&&d1) wkKey=Math.floor((d1.getTime()-startDate.getTime())/(86400000*7));
+      else wkKey=Math.floor((u.minD-1)/5);
+      acc.push({
+        room:room,
+        trade:trade,
+        tid:tid,
+        minD:u.minD,
+        maxD:u.maxD,
+        d1:d1,
+        d2:d2,
+        dur:u.maxD-u.minD+1,
+        wkKey:wkKey,
+        dispName:TN[tid]||((trade&&trade.n)||tid)
+      });
+    });
+  });
+  return acc;
+}
+function rfTlClientNotesBlock(ps){
+  var bits=[];
+  var dix;
+  for(dix=1; dix<=ps.totalDays; dix++){
+    var nt=String(getTimelineDayNote(dix)||'').trim();
+    if(!nt) continue;
+    var dDx=getWorkDayCalendarDate(S,dix);
+    bits.push('<div class="tl-wk-dnote"><strong>Day '+dix+'</strong>'+(dDx?' ('+fmtDate(dDx)+')':'')+': '+escHtml(nt)+'</div>');
+  }
+  if(!bits.length) return '';
+  return '<div class="tl-sc-notes"><div class="tl-sc-notes-h">Day notes (quote &amp; client)</div>'+bits.join('')+'</div>';
+}
+function rfTlSummaryGridHtml(ps, startDate, endDate, hasData){
+  var roomsN=hasData?ps.roomSchedules.length:0;
+  var daysN=hasData?ps.totalDays:0;
+  var startLabel=startDate?fmtDateLong(startDate):'—';
+  var endLabel=endDate?fmtDateLong(endDate):'—';
+  return '<div class="tl-sc-sum-grid">'
+    +'<div class="tl-sc-sum-cell"><div class="tl-sc-sum-lab">Start date</div><div class="tl-sc-sum-val">'+escHtml(startLabel)+'</div></div>'
+    +'<div class="tl-sc-sum-cell"><div class="tl-sc-sum-lab">End date</div><div class="tl-sc-sum-val">'+escHtml(endLabel)+'</div></div>'
+    +'<div class="tl-sc-sum-cell"><div class="tl-sc-sum-lab">Total days</div><div class="tl-sc-sum-val">'+(hasData?String(daysN):'—')+'</div><div class="tl-sc-sum-sub">working days</div></div>'
+    +'<div class="tl-sc-sum-cell"><div class="tl-sc-sum-lab">Rooms</div><div class="tl-sc-sum-val">'+(hasData?String(roomsN):'—')+'</div><div class="tl-sc-sum-sub">'+(S.proj.parallelRooms?'parallel':'sequential')+'</div></div>'
+    +'</div>';
+}
+function buildTlSiteCleanTradeSectionsHtml(ps, flt){
+  var items=rfTlCollectTradeItems(ps);
+  var bounds=rfTlThisNextWeekBounds();
+  if(flt==='week'){
+    items=items.filter(function(it){ return rfTlRangesOverlap(it.d1,it.d2,bounds.this0,bounds.this1); });
+  }else if(flt==='nextweek'){
+    items=items.filter(function(it){ return rfTlRangesOverlap(it.d1,it.d2,bounds.next0,bounds.next1); });
+  }
+  function weekTitle(wkKey, firstIt){
+    var lab='Week '+(wkKey+1);
+    if(firstIt&&firstIt.d1&&firstIt.d2) lab+=' · '+fmtDate(firstIt.d1)+' – '+fmtDate(firstIt.d2);
+    return lab;
+  }
+  function cardHtml(it){
+    var pr=rfTlTradeProgressFromTrade(it.trade);
+    var rng=(it.d1&&it.d2)?fmtDate(it.d1)+' – '+fmtDate(it.d2):('Days '+it.minD+'–'+it.maxD);
+    var ic=TIC[it.tid]||'●';
+    var st=pr.status;
+    var barC=st==='complete'?'tl-sc-bar-fill--complete':(st==='active'?'tl-sc-bar-fill--active':'tl-sc-bar-fill--pending');
+    var stLabel=st==='complete'?'Complete':(st==='active'?'Active':'Pending');
+    return '<div class="tl-sc-trade-card">'
+      +'<div class="tl-sc-trade-top">'
+      +'<div class="tl-sc-trade-ic" style="color:'+(TC[it.tid]||'#666')+'">'+ic+'</div>'
+      +'<div class="tl-sc-trade-meta">'
+      +'<div class="tl-sc-trade-name">'+escHtml(it.dispName)+'</div>'
+      +'<div class="tl-sc-trade-sub">'+escHtml(it.room.n||'Room')+' · '+escHtml(rng)+'</div>'
+      +'<div class="tl-sc-trade-dur">'+it.dur+' work day'+(it.dur!==1?'s':'')+'</div>'
+      +'</div>'
+      +'<div class="tl-sc-status-col">'
+      +'<span class="tl-sc-status-dot tl-sc-status-dot--'+st+'" title="'+stLabel+'"></span>'
+      +'<span class="tl-sc-status-lbl">'+stLabel+'</span>'
+      +'</div></div>'
+      +'<div class="tl-sc-bar"><div class="tl-sc-bar-fill '+barC+'" style="width:'+pr.pct+'%"></div></div>'
+      +'</div>';
+  }
+  var sections=[];
+  if(flt==='trade'){
+    items.sort(function(a,b){ return (a.dispName+'').localeCompare(b.dispName+'')||(a.room.n+'').localeCompare(b.room.n+''); });
+    var gt='', i;
+    for(i=0;i<items.length;i++){
+      if(items[i].dispName!==gt){
+        gt=items[i].dispName;
+        sections.push({h:gt, html:''});
+      }
+      sections[sections.length-1].html+=cardHtml(items[i]);
+    }
+  }else if(flt==='room'){
+    items.sort(function(a,b){ return (a.room.n+'').localeCompare(b.room.n+'')||(a.dispName+'').localeCompare(b.dispName+''); });
+    var gr='', j;
+    for(j=0;j<items.length;j++){
+      if(items[j].room.n!==gr){
+        gr=items[j].room.n;
+        sections.push({h:gr||'Room', html:''});
+      }
+      sections[sections.length-1].html+=cardHtml(items[j]);
+    }
+  }else{
+    items.sort(function(a,b){ return a.wkKey-b.wkKey||(a.minD-b.minD)||(a.room.n+'').localeCompare(b.room.n+''); });
+    var byW={}, k;
+    for(k=0;k<items.length;k++){
+      var w=items[k].wkKey;
+      if(!byW[w]) byW[w]=[];
+      byW[w].push(items[k]);
+    }
+    var keys=Object.keys(byW).map(function(x){ return parseInt(x,10); }).sort(function(a,b){ return a-b; });
+    keys.forEach(function(wk){
+      var list=byW[wk];
+      var h=weekTitle(wk, list[0]);
+      var inner=list.map(cardHtml).join('');
+      sections.push({h:h, html:inner});
+    });
+  }
+  if(!sections.length){
+    if(!items.length) return '<div class="tl-empty" style="margin:12px 0">Nothing to show for this filter.</div>';
+    return items.map(cardHtml).join('');
+  }
+  return sections.map(function(s){
+    return '<div class="tl-sc-week-block"><div class="tl-sc-week-h">'+escHtml(s.h)+'</div>'+s.html+'</div>';
+  }).join('');
+}
+function rfTlTimelineSettingsBlock(){
+  var startStr=String(S.proj.startDate||'');
+  return '<div class="tl-settings tl-sc-settings">'
+    +'<div class="tl-grid">'
+    +'<div class="tl-field"><div class="tl-fl">Project Start Date</div>'
+    +'<div class="tl-fv"><input type="date" value="'+escAttr(startStr)+'" oninput="sStartDate(this.value)"/></div></div>'
+    +'<div class="tl-field"><div class="tl-fl">Room Scheduling</div>'
+    +'<div class="tl-toggle-row" onclick="togParallel()">'
+    +'<div class="tog'+(S.proj.parallelRooms?' on':'')+'"></div>'
+    +'<div><div class="tl-toggle-lbl">'+(S.proj.parallelRooms?'Parallel':'Sequential')+'</div>'
+    +'<div class="tl-toggle-sub">'+(S.proj.parallelRooms?'all rooms at once':'one room after another')+'</div></div>'
+    +'</div></div>'
+    +'<div class="tl-field"><div class="tl-fl">Multi-job calendar</div>'
+    +'<div class="tl-fv"><button type="button" class="btn bg sm" onclick="pushTimelineToCalendar()">Open account schedule</button></div>'
+    +'<div class="tl-toggle-sub" style="margin-top:6px">Month grid with all saved projects.</div></div>'
+    +'</div></div>';
+}
+function rfTlBottomPushButton(){
+  return '<button type="button" class="tl-sc-push" onclick="rfCalPushOpen()">Push to Calendar</button>';
+}
 function rfTradeCalRemaining(t){
   if(!t)return 0;
   var need=Math.max(0,parseInt(t.days,10)||0);
@@ -8141,111 +8418,48 @@ function buildTimelineCalendarMarkup(forceEmpty){
 function rTimeline(){
   var el=document.getElementById("p-tl");
   var ps=projectSchedule();
-  var hasData = ps.totalDays>0;
-  var startStr = S.proj.startDate || '';
-  var startDate = getWorkDayCalendarDate(S, 1);
-  var endDate   = hasData ? getWorkDayCalendarDate(S, ps.totalDays) : null;
-
+  var hasData=ps.totalDays>0;
+  var startDate=getWorkDayCalendarDate(S,1);
+  var endDate=hasData?getWorkDayCalendarDate(S,ps.totalDays):null;
+  var projName=escHtml(String(S.proj&&S.proj.name||'').trim()||'Project');
+  var head=rfTlSiteCleanHeaderHtml(projName);
   var tlTab=window.__rfTlTab||'timeline';
-  var tabRow='<div class="tl-tab-row">'
+  var tabRow='<div class="tl-tab-row tl-sc-tab-row">'
     +'<button type="button" class="tl-tab'+(tlTab==='timeline'?' on':'')+'" onclick="setTlTab(\'timeline\')">Timeline</button>'
     +'<button type="button" class="tl-tab'+(tlTab==='calendar'?' on':'')+'" onclick="setTlTab(\'calendar\')">Calendar</button>'
-    +'<button type="button" class="btn bp sm" onclick="rfCalPushOpen()" style="margin-left:auto">Push Calendar</button>'
     +'</div>';
-
-  var settings = '<div class="tl-settings">'
-    +'<div class="tl-grid">'
-    +'<div class="tl-field"><div class="tl-fl">Project Start Date</div>'
-    +'<div class="tl-fv"><input type="date" value="'+startStr+'" oninput="sStartDate(this.value)"/></div></div>'
-    +'<div class="tl-field"><div class="tl-fl">Room Scheduling</div>'
-    +'<div class="tl-toggle-row" onclick="togParallel()">'
-    +'<div class="tog'+(S.proj.parallelRooms?' on':'')+'"></div>'
-    +'<div><div class="tl-toggle-lbl">'+(S.proj.parallelRooms?'Parallel':'Sequential')+'</div>'
-    +'<div class="tl-toggle-sub">'+(S.proj.parallelRooms?'all rooms at once':'one room after another')+'</div></div>'
-    +'</div></div>'
-    +'<div class="tl-field"><div class="tl-fl">Multi-job calendar</div>'
-    +'<div class="tl-fv"><button type="button" class="btn bg sm" onclick="pushTimelineToCalendar()">Open account schedule</button></div>'
-    +'<div class="tl-toggle-sub" style="margin-top:6px">Month grid with all saved projects.</div></div>'
-    +'</div></div>';
+  var flt=window.__rfTlFilter||'all';
+  var filtRow=rfTlFilterRowHtml(flt);
+  var settings=rfTlTimelineSettingsBlock();
+  var bottom=rfTlBottomPushButton();
 
   if(!hasData){
     var calEmpty=buildTimelineCalendarMarkup(true);
-    var emptyList='<div class="tl-empty"><div class="tl-empty-i">????</div><div>Add rooms with dimensions and quantities to see a timeline</div></div>';
-    el.innerHTML=rfMobTabPhBuild(RF_SVG_TL_IC,'Project <em>Timeline</em>','Auto-generated from your rooms &amp; trades','','')
-      +tabRow+settings+(tlTab==='calendar'?calEmpty:emptyList)+'</div></div>';
+    var emptyList='<div class="tl-empty"><div class="tl-empty-i">📋</div><div>Add rooms with dimensions and quantities to see a timeline</div></div>';
+    el.innerHTML='<div class="tl-sc-page">'+head+'<div class="pc ml-page-body tl-sc-body">'+tabRow+filtRow+settings
+      +rfTlSummaryGridHtml(ps,startDate,endDate,false)
+      +(tlTab==='calendar'?calEmpty:emptyList)+bottom+'</div></div>';
     requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
     return;
   }
-
-  if(tlTab==='calendar'){
-    el.innerHTML=rfMobTabPhBuild(RF_SVG_TL_IC,'Project <em>Timeline</em>','Auto-generated from your rooms &amp; trades',
-      '<button type="button" class="btn bp sm" onclick="gP(\'quote\')">View Quote</button>','')
-      +tabRow+settings+buildTimelineCalendarMarkup(false)+'</div></div>';
-    requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
-    return;
-  }
-
-  var summary='<div class="tl-summary">'
-    +'<div><div class="tl-sl">Start</div><div class="tl-sv">'+(startDate?fmtDateLong(startDate):'Set date')+'</div><div class="tl-ss">'+(startDate?'Day 1':'no start date')+'</div></div>'
-    +'<div><div class="tl-sl">Completion</div><div class="tl-sv">'+(endDate?fmtDateLong(endDate):'???')+'</div><div class="tl-ss">estimated</div></div>'
-    +'<div><div class="tl-sl">Duration</div><div class="tl-sv">'+ps.totalDays+' days</div><div class="tl-ss">working days</div></div>'
-    +'<div><div class="tl-sl">Rooms</div><div class="tl-sv">'+ps.roomSchedules.length+'</div><div class="tl-ss">'+(S.proj.parallelRooms?'in parallel':'sequential')+'</div></div>'
-    +'</div>';
 
   pruneTimelineDayNotes(ps.totalDays);
 
-  var rooms = ps.roomSchedules.map(function(rs,ri){
-    var r=rs.room;
-    var rStart=getWorkDayCalendarDate(S, rs.startDay);
-    var rEnd=getWorkDayCalendarDate(S, rs.endDay);
-    var dateRange = rStart?fmtDate(rStart)+' ??? '+fmtDate(rEnd):'';
-    var open = r._tlOpen;
+  if(tlTab==='calendar'){
+    el.innerHTML='<div class="tl-sc-page">'+head+'<div class="pc ml-page-body tl-sc-body">'+tabRow+filtRow+settings
+      +rfTlSummaryGridHtml(ps,startDate,endDate,true)
+      +buildTimelineCalendarMarkup(false)+bottom+'</div></div>';
+    requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
+    return;
+  }
 
-    var dayRows = rs.schedule.map(function(day){
-      var dDate = getWorkDayCalendarDate(S, day.dayNum);
-      var col0=day.trades.length?(TC[day.trades[0].id]||"#888"):"#b8b8b8";
-      var sche=day.trades.map(function(tr){
-        var col=TC[tr.id]||"#888";
-        return '<span class="tl-day-sche-it" style="color:'+col+'">'+TIC[tr.id]+' <span class="tl-day-sche-nm">'+escHtml(tr.name)+'</span> <span class="tl-day-sche-sub" style="color:'+col+';opacity:.85">(Day '+tr.dayInTrade+'/'+tr.total+')</span></span>';
-      }).join('<span class="tl-day-sche-sep" aria-hidden="true">?</span>');
-      if(!day.trades.length) sche='<span class="tl-day-sche-sub">???</span>';
-      var nVal=getTimelineDayNote(day.dayNum);
-      return '<div class="tl-day">'
-        +'<div class="tl-day-num">Day '+day.dayNum+'</div>'
-        +'<div class="tl-day-date">'+(dDate?fmtDateFull(dDate):'')+'</div>'
-        +'<div class="tl-day-main" style="border-left:2px solid '+col0+';padding-left:8px;margin-left:-2px">'
-        +'<div class="tl-day-sche">'+sche+'</div>'
-        +'<input type="text" class="tl-dn-inp tl-day-note-inp" maxlength="200" placeholder="Add a short note for the client (optional)" value="'+escHtml(nVal)+'" oninput="timelineDayNoteInput('+day.dayNum+',this.value)" aria-label="Client note for day '+day.dayNum+'"/>'
-        +'</div>'
-        +'</div>';
-    }).join('');
-
-    return '<div class="tl-room">'
-      +'<div class="tl-rh" onclick="togTlRoom('+ri+')">'
-      +'<div class="tl-ri">'+r.ic+'</div>'
-      +'<div class="tl-rn">'+r.n+'</div>'
-      +'<div class="tl-rd">'+dateRange+'</div>'
-      +'<div class="tl-rc">'+rs.duration+' days</div>'
-      +'<div class="ta'+(open?' op':'')+'">???</div>'
-      +'</div>'
-      +'<div class="tl-rb'+(open?' op':'')+'">'+dayRows+'</div>'
-      +'</div>';
-  }).join('');
-
-  var clientPreview = buildClientPreview(ps);
-
-  el.innerHTML=rfMobTabPhBuild(RF_SVG_TL_IC,'Project <em>Timeline</em>','Auto-generated from your rooms &amp; trades',
-    '<button type="button" class="btn bp sm" onclick="gP(\'quote\')">View Quote</button>','')
-    +tabRow+settings+summary+rooms+clientPreview+'</div></div>';
+  var summary=rfTlSummaryGridHtml(ps,startDate,endDate,true);
+  var weekBody=buildTlSiteCleanTradeSectionsHtml(ps,flt);
+  var notes=rfTlClientNotesBlock(ps);
+  el.innerHTML='<div class="tl-sc-page">'+head+'<div class="pc ml-page-body tl-sc-body">'+tabRow+filtRow+settings+summary+weekBody+notes+bottom+'</div></div>';
   requestAnimationFrame(function(){ requestAnimationFrame(rfRecordMaterialsHeaderH); });
 }
 
-function togTlRoom(ri){
-  var ps=projectSchedule();
-  var r=ps.roomSchedules[ri].room;
-  r._tlOpen=!r._tlOpen;
-  rTimeline();
-}
 function sStartDate(v){S.proj.scheduledYmds=[];S.proj.startDate=v;ss();rTimeline();if(curPg==='cal')rCalendar();if(curPg==='quote')rQuote();}
 function togParallel(){S.proj.parallelRooms=!S.proj.parallelRooms;ss();rTimeline();if(curPg==='cal')rCalendar();}
 /** From Timeline: jump to Schedule (calendar) on the month of the project start (or today). */
