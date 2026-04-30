@@ -19,8 +19,6 @@ export type UserProfileRow = {
   company_postal?: string | null;
   tax_id?: string | null;
   selected_trades?: string[] | unknown;
-  default_labour_mode?: string | null;
-  default_labour_rate?: number | null;
   currency?: string | null;
   measurement_units?: string | null;
   created_at: string;
@@ -37,7 +35,7 @@ export async function getProfileByUserId(
   const { data, error } = await supabase
     .from("profiles")
     .select(
-      "id, full_name, company_name, company_phone, company_email, company_license, company_address, company_logo_url, company_theme_color, default_markup_percent, default_tax_percent, onboarding_completed, country, region_code, company_city, company_postal, tax_id, selected_trades, default_labour_mode, default_labour_rate, currency, measurement_units, created_at, updated_at",
+      "id, full_name, company_name, company_phone, company_email, company_license, company_address, company_logo_url, company_theme_color, default_markup_percent, default_tax_percent, onboarding_completed, country, region_code, company_city, company_postal, tax_id, selected_trades, currency, measurement_units, created_at, updated_at",
     )
     .eq("id", userId)
     .maybeSingle();
