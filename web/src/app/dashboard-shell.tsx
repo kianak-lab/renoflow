@@ -746,8 +746,8 @@ export default function DashboardShell({
                         onClick={() =>
                           router.push(
                             activeProject
-                              ? `/project/${encodeURIComponent(activeProject.id)}/timeline`
-                              : "/final?pg=tl",
+                              ? `/project/${encodeURIComponent(activeProject.id)}/schedule`
+                              : "/projects",
                           )
                         }
                       >

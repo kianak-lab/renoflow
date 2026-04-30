@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-/** Canonical entry for project timeline + calendar (SPA in /final). No extra data fetch — single redirect. */
+/** Legacy /timeline URL forwards to the in-app Schedule page. */
 export default async function ProjectTimelinePage({
   params,
 }: {
@@ -9,7 +9,7 @@ export default async function ProjectTimelinePage({
   const { id } = await params;
   const pid = (id ?? "").trim();
   if (!pid) {
-    redirect("/final?pg=tl");
+    redirect("/projects");
   }
-  redirect(`/final?project=${encodeURIComponent(pid)}&pg=tl`);
+  redirect(`/project/${encodeURIComponent(pid)}/schedule`);
 }

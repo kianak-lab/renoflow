@@ -579,7 +579,7 @@ export default function ProjectsManager() {
                         View Quote
                       </Link>
                       <Link
-                        href="/final"
+                        href={`/project/${encodeURIComponent(p.id)}/schedule`}
                         prefetch={false}
                         className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-[100px] bg-white px-3 text-[11px] font-medium text-[#555] no-underline [-webkit-tap-highlight-color:transparent]"
                         style={{ border: "0.5px solid #e0e0e0", flex: "1 1 90px" }}

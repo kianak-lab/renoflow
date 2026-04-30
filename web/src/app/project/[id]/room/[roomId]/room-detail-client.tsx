@@ -461,6 +461,23 @@ export default function RoomDetailClient({
                   ? `${data.trades.length} ${data.trades.length === 1 ? "trade" : "trades"}`
                   : "—"}
             </p>
+            {!loading && data ? (
+              <div
+                className="mt-3 flex max-w-full flex-nowrap items-center gap-1.5 overflow-x-auto [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              >
+                <Link
+                  href={`/project/${encodeURIComponent(projectId)}/schedule`}
+                  prefetch={false}
+                  className="inline-flex min-h-[36px] shrink-0 items-center whitespace-nowrap rounded-[100px] px-2.5 text-[11px] font-semibold leading-tight text-white no-underline [-webkit-tap-highlight-color:transparent]"
+                  style={{
+                    background: "rgba(255,255,255,0.12)",
+                    border: "0.5px solid rgba(255,255,255,0.35)",
+                  }}
+                >
+                  Timeline
+                </Link>
+              </div>
+            ) : null}
           </div>
         </div>
       </header>
