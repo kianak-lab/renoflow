@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import SignOutButton from "@/components/sign-out-button";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
@@ -190,6 +191,7 @@ export default function DashboardShell({
   initialClients,
   projectsError,
 }: Props) {
+  const router = useRouter();
   const [projects, setProjects] = useState(initialProjects);
   const [rooms, setRooms] = useState(initialRooms);
   const [invoices] = useState(initialInvoices);
@@ -737,6 +739,13 @@ export default function DashboardShell({
                       </button>
                       <button className="btn bg sm" type="button" onClick={() => setWizardOpen(true)}>
                         {activeProject ? "Project Details" : "Create Project"}
+                      </button>
+                      <button
+                        className="btn bg sm"
+                        type="button"
+                        onClick={() => router.push("/final?pg=tl")}
+                      >
+                        Timeline
                       </button>
                     </div>
                   </div>
