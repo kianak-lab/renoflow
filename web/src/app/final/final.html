@@ -2919,10 +2919,63 @@ function mergeRoomFromServer(localRoom, serverRoom){
       if(sit.p!==undefined) lit.p=sit.p;
       if(sit.wasAuto!==undefined) lit.wasAuto=sit.wasAuto;
     });
-    if(st.rfDemolition) lt.rfDemolition=st.rfDemolition;
+    if(st.rfDemolition&&typeof st.rfDemolition==="object"){
+      if(lt.id==="demo"&&lt.rfDemolition&&typeof lt.rfDemolition==="object"){
+        function rfMqPos(o){
+          var mq=(o&&o.materialQty)||{};
+          var n=0;
+          Object.keys(mq).forEach(function(k){ if((parseFloat(mq[k])||0)>0)n++; });
+          return n;
+        }
+        var lc=rfMqPos(lt.rfDemolition), ic=rfMqPos(st.rfDemolition);
+        var lm=(lt.rfDemolition.materialQty&&typeof lt.rfDemolition.materialQty==="object")?lt.rfDemolition.materialQty:null;
+        lt.rfDemolition=st.rfDemolition;
+        if(ic===0&&lc>0&&lm){
+          try{ lt.rfDemolition.materialQty=JSON.parse(JSON.stringify(lm)); }catch(eC){ lt.rfDemolition.materialQty=lm; }
+        }
+      }else{
+        lt.rfDemolition=st.rfDemolition;
+      }
+    }
+    if(lt.id==="demo"&&lt.rfDemolition&&typeof lt.rfDemolition==="object"&&typeof lt.rfDemolition.materialsBillToClient==="boolean")
+      lt.materialsBillToClient=lt.rfDemolition.materialsBillToClient;
     if(st.note!==undefined&&(!lt.note||!String(lt.note).trim())) lt.note=st.note;
     if(!lt.daysCustom&&st.days!==undefined) lt.days=st.days;
   });
+}
+
+/** Replace workspace rooms from cloud so quote/PDF match saved demolition & trades (fixes stale browser merge). */
+function refreshEstimateFromServer(){
+  var pid=S.proj&&S.proj.dbProjectId;
+  if(!pid){
+    alert("Save your project online first, then you can reload the estimate from saved data.");
+    return;
+  }
+  if(!confirm("Reload estimate from your saved job?\n\nRoom pricing in this browser will be replaced with the latest from RenoFlow (including demolition materials billed to the client). Changes here that were never saved to the server will be lost.")){
+    return;
+  }
+  fetch("/api/projects/"+encodeURIComponent(pid)+"/workspace",{credentials:"include"})
+    .then(function(res){
+      return res.json().then(function(j){
+        if(!res.ok) throw new Error(j.error||("HTTP "+res.status));
+        return j;
+      });
+    })
+    .then(function(payload){
+      mergeServerWorkspace(payload,{hadLocalWorkspace:false});
+      try{
+        (S.rooms||[]).forEach(function(r){ try{ applyAuto(r); }catch(e){} });
+      }catch(eA){}
+      migrate(S);
+      persistCurrentWorkspaceNow();
+      ss();
+      try{
+        if(curPg==="quote") rQuote();
+        else if(curPg==="room") rRoom();
+        uSide(); rNav();
+      }catch(eU){}
+    })
+    .catch(function(e){ alert(e&&e.message?e.message:String(e)); });
 }
 
 function mergeServerWorkspace(payload, opts){
@@ -3590,6 +3643,7 @@ function demoHydrateCatPickFromRfDemolition(t){
       thumb:(typeof rowPrev.thumb==="string"&&rowPrev.thumb)?rowPrev.thumb:""
     };
   });
+  if(Object.keys(next).length===0&&Object.keys(prev).length>0) return;
   t.catPick=next;
 }
 function rfParseSupplierUnit(priceText){
@@ -8167,7 +8221,8 @@ function rQuote(){
   var timelineSection = buildQuoteTimeline();
   var qActs='<button type="button" class="qp-sc-pill qp-sc-pill--primary" onclick="openPdf()">Generate PDF</button>'
     +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="createInvFromQuote()">Create Invoice</button>'
-    +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="window.print()">Print</button>';
+    +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="window.print()">Print</button>'
+    +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="refreshEstimateFromServer()">Reload from saved job</button>';
   var cNm=typeof escHtml==="function"?escHtml(S.proj.client||"Client Name"):(S.proj.client||"Client Name");
   var cAd=typeof escHtml==="function"?escHtml(S.proj.addr||"Project Address"):(S.proj.addr||"Project Address");
   el.innerHTML=rfQuotePreviewShell(metaLine,qActs)
@@ -8178,6 +8233,7 @@ function rQuote(){
     +'<div class="qp-sc-prep-label">Prepared for</div>'
     +'<div class="qp-sc-prep-name">'+cNm+'</div>'
     +'<div class="qp-sc-prep-addr">'+cAd+'</div></div>'
+    +'<p class="qp-sc-quote-hint" style="font-size:11px;color:#888;line-height:1.5;margin:12px 0 0;padding:0 0 10px;border-bottom:0.5px solid #e0e0e0">Totals use your room trades in real time (demolition materials count when <strong>Client invoice</strong> is on). If amounts look wrong or outdated, tap <strong>Reload from saved job</strong> above.</p>'
     +'<table class="qtbl qp-sc-tbl"><thead><tr><th>Description</th><th></th><th class="qp-sc-th-amt">Amount</th></tr></thead>'
     +'<tbody>'+(rows||'<tr><td colspan="3" class="qp-sc-empty">No rooms estimated yet</td></tr>')+'</tbody></table>'
     +'<div class="qtot qp-sc-qtot"><div class="qtr"><div class="ql">Subtotal</div><div class="qr">'+f(sub)+'</div></div>'
@@ -8257,7 +8313,8 @@ function buildPrintQuote(fmt,mkPct){
   var metaPdf="#"+S.proj.qnum+" \u00B7 "+fmtLabel+" \u00B7 Valid until "+valid;
   var qActs2='<button type="button" class="qp-sc-pill qp-sc-pill--primary" onclick="openPdf()">Generate PDF</button>'
     +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="createInvFromQuote()">Create Invoice</button>'
-    +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="window.print()">Print</button>';
+    +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="window.print()">Print</button>'
+    +'<button type="button" class="qp-sc-pill qp-sc-pill--secondary" onclick="refreshEstimateFromServer()">Reload from saved job</button>';
   var cNmP=typeof escHtml==="function"?escHtml(S.proj.client||"Client Name"):(S.proj.client||"Client Name");
   var cAdP=typeof escHtml==="function"?escHtml(S.proj.addr||"Project Address"):(S.proj.addr||"Project Address");
   var coNmSig=typeof escHtml==="function"?escHtml(S.co.name||""):(S.co.name||"");
@@ -8269,6 +8326,7 @@ function buildPrintQuote(fmt,mkPct){
     +'<div class="qp-sc-prep-label">Prepared for</div>'
     +'<div class="qp-sc-prep-name">'+cNmP+'</div>'
     +'<div class="qp-sc-prep-addr">'+cAdP+'</div></div>'
+    +'<p class="qp-sc-quote-hint" style="font-size:11px;color:#888;line-height:1.5;margin:12px 0 0;padding:0 0 10px;border-bottom:0.5px solid #e0e0e0">Totals use your room trades in real time (demolition materials count when <strong>Client invoice</strong> is on). If amounts look wrong or outdated, tap <strong>Reload from saved job</strong> above.</p>'
     +'<table class="qtbl qp-sc-tbl"><thead><tr><th>Description</th><th></th><th class="qp-sc-th-amt">Amount</th></tr></thead>'
     +'<tbody>'+(rows||'<tr><td colspan="3" class="qp-sc-empty">No rooms estimated yet</td></tr>')+'</tbody></table>'
     +'<div class="qtot qp-sc-qtot"><div class="qtr"><div class="ql">Subtotal</div><div class="qr">'+f(sub)+'</div></div>'
