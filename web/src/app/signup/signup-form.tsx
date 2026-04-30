@@ -13,10 +13,9 @@ import {
   authLabelClass,
   authPrimaryBtnClass,
 } from "@/components/auth/auth-form-styles";
-import {
-  buildOAuthRedirectTo,
-  logOAuthRedirectTo,
-} from "@/lib/auth-public-origin";
+
+const SUPABASE_AUTH_CALLBACK_URL =
+  "https://www.renoflowapp.com/api/auth/callback";
 
 async function syncRenoflowSession(): Promise<void> {
   const res = await fetch("/api/auth/sync-session", {
@@ -27,11 +26,6 @@ async function syncRenoflowSession(): Promise<void> {
   if (!res.ok) {
     throw new Error(data.error || "Could not establish app session.");
   }
-}
-
-function safeNextPath(next: string | null): string {
-  if (!next || !next.startsWith("/") || next.startsWith("//")) return "/";
-  return next;
 }
 
 export default function SignupForm() {
@@ -48,12 +42,10 @@ export default function SignupForm() {
     setLoading(true);
     try {
       const supabase = createClient();
-      const emailRedirectTo = buildOAuthRedirectTo("/");
-      logOAuthRedirectTo(emailRedirectTo, "signup email confirm");
       const { data, error: signErr } = await supabase.auth.signUp({
         email: email.trim(),
         password,
-        options: { emailRedirectTo },
+        options: { emailRedirectTo: SUPABASE_AUTH_CALLBACK_URL },
       });
       if (signErr) throw new Error(signErr.message);
       if (data.session) {
@@ -77,13 +69,9 @@ export default function SignupForm() {
     setLoading(true);
     try {
       const supabase = createClient();
-      const params = new URLSearchParams(window.location.search);
-      const next = safeNextPath(params.get("next"));
-      const redirectTo = buildOAuthRedirectTo(next);
-      logOAuthRedirectTo(redirectTo, "signup Google");
       const { error: oErr } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo },
+        options: { redirectTo: SUPABASE_AUTH_CALLBACK_URL },
       });
       if (oErr) throw new Error(oErr.message);
     } catch (err: unknown) {
